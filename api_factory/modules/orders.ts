@@ -21,8 +21,8 @@ export const orders_api = {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${id}/cancel`);
   },
 
-  getErranderOrders: () => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/errander/available');
+  getErrandrOrders: () => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/errandr/available');
   },
 
   assignOrder: (id: string) => {

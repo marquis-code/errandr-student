@@ -1,164 +1,159 @@
 <template>
-  <FullScreenLoader />
-  <div class="min-h-screen bg-gray-50">
-    <!-- Desktop Sidebar -->
-    <aside class="hidden lg:block w-64 bg-white border-r-[0.5px] border-gray-50 min-h-screen fixed left-0 top-0 shadow-sm">
-      <!-- Logo -->
-      <div class="p-4 border-b border-gray-100 flex items-center gap-3">
-        <div class="w-10 h-10 bg-parentPrimary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-sm">
-          E
-        </div>
-        <span class="text-xl font-black text-parentPrimary tracking-tighter">Errandr</span>
-      </div>
-      
-      <!-- Navigation -->
-      <nav class="p-4 space-y-1">
-        <NuxtLink
-          v-for="item in navItems"
-          :key="item.path"
-          :to="item.path"
-          class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all group"
-          :class="isActive(item.path) 
-            ? 'bg-parentPrimary text-white shadow-sm' 
-            : 'text-gray-700 hover:bg-gray-50 hover:text-parentPrimary'"
-        >
-          <component :is="item.icon" class="w-5 h-5 mr-3" />
-          {{ item.label }}
-        </NuxtLink>
-      </nav>
-
-      <!-- Logout Button -->
-      <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
-        <button
-          @click="handleLogoutClick"
-          class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all"
-        >
-          <LogOut class="w-5 h-5 mr-3" />
-          Logout
-        </button>
-      </div>
-    </aside>
-
-    <!-- Mobile Header -->
-    <header class="lg:hidden bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
-      <div class="flex items-center justify-between px-4 py-3">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 bg-parentPrimary rounded-lg flex items-center justify-center text-white font-bold text-lg">
-            E
+  <div class="min-h-screen bg-gray-50 flex selection:bg-parentPrimary/10 selection:text-parentPrimary">
+    <FullScreenLoader />
+    
+    <!-- Premium Desktop Navigation (Floating Sidebar) -->
+    <aside class="hidden lg:flex flex-col w-72 h-[calc(100vh-2rem)] fixed left-4 top-4 bottom-4 transition-all duration-700 z-50">
+      <div class="h-full bg-white/80 backdrop-blur-2xl rounded-3xl flex flex-col p-6 overflow-hidden relative group border border-white shadow-xl shadow-black/5">
+        <!-- Ambient Glow -->
+        <div class="absolute -right-20 -top-20 w-40 h-40 bg-parentPrimary/10 rounded-full blur-[80px] group-hover:scale-150 transition-transform duration-1000" />
+        
+        <!-- Logo -->
+        <div class="mb-10 px-4 pt-4 relative z-10 flex items-center gap-4">
+          <div class="w-12 h-12 bg-gray-900 rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:bg-parentPrimary transition-colors duration-500 transform group-hover:rotate-6">
+            <ShoppingBag class="w-6 h-6" />
           </div>
-          <span class="font-black text-parentPrimary tracking-tighter">Errandr</span>
-        </div>
-        <button
-          @click="showMobileMenu = !showMobileMenu"
-          class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-        >
-          <Menu class="w-6 h-6 text-gray-700" />
-        </button>
-      </div>
-    </header>
-
-    <!-- Mobile Menu Overlay -->
-    <Transition name="overlay">
-      <div
-        v-if="showMobileMenu"
-        class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm"
-        @click="showMobileMenu = false"
-      ></div>
-    </Transition>
-
-    <!-- Mobile Sidebar -->
-    <Transition name="slide">
-      <aside
-        v-if="showMobileMenu"
-        class="lg:hidden w-72 bg-white min-h-screen fixed left-0 top-0 z-50 shadow-2xl"
-      >
-        <!-- Mobile Header -->
-        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-parentPrimary rounded-lg flex items-center justify-center text-white font-bold text-lg">
-              E
-            </div>
-            <span class="font-black text-parentPrimary tracking-tighter">Errandr</span>
-          </div>
-          <button
-            @click="showMobileMenu = false"
-            class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <X class="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        <!-- User Info -->
-        <div class="p-4 bg-gradient-to-br from-parentPrimary/5 to-parentPrimary/10 border-b border-gray-100">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-full bg-parentPrimary text-white flex items-center justify-center font-semibold text-lg">
-              {{ userInitials }}
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-gray-900 truncate">{{ userDisplayName }}</h3>
-              <p class="text-xs text-gray-500 truncate">{{ user?.email }}</p>
-            </div>
+          <div class="flex flex-col">
+             <span class="text-2xl font-bold text-gray-900 tracking-tighter leading-none mb-0.5">Errandr</span>
+             <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">Your Campus Companion</span>
           </div>
         </div>
         
-        <!-- Mobile Navigation -->
-        <nav class="p-4 space-y-1 max-h-[calc(100vh-240px)] overflow-y-auto">
+        <!-- Navigation -->
+        <nav class="flex-1 space-y-2 relative z-10">
           <NuxtLink
             v-for="item in navItems"
             :key="item.path"
             :to="item.path"
-            class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all"
+            class="flex items-center px-6 py-4 text-[11px] font-bold uppercase tracking-widest rounded-2xl transition-all group/nav relative overflow-hidden"
             :class="isActive(item.path) 
-              ? 'bg-parentPrimary text-white shadow-sm' 
-              : 'text-gray-700 hover:bg-gray-50 hover:text-parentPrimary'"
-            @click="showMobileMenu = false"
+              ? 'bg-gray-900 text-white shadow-md shadow-black/10' 
+              : 'text-gray-400 hover:text-gray-900 hover:bg-white/50'"
           >
-            <component :is="item.icon" class="w-5 h-5 mr-3 flex-shrink-0" />
+            <component :is="item.icon" class="w-5 h-5 mr-4 transition-transform group-hover/nav:scale-110" />
             {{ item.label }}
+            <div v-if="isActive(item.path)" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-parentPrimary shadow-[0_0_10px_rgba(6,95,219,0.8)]" />
           </NuxtLink>
         </nav>
 
-        <!-- Mobile Logout -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 bg-white">
+        <!-- Profile Section -->
+        <div class="mt-auto pt-6 border-t border-gray-100 relative z-10">
+          <div @click="router.push('/profile')" class="flex items-center gap-4 p-4 rounded-3xl hover:bg-white/50 transition-all cursor-pointer group/profile">
+             <div class="w-12 h-12 rounded-2xl bg-gray-900 text-white flex items-center justify-center font-bold text-lg shadow-xl group-hover/profile:scale-110 transition-transform text-center">
+               {{ userInitials }}
+             </div>
+             <div class="flex-1 min-w-0">
+                <p class="text-[10px] font-bold text-gray-900 uppercase tracking-tight truncate">{{ userDisplayName }}</p>
+                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest truncate">Student Member</p>
+             </div>
+          </div>
+          
           <button
             @click="handleLogoutClick"
-            class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all"
+            class="mt-4 flex items-center w-full px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-rose-500 hover:bg-rose-50/50 rounded-2xl transition-all"
           >
-            <LogOut class="w-5 h-5 mr-3" />
-            Logout
+            <LogOut class="w-4 h-4 mr-4" />
+            Log Out
           </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="lg:hidden bg-white/70 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-40 w-full animate-fade-in shadow-sm">
+      <div class="flex items-center justify-between px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-xl">
+            <ShoppingBag class="w-5 h-5" />
+          </div>
+          <span class="text-xl font-bold text-gray-900 tracking-tighter uppercase">Errandr</span>
+        </div>
+        <button
+          @click="showMobileMenu = !showMobileMenu"
+          class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-white transition-all"
+        >
+          <Menu class="w-5 h-5 text-gray-900" />
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Panel -->
+    <Transition name="slide">
+      <aside
+        v-if="showMobileMenu"
+        class="lg:hidden w-80 h-full fixed left-0 top-0 z-50 animate-fade-in px-4 py-4"
+      >
+        <div class="h-full bg-white rounded-3xl flex flex-col p-8 overflow-hidden shadow-2xl shadow-black/20">
+          <!-- Mobile Header -->
+          <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white text-lg shadow-xl">
+                 <ShoppingBag class="w-5 h-5" />
+              </div>
+              <span class="font-bold text-gray-900 uppercase tracking-tighter">Errandr</span>
+            </div>
+            <button
+              @click="showMobileMenu = false"
+              class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100"
+            >
+              <X class="w-5 h-5 text-gray-900" />
+            </button>
+          </div>
+
+          <!-- Mobile Nav -->
+          <nav class="flex-1 space-y-3 pb-20">
+            <NuxtLink
+              v-for="item in navItems"
+              :key="item.path"
+              :to="item.path"
+              class="flex items-center px-6 py-5 text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-all"
+              :class="isActive(item.path) 
+                ? 'bg-gray-900 text-white shadow-2xl' 
+                : 'text-gray-400 hover:bg-gray-50'"
+              @click="showMobileMenu = false"
+            >
+              <component :is="item.icon" class="w-5 h-5 mr-4" />
+              {{ item.label }}
+            </NuxtLink>
+          </nav>
+
+          <!-- Mobile Exit -->
+          <div class="mt-auto space-y-4">
+             <button
+              @click="handleLogoutClick"
+              class="flex items-center justify-center w-full px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-red-500 bg-red-50/50 rounded-2xl"
+            >
+              <LogOut class="w-4 h-4 mr-3" />
+              Log Out
+            </button>
+          </div>
         </div>
       </aside>
     </Transition>
 
     <!-- Main Content -->
-    <main class="flex-1 lg:ml-64">
-      <!-- Dashboard Header -->
-      <div class="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm hidden lg:block">
-        <div class="px-6 py-1.5">
-          <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-xl font-bold text-gray-900">{{ pageTitle }}</h1>
-              <p class="text-sm text-gray-500">{{ pageDescription }}</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <!-- User Profile -->
-              <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl">
-                <div class="w-10 h-10 rounded-full bg-parentPrimary text-white flex items-center justify-center font-semibold">
-                  {{ userInitials }}
+    <main class="flex-1 lg:ml-80 transition-all duration-700 p-4 lg:p-6 pb-24">
+      <!-- Adaptive Header -->
+      <div class="hidden lg:block mb-8 animate-fade-in">
+        <div class="flex items-center justify-between bg-white/50 backdrop-blur-xl rounded-3xl px-10 py-6 border border-white/50 shadow-sm">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tighter uppercase leading-none mb-1 font-display text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-parentPrimary to-indigo-600">{{ pageTitle }}</h1>
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ pageDescription }}</p>
+          </div>
+          <div class="flex items-center gap-6">
+             <div class="flex flex-col items-end">
+                <span class="text-[9px] font-bold text-gray-300 uppercase tracking-widest mb-1">Errandr Status</span>
+                <div class="flex items-center gap-2 px-4 py-2 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
+                   <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                   <span class="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">All Systems Go</span>
                 </div>
-                <div class="text-left">
-                  <p class="text-sm font-semibold text-gray-900">{{ userDisplayName }}</p>
-                  <p class="text-xs text-gray-500">{{ user?.email }}</p>
-                </div>
-              </div>
-            </div>
+             </div>
           </div>
         </div>
       </div>
 
-      <!-- Page Content -->
-      <div class="bg-white">
+      <!-- Live Workspace -->
+      <div class="rounded-3xl overflow-hidden min-h-[calc(100vh-12rem)] relative">
         <slot />
       </div>
     </main>
@@ -195,10 +190,10 @@
 
         <!-- Content -->
         <div class="space-y-1">
-          <h3 class="text-xl font-semibold text-gray-900">
+          <h3 class="text-xl font-bold text-gray-900">
             Leaving already?
           </h3>
-          <p class="text-sm text-gray-600 leading-relaxed">
+          <p class="text-sm text-gray-600 leading-relaxed font-bold">
             You’ll be signed out of your account.  
             Don’t worry — your Errandr data will be waiting for you ✨
           </p>
@@ -208,14 +203,14 @@
         <div class="flex gap-3 w-full pt-2">
           <button
             @click="logoutModalOpen = false"
-            class="w-full px-4 py-3 rounded-full text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+            class="w-full px-4 py-3 rounded-full text-sm font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
           >
             Stay logged in
           </button>
 
           <button
             @click="confirmLogout"
-            class="w-full px-4 py-3 rounded-full text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 transition-colors"
+            class="w-full px-4 py-3 rounded-full text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 transition-colors"
           >
             Log out
           </button>
@@ -245,7 +240,7 @@ import {
 
 const route = useRoute()
 const router = useRouter()
-const { user, logOut } = useUser()
+const { user } = useUser()
 const showMobileMenu = ref(false)
 const logoutModalOpen = ref(false)
 
@@ -265,8 +260,8 @@ const pageTitles: Record<string, { title: string; description: string }> = {
   '/profile': { title: 'My Profile', description: 'Manage your Errandr account' }
 }
 
-const pageTitle = computed(() => pageTitles[route.path]?.title || 'Student Dashboard')
-const pageDescription = computed(() => pageTitles[route.path]?.description || 'Errandr Student Portal')
+const pageTitle = computed(() => pageTitles[route.path]?.title || 'Dashboard')
+const pageDescription = computed(() => pageTitles[route.path]?.description || 'Errandr Companion')
 
 const userDisplayName = computed(() => {
   if (!user.value) return 'Student'
@@ -299,28 +294,11 @@ watch(() => route.path, () => showMobileMenu.value = false)
 </script>
 
 <style scoped>
-.overlay-enter-active,
-.overlay-leave-active {
-  transition: opacity 0.25s ease;
+.glass-effect {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
-
-.overlay-enter-from,
-.overlay-leave-to {
-  opacity: 0;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateX(-100%);
-}
-</style>
-
-<style scoped>
 .overlay-enter-active,
 .overlay-leave-active {
   transition: opacity 0.25s ease;

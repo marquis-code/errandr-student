@@ -40,19 +40,19 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div class="max-w-2xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-black uppercase tracking-widest mb-6 shadow-sm">
               <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
               Live on Campus
             </div>
-            <h1 class="text-5xl lg:text-7xl font-black tracking-tighter leading-[1.1] mb-6 text-gray-900">
-              Craving it? <br />
+            <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1] mb-6 text-gray-900 uppercase">
+              CRAVING IT? <br />
               <span class="text-parentPrimary relative inline-block">
-                We'll bring it.
-                <svg class="absolute w-full h-4 -bottom-1 left-0 text-amber-400 opacity-60" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q50 20 100 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+                WE'LL BRING IT.
+                <svg class="absolute w-full h-4 -bottom-2 left-0 text-amber-400 opacity-60" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q50 20 100 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
               </span>
             </h1>
-            <p class="text-xl text-gray-500 font-medium mb-10 leading-relaxed max-w-lg">
-              The fastest food delivery for students. From your favorite campus restaurants straight to your hostel door in minutes.
+            <p class="text-lg lg:text-xl text-gray-500 font-medium mb-10 leading-relaxed max-w-lg">
+              The fastest food delivery for students. From your favorite campus restaurants straight to your door in minutes.
             </p>
             
             <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -63,16 +63,16 @@
               </NuxtLink>
               <a href="#how-it-works" class="w-full sm:w-auto px-8 py-4 bg-white border border-gray-200 text-gray-700 rounded-2xl font-bold text-lg shadow-sm hover:border-parentPrimary/30 hover:bg-gray-50 transition-all text-center flex items-center justify-center gap-2">
                 <PlayCircle class="w-5 h-5 text-gray-400" />
-                See How It Works
+                How it works
               </a>
             </div>
             
             <div class="mt-12 flex items-center gap-4 pt-8 border-t border-gray-100">
               <div class="flex -space-x-4">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
+                <img src="https://images.unsplash.com/photo-1531123414780-f74242c2b052?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
+                <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
+                <img src="https://images.unsplash.com/photo-1507152832244-10d45c7eda57?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
                 <div class="w-12 h-12 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 shadow-sm">+2k</div>
               </div>
               <p class="text-sm font-semibold text-gray-500">Trusted by over 2,000+ students daily</p>
@@ -81,24 +81,24 @@
           
           <div class="relative hidden py-10 lg:block">
              <div class="relative z-10">
-                <img src="https://images.unsplash.com/photo-1543362906-acfc16c67564?w=800&h=1000&fit=crop" alt="Premium Food Delivery" class="rounded-[3rem] shadow-2xl object-cover h-[600px] w-full border-8 border-white transform rotate-1 hover:rotate-0 transition-transform duration-700" />
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=1000&fit=crop" alt="Students using Errandr" class="rounded-3xl lg:rounded-[3rem] shadow-xl md:shadow-lg object-cover h-[600px] w-full transform rotate-1 hover:rotate-0 transition-transform duration-700" />
                 
                 <!-- Floating Card 1 -->
-                <div class="absolute -left-12 top-20 bg-white p-4 rounded-3xl shadow-xl border border-gray-100 flex items-center gap-4 animate-bounce" style="animation-duration: 3.5s;">
-                  <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-                    <Clock class="w-6 h-6" />
+                <div class="absolute -left-8 top-16 bg-white p-4 pr-6 rounded-2xl md:rounded-3xl shadow-lg border border-gray-100 flex items-center gap-4 animate-bounce" style="animation-duration: 3.5s;">
+                  <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                    <Clock class="w-5 h-5" />
                   </div>
                   <div>
-                    <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Arriving In</p>
-                    <p class="text-xl font-black text-gray-900 tracking-tight">12 mins</p>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Arriving In</p>
+                    <p class="text-lg font-black text-gray-900 tracking-tight leading-none mt-0.5">12 mins</p>
                   </div>
                 </div>
 
                 <!-- Floating Card 2 -->
-                <div class="absolute -right-8 bottom-32 bg-white p-4 rounded-3xl shadow-xl border border-gray-100 flex items-center gap-4 animate-bounce" style="animation-duration: 4.2s; animation-delay: 1s;">
-                  <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=100&h=100&fit=crop" class="w-14 h-14 rounded-2xl object-cover" />
+                <div class="absolute -right-8 bottom-32 bg-white p-4 pr-6 rounded-3xl shadow-xl border border-gray-100 flex items-center gap-4 animate-bounce" style="animation-duration: 4.2s; animation-delay: 1s;">
+                  <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=100&h=100&fit=crop" class="w-12 h-12 rounded-xl object-cover" />
                   <div>
-                    <p class="font-bold text-gray-900 text-sm">Spicy Pepperoni Pizza</p>
+                    <p class="font-bold text-gray-900 text-sm leading-tight">Spicy Pepperoni Pizza</p>
                     <div class="flex items-center gap-1 mt-1 text-amber-400">
                       <Star class="w-3 h-3 fill-current" />
                       <Star class="w-3 h-3 fill-current" />
@@ -107,22 +107,25 @@
                       <Star class="w-3 h-3 fill-current" />
                     </div>
                   </div>
-                </div>
-             </div>
-          </div>
+            </div>
+            </div>
         </div>
+      </div>
       </div>
     </section>
 
+    <!-- Vendor Spotlight Marquee -->
+    <LandingVendorMarquee />
+
     <!-- Interactive Carousel: Featured Vendors -->
-    <section id="featured" class="py-24 bg-white overflow-hidden border-t border-gray-100">
+    <section id="featured" class="py-16 lg:py-24 bg-white overflow-hidden border-t border-gray-100">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div class="flex items-end justify-between">
           <div>
-            <div class="inline-flex items-center gap-2 text-parentPrimary font-bold text-sm tracking-widest uppercase mb-3">
+            <div class="inline-flex items-center gap-2 text-parentPrimary font-bold text-sm uppercase mb-3 text-center">
               <Store class="w-4 h-4" /> Top Rated
             </div>
-            <h2 class="text-4xl font-black text-gray-900 tracking-tight">Campus Favorites</h2>
+            <h2 class="text-4xl font-bold text-gray-900 tracking-tight">Campus Favorites</h2>
           </div>
           <div class="hidden sm:flex gap-2">
             <button @click="scrollCarousel('left', 'vendor-carousel')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:border-parentPrimary transition-colors text-gray-600">
@@ -140,34 +143,239 @@
         <div id="vendor-carousel" class="flex gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div v-for="vendor in vendors" :key="vendor.id" class="snap-start flex-none w-[280px] sm:w-[320px] group cursor-pointer relative">
             <div class="relative h-[220px] w-full rounded-3xl overflow-hidden mb-4 shadow-sm border border-gray-100">
-              <img :src="vendor.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Vendor Cover" />
-              <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent"></div>
+              <img :src="vendor.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80" alt="Vendor Cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-transparent to-transparent"></div>
+              
+              <!-- Letter-based Logo Crafting -->
+              <div class="absolute top-4 left-4">
+                 <div :class="`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold text-white shadow-xl ${vendor.color}`">
+                    {{ getInitials(vendor.name) }}
+                 </div>
+              </div>
+
               <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-xs font-bold border border-white/30 truncate max-w-[120px]">
+                <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-bold border border-white/30 truncate max-w-[120px]">
                   {{ vendor.category }}
                 </span>
-                <span class="flex items-center gap-1 bg-white rounded-full px-2 py-1 text-xs font-bold text-gray-900 shadow-lg">
+                <span class="flex items-center gap-1 bg-white rounded-full px-2 py-1 text-[10px] font-bold text-gray-900 shadow-lg">
                   <Star class="w-3 h-3 text-amber-400 fill-current" /> {{ vendor.rating }}
                 </span>
               </div>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-1 group-hover:text-parentPrimary transition-colors">{{ vendor.name }}</h3>
-            <div class="flex items-center gap-4 text-sm text-gray-500 font-medium">
-              <span class="flex items-center gap-1"><Clock class="w-4 h-4" /> {{ vendor.time }}</span>
-              <span class="flex items-center gap-1"><MapPin class="w-4 h-4" /> {{ vendor.distance }}</span>
+            <h3 class="text-xl font-bold text-gray-900 mb-1 group-hover:text-parentPrimary transition-colors tracking-tight">{{ vendor.name }}</h3>
+            <div class="flex items-center gap-4 text-[11px] font-bold text-gray-400 tracking-tight">
+              <span class="flex items-center gap-1"><Clock class="w-3 h-3" /> {{ vendor.time }}</span>
+              <span class="flex items-center gap-1"><MapPin class="w-3 h-3" /> {{ vendor.distance }}</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- UI Feature: Meal Planner -->
+    <section class="py-16 lg:py-24 bg-gray-900 relative overflow-hidden">
+       <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 30px 30px;"></div>
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+             <div class="order-2 lg:order-1">
+                <div class="relative">
+                   <div class="absolute -inset-4 bg-parentPrimary/20 blur-3xl rounded-full"></div>
+                   <div class="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-3xl md:rounded-[3rem] p-6 lg:p-8 shadow-xl">
+                      <div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+                         <div class="space-y-1">
+                            <h4 class="text-white font-bold text-xl">Meal Planner</h4>
+                            <p class="text-parentPrimary text-[10px] font-bold">Plan your budget</p>
+                         </div>
+                         <Repeat class="w-6 h-6 text-parentPrimary animate-spin-slow" />
+                      </div>
+                      <div class="space-y-4">
+                         <div v-for="i in 3" :key="i" class="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+                            <div class="flex items-center gap-4">
+                               <div class="w-10 h-10 rounded-xl bg-parentPrimary/10 flex items-center justify-center text-parentPrimary font-bold">M{{i}}</div>
+                               <div>
+                                  <p class="text-white text-xs font-bold">Breakfast Planned</p>
+                                  <p class="text-gray-500 text-[9px] uppercase font-bold">Vendor: Mavise + Tasty Delight</p>
+                               </div>
+                            </div>
+                            <div class="text-right">
+                               <p class="text-parentPrimary font-bold text-xs">₦1,250</p>
+                               <p class="text-emerald-500 text-[8px] font-bold uppercase">Optimized</p>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+             <div class="order-1 lg:order-2 space-y-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-xs font-bold">
+                   Free Tool
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-none">
+                   Plan your meal. <br />Manage your <span class="text-parentPrimary">funds.</span>
+                </h2>
+                <p class="text-gray-400 text-lg font-bold leading-relaxed tracking-tight">
+                   The meal planner helps you organize your weekly food around campus vendors while maintaining budget control. It's unique, free, and built for students.
+                </p>
+                <div class="pt-4">
+                   <NuxtLink to="/meal-planner" class="px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-parentPrimary hover:text-white transition-all shadow-xl">Start planning Now &rarr;</NuxtLink>
+                </div>
+             </div>
+          </div>
+       </div>
+    </section>
+
+    <!-- UI Feature: Custom Errands -->
+    <section class="py-16 lg:py-24 bg-white relative overflow-hidden">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+             <div class="space-y-6 lg:space-y-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold">
+                   Request Any Errand
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-none">
+                   Any item. <br />Any <span class="text-parentPrimary">location.</span>
+                </h2>
+                <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight">
+                   Not just food. Send an Errandr to your hostel to pick up items, deliver docs to class, or handle any request from Point A to Point B.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                   <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
+                      <div class="w-2 h-2 rounded-full bg-parentPrimary"></div>
+                      <span class="text-xs font-bold text-gray-400">Hostel Pickups</span>
+                   </div>
+                   <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
+                      <div class="w-2 h-2 rounded-full bg-parentPrimary"></div>
+                      <span class="text-xs font-bold text-gray-400">Library Drops</span>
+                   </div>
+                </div>
+                <div class="pt-4">
+                   <NuxtLink to="/errands/custom" class="px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-sm hover:bg-parentPrimary transition-all shadow-xl">Request an Errand &rarr;</NuxtLink>
+                </div>
+             </div>
+             <div class="relative hidden sm:block">
+                <div class="absolute -inset-10 bg-blue-100/50 blur-[100px] rounded-full"></div>
+                <img src="https://images.unsplash.com/photo-1531123897727-8f129e16fd3c?w=1000&h=800&fit=crop" class="relative z-10 rounded-3xl lg:rounded-[3rem] shadow-xl border-4 md:border-8 border-white object-cover" />
+                <div class="absolute -bottom-8 -left-8 bg-white p-5 lg:p-6 rounded-2xl lg:rounded-[2.5rem] shadow-xl border border-gray-50 max-w-[240px] z-20 animate-float">
+                   <div class="flex items-center gap-4 mb-4">
+                      <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">✓</div>
+                      <p class="text-xs font-bold text-gray-900">Errandr on the way</p>
+                   </div>
+                   <p class="text-[10px] font-bold text-gray-400 leading-relaxed uppercase">Assigned to: Ade (Student Errandr)</p>
+                </div>
+             </div>
+          </div>
+       </div>
+    </section>
+
+    <!-- Join the Errandr Network -->
+    <section class="py-16 lg:py-24 bg-white relative overflow-hidden">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+             <div class="relative group">
+                <div class="absolute -inset-10 bg-parentPrimary/5 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-1000"></div>
+                <div class="relative z-10 bg-gray-900 rounded-3xl lg:rounded-[4rem] p-8 lg:p-12 overflow-hidden shadow-xl border-b-[8px] lg:border-b-[16px] border-gray-800">
+                   <div class="absolute top-0 right-0 p-8">
+                      <Bike class="w-32 h-32 text-parentPrimary opacity-10 -rotate-12" />
+                   </div>
+                   <div class="space-y-6 relative z-10">
+                      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white text-[10px] font-bold uppercase">
+                         Campus Network
+                      </div>
+                      <h3 class="text-4xl font-bold text-white tracking-tight leading-none">
+                         Help Others. <br /><span class="text-parentPrimary">Earn Extra.</span>
+                      </h3>
+                      <p class="text-gray-400 text-sm font-bold tracking-tight leading-relaxed max-w-sm">
+                         Join Errandr. Deliver food, pick up packages, and bring happiness to your fellow students' doorsteps.
+                      </p>
+                      <div class="pt-4">
+                         <a href="http://errandr.localhost:3000/auth/register" class="inline-flex items-center gap-4 px-10 py-5 bg-white text-gray-900 rounded-2xl font-bold text-sm hover:bg-parentPrimary hover:text-white transition-all shadow-xl">Join to Bring Happiness &rarr;</a>
+                      </div>
+                   </div>
+                </div>
+             </div>
+             <div class="space-y-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-xs font-bold">
+                   Student Program
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-none">
+                   Your Hub. <br />Your <span class="text-parentPrimary">Side Hustle.</span>
+                </h2>
+                <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight">
+                   Errandr empowers you to manage deliveries for your peers, making extra cash while helping the campus grow.
+                </p>
+                <ul class="space-y-4">
+                   <li v-for="benefit in ['Flexible Hours', 'Instant Payouts', 'Campus-Wide Reach', 'Zero Signup Fees']" :key="benefit" class="flex items-center gap-3">
+                      <div class="w-5 h-5 rounded-full bg-parentPrimary/10 flex items-center justify-center text-parentPrimary">
+                         <Star class="w-3 h-3 fill-current" />
+                      </div>
+                      <span class="text-xs font-bold text-gray-900 uppercase">{{ benefit }}</span>
+                   </li>
+                </ul>
+             </div>
+          </div>
+       </div>
+    </section>
+
+    <!-- Student Business Hub -->
+    <section class="py-16 lg:py-24 bg-gray-50 relative border-t border-gray-100">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="bg-parentPrimary rounded-3xl lg:rounded-[4rem] p-8 md:p-12 lg:p-20 relative overflow-hidden text-center shadow-lg shadow-parentPrimary/20">
+             <div class="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl hidden md:block"></div>
+             <div class="relative z-10 max-w-2xl mx-auto space-y-8">
+                <h2 class="text-4xl md:text-6xl font-bold text-white tracking-tight leading-none">
+                   Student Business? <br /><span class="text-white/60">List it for free.</span>
+                </h2>
+                <p class="text-white/80 text-lg font-bold tracking-tight leading-relaxed">
+                   We support students. Whether you sell hair products, gadgets, or custom shirts, listing on Errandr is 100% free. No hidden fees.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                   <a href="http://vendor.localhost:3000/auth/register" class="px-10 py-5 bg-white text-parentPrimary rounded-2xl font-bold text-sm hover:scale-105 transition-all shadow-xl">Start Selling Now</a>
+                </div>
+             </div>
+          </div>
+       </div>
+    </section>
+
+    <!-- Local Favorites (Outside School) -->
+    <section class="py-16 lg:py-24 bg-white relative overflow-hidden">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+             <div class="space-y-6 lg:space-y-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs font-bold">
+                   City Favorites
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-none">
+                   Craving something <br />from <span class="text-parentPrimary">town?</span>
+                </h2>
+                <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight">
+                   Get your favorite meals from top restaurants outside the campus gate delivered to your hostel. Same fast delivery, same Errandr quality.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                   <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
+                      <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                      <span class="text-xs font-bold text-gray-400">Town Deliveries</span>
+                   </div>
+                   <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
+                      <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                      <span class="text-xs font-bold text-gray-400">Gate Pickups</span>
+                   </div>
+                </div>
+             </div>
+             <div class="relative hidden sm:block">
+                <div class="absolute -inset-10 bg-emerald-100/30 blur-[100px] rounded-full"></div>
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&h=800&fit=crop" class="relative z-10 rounded-3xl lg:rounded-[3rem] shadow-xl border-4 md:border-8 border-white object-cover h-[400px] w-full" />
+             </div>
+          </div>
+       </div>
+    </section>
+
     <!-- How it works -->
     <section id="how-it-works" class="py-24 bg-gray-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-16">
-          <h2 class="text-parentPrimary font-bold tracking-widest uppercase text-sm mb-3">Simple Process</h2>
-          <h3 class="text-4xl font-black text-gray-900 tracking-tight mb-4">From craving to eating in 3 steps</h3>
-          <p class="text-gray-500 font-medium text-lg">We've streamlined the entire process so you can focus on studying (or Netflixing) while we handle the food.</p>
+          <p class="text-parentPrimary font-bold text-sm mb-3">Simple Process</p>
+          <h3 class="text-4xl font-bold text-gray-900 tracking-tight mb-4">Steps to get your meal</h3>
+          <p class="text-gray-500 font-medium text-lg">We've made it easy for you to focus on your studies while we handle the errands.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -188,12 +396,12 @@
       </div>
     </section>
 
-    <!-- Categories Grid (Real Icons) -->
+    <!-- Categories Grid -->
     <section id="categories" class="py-24 overflow-hidden border-t border-gray-100 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-end justify-between mb-12">
           <div>
-            <h2 class="text-4xl font-black text-gray-900 tracking-tight mb-3">Craving Anything Specific?</h2>
+            <h2 class="text-4xl font-bold text-gray-900 tracking-tight mb-3">Craving Anything Specific?</h2>
             <p class="text-gray-500 font-medium text-lg max-w-xl">Explore the most ordered categories on campus today.</p>
           </div>
           <NuxtLink to="/auth/login" class="hidden sm:flex items-center gap-2 text-parentPrimary font-bold hover:gap-3 transition-all px-6 py-3 rounded-xl bg-parentPrimary/5 border border-parentPrimary/10 hover:bg-parentPrimary/10">
@@ -208,8 +416,8 @@
               <div class="absolute inset-0 bg-gray-900/40 group-hover:bg-gray-900/50 transition-colors"></div>
               <div class="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center">
                  <component :is="cat.icon" class="w-8 h-8 mb-3 opacity-90 group-hover:scale-110 transition-transform" />
-                 <h4 class="font-bold text-lg tracking-wide">{{ cat.name }}</h4>
-                 <p class="text-xs text-gray-200 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Explore options &rarr;</p>
+                 <h4 class="font-bold text-lg"> {{ cat.name }}</h4>
+                 <p class="text-xs text-gray-200 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Browse &rarr;</p>
               </div>
             </div>
           </div>
@@ -217,25 +425,28 @@
       </div>
     </section>
 
+    <!-- Student Testimonials -->
+    <LandingTestimonials />
+
     <!-- CTA Section -->
-    <section id="benefits" class="py-24 bg-white relative">
+    <section id="benefits" class="py-16 lg:py-24 bg-white relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-gray-900 rounded-[3rem] p-8 md:p-16 relative overflow-hidden flex flex-col items-center text-center shadow-2xl">
-          <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-parentPrimary/20 rounded-full blur-[100px]"></div>
+        <div class="bg-gray-900 rounded-3xl lg:rounded-[3rem] p-8 lg:p-16 relative overflow-hidden flex flex-col items-center text-center shadow-xl">
+          <div class="absolute -top-40 -right-40 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-parentPrimary/20 rounded-full blur-[100px]"></div>
           <div class="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]"></div>
           
           <div class="relative z-10 max-w-3xl">
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white/10 mb-8 backdrop-blur-md border border-white/20 text-white">
               <Rocket class="w-10 h-10" />
             </div>
-            <h2 class="text-4xl md:text-6xl font-black text-white tracking-tighter mb-6 leading-[1.1]">
+            <h2 class="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6 leading-[1.1]">
               Ready to satisfy your cravings?
             </h2>
             <p class="text-xl text-gray-400 font-medium mb-10 leading-relaxed">
-              Join thousands of students who trust Errandr for their daily meals and essentials. Fast delivery, student-friendly prices.
+              Join thousands of students who trust Errandr for their daily meals and essentials.
             </p>
-            <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-10 py-5 bg-parentPrimary text-white rounded-2xl font-black text-lg shadow-xl shadow-parentPrimary/20 hover:-translate-y-1 hover:shadow-2xl hover:shadow-parentPrimary/30 transition-all">
-              Create Free Account
+            <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-10 py-5 bg-parentPrimary text-white rounded-2xl font-bold text-lg shadow-xl hover:-translate-y-1 transition-all">
+              Create Errandr Account
             </NuxtLink>
             <p class="mt-6 text-sm text-gray-500 font-medium">Already have an account? <NuxtLink to="/auth/login" class="text-white hover:underline underline-offset-4 cursor-pointer">Log in here</NuxtLink></p>
           </div>
@@ -286,8 +497,8 @@
           <div>
             <h4 class="font-bold text-gray-900 mb-6 uppercase tracking-wider text-xs">Join Us</h4>
             <ul class="space-y-4 text-sm font-medium text-gray-500">
-              <li><a href="http://vendor.localhost:3000" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Store class="w-4 h-4" /> Open a Store</a></li>
-              <li><a href="http://errander.localhost:3000" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Bike class="w-4 h-4" /> Become a Rider</a></li>
+              <li><a href="http://vendor.localhost:3000" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Store class="w-4 h-4" /> List Your Business (Free)</a></li>
+              <li><a href="http://errandr.localhost:3000" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Bike class="w-4 h-4" /> Become an Errandr</a></li>
             </ul>
           </div>
         </div>
@@ -313,7 +524,7 @@ import {
   LogIn, ShoppingBag, Utensils, PlayCircle,
   Clock, MapPin, Star, Store, Bike, ChevronLeft, ChevronRight,
   ShieldCheck, CreditCard, Rocket,
-  Pizza, Flame, Beef, Coffee
+  Pizza, Flame, Beef, Coffee, Menu, X, Navigation, Repeat
 } from 'lucide-vue-next'
 
 definePageMeta({
@@ -351,17 +562,25 @@ const scrollCarousel = (direction: 'left' | 'right', id: string) => {
 
 // Data
 const vendors = [
-  { id: 1, name: 'Campus Grill House', category: 'Burger & Fries', rating: '4.8', distance: '1.2km', time: '15-20 min', image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&h=400&fit=crop' },
-  { id: 2, name: 'Spice Route Eats', category: 'Local Dishes', rating: '4.6', distance: '0.8km', time: '10-15 min', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=400&fit=crop' },
-  { id: 3, name: 'Mama\'s Kitchen', category: 'Rice & Stew', rating: '4.9', distance: '2.0km', time: '20-25 min', image: 'https://images.unsplash.com/photo-1543352634-99a5d50ae78e?w=600&h=400&fit=crop' },
-  { id: 4, name: 'Fresh Bites Bakery', category: 'Pastries', rating: '4.7', distance: '0.5km', time: '10 min', image: 'https://images.unsplash.com/photo-1509358271058-acd22ccec36b?w=600&h=400&fit=crop' },
-  { id: 5, name: 'Pizza Hub', category: 'Fast Food', rating: '4.5', distance: '1.5km', time: '25-30 min', image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop' },
+  { id: 1, name: 'Mavise', category: 'Local Dishes', rating: '4.9', distance: '0.4km', time: '10-15 min', image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop', color: 'bg-indigo-600' },
+  { id: 2, name: 'Iya Chidera', category: 'Nigerian Kitchen', rating: '4.8', distance: '0.6km', time: '12-18 min', image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&h=400&fit=crop', color: 'bg-rose-500' },
+  { id: 3, name: 'Smoothie Daddy', category: 'Fresh Juices', rating: '4.9', distance: '0.3km', time: '5-10 min', image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600&h=400&fit=crop', color: 'bg-emerald-500' },
+  { id: 4, name: 'Aunty Iyabo', category: 'Home Style Cook', rating: '4.7', distance: '0.8km', time: '15-20 min', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=400&fit=crop', color: 'bg-orange-500' },
+  { id: 5, name: 'Tasty Delight', category: 'Pastries & Snacks', rating: '4.6', distance: '0.5km', time: '8-12 min', image: 'https://images.unsplash.com/photo-1509358271058-acd22ccec36b?w=600&h=400&fit=crop', color: 'bg-parentPrimary' },
+  { id: 6, name: 'Chikoke', category: 'Grilled Specialties', rating: '4.5', distance: '0.7km', time: '20-25 min', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=400&fit=crop', color: 'bg-red-600' },
+  { id: 7, name: 'Iya Warris', category: 'Traditional Soups', rating: '4.7', distance: '0.9km', time: '15-18 min', image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop', color: 'bg-blue-600' },
+  { id: 8, name: 'Just Spices', category: 'Spicy Delicacies', rating: '4.6', distance: '1.1km', time: '20-30 min', image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&h=400&fit=crop', color: 'bg-amber-600' },
+  { id: 9, name: 'Iya Monisca', category: 'Afro-Fusion', rating: '4.8', distance: '1.2km', time: '25-30 min', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop', color: 'bg-purple-600' },
 ]
 
+const getInitials = (name: string) => {
+  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+};
+
 const steps = [
-  { icon: Store, title: 'Browse Menus', description: 'Explore local campus restaurants and select your favorite meals or groceries.' },
-  { icon: CreditCard, title: 'Checkout Securely', description: 'Pay securely using your preferred method. Student discounts are automatically applied.' },
-  { icon: Bike, title: 'Fast Delivery', description: 'A fellow student drops it off right at your hostel door in minutes.' }
+  { icon: Store, title: 'Browse Menus', description: 'Explore local campus restaurants and selection from your familiar vendors like Mavise or Iya Chidera.' },
+  { icon: CreditCard, title: 'Plan Meals', description: 'Use our Meal Planner to manage your budget and ensure a balanced diet across campus.' },
+  { icon: Bike, title: 'Fast Delivery', description: 'A fellow student handles the errand, dropping it off directly at your location.' }
 ]
 
 const categories = [
@@ -373,13 +592,25 @@ const categories = [
 </script>
 
 <style scoped>
-/* Hide scrollbar for Chrome, Safari and Opera */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
-/* Hide scrollbar for IE, Edge and Firefox */
 .hide-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+.animate-spin-slow {
+  animation: spin 8s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>

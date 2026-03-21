@@ -40,7 +40,7 @@
               <div 
                 v-if="isOpen" 
                 :style="dropdownStyle"
-                class="fixed w-80 bg-white border-[0.5px] border-gray-25 rounded-lg shadow-2xl max-h-96 flex flex-col"
+                class="fixed w-80 bg-white border-[0.5px] border-gray-25 rounded-lg shadow-lg max-h-96 flex flex-col"
                 style="z-index: 9999;"
               >
               <!-- Search -->

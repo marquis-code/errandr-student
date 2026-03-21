@@ -1,102 +1,133 @@
 <template>
-  <div class="space-y-6 pb-20 md:pb-0" v-if="vendor">
-    <!-- Vendor Header -->
-    <div class="relative rounded-3xl overflow-hidden">
-      <img :src="vendor.banner || '/placeholder-vendor.jpg'" class="w-full h-56 object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-      <div class="absolute bottom-0 left-0 right-0 p-6">
-        <div class="flex items-end gap-4">
-          <img :src="vendor.logo || '/placeholder-logo.jpg'" class="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-xl" />
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-1">
-              <h1 class="text-2xl font-bold text-white">{{ vendor.storeName }}</h1>
-              <span v-if="vendor.isOnline" class="badge-green text-xs"><span class="status-online mr-1" /> Open</span>
-              <span v-else class="badge-red text-xs">Closed</span>
-              <span v-if="vendor.isStudentBusiness" class="badge bg-accent-500/20 text-accent-400 text-xs flex items-center gap-1">
-                🎓 Student Business
-              </span>
+  <div class="space-y-12 pb-32 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary" v-if="vendor">
+    <!-- Vendor Hero Header -->
+    <div class="relative rounded-3xl md:rounded-[4rem] overflow-hidden group shadow-lg border-b-[8px] md:border-b-[12px] border-gray-900 mt-8">
+      <img :src="vendor.banner || 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=1200&q=80'" class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-1000" />
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
+      
+      <div class="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+        <div class="flex flex-col md:flex-row items-end gap-10">
+          <div class="relative w-32 h-32 p-3 bg-white rounded-[2.5rem] shadow-lg transform -rotate-3 group-hover:rotate-0 transition-all duration-700">
+             <img :src="vendor.logo || 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=200&q=80'" class="w-full h-full rounded-[2rem] object-cover" />
+          </div>
+          
+          <div class="flex-1 space-y-3">
+            <div class="flex flex-wrap items-center gap-4">
+              <h1 class="text-4xl md:text-6xl font-bold text-white tracking-tight leading-none">{{ vendor.storeName }}</h1>
+              <div class="flex gap-2">
+                <span v-if="vendor.isOnline" class="px-4 py-1.5 bg-emerald-500 text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-lg flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Open Now
+                </span>
+                <span v-else class="px-4 py-1.5 bg-rose-500 text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-lg">Closed</span>
+                <span v-if="vendor.isStudentBusiness" class="px-4 py-1.5 bg-parentPrimary text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-lg">
+                  🎓 Student Business
+                </span>
+              </div>
             </div>
-            <p class="text-dark-300 text-sm">{{ vendor.description }}</p>
+            <p class="text-gray-300 text-sm font-bold tracking-tight max-w-2xl leading-relaxed">{{ vendor.description }}</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Vendor Info -->
-    <div class="flex items-center gap-6 bg-white border border-dark-100 shadow-sm p-4 rounded-2xl">
-      <div class="text-center">
-        <p class="text-dark-900 font-bold">⭐ {{ vendor.rating?.toFixed(1) || 'New' }}</p>
-        <p class="text-xs text-dark-400">Rating</p>
+    <!-- Stats Area -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
+      <div class="bg-white border border-gray-100 shadow-sm p-8 rounded-[2.5rem] text-center group hover:-translate-y-1 transition-all">
+        <p class="text-4xl font-bold text-gray-900 tracking-tighter mb-1 group-hover:text-parentPrimary transition-colors">⭐ {{ vendor.rating?.toFixed(1) || 'NEW' }}</p>
+        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Rating</p>
       </div>
-      <div v-if="vendor.preOrderOnly" class="w-px h-8 bg-dark-100" />
-      <div v-if="vendor.preOrderOnly" class="text-center">
-        <p class="text-accent-400 font-bold">⏰ Pre-order</p>
-        <p class="text-xs text-dark-400">{{ vendor.preOrderLeadTime }}h Lead</p>
+      
+      <div v-if="vendor.preOrderOnly" class="bg-gray-900 p-8 rounded-[2.5rem] text-center border-b-8 border-gray-800">
+        <p class="text-4xl font-bold text-parentPrimary tracking-tighter mb-1">⏰ {{ vendor.preOrderLeadTime }}H</p>
+        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Pre-Order Time</p>
       </div>
-      <div class="w-px h-8 bg-dark-100" />
-      <div class="text-center">
-        <p class="text-dark-900 font-bold">{{ vendor.preparationTime || '15-25' }}m</p>
-        <p class="text-xs text-dark-400">Prep Time</p>
+      
+      <div class="bg-white border border-gray-100 shadow-sm p-8 rounded-[2.5rem] text-center group hover:-translate-y-1 transition-all">
+        <p class="text-4xl font-bold text-gray-900 tracking-tighter mb-1 group-hover:text-parentPrimary transition-colors">{{ vendor.preparationTime || '15-25' }}m</p>
+        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Prep Time</p>
       </div>
-      <div class="w-px h-8 bg-dark-100" />
-      <div class="text-center">
-        <p class="text-dark-900 font-bold">₦{{ vendor.deliveryFee || '150' }}</p>
-        <p class="text-xs text-dark-400">Delivery</p>
+      
+      <div class="bg-white border border-gray-100 shadow-sm p-8 rounded-[2.5rem] text-center group hover:-translate-y-1 transition-all">
+        <p class="text-4xl font-bold text-gray-900 tracking-tighter mb-1 group-hover:text-parentPrimary transition-colors">₦{{ vendor.deliveryFee || '150' }}</p>
+        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Delivery Fee</p>
       </div>
     </div>
 
-    <!-- Products -->
-    <section>
-      <h2 class="section-title">Menu</h2>
-      <div class="space-y-3">
+    <!-- Product Menu -->
+    <section class="px-4 pb-40">
+      <div class="flex items-center justify-between mb-12">
+        <div class="space-y-1">
+          <h2 class="text-3xl font-bold text-gray-900 tracking-tight leading-none">Menu</h2>
+          <p class="text-sm font-bold text-gray-400">Choose from {{ products.length }} items available today.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div
           v-for="product in products"
           :key="product._id"
-          class="glass-card flex gap-4 group p-4"
+          class="bg-white rounded-3xl md:rounded-[3.5rem] border border-gray-100 shadow-sm group hover:shadow-lg transition-all duration-700 p-6 flex gap-8 items-center relative overflow-hidden active:scale-95 cursor-pointer"
+          @click="addToCart(product)"
         >
-          <div class="relative w-24 h-24 flex-shrink-0">
-            <img :src="product.image || '/placeholder-food.jpg'" class="w-full h-full rounded-xl object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-r from-parentPrimary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          
+          <div class="relative w-32 h-32 flex-shrink-0">
+            <img :src="product.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80'" class="w-full h-full rounded-[2.5rem] object-cover shadow-lg border-4 border-white transform group-hover:rotate-6 transition-all duration-700" />
             <button
               @click.stop="toggleFavorite(product._id)"
-              class="absolute top-1 right-1 w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-lg"
-              :class="isFavorited(product._id) ? 'bg-red-500 text-white' : 'bg-dark-950/60 text-white hover:bg-white hover:text-red-500'"
+              class="absolute -top-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-lg backdrop-blur-md z-10"
+              :class="isFavorited(product._id) ? 'bg-rose-500 text-white' : 'bg-white/90 text-gray-400 hover:text-rose-500'"
             >
               <Heart class="w-4 h-4" :fill="isFavorited(product._id) ? 'currentColor' : 'none'" />
             </button>
           </div>
-          <div class="flex-1 min-w-0" @click="addToCart(product)">
-            <h3 class="font-semibold text-dark-900 truncate">{{ product.name }}</h3>
-            <p class="text-sm text-dark-500 line-clamp-2">{{ product.description }}</p>
-            <div class="flex items-center justify-between mt-2">
-              <span class="text-primary-600 font-bold">₦{{ product.price?.toLocaleString() }}</span>
-              <button class="w-8 h-8 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition-all">
-                <Plus class="w-4 h-4" />
-              </button>
+
+          <div class="flex-1 min-w-0 space-y-2 relative z-10">
+            <div class="space-y-1">
+               <h3 class="text-2xl font-bold text-gray-900 tracking-tight leading-none truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h3>
+               <p class="text-xs font-bold text-gray-400 line-clamp-1 italic">{{ product.description }}</p>
+            </div>
+            
+            <div class="flex items-center justify-between pt-4">
+              <span class="text-3xl font-bold text-gray-900 tracking-tight leading-none">₦{{ product.price?.toLocaleString() }}</span>
+              <div class="w-12 h-12 rounded-2xl bg-gray-900 text-white flex items-center justify-center group-hover:bg-parentPrimary group-hover:scale-110 transition-all shadow-lg">
+                <Plus class="w-6 h-6" />
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Floating Cart Button -->
-    <div v-if="itemCount > 0" class="fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-96 z-40 animate-slide-up">
-      <NuxtLink to="/cart" class="btn-primary w-full flex items-center justify-between py-4">
-        <span class="flex items-center gap-2">
-          <span class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">
-            {{ itemCount }}
-          </span>
-          View Cart
-        </span>
-        <span class="font-bold">₦{{ total?.toLocaleString() }}</span>
+    <!-- Sticky Cart Bar -->
+    <div v-if="itemCount > 0" class="fixed bottom-12 left-1/2 -translate-x-1/2 w-[95%] max-w-lg z-50 animate-fade-in">
+      <NuxtLink to="/cart" class="bg-gray-900 p-4 rounded-[2.5rem] flex items-center justify-between shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border-b-8 border-gray-800 group hover:scale-[1.02] transition-all">
+        <div class="flex items-center gap-6">
+          <div class="w-16 h-16 bg-parentPrimary rounded-2xl flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-all">
+            <span class="text-2xl font-bold text-white">{{ itemCount }}</span>
+          </div>
+          <div class="text-left">
+            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Your Order</p>
+            <p class="text-white font-bold uppercase tracking-widest text-xs">View My Cart</p>
+          </div>
+        </div>
+        <div class="text-right pr-6">
+           <p class="text-[9px] font-bold text-parentPrimary uppercase tracking-widest mb-1">Total</p>
+           <p class="text-2xl font-bold text-white tracking-tight leading-none">₦{{ total?.toLocaleString() }}</p>
+        </div>
       </NuxtLink>
     </div>
   </div>
 
   <!-- Loading State -->
-  <div v-else class="space-y-4">
-    <div class="bg-white border border-dark-100 shadow-sm animate-pulse h-56 rounded-3xl" />
-    <div class="bg-white border border-dark-100 animate-pulse h-20 rounded-2xl" />
-    <div v-for="i in 4" :key="i" class="bg-white border border-dark-100 animate-pulse h-28 rounded-2xl" />
+  <div v-else class="space-y-12 px-4 py-12">
+    <div class="bg-gray-50 border border-gray-100 shadow-sm animate-pulse h-80 rounded-3xl md:rounded-[4rem]" />
+    <div class="grid grid-cols-4 gap-6">
+       <div v-for="i in 4" :key="i" class="bg-gray-50 border border-gray-100 animate-pulse h-32 rounded-[2.5rem]" />
+    </div>
+    <div class="grid grid-cols-2 gap-8">
+       <div v-for="i in 4" :key="i" class="bg-gray-50 border border-gray-100 animate-pulse h-40 rounded-3xl md:rounded-[3.5rem]" />
+    </div>
   </div>
 </template>
 
@@ -105,9 +136,13 @@ import { Heart, Plus } from 'lucide-vue-next';
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useHead } from '#imports';
 import { useCart } from '@/composables/modules/cart';
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+
+definePageMeta({
+  layout: 'student'
+})
 
 const route = useRoute();
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 const { addItem, itemCount, total } = useCart();
 
 const vendor = ref<any>(null);
@@ -158,3 +193,13 @@ onMounted(async () => {
 
 useHead({ title: computed(() => vendor.value?.storeName ? `${vendor.value.storeName} - Errandr` : 'Vendor - Errandr') });
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>

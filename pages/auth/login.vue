@@ -4,7 +4,7 @@
     <div class="hidden md:block w-1/2 relative overflow-hidden">
       <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&h=1600&fit=crop" alt="Nigerian university students" class="absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-b from-[#065fdb]/80 via-[#065fdb]/70 to-black/80"></div>
-      <div class="relative z-10 flex flex-col justify-between h-full p-12 lg:p-16">
+      <div class="relative z-10 flex flex-col justify-between h-full p-6 md:p-12 lg:p-16">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
             <ShoppingBag class="w-5 h-5 text-white" />

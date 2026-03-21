@@ -12,7 +12,7 @@
       </Transition>
 
       <!-- Drawer panel -->
-      <div class="relative w-full max-w-md h-full bg-white shadow-2xl flex flex-col pointer-events-auto transform transition-transform duration-500 ease-in-out">
+      <div class="relative w-full max-w-md h-full bg-white shadow-lg flex flex-col pointer-events-auto transform transition-transform duration-500 ease-in-out">
         
         <!-- Header area for Close Button -->
         <div class="absolute top-0 right-0 pt-6 pr-6 flex items-center z-10">

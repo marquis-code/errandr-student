@@ -3,6 +3,13 @@ import { defineNuxtConfig } from "nuxt/config";
 export default defineNuxtConfig({
   ssr: false,
 
+  site: {
+    url: 'https://errandr.com',
+    name: 'Errandr',
+    description: 'Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.',
+    defaultLocale: 'en',
+  },
+
   devServer: {
     port: 3003,
     host: 'localhost'
@@ -68,7 +75,7 @@ export default defineNuxtConfig({
     transpile: ["lucide-vue-next"],
   },
 
-  css: [, "/assets/css/main.css", "/assets/font/stylesheet.css"],
+  css: ["/assets/css/main.css", "/assets/font/stylesheet.css"],
 
   modules: [
     "@nuxtjs/tailwindcss",

@@ -20,7 +20,7 @@
     <!-- Expanded Controls Panel -->
     <div
       v-else
-      class="bg-white rounded-2xl shadow-2xl p-4 min-w-[280px] animate-slideIn"
+      class="bg-white rounded-2xl shadow-lg p-4 min-w-[280px] animate-slideIn"
     >
       <!-- Header with Close Button -->
       <div class="flex items-center justify-between mb-4">

@@ -2,59 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
-
+:root {
+  --parent-primary: #065fdb;
+  --parent-primary-rgb: 6, 95, 219;
+  --premium-shadow: 0 20px 50px -12px rgba(6, 95, 219, 0.15);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+}
 
 html,
 body {
   font-family: 'Onest', sans-serif;
+  @apply bg-gray-50 text-gray-900 antialiased selection:bg-parentPrimary/10 selection:text-parentPrimary;
 }
 
 * {
   font-family: 'Onest', sans-serif;
 }
 
-h1 {
+h1, h2, h3, h4, .font-display {
   font-family: 'Onest', sans-serif;
-  font-weight: bold;
+  @apply font-black tracking-tighter uppercase;
 }
 
-/* You can also create utility classes for different weights */
-/* .font-normal {
-  font-weight: 300;
-} */
-
-.bg-white {
-  background-color: white;
+/* Premium Utilities */
+.glass-effect {
+  @apply backdrop-blur-2xl bg-white/70 border border-white/50 shadow-2xl shadow-gray-200/20;
 }
 
-.dark .bg-white {
-  background-color: black;
+.text-gradient {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-parentPrimary to-indigo-600;
 }
 
-/* assets/css/main.css */
-.bg-custom {
-  background-color: #f0f0f0;
-  /* Light mode background */
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dark .bg-custom {
-  background-color: #1a202c;
-  /* Dark mode background */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
+.animate-bounce-subtle {
+  animation: bounceSubtle 3s ease-in-out infinite;
+}
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Hide scrollbar */
 .hide-scrollbar {
   scrollbar-width: none;
-  /* Firefox */
   -ms-overflow-style: none;
-  /* IE/Edge */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
-  /* Chrome/Safari */
 }
 
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-200 rounded-full hover:bg-gray-300 transition-colors;
+}
+
+/* Forms */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -65,53 +94,15 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-
-.custom-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  width: 1.25rem;
-  /* Reduced from 2.5rem */
-  height: 1.25rem;
-  /* Reduced from 2.5rem */
-  border: 2px solid #d1d5db;
-  border-radius: 0.375rem;
-  /* Reduced from 0.75rem */
-  background-color: white;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease;
+.custom-input {
+  @apply w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.25rem] text-sm font-bold tracking-tight outline-none focus:bg-white focus:border-parentPrimary/30 focus:ring-4 focus:ring-parentPrimary/5 transition-all placeholder:text-gray-300;
 }
 
-.custom-checkbox:checked {
-  background-color: #005967;
-  border-color: #005967;
+.custom-checkbox {
+  @apply appearance-none w-6 h-6 border-2 border-gray-200 rounded-lg bg-white cursor-pointer relative transition-all checked:bg-parentPrimary checked:border-parentPrimary hover:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10;
 }
 
 .custom-checkbox:checked::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
-  width: 5px;
-  /* Increased from 3px */
-  height: 9px;
-  /* Increased from 6px */
-  border: solid white;
-  border-width: 0 2.5px 2.5px 0;
-  /* Increased from 2px */
-}
-
-.custom-checkbox:hover {
-  border-color: #005967;
-}
-
-.custom-checkbox:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-}
-
-.custom-input {
-  @apply w-full px-4 py-3.5 text-sm outline-none focus:border focus:border-[#005967] rounded-xl bg-[#1A1A1B09] focus:bg-white pr-10
+  content: '✓';
+  @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xs font-black shadow-sm;
 }

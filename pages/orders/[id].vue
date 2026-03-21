@@ -1,262 +1,195 @@
 <template>
-  <div class="max-w-3xl mx-auto space-y-8 pb-32" v-if="order">
-    <!-- Order Header -->
-    <div class="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm relative overflow-hidden">
-      <div class="absolute -right-10 -top-10 w-40 h-40 bg-parentPrimary/5 rounded-full blur-3xl" />
-      
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-        <div>
-          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Active Errand</p>
-          <h1 class="text-3xl font-bold text-gray-900 tracking-tight">{{ order.orderNumber }}</h1>
+  <div class="space-y-12 pb-32 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary" v-if="order">
+    <!-- Header -->
+    <div class="bg-gray-900 rounded-3xl md:rounded-[4rem] p-6 lg:p-20 relative overflow-hidden group shadow-lg border-b-[8px] md:border-b-[16px] border-gray-800 mt-8">
+      <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12">
+        <div class="space-y-4">
+           <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white text-[10px] font-bold uppercase tracking-widest">
+              Order ID: {{ order._id?.slice(-8).toUpperCase() }}
+           </div>
+           <h1 class="text-4xl md:text-7xl font-bold text-white tracking-tight leading-none">
+              Order <br /><span class="text-parentPrimary">{{ order.status }}</span>
+           </h1>
+           <p class="text-gray-400 text-lg font-bold leading-relaxed max-w-sm">We're making sure your delivery arrives safely and on time.</p>
         </div>
-        <div :class="getStatusBadge(order.status)" class="px-5 py-2.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest border backdrop-blur-sm self-start">
-          {{ statusEmoji(order.status) }} {{ formatStatus(order.status) }}
-        </div>
-      </div>
-
-      <div class="mt-10 space-y-4 relative z-10">
-        <div class="flex items-center justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">
-           <span>Logistics Progress</span>
-           <span>{{ deliveryProgress }}%</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <div
-            v-for="(step, i) in statusSteps"
-            :key="step"
-            class="flex-1 h-2 rounded-full transition-all duration-700"
-            :class="(currentStepIndex as number) >= i ? 'bg-parentPrimary shadow-sm shadow-parentPrimary/20' : 'bg-gray-100'"
-          />
-        </div>
-      </div>
-
-      <!-- Verification Code -->
-      <div v-if="order.status !== 'delivered' && order.status !== 'cancelled'" class="bg-gray-900 rounded-[2rem] p-6 mt-10 relative overflow-hidden group">
-        <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-parentPrimary/10 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-          <div class="text-center md:text-left">
-            <p class="text-[10px] font-bold text-parentPrimary uppercase tracking-widest mb-1">Delivery Verification Code</p>
-            <p class="text-gray-400 text-xs font-medium max-w-[200px]">Only provide this to your errander once they arrive with your items.</p>
-          </div>
-          <div class="text-4xl font-black text-white tracking-[0.2em] bg-white/5 px-8 py-4 rounded-2xl border border-white/10 shadow-inner group-hover:bg-white/10 transition-colors">
-            {{ order.uniqueCode }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- Errander Info -->
-      <div v-if="order.errander" class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col items-center text-center group">
-        <div class="w-20 h-20 bg-gray-900 rounded-[2rem] flex items-center justify-center text-white text-2xl font-bold shadow-xl mb-6 group-hover:-translate-y-1 transition-transform">
-          {{ order.errander.firstName?.[0] }}{{ order.errander.lastName?.[0] }}
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest italic mb-1">Your Errander</p>
-          <h3 class="font-bold text-gray-900 text-lg tracking-tight">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
-          <p class="text-xs text-gray-500 font-medium mt-1">{{ order.errander.phone }}</p>
-        </div>
-        <div class="flex gap-2 w-full mt-8">
-          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-bold hover:bg-emerald-100 transition-all border border-emerald-100">Call</a>
-          <button @click="router.push(`/chat/${route.params.id}`)" class="flex-1 py-3 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-100 transition-all border border-blue-100">Live Chat</button>
-        </div>
-      </div>
-
-      <!-- ETA & Progress -->
-      <div v-if="isActiveOrder || order.status === 'ready_for_pickup'" class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between group h-full">
-        <div class="flex items-center gap-5">
-          <div class="w-16 h-16 rounded-[1.5rem] bg-parentPrimary/10 text-parentPrimary flex items-center justify-center text-3xl shadow-inner border border-white animate-pulse">
-            🚀
-          </div>
-          <div>
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Estimated Arrival</p>
-            <h2 class="text-4xl font-black text-gray-900 tracking-tighter">{{ etaMinutes }} Mins</h2>
-          </div>
-        </div>
-
-        <div class="mt-auto pt-8">
-           <div class="flex justify-between items-end">
-              <div class="space-y-1">
-                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Status</p>
-                 <p class="text-sm font-bold text-gray-900">{{ formatStatus(order.status) }}</p>
-              </div>
-              <div class="w-24 h-1 bg-gray-100 rounded-full overflow-hidden">
-                 <div class="h-full bg-parentPrimary transition-all duration-1000" :style="{ width: `${deliveryProgress}%` }" />
-              </div>
+        
+        <div class="flex items-center gap-4 bg-white/5 backdrop-blur-3xl p-8 rounded-3xl md:rounded-[3rem] border border-white/10 group-hover:scale-105 transition-all duration-700">
+           <div class="w-20 h-20 bg-parentPrimary rounded-3xl flex items-center justify-center text-white font-bold text-3xl shadow-lg shadow-parentPrimary/30">
+              <Clock class="w-10 h-10" />
+           </div>
+           <div>
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Estimated Time</p>
+              <p class="text-3xl font-bold text-white tracking-tight leading-none">12-15 Mins</p>
            </div>
         </div>
       </div>
     </div>
 
-    <!-- Live Map Placeholder -->
-    <div v-if="isActiveOrder" class="bg-gray-100 rounded-[3rem] border border-gray-200/50 shadow-inner h-72 overflow-hidden relative group">
-       <div class="absolute inset-0 bg-[url('/img/map-pattern.png')] opacity-5" />
-       <div class="absolute inset-0 flex flex-col items-center justify-center p-8">
-          <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-2xl shadow-xl mb-4 animate-float border border-gray-50">🏃</div>
-          <h4 class="font-bold text-gray-900 tracking-tight">Real-time GPS Shield</h4>
-          <p class="text-xs text-gray-500 font-medium mt-1">Live tracking and location privacy enabled</p>
-          <div class="flex items-center gap-2 mt-6 bg-emerald-50 px-4 py-2 rounded-xl text-[9px] font-black text-emerald-600 uppercase tracking-widest border border-emerald-100">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-            Live Sync: Active
-          </div>
-       </div>
-    </div>
-
-    <!-- Items & Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-       <!-- Items -->
-       <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
-          <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-gray-50 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
-          <h3 class="font-bold text-gray-900 tracking-tight text-xl mb-6 relative">Order Items</h3>
-          <div class="space-y-4 relative">
-            <div v-for="item in order.items" :key="item._id" class="flex justify-between items-center text-sm">
-              <div class="flex items-center gap-3">
-                <span class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-[10px] font-black text-gray-400 border border-gray-100">{{ item.quantity }}x</span>
-                <span class="text-gray-900 font-bold tracking-tight">{{ item.name }}</span>
-              </div>
-              <span class="text-gray-400 font-medium">₦{{ item.subtotal?.toLocaleString() }}</span>
-            </div>
-            
-            <div class="pt-6 mt-6 border-t border-gray-50 space-y-3">
-              <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest italic">
-                <span>Subtotal</span><span>₦{{ order.subtotal?.toLocaleString() }}</span>
-              </div>
-              <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest italic">
-                <span>Logistic Fees</span><span>₦{{ (order.deliveryFee + order.serviceFee)?.toLocaleString() }}</span>
-              </div>
-              <div class="flex justify-between text-gray-900 font-black pt-4 border-t border-gray-100 mt-4 text-xl tracking-tighter">
-                <span>Total Pay</span><span>₦{{ order.total?.toLocaleString() }}</span>
-              </div>
-            </div>
-          </div>
-       </div>
-
-       <!-- Timeline -->
-       <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
-          <h3 class="font-bold text-gray-900 tracking-tight text-xl mb-6">Order Life-cycle</h3>
-          <div class="space-y-6">
-            <div v-for="(history, i) in order.statusHistory" :key="i" class="flex gap-4 relative group">
-              <div v-if="(i as number) < (order.statusHistory?.length || 0) - 1" class="absolute left-1.5 top-3 w-px h-full bg-gray-100 -ml-[0.5px]" />
-              <div class="relative z-10 w-3 h-3 rounded-full mt-1.5 transition-all group-hover:scale-150" :class="i === 0 ? 'bg-parentPrimary shadow-lg shadow-parentPrimary/30' : 'bg-gray-200'" />
-              <div class="pb-2">
-                <p class="text-gray-900 text-sm font-bold tracking-tight">{{ formatStatus(history.status) }}</p>
-                <div class="flex items-center gap-2 mt-1">
-                   <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ new Date(history.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</p>
-                   <span class="w-1 h-1 rounded-full bg-gray-200" />
-                   <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ new Date(history.timestamp).toLocaleDateString() }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-       </div>
-    </div>
-
-    <!-- Need Help Section -->
-    <div class="bg-gray-50 p-8 rounded-[3rem] border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
-      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-white rounded-full blur-3xl opacity-50" />
-      <div class="relative z-10 text-center md:text-left">
-        <h4 class="text-gray-900 font-bold text-xl tracking-tight">Need assistance?</h4>
-        <p class="text-gray-500 text-sm font-medium mt-1">Our resolution team is always on standby for you.</p>
+    <!-- Order Interaction -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 px-4">
+      <!-- Verification -->
+      <div class="bg-white p-10 rounded-3xl md:rounded-[4rem] border border-gray-100 shadow-sm relative overflow-hidden group translate-y-0 hover:-translate-y-2 transition-all duration-500">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-gray-50 rounded-full blur-3xl group-hover:bg-parentPrimary/10 transition-colors" />
+        <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-8">Verification Code</h4>
+        <div class="flex items-center gap-4">
+           <div v-for="digit in order.orderCode?.split('')" :key="digit" class="flex-1 aspect-square bg-gray-50 rounded-2xl flex items-center justify-center text-3xl font-bold text-gray-900 border border-gray-100 group-hover:bg-white group-hover:border-parentPrimary/30 transition-all shadow-inner">
+              {{ digit }}
+           </div>
+        </div>
+        <p class="text-xs font-bold text-gray-400 mt-8 leading-relaxed">Show this code to your Errandr when they arrive to confirm delivery.</p>
       </div>
-      <button @click="router.push('/support')" class="relative z-10 px-8 py-3 bg-gray-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl hover:bg-black transition-all">Report Order Issue</button>
+
+      <!-- Delivery Errandr -->
+      <div v-if="order.errander" class="bg-white p-10 rounded-3xl md:rounded-[4rem] border border-gray-100 shadow-sm flex flex-col items-center text-center group translate-y-0 hover:-translate-y-2 transition-all duration-500">
+        <div class="w-24 h-24 bg-gray-900 rounded-[2.5rem] flex items-center justify-center mb-6 text-white text-3xl font-bold shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
+          {{ order.errander.firstName?.[0] }}{{ order.errander.lastName?.[0] }}
+        </div>
+        <div class="space-y-1 mb-8">
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Your Errandr</p>
+          <h3 class="font-bold text-gray-900 text-3xl tracking-tight leading-none">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
+          <p class="text-[10px] text-parentPrimary font-bold uppercase tracking-widest mt-2 bg-parentPrimary/5 px-4 py-1 rounded-full">{{ order.errander.phone }}</p>
+        </div>
+        <div class="flex gap-4 w-full">
+          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-5 bg-gray-900 text-white rounded-[1.5rem] text-xs font-bold uppercase tracking-widest hover:bg-parentPrimary transition-all shadow-xl shadow-gray-900/10 active:scale-95">Call</a>
+          <NuxtLink :to="`/chat/${order._id}`" class="flex-1 py-5 bg-white border border-gray-200 text-gray-900 rounded-[1.5rem] text-xs font-bold uppercase tracking-widest hover:border-parentPrimary/30 hover:bg-gray-50 transition-all active:scale-95">Chat</NuxtLink>
+        </div>
+      </div>
+
+      <!-- ETA Card -->
+      <div class="bg-parentPrimary p-10 rounded-3xl md:rounded-[4rem] text-white overflow-hidden relative group translate-y-0 hover:-translate-y-2 transition-all duration-500 shadow-xl shadow-parentPrimary/20">
+         <div class="absolute top-0 right-0 p-8 transform rotate-12 group-hover:rotate-0 transition-transform duration-700 opacity-20">
+            <Bike class="w-32 h-32" />
+         </div>
+         <div class="relative z-10 space-y-8">
+            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+               <MapPin class="w-6 h-6" />
+            </div>
+            <div>
+               <p class="text-[10px] font-bold uppercase tracking-widest mb-2 opacity-60">Delivering to</p>
+               <h3 class="text-2xl font-bold tracking-tight leading-tight">{{ order.deliveryAddress || 'Your Campus Residency' }}</h3>
+            </div>
+            <div class="pt-8 border-t border-white/10">
+               <div class="flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-white animate-pulse" />
+                  <span class="text-[10px] font-bold uppercase tracking-widest">Tracking Live</span>
+               </div>
+            </div>
+         </div>
+      </div>
+    </div>
+
+    <!-- Live Map Placeholder -->
+    <div class="px-4">
+       <div class="bg-gray-50 h-80 rounded-3xl md:rounded-[4rem] border-8 border-white shadow-lg relative overflow-hidden group">
+          <div class="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/0,0,1,0/1200x600?access_token=token')] bg-cover bg-center grayscale opacity-30" />
+          <div class="absolute inset-0 flex items-center justify-center">
+             <div class="flex flex-col items-center gap-4 text-center p-8 bg-white/50 backdrop-blur-md rounded-3xl border border-white/20">
+                <Navigation class="w-10 h-10 text-parentPrimary animate-bounce" />
+                <p class="text-sm font-bold text-gray-900">Map tracking active on Errandr</p>
+             </div>
+          </div>
+       </div>
+    </div>
+
+    <!-- Order Items -->
+    <section class="max-w-4xl mx-auto px-4">
+       <div class="bg-white p-10 rounded-3xl md:rounded-[4rem] border border-gray-100 shadow-sm relative overflow-hidden group">
+          <div class="flex items-center justify-between mb-12">
+             <div class="space-y-1">
+                <h4 class="text-2xl font-bold text-gray-900 tracking-tight">Order Details</h4>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Reviewing your current request.</p>
+             </div>
+          </div>
+
+          <div class="space-y-8">
+             <div v-for="item in order.items" :key="item._id" class="flex items-center gap-8 group/item">
+                <div class="w-20 h-20 rounded-[1.5rem] bg-gray-50 flex-shrink-0 relative overflow-hidden">
+                   <img :src="item.product?.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200\u0026q=80'" class="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-700" />
+                </div>
+                <div class="flex-1 min-w-0">
+                   <h5 class="text-lg font-bold text-gray-900 tracking-tight mb-1">{{ item.product?.name }}</h5>
+                   <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Quantity: {{ item.quantity }}</p>
+                </div>
+                <div class="text-right">
+                   <p class="text-xl font-bold text-gray-900 tracking-tight">₦{{ (item.price * item.quantity).toLocaleString() }}</p>
+                </div>
+             </div>
+
+             <div class="pt-8 border-t border-gray-50 space-y-4">
+                <div class="flex justify-between text-sm font-bold text-gray-400 uppercase tracking-widest">
+                   <span>Order Total</span>
+                   <span>₦{{ order.totalAmount?.toLocaleString() }}</span>
+                </div>
+                <div class="flex justify-between text-sm font-bold text-gray-400 uppercase tracking-widest">
+                   <span>Service Fee</span>
+                   <span>₦{{ order.deliveryFee?.toLocaleString() }}</span>
+                </div>
+                <div class="flex justify-between items-center pt-8 border-t border-gray-50">
+                   <span class="text-xl font-bold text-gray-900">Final Total</span>
+                   <span class="text-4xl font-bold text-parentPrimary tracking-tight font-display">₦{{ (order.totalAmount + (order.deliveryFee || 0)).toLocaleString() }}</span>
+                </div>
+             </div>
+          </div>
+       </div>
+    </section>
+
+    <!-- Support -->
+    <div class="max-w-4xl mx-auto px-4 pb-40">
+       <button class="w-full py-8 bg-gray-50 rounded-[2.5rem] border border-gray-100 flex items-center justify-center gap-4 group hover:bg-gray-100 transition-all duration-500">
+          <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors">
+             <ShieldCheck class="w-6 h-6" />
+          </div>
+          <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Need help with this order? Contact Errandr Support</span>
+       </button>
     </div>
   </div>
 
-  <div v-else class="max-w-2xl mx-auto space-y-6">
-    <div v-for="i in 5" :key="i" class="bg-white border border-gray-100 animate-pulse h-32 rounded-[2rem]" />
+  <!-- Loading State -->
+  <div v-else class="space-y-12 px-4 py-12 flex flex-col items-center">
+    <div class="w-20 h-20 border-4 border-parentPrimary/20 border-t-parentPrimary rounded-full animate-spin" />
+    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse">Retrieving Order Details...</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useRoute, useRouter, useHead } from '#imports';
-import { useUser } from '@/composables/modules/auth/user';
+import { 
+  Clock, 
+  MapPin, 
+  Bike, 
+  Navigation, 
+  ClipboardList, 
+  ShieldCheck 
+} from 'lucide-vue-next';
+import { ref, onMounted } from 'vue';
+import { useRoute, useHead } from '#imports';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
-import { useSocket } from '@/composables/useSocket';
 
 definePageMeta({
   layout: 'student'
 })
 
 const route = useRoute();
-const router = useRouter();
-
-const { user } = useUser();
-const { on, emit, connect } = useSocket('tracking');
-
 const order = ref<any>(null);
-
-const statusSteps = ['pending', 'confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'delivered'];
-
-const currentStepIndex = computed(() =>
-  order.value ? statusSteps.indexOf(order.value.status) : -1,
-);
-
-const isActiveOrder = computed(() => {
-  if (!order.value) return false;
-  return ['picked_up', 'in_transit'].includes(order.value.status);
-});
-
-const etaMinutes = computed(() => {
-  if (!order.value) return 0;
-  if (order.value.status === 'delivered') return 0;
-  if (order.value.status === 'in_transit') return 5;
-  if (order.value.status === 'picked_up') return 10;
-  if (order.value.status === 'preparing') return 15;
-  return 20;
-});
-
-const deliveryProgress = computed(() => {
-  if (!order.value) return 0;
-  const index = statusSteps.indexOf(order.value.status);
-  if (index === -1) return 0;
-  return Math.round((index / (statusSteps.length - 1)) * 100);
-});
-
-const formatStatus = (status: string) =>
-  status?.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
-
-const statusEmoji = (status: string) => {
-  const map: Record<string, string> = {
-    pending: '⏳', confirmed: '✅', preparing: '👨‍🍳', ready_for_pickup: '📦',
-    picked_up: '🏃', in_transit: '🚀', delivered: '🎉', cancelled: '❌',
-  };
-  return map[status] || '📋';
-};
-
-const getStatusBadge = (s: string) => {
-  if (['delivered', 'confirmed'].includes(s)) return 'bg-emerald-50 text-emerald-600 border-emerald-100';
-  if (['in_transit', 'picked_up'].includes(s)) return 'bg-blue-50 text-blue-600 border-blue-100';
-  if (['pending', 'preparing', 'ready_for_pickup'].includes(s)) return 'bg-amber-50 text-amber-600 border-amber-100';
-  return 'bg-gray-50 text-gray-400 border-gray-100';
-}
 
 onMounted(async () => {
   try {
     const res = await api.get<any>(`/orders/${route.params.id}`);
     order.value = res.data;
-  } catch (e) { console.error(e); }
-
-  connect();
-  emit('trackOrder', { orderId: route.params.id, userId: user.value?._id });
-
-  on('statusUpdate', (data: any) => {
-    if (data.orderId === route.params.id && order.value) {
-      order.value.status = data.status;
-    }
-  });
+  } catch (e) {
+    console.error(e);
+  }
 });
 
-useHead({ title: computed(() => order.value ? `Order ${order.value.orderNumber} - Errandr` : 'Order - Errandr') });
+useHead({ title: 'Order Details - Errandr' });
 </script>
 
 <style scoped>
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.fade-enter-active, .fade-leave-active { transition: opacity 0.5s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

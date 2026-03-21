@@ -10,14 +10,14 @@
           <h1 class="text-dark-900 font-bold">{{ order.orderNumber }}</h1>
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-green-500"></span>
-            <p class="text-[10px] text-dark-500 uppercase tracking-widest font-bold">Online</p>
+            <p class="text-[10px] text-dark-500 font-bold">Online</p>
           </div>
         </div>
       </div>
       <div v-if="order?.errander" class="flex items-center gap-3">
         <div class="text-right hidden sm:block">
           <p class="text-dark-900 text-sm font-semibold">{{ order.errander.firstName }}</p>
-          <p class="text-primary-400 text-[10px] font-bold uppercase">Your Errander</p>
+          <p class="text-primary-400 text-[10px] font-bold">Your Errandr</p>
         </div>
         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-accent-500 flex items-center justify-center text-white font-bold">
           {{ order.errander.firstName?.[0] }}
@@ -52,7 +52,7 @@
           <span class="w-1.5 h-1.5 bg-primary-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
           <span class="w-1.5 h-1.5 bg-primary-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
         </div>
-        <span class="text-[10px] text-dark-500 uppercase tracking-widest font-bold">Typing...</span>
+        <span class="text-[10px] text-dark-500 font-bold">Typing...</span>
       </div>
     </div>
 

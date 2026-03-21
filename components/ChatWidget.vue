@@ -5,7 +5,7 @@
         <div
           v-if="isOpen"
           :class="[
-            'max-h-[75vh] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col',
+            'max-h-[75vh] bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col',
             'w-[520px] sm:w-[600px] md:w-[700px]',
             isMobile() ? 'fixed inset-0 w-screen h-screen max-h-none rounded-none z-[999999]' : ''
           ]"
