@@ -584,6 +584,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import hero1 from '@/assets/img/hero1.jpg'
+import hero2 from '@/assets/img/hero2.jpg'
+import hero12 from "@/assets/img/hero12.jpg"
+import hero14 from "@/assets/img/hero14.jpg"
 import { 
   ArrowRight, Twitter, Instagram, Facebook,
   LogIn, ShoppingBag, Utensils, PlayCircle,
@@ -630,25 +634,25 @@ const slides = [
     title: "craving something?",
     highlight: "we'll bring it.",
     description: "oppose hunger sharp sharp! no stress yourself, make we carry food come your door.",
-    image: "/_nuxt/assets/img/hero1.jpg"
+    image: hero1
   },
   {
     title: "hungry but lazy?",
     highlight: "we dey for you.",
     description: "school stress too much? order food from mavise, iyachidera or any vendor you like.",
-    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80"
+    image: hero14
   },
   {
     title: "wetin you dey wait for?",
     highlight: "make we run am.",
     description: "from cafe to your hostel, we dey your back. just order, make we do the rest.",
-    image: "/_nuxt/assets/img/hero12.jpg"
+    image: hero12
   },
   {
     title: "no more long queues.",
     highlight: "order sharp sharp.",
     description: "save your energy for classes. Errandr go help you pick up anything you need.",
-    image: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&q=80"
+    image: hero2
   }
 ]
 
