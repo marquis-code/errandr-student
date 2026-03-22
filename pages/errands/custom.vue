@@ -1,76 +1,76 @@
 <template>
-  <div class="max-w-xl mx-auto space-y-12 pb-32 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary">
+  <div class="max-w-xl mx-auto space-y-6 pb-20 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary pt-6 px-4">
     <!-- Header -->
-    <div class="space-y-4 px-4 mt-8">
-      <h1 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight leading-none">Request Errand</h1>
-      <p class="text-sm font-bold text-gray-400">Anything you need, delivered on campus.</p>
+    <div class="space-y-1">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Request Errand</h1>
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Anything you need, delivered on campus.</p>
     </div>
 
-    <div class="bg-white p-10 rounded-3xl md:rounded-[3.5rem] border border-gray-100 shadow-sm space-y-10 relative overflow-hidden group">
-      <div class="absolute -right-20 -top-20 w-64 h-64 bg-parentPrimary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
+    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6 relative overflow-hidden group">
+      <div class="absolute -right-20 -top-20 w-48 h-48 bg-parentPrimary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
       
-      <div class="space-y-8 relative z-10">
+      <div class="space-y-6 relative z-10">
         <!-- Pickup -->
-        <div class="space-y-3 relative group/field">
-          <label class="text-xs font-bold text-gray-400 ml-4 transition-colors group-focus-within/field:text-parentPrimary">Pickup Location</label>
+        <div class="space-y-2 relative group/field">
+          <label class="text-[10px] font-bold text-gray-400 ml-2 transition-colors group-focus-within/field:text-parentPrimary uppercase tracking-widest">Pickup Location</label>
           <div class="relative">
-             <MapPin class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
+             <MapPin class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
              <input
                v-model="form.pickupLocation"
                type="text"
-               placeholder="e.g. Diamond Hall Room 205"
-               class="w-full pl-16 pr-6 py-6 bg-gray-50 border border-gray-100 rounded-[2rem] text-sm font-bold focus:ring-8 focus:ring-parentPrimary/5 focus:bg-white transition-all shadow-inner outline-none placeholder:text-gray-200"
+               placeholder=""
+               class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold focus:ring-4 focus:ring-parentPrimary/5 focus:bg-white transition-all outline-none"
              />
           </div>
         </div>
 
         <!-- Dropoff -->
-        <div class="space-y-3 relative group/field">
-          <label class="text-xs font-bold text-gray-400 ml-4 transition-colors group-focus-within/field:text-parentPrimary">Where to deliver?</label>
+        <div class="space-y-2 relative group/field">
+          <label class="text-[10px] font-bold text-gray-400 ml-2 transition-colors group-focus-within/field:text-parentPrimary uppercase tracking-widest">Where to deliver?</label>
           <div class="relative">
-             <Navigation class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
+             <Navigation class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
              <input
                v-model="form.dropoffLocation"
                type="text"
-               placeholder="e.g. Faculty of Science Lecture Room 1"
-               class="w-full pl-16 pr-6 py-6 bg-gray-50 border border-gray-100 rounded-[2rem] text-sm font-bold focus:ring-8 focus:ring-parentPrimary/5 focus:bg-white transition-all shadow-inner outline-none placeholder:text-gray-200"
+               placeholder=""
+               class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold focus:ring-4 focus:ring-parentPrimary/5 focus:bg-white transition-all outline-none"
              />
           </div>
         </div>
 
         <!-- Description -->
-        <div class="space-y-3 relative group/field">
-          <label class="text-xs font-bold text-gray-400 ml-4 transition-colors group-focus-within/field:text-parentPrimary">What do you need?</label>
+        <div class="space-y-2 relative group/field">
+          <label class="text-[10px] font-bold text-gray-400 ml-2 transition-colors group-focus-within/field:text-parentPrimary uppercase tracking-widest">What do you need?</label>
           <textarea
              v-model="form.description"
-             placeholder="Describe the errand. What are we picking up? Be as specific as possible!"
-             class="w-full p-8 bg-gray-50 border border-gray-100 rounded-[2.5rem] text-sm font-bold focus:ring-8 focus:ring-parentPrimary/5 focus:bg-white transition-all h-40 resize-none shadow-inner outline-none placeholder:text-gray-200"
+             placeholder=""
+             class="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold focus:ring-4 focus:ring-parentPrimary/5 focus:bg-white transition-all h-28 resize-none outline-none"
           />
         </div>
 
-        <!-- Price -->
-        <div class="bg-gray-900 rounded-[2.5rem] p-8 space-y-6 relative overflow-hidden">
-           <div class="absolute inset-0 bg-gradient-to-r from-parentPrimary/10 to-transparent" />
-           <div class="flex justify-between items-end relative">
-              <div class="space-y-1">
-                 <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Delivery Fee</p>
-                 <p class="text-4xl font-black text-white tracking-tighter">₦450.00</p>
-              </div>
-              <div class="text-[9px] font-bold text-parentPrimary uppercase tracking-widest">Fixed Price</div>
-           </div>
-        </div>
-
-        <button
-           @click="submitErrand"
-           :disabled="loading || !isFormValid"
-           class="w-full py-8 bg-gray-900 text-white rounded-[2.5rem] text-xl font-bold shadow-lg shadow-black/20 hover:bg-parentPrimary hover:-translate-y-1 transition-all flex items-center justify-center gap-6 group disabled:opacity-20 border-b-[8px] border-black active:border-b-0 active:translate-y-2"
-        >
-          <span v-if="loading">Sending...</span>
-          <div v-else class="flex items-center gap-4">
-             <Zap class="w-8 h-8 group-hover:rotate-12 transition-transform" />
-             Send Request
+        <!-- Price & Action -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="flex-1 bg-gray-900 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
+             <div class="absolute inset-0 bg-gradient-to-r from-parentPrimary/10 to-transparent" />
+             <div class="relative">
+                <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Delivery Fee</p>
+                <p class="text-xl font-black text-white tracking-tighter leading-none mt-1">₦450.00</p>
+             </div>
+             <div class="text-[8px] font-bold text-parentPrimary uppercase tracking-widest relative">Fixed</div>
           </div>
-        </button>
+
+          <button
+             @click="submitErrand"
+             :disabled="loading || !isFormValid"
+             class="flex-[2] py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-lg hover:bg-parentPrimary hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 disabled:opacity-20 active:translate-y-0"
+          >
+            <Loader2 v-if="loading" class="animate-spin w-4 h-4" />
+            <div v-else class="flex items-center gap-2">
+               <Zap class="w-4 h-4" />
+               <span>Send Request</span>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   </div>

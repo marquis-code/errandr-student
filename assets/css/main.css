@@ -22,7 +22,7 @@ body {
 
 h1, h2, h3, h4, .font-display {
   font-family: 'Onest', sans-serif;
-  @apply font-black tracking-tighter uppercase;
+  @apply font-bold tracking-tight;
 }
 
 /* Premium Utilities */

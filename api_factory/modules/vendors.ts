@@ -20,4 +20,8 @@ export const vendors_api = {
   updateBusinessHours: (id: string, hours: any) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/vendors/${id}/business-hours`, { hours });
   },
+
+  getById: (id: string) => {
+    return GATEWAY_ENDPOINT.get(`/vendors/${id}`);
+  },
 };

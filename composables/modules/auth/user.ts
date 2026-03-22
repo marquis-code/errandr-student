@@ -7,6 +7,7 @@ interface User {
   lastName: string;
   email: string;
   role: string;
+  phone: string;
   avatar?: string;
   matricNumber?: string;
 }
@@ -32,13 +33,15 @@ export const useUser = () => {
     token.value = newToken;
   };
 
-  const logOut = () => {
+  const logOut = (shouldRedirect = true) => {
     user.value = null;
     token.value = null;
     // Clear other site data if needed, but cookies are the core
     if (typeof window !== 'undefined') {
       localStorage.removeItem('errandr_cart');
-      window.location.href = '/auth/login';
+      if (shouldRedirect) {
+        window.location.href = '/auth/login';
+      }
     }
   };
 

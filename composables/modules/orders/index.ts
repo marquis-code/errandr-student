@@ -11,7 +11,7 @@ export const useStudentOrders = () => {
     loading.value = true;
     try {
       const res = await orders_api.getOrders();
-      orders.value = res.data;
+      orders.value = res.data.orders || res.data || [];
     } finally {
       loading.value = false;
     }

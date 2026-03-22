@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   ssr: false,
 
   site: {
-    url: 'https://errandr.com',
+    url: 'https://errandr.shop',
     name: 'Errandr',
     description: 'Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.',
     defaultLocale: 'en',
@@ -87,8 +87,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:3000',
-      wsBase: process.env.WS_BASE_URL || 'http://localhost:3000',
+      apiBase: process.env.API_BASE_URL || 'https://errandr-backend.onrender.com',
+      wsBase: process.env.WS_BASE_URL || 'https://errandr-backend.onrender.com',
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || '',
       firebaseApiKey: process.env.FIREBASE_API_KEY || '',
       firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN || '',

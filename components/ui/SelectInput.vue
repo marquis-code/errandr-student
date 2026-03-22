@@ -42,52 +42,70 @@
         </div>
   
         <!-- Dropdown -->
-        <div
-          v-if="showDropdown"
-          class="absolute z-20 mt-1 w-full bg-white shadow-xl rounded-md overflow-hidden"
-        >
-          <!-- Search Input -->
-          <div class="p-2 border-b-[0.5px] border-gray-50 sticky top-0 bg-white">
-            <div class="relative">
-              <Search 
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" 
-              />
-              <input
-                ref="searchInputRef"
-                v-model="searchQuery"
-                type="text"
-                placeholder="Search..."
-                class="w-full pl-9 pr-3 py-3 border-[0.5px] border-gray-300 rounded-lg focus:border-[0.5px] focus:border-[#3BAB22] outline-none text-sm"
-                @click.stop
-              />
-            </div>
-          </div>
-          
-          <!-- Options List -->
-          <div class="max-h-48 overflow-y-auto">
+        <Teleport to="body">
+          <Transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="opacity-0 scale-95"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-95"
+          >
             <div
-              v-for="(option, index) in filteredOptions"
-              :key="index"
-              @click="selectOption(option)"
-              class="p-3 font-medium hover:bg-gray-25 m-1 rounded-lg cursor-pointer transition-colors text-sm text-[#1A1A1B]"
+              v-if="showDropdown"
+              class="fixed z-[9999] mt-1 bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-100 animate-fade-in"
+              :style="{
+                top: `${y + height + 4}px`,
+                left: `${x}px`,
+                width: `${width}px`
+              }"
             >
-              <!-- Custom option slot -->
-              <slot v-if="slots.default" :option="option" :index="index" />
-              <!-- Default option display -->
-              <template v-else>
-                {{ getLabel(option) }}
-              </template>
+              <!-- Search Input -->
+              <div class="p-3 border-b border-gray-50 sticky top-0 bg-white">
+                <div class="relative">
+                  <Search 
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" 
+                  />
+                  <input
+                    ref="searchInputRef"
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Search..."
+                    class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:border-gray-200 outline-none text-sm font-medium transition-all"
+                    @click.stop
+                  />
+                </div>
+              </div>
+              
+              <!-- Options List -->
+              <div class="max-h-60 overflow-y-auto custom-scrollbar">
+                <div
+                  v-for="(option, index) in filteredOptions"
+                  :key="index"
+                  @click="selectOption(option)"
+                  class="p-3 font-semibold hover:bg-gray-50 m-1 rounded-xl cursor-pointer transition-all text-sm text-gray-700 flex items-center justify-between group"
+                  :class="{ 'bg-gray-50 text-gray-900': getValue(option) === modelValue }"
+                >
+                  <div class="flex items-center gap-2">
+                    <slot v-if="slots.default" :option="option" :index="index" />
+                    <template v-else>
+                      {{ getLabel(option) }}
+                    </template>
+                  </div>
+                  <div v-if="getValue(option) === modelValue" class="w-1.5 h-1.5 rounded-full bg-gray-900" />
+                </div>
+                
+                <!-- No results message -->
+                <div 
+                  v-if="filteredOptions.length === 0" 
+                  class="p-8 text-center text-sm text-gray-400 font-medium"
+                >
+                  No results found
+                </div>
+              </div>
             </div>
-            
-            <!-- No results message -->
-            <div 
-              v-if="filteredOptions.length === 0" 
-              class="p-4 text-center text-sm text-gray-500"
-            >
-              No results found for "{{ searchQuery }}"
-            </div>
-          </div>
-        </div>
+          </Transition>
+        </Teleport>
       </div>
   
       <!-- Error message -->
@@ -100,6 +118,7 @@
   
   <script setup lang="ts">
   import { ref, computed, useId, onMounted, onUnmounted, nextTick } from 'vue'
+  import { useElementBounding } from '@vueuse/core'
   import { ChevronDown, Search, AlertCircle } from 'lucide-vue-next'
   
   // Props
@@ -143,6 +162,8 @@
   const searchInputRef = ref<HTMLInputElement | null>(null)
   const searchQuery = ref('')
   const inputId = useId()
+
+  const { x, y, width, height } = useElementBounding(containerRef)
   
   // Methods
   const toggleDropdown = async () => {

@@ -25,26 +25,26 @@
           <div class="w-8 h-8 rounded-lg bg-[#065fdb] flex items-center justify-center"><ShoppingBag class="w-4 h-4 text-white" /></div>
           <span class="text-xl font-bold text-gray-900 tracking-tight">Errandr</span>
         </div>
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Create Account</h1>
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">create account</h1>
         <p class="text-gray-500 text-lg">Join the campus delivery community</p>
       </div>
 
       <form @submit.prevent="handleRegister" class="space-y-5 max-w-md">
         <div class="grid grid-cols-2 gap-4">
-          <UiAnimatedInput v-model="form.firstName" type="text" label="First Name" required />
-          <UiAnimatedInput v-model="form.lastName" type="text" label="Last Name" required />
+          <UiAnimatedInput v-model="form.firstName" type="text" label="first name" required placeholder="" />
+          <UiAnimatedInput v-model="form.lastName" type="text" label="last name" required placeholder="" />
         </div>
-        <UiAnimatedInput v-model="form.email" type="email" label="Email" required />
-        <UiAnimatedInput v-model="form.phone" type="tel" label="Phone Number" />
-        <UiAnimatedInput v-model="form.matricNumber" type="text" label="Matric Number" />
-        <UiAnimatedInput v-model="form.password" type="password" label="Password" required minlength="6" />
+        <UiAnimatedInput v-model="form.email" type="email" label="email address" required placeholder="" />
+        <UiAnimatedInput v-model="form.phone" type="tel" label="phone number" placeholder="" />
+        <UiAnimatedInput v-model="form.matricNumber" type="text" label="matric number" placeholder="" />
+        <UiAnimatedInput v-model="form.password" type="password" label="password" required minlength="6" placeholder="" />
 
         <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
 
         <button type="submit" :disabled="loading"
           class="w-full py-3 bg-[#065fdb] hover:bg-[#054ec0] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#065fdb]/20 mt-4">
           <Loader2 v-if="loading" class="animate-spin w-6 h-6" />
-          {{ loading ? 'Creating Account...' : 'Create Account' }}
+          {{ loading ? 'creating account...' : 'create account' }}
         </button>
 
         <p class="text-center text-gray-600 font-medium">

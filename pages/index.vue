@@ -30,87 +30,107 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-      <!-- High-end ambient background -->
-      <div class="absolute inset-0 z-0 bg-gray-50">
-        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-parentPrimary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3"></div>
-        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100/40 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/4"></div>
+    <section class="relative pt-24 pb-16 lg:pt-32 lg:pb-32 overflow-hidden bg-white">
+      <!-- Animated Background Elements -->
+      <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-1/4 -left-20 w-80 h-80 bg-parentPrimary/10 rounded-full blur-[100px] animate-float" />
+        <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-amber-200/20 rounded-full blur-[100px] animate-float" style="animation-delay: 2s" />
       </div>
-      
+
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div class="max-w-2xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-black uppercase tracking-widest mb-6 shadow-sm">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-black mb-6 shadow-sm">
               <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-              Live on Campus
+              live on campus
             </div>
-            <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1] mb-6 text-gray-900 uppercase">
-              CRAVING IT? <br />
-              <span class="text-parentPrimary relative inline-block">
-                WE'LL BRING IT.
-                <svg class="absolute w-full h-4 -bottom-2 left-0 text-amber-400 opacity-60" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q50 20 100 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-              </span>
-            </h1>
-            <p class="text-lg lg:text-xl text-gray-500 font-medium mb-10 leading-relaxed max-w-lg">
-              The fastest food delivery for students. From your favorite campus restaurants straight to your door in minutes.
-            </p>
+
+            <!-- Carousel Text Content -->
+            <div class="relative h-[280px] md:h-[350px]">
+              <TransitionGroup name="slide-up">
+                <div v-for="(slide, index) in slides" :key="index" v-show="currentSlide === index" class="absolute inset-0">
+                  <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1] mb-6 text-gray-900 transition-all duration-700">
+                    {{ slide.title }} <br />
+                    <span class="text-parentPrimary relative inline-block">
+                      {{ slide.highlight }}
+                      <svg class="absolute w-full h-4 -bottom-2 left-0 text-amber-400 opacity-60" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q50 20 100 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+                    </span>
+                  </h1>
+                  <p class="text-lg pb-4 text-gray-500 max-w-lg leading-relaxed font-medium transition-all duration-700 delay-100">
+                    {{ slide.description }}
+                  </p>
+                </div>
+              </TransitionGroup>
+            </div>
             
-            <div class="flex flex-col sm:flex-row items-center gap-4">
-              <NuxtLink to="/auth/login" class="w-full sm:w-auto px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-lg shadow-xl hover:bg-black transition-all text-center flex items-center justify-center gap-2 group">
-                <Utensils class="w-5 h-5" />
-                Order Now
-                <ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <div class="flex flex-wrap items-center gap-6 mt-12">
+              <NuxtLink to="/dashboard" class="px-10 py-5 bg-gray-900 text-white rounded-[1.5rem] font-bold text-sm hover:bg-parentPrimary hover:scale-105 transition-all shadow-xl flex items-center gap-3 group">
+                browse vendors 
+                <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </NuxtLink>
-              <a href="#how-it-works" class="w-full sm:w-auto px-8 py-4 bg-white border border-gray-200 text-gray-700 rounded-2xl font-bold text-lg shadow-sm hover:border-parentPrimary/30 hover:bg-gray-50 transition-all text-center flex items-center justify-center gap-2">
+              <button class="px-8 py-5 bg-white text-gray-900 rounded-[1.5rem] font-bold text-sm border border-gray-100 hover:bg-gray-50 transition-all flex items-center gap-3">
                 <PlayCircle class="w-5 h-5 text-gray-400" />
-                How it works
-              </a>
+                how it works
+              </button>
             </div>
-            
-            <div class="mt-12 flex items-center gap-4 pt-8 border-t border-gray-100">
-              <div class="flex -space-x-4">
-                <img src="https://images.unsplash.com/photo-1531123414780-f74242c2b052?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
-                <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
-                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
-                <img src="https://images.unsplash.com/photo-1507152832244-10d45c7eda57?w=100&h=100&fit=crop" class="w-12 h-12 rounded-full border-4 border-white object-cover shadow-sm" />
-                <div class="w-12 h-12 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 shadow-sm">+2k</div>
+
+            <div class="mt-14 flex items-center gap-6">
+              <div class="flex -space-x-3">
+                <img v-for="i in 4" :key="i" :src="`https://i.pravatar.cc/100?img=${i+10}`" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" />
+                <div class="w-10 h-10 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-500 shadow-sm">+2k</div>
               </div>
-              <p class="text-sm font-semibold text-gray-500">Trusted by over 2,000+ students daily</p>
+              <p class="text-sm font-bold text-gray-400">Trusted by over 2,000+ students daily</p>
             </div>
           </div>
-          
-          <div class="relative hidden py-10 lg:block">
-             <div class="relative z-10">
-                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=1000&fit=crop" alt="Students using Errandr" class="rounded-3xl lg:rounded-[3rem] shadow-xl md:shadow-lg object-cover h-[600px] w-full transform rotate-1 hover:rotate-0 transition-transform duration-700" />
-                
-                <!-- Floating Card 1 -->
-                <div class="absolute -left-8 top-16 bg-white p-4 pr-6 rounded-2xl md:rounded-3xl shadow-lg border border-gray-100 flex items-center gap-4 animate-bounce" style="animation-duration: 3.5s;">
-                  <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+
+          <!-- Carousel Image Section -->
+          <div class="relative lg:h-[600px] flex items-center justify-center">
+            <div class="w-full max-w-[500px] aspect-square relative rounded-[3rem] overflow-hidden shadow-2xl group">
+              <Transition name="fade" mode="out-in">
+                <img :key="currentSlide" :src="slides[currentSlide].image" class="absolute inset-0 w-full h-full object-cover grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+              </Transition>
+              <div class="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              
+              <!-- Floating Widgets -->
+              <div class="absolute top-8 left-8 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/50 animate-float">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
                     <Clock class="w-5 h-5" />
                   </div>
                   <div>
-                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Arriving In</p>
-                    <p class="text-lg font-black text-gray-900 tracking-tight leading-none mt-0.5">12 mins</p>
+                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">arriving in</p>
+                    <p class="text-lg font-black text-gray-900 leading-none tracking-tighter">12 mins</p>
                   </div>
                 </div>
+              </div>
 
-                <!-- Floating Card 2 -->
-                <div class="absolute -right-8 bottom-32 bg-white p-4 pr-6 rounded-3xl shadow-xl border border-gray-100 flex items-center gap-4 animate-bounce" style="animation-duration: 4.2s; animation-delay: 1s;">
-                  <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=100&h=100&fit=crop" class="w-12 h-12 rounded-xl object-cover" />
+              <div class="absolute bottom-8 right-8 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/50 animate-float" style="animation-delay: 1.5s">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-xl overflow-hidden shadow-md">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&h=200&fit=crop" class="w-full h-full object-cover" />
+                  </div>
                   <div>
-                    <p class="font-bold text-gray-900 text-sm leading-tight">Spicy Pepperoni Pizza</p>
-                    <div class="flex items-center gap-1 mt-1 text-amber-400">
-                      <Star class="w-3 h-3 fill-current" />
-                      <Star class="w-3 h-3 fill-current" />
-                      <Star class="w-3 h-3 fill-current" />
-                      <Star class="w-3 h-3 fill-current" />
-                      <Star class="w-3 h-3 fill-current" />
+                    <p class="text-[11px] font-black text-gray-900 tracking-tight leading-none mb-1">spicy pepperoni pizza</p>
+                    <div class="flex gap-0.5">
+                       <Star v-for="i in 5" :key="i" class="w-2.5 h-2.5 text-amber-500 fill-current" />
                     </div>
                   </div>
+                </div>
+              </div>
             </div>
+            
+            <!-- Carousel Indicators -->
+            <div class="absolute bottom-[-40px] flex gap-2">
+              <button 
+                v-for="(_, i) in slides" 
+                :key="i" 
+                @click="currentSlide = i"
+                class="w-8 h-1.5 rounded-full transition-all duration-500"
+                :class="currentSlide === i ? 'bg-parentPrimary w-12' : 'bg-gray-200'"
+              ></button>
             </div>
+          </div>
         </div>
-      </div>
       </div>
     </section>
 
@@ -118,59 +138,104 @@
     <LandingVendorMarquee />
 
     <!-- Interactive Carousel: Featured Vendors -->
-    <section id="featured" class="py-16 lg:py-24 bg-white overflow-hidden border-t border-gray-100">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+    <section id="featured" class="py-12 lg:py-16 bg-white overflow-hidden border-t border-gray-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <div class="flex items-end justify-between">
           <div>
-            <div class="inline-flex items-center gap-2 text-parentPrimary font-bold text-sm uppercase mb-3 text-center">
+            <div class="inline-flex items-center gap-2 text-parentPrimary font-bold text-sm uppercase mb-2 text-center">
               <Store class="w-4 h-4" /> Top Rated
             </div>
-            <h2 class="text-4xl font-bold text-gray-900 tracking-tight">Campus Favorites</h2>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">Campus Favorites</h2>
           </div>
-          <div class="hidden sm:flex gap-2">
-            <button @click="scrollCarousel('left', 'vendor-carousel')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:border-parentPrimary transition-colors text-gray-600">
-              <ChevronLeft class="w-6 h-6" />
-            </button>
-            <button @click="scrollCarousel('right', 'vendor-carousel')" class="w-12 h-12 rounded-full bg-parentPrimary text-white flex items-center justify-center hover:bg-parentPrimary/90 transition-colors shadow-lg shadow-parentPrimary/20">
-              <ChevronRight class="w-6 h-6" />
-            </button>
+          <div class="flex items-center gap-4">
+             <NuxtLink to="/vendors" class="text-sm font-bold text-parentPrimary hover:underline underline-offset-4 hidden sm:block">View All Vendors &rarr;</NuxtLink>
+             <div class="flex gap-2">
+                <button @click="scrollCarousel('left', 'vendor-carousel')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-parentPrimary hover:border-parentPrimary transition-colors shadow-sm bg-white z-10">
+                   <ChevronLeft class="w-5 h-5" />
+                </button>
+                <button @click="scrollCarousel('right', 'vendor-carousel')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-parentPrimary hover:border-parentPrimary transition-colors shadow-sm bg-white z-10">
+                   <ChevronRight class="w-5 h-5" />
+                </button>
+             </div>
           </div>
         </div>
+        <NuxtLink to="/vendors" class="text-sm font-bold text-parentPrimary hover:underline underline-offset-4 sm:hidden mt-4 inline-block">View All Vendors &rarr;</NuxtLink>
       </div>
 
       <!-- Carousel Container -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div id="vendor-carousel" class="flex gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div v-for="vendor in vendors" :key="vendor.id" class="snap-start flex-none w-[280px] sm:w-[320px] group cursor-pointer relative">
-            <div class="relative h-[220px] w-full rounded-3xl overflow-hidden mb-4 shadow-sm border border-gray-100">
-              <img :src="vendor.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80" alt="Vendor Cover" />
-              <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-transparent to-transparent"></div>
+      <div class="max-w-7xl mx-auto pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-0">
+        <div id="vendor-carousel" class="flex overflow-x-auto gap-6 pb-8 hide-scrollbar snap-x snap-mandatory">
+          <div v-if="loadingVendors" v-for="i in 4" :key="i" class="min-w-[280px] sm:min-w-[320px] h-[280px] bg-gray-50 rounded-3xl animate-pulse shadow-sm border border-gray-100 snap-start shrink-0" />
+          
+          <div v-else-if="vendors.length === 0" class="w-full max-w-xl text-center py-16 px-6 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200 animate-fade-in snap-start">
+
+          <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center text-4xl mx-auto mb-8 shadow-sm transform -rotate-6">🌙</div>
+          <h3 class="text-2xl font-black text-gray-900 mb-3 tracking-tight">The Campus is Resting</h3>
+          <p class="text-gray-500 font-medium mb-8 leading-relaxed">Our favorite vendors are currently offline or catching a break. Check back soon for the best meals on campus!</p>
+          <div class="inline-flex items-center gap-2 px-6 py-3 bg-white rounded-2xl text-xs font-bold text-gray-400 shadow-sm border border-gray-100 uppercase tracking-widest">
+            <Clock class="w-4 h-4" /> Most vendors open at 8:00 AM
+          </div>
+        </div>
+        
+        <template v-else>
+          <div v-for="vendor in vendors" :key="vendor._id" 
+               @click="navigateToVendor(vendor)"
+               class="min-w-[280px] sm:min-w-[320px] w-[280px] sm:w-[320px] snap-start shrink-0 group cursor-pointer relative flex flex-col bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+            <div class="relative h-[160px] w-full overflow-hidden">
+              <img :src="vendor.banner || vendor.image || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'" 
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Vendor Banner" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
               
-              <!-- Letter-based Logo Crafting -->
               <div class="absolute top-4 left-4">
-                 <div :class="`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold text-white shadow-xl ${vendor.color}`">
-                    {{ getInitials(vendor.name) }}
+                 <div :class="`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold text-white shadow-xl ${getVendorColor(vendor.storeName)}`">
+                    {{ getInitials(vendor.storeName) }}
                  </div>
               </div>
 
               <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-bold border border-white/30 truncate max-w-[120px]">
+                <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-bold border border-white/30 truncate">
                   {{ vendor.category }}
                 </span>
-                <span class="flex items-center gap-1 bg-white rounded-full px-2 py-1 text-[10px] font-bold text-gray-900 shadow-lg">
-                  <Star class="w-3 h-3 text-amber-400 fill-current" /> {{ vendor.rating }}
+                <span v-if="vendor.rating" class="flex items-center gap-1 bg-white rounded-full px-2 py-1 text-[10px] font-bold text-gray-900 shadow-lg">
+                  <Star class="w-3 h-3 text-amber-400 fill-current" /> {{ vendor.rating.toFixed(1) }}
                 </span>
               </div>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-1 group-hover:text-parentPrimary transition-colors tracking-tight">{{ vendor.name }}</h3>
-            <div class="flex items-center gap-4 text-[11px] font-bold text-gray-400 tracking-tight">
-              <span class="flex items-center gap-1"><Clock class="w-3 h-3" /> {{ vendor.time }}</span>
-              <span class="flex items-center gap-1"><MapPin class="w-3 h-3" /> {{ vendor.distance }}</span>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xl font-bold text-gray-900 group-hover:text-parentPrimary transition-colors tracking-tight truncate">{{ vendor.storeName }}</h3>
+                  <div v-if="vendor.isOpen" class="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-md">
+                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span class="text-[9px] font-black">open</span>
+                  </div>
+                  <div v-else class="flex items-center gap-1.5 px-2 py-0.5 bg-gray-100 text-gray-400 rounded-md">
+                    <div class="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                    <span class="text-[9px] font-black">{{ vendor.statusMessage || 'closed' }}</span>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-500 line-clamp-2 mb-4 leading-relaxed font-medium">{{ vendor.description }}</p>
+              </div>
+              <div class="flex items-center justify-between pt-4 border-t border-gray-50">
+                <div class="flex items-center gap-3 text-[10px] font-bold text-gray-400 tracking-tight">
+                  <span class="flex items-center gap-1"><Clock class="w-3 h-3" /> {{ vendor.preparationTime || 20 }} min</span>
+                  <span class="flex items-center gap-1"><MapPin class="w-3 h-3" /> {{ vendor.isInsideCampus ? 'On-Campus' : 'Off-Campus' }}</span>
+                </div>
+                <div class="text-[10px] font-black text-parentPrimary uppercase tracking-widest group-hover:underline">Order &rarr;</div>
+              </div>
             </div>
           </div>
+        </template>
         </div>
       </div>
     </section>
+
+    <!-- Vendor Closed Modal -->
+    <VendorClosedModal 
+      :isOpen="isClosedModalOpen" 
+      :vendor="selectedVendorForModal" 
+      @close="isClosedModalOpen = false" 
+    />
 
     <!-- UI Feature: Meal Planner -->
     <section class="py-16 lg:py-24 bg-gray-900 relative overflow-hidden">
@@ -217,7 +282,7 @@
                    The meal planner helps you organize your weekly food around campus vendors while maintaining budget control. It's unique, free, and built for students.
                 </p>
                 <div class="pt-4">
-                   <NuxtLink to="/meal-planner" class="px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-parentPrimary hover:text-white transition-all shadow-xl">Start planning Now &rarr;</NuxtLink>
+                   <NuxtLink to="/meal-planner" class="px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold text-xs hover:bg-parentPrimary hover:text-white transition-all shadow-xl">start planning now &rarr;</NuxtLink>
                 </div>
              </div>
           </div>
@@ -225,17 +290,17 @@
     </section>
 
     <!-- UI Feature: Custom Errands -->
-    <section class="py-16 lg:py-24 bg-white relative overflow-hidden">
+    <section class="py-12 lg:py-16 bg-white relative overflow-hidden">
        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-             <div class="space-y-6 lg:space-y-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+             <div class="space-y-5 lg:space-y-6">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold">
                    Request Any Errand
                 </div>
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-none">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight leading-none">
                    Any item. <br />Any <span class="text-parentPrimary">location.</span>
                 </h2>
-                <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight">
+                <p class="text-gray-500 text-base font-medium leading-relaxed tracking-tight">
                    Not just food. Send an Errandr to your hostel to pick up items, deliver docs to class, or handle any request from Point A to Point B.
                 </p>
                 <div class="flex flex-wrap gap-4">
@@ -248,14 +313,14 @@
                       <span class="text-xs font-bold text-gray-400">Library Drops</span>
                    </div>
                 </div>
-                <div class="pt-4">
-                   <NuxtLink to="/errands/custom" class="px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-sm hover:bg-parentPrimary transition-all shadow-xl">Request an Errand &rarr;</NuxtLink>
+                <div class="pt-2">
+                   <NuxtLink to="/errands/custom" class="px-6 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-parentPrimary transition-all shadow-md inline-block">Request an Errand &rarr;</NuxtLink>
                 </div>
              </div>
              <div class="relative hidden sm:block">
-                <div class="absolute -inset-10 bg-blue-100/50 blur-[100px] rounded-full"></div>
-                <img src="https://images.unsplash.com/photo-1531123897727-8f129e16fd3c?w=1000&h=800&fit=crop" class="relative z-10 rounded-3xl lg:rounded-[3rem] shadow-xl border-4 md:border-8 border-white object-cover" />
-                <div class="absolute -bottom-8 -left-8 bg-white p-5 lg:p-6 rounded-2xl lg:rounded-[2.5rem] shadow-xl border border-gray-50 max-w-[240px] z-20 animate-float">
+                <div class="absolute -inset-10 bg-blue-100/50 blur-[80px] rounded-full"></div>
+                <img src="https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?w=800&q=80" class="relative z-10 rounded-3xl lg:rounded-[2.5rem] shadow-xl border-4 border-white object-cover aspect-video w-full" alt="Delivery in progress" />
+                <div class="absolute -bottom-6 -left-6 bg-white p-4 lg:p-5 rounded-2xl shadow-xl border border-gray-50 max-w-[220px] z-20 animate-float">
                    <div class="flex items-center gap-4 mb-4">
                       <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">✓</div>
                       <p class="text-xs font-bold text-gray-900">Errandr on the way</p>
@@ -363,7 +428,7 @@
              </div>
              <div class="relative hidden sm:block">
                 <div class="absolute -inset-10 bg-emerald-100/30 blur-[100px] rounded-full"></div>
-                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&h=800&fit=crop" class="relative z-10 rounded-3xl lg:rounded-[3rem] shadow-xl border-4 md:border-8 border-white object-cover h-[400px] w-full" />
+                <img src="@/assets/img/hero2.jpg" class="relative z-10 rounded-3xl lg:rounded-[3rem] shadow-xl border-4 md:border-8 border-white object-cover h-[400px] w-full" />
              </div>
           </div>
        </div>
@@ -404,7 +469,7 @@
             <h2 class="text-4xl font-bold text-gray-900 tracking-tight mb-3">Craving Anything Specific?</h2>
             <p class="text-gray-500 font-medium text-lg max-w-xl">Explore the most ordered categories on campus today.</p>
           </div>
-          <NuxtLink to="/auth/login" class="hidden sm:flex items-center gap-2 text-parentPrimary font-bold hover:gap-3 transition-all px-6 py-3 rounded-xl bg-parentPrimary/5 border border-parentPrimary/10 hover:bg-parentPrimary/10">
+          <NuxtLink to="/vendors" class="hidden sm:flex items-center gap-2 text-parentPrimary font-bold hover:gap-3 transition-all px-6 py-3 rounded-xl bg-parentPrimary/5 border border-parentPrimary/10 hover:bg-parentPrimary/10">
             View full menu <ArrowRight class="w-5 h-5" />
           </NuxtLink>
         </div>
@@ -429,26 +494,26 @@
     <LandingTestimonials />
 
     <!-- CTA Section -->
-    <section id="benefits" class="py-16 lg:py-24 bg-white relative">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-gray-900 rounded-3xl lg:rounded-[3rem] p-8 lg:p-16 relative overflow-hidden flex flex-col items-center text-center shadow-xl">
-          <div class="absolute -top-40 -right-40 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-parentPrimary/20 rounded-full blur-[100px]"></div>
-          <div class="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]"></div>
+    <section id="benefits" class="py-12 lg:py-16 bg-white relative">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-900 rounded-3xl lg:rounded-[2.5rem] p-8 lg:p-12 relative overflow-hidden flex flex-col items-center text-center shadow-lg">
+          <div class="absolute -top-32 -right-32 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-parentPrimary/20 rounded-full blur-[80px]"></div>
+          <div class="absolute -bottom-32 -left-32 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[80px]"></div>
           
-          <div class="relative z-10 max-w-3xl">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white/10 mb-8 backdrop-blur-md border border-white/20 text-white">
-              <Rocket class="w-10 h-10" />
+          <div class="relative z-10 max-w-2xl">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-6 backdrop-blur-md border border-white/20 text-white shadow-inner">
+              <Rocket class="w-8 h-8" />
             </div>
-            <h2 class="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6 leading-[1.1]">
+            <h2 class="text-3xl md:text-5xl font-bold text-white tracking-tight mb-4 leading-tight">
               Ready to satisfy your cravings?
             </h2>
-            <p class="text-xl text-gray-400 font-medium mb-10 leading-relaxed">
+            <p class="text-lg text-gray-400 font-medium mb-8 leading-relaxed">
               Join thousands of students who trust Errandr for their daily meals and essentials.
             </p>
-            <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-10 py-5 bg-parentPrimary text-white rounded-2xl font-bold text-lg shadow-xl hover:-translate-y-1 transition-all">
-              Create Errandr Account
+            <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-8 py-4 bg-parentPrimary text-white rounded-xl font-bold text-base shadow-lg hover:-translate-y-0.5 transition-all">
+              create errandr account
             </NuxtLink>
-            <p class="mt-6 text-sm text-gray-500 font-medium">Already have an account? <NuxtLink to="/auth/login" class="text-white hover:underline underline-offset-4 cursor-pointer">Log in here</NuxtLink></p>
+            <p class="mt-6 text-sm text-gray-500 font-medium">Already have an account? <NuxtLink to="/auth/login" class="text-white hover:underline underline-offset-4 cursor-pointer">login here</NuxtLink></p>
           </div>
         </div>
       </div>
@@ -526,6 +591,7 @@ import {
   ShieldCheck, CreditCard, Rocket,
   Pizza, Flame, Beef, Coffee, Menu, X, Navigation, Repeat
 } from 'lucide-vue-next'
+import { vendors_api } from '@/api_factory/modules/vendors';
 
 definePageMeta({
   layout: false
@@ -539,17 +605,78 @@ useHead({
 })
 
 const scrolled = ref(false)
+const loadingVendors = ref(true)
+const vendors = ref<any[]>([])
+const selectedVendorForModal = ref<any>(null)
+const isClosedModalOpen = ref(false)
 
 const handleScroll = () => {
   scrolled.value = window.scrollY > 50
 }
 
+const fetchVendors = async () => {
+  loadingVendors.value = true
+  try {
+    const res = await vendors_api.getOnline()
+    vendors.value = res.data?.vendors || res.data?.data?.vendors || res.data || []
+  } finally {
+    loadingVendors.value = false
+  }
+}
+
+const currentSlide = ref(0)
+const slides = [
+  {
+    title: "craving something?",
+    highlight: "we'll bring it.",
+    description: "oppose hunger sharp sharp! no stress yourself, make we carry food come your door.",
+    image: "/_nuxt/assets/img/hero1.jpg"
+  },
+  {
+    title: "hungry but lazy?",
+    highlight: "we dey for you.",
+    description: "school stress too much? order food from mavise, iyachidera or any vendor you like.",
+    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80"
+  },
+  {
+    title: "wetin you dey wait for?",
+    highlight: "make we run am.",
+    description: "from cafe to your hostel, we dey your back. just order, make we do the rest.",
+    image: "/_nuxt/assets/img/hero12.jpg"
+  },
+  {
+    title: "no more long queues.",
+    highlight: "order sharp sharp.",
+    description: "save your energy for classes. Errandr go help you pick up anything you need.",
+    image: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&q=80"
+  }
+]
+
+let slideInterval: any
+const startCarousel = () => {
+  slideInterval = setInterval(() => {
+    currentSlide.value = (currentSlide.value + 1) % slides.length
+  }, 5000)
+}
+
+const navigateToVendor = (vendor: any) => {
+  if (!vendor.isOpen) {
+    selectedVendorForModal.value = vendor
+    isClosedModalOpen.value = true
+    return
+  }
+  navigateTo(`/vendors/${vendor._id}`)
+}
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  fetchVendors()
+  startCarousel()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  if (slideInterval) clearInterval(slideInterval)
 })
 
 const scrollCarousel = (direction: 'left' | 'right', id: string) => {
@@ -561,19 +688,16 @@ const scrollCarousel = (direction: 'left' | 'right', id: string) => {
 }
 
 // Data
-const vendors = [
-  { id: 1, name: 'Mavise', category: 'Local Dishes', rating: '4.9', distance: '0.4km', time: '10-15 min', image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop', color: 'bg-indigo-600' },
-  { id: 2, name: 'Iya Chidera', category: 'Nigerian Kitchen', rating: '4.8', distance: '0.6km', time: '12-18 min', image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&h=400&fit=crop', color: 'bg-rose-500' },
-  { id: 3, name: 'Smoothie Daddy', category: 'Fresh Juices', rating: '4.9', distance: '0.3km', time: '5-10 min', image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600&h=400&fit=crop', color: 'bg-emerald-500' },
-  { id: 4, name: 'Aunty Iyabo', category: 'Home Style Cook', rating: '4.7', distance: '0.8km', time: '15-20 min', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=400&fit=crop', color: 'bg-orange-500' },
-  { id: 5, name: 'Tasty Delight', category: 'Pastries & Snacks', rating: '4.6', distance: '0.5km', time: '8-12 min', image: 'https://images.unsplash.com/photo-1509358271058-acd22ccec36b?w=600&h=400&fit=crop', color: 'bg-parentPrimary' },
-  { id: 6, name: 'Chikoke', category: 'Grilled Specialties', rating: '4.5', distance: '0.7km', time: '20-25 min', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=400&fit=crop', color: 'bg-red-600' },
-  { id: 7, name: 'Iya Warris', category: 'Traditional Soups', rating: '4.7', distance: '0.9km', time: '15-18 min', image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop', color: 'bg-blue-600' },
-  { id: 8, name: 'Just Spices', category: 'Spicy Delicacies', rating: '4.6', distance: '1.1km', time: '20-30 min', image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&h=400&fit=crop', color: 'bg-amber-600' },
-  { id: 9, name: 'Iya Monisca', category: 'Afro-Fusion', rating: '4.8', distance: '1.2km', time: '25-30 min', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop', color: 'bg-purple-600' },
-]
+const getVendorColor = (name: string) => {
+  if (!name) return 'bg-gray-400';
+  const colors = ['bg-indigo-600', 'bg-rose-500', 'bg-emerald-500', 'bg-orange-500', 'bg-parentPrimary', 'bg-red-600', 'bg-blue-600', 'bg-amber-600', 'bg-purple-600'];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
+};
 
 const getInitials = (name: string) => {
+  if (!name) return '??';
   return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 };
 
@@ -612,5 +736,24 @@ const categories = [
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+.slide-up-enter-active, .slide-up-leave-active {
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
 }
 </style>

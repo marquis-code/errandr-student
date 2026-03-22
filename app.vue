@@ -1,6 +1,7 @@
 <template>
   <div>
     <UiToast class="z-[9999999]" />
+    <UiGlobalLoader />
     <NuxtLayout class="z-10">
       <NuxtPage class="z-10" />
     </NuxtLayout>
@@ -28,7 +29,11 @@ body {
 <script setup lang="ts">
 // Global app configuration
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
+import { useCart } from '@/composables/modules/cart'
 
+const { initCart } = useCart()
+
+initCart()
 useRealtimeNotifications()
 
 useHead({

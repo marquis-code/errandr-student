@@ -54,56 +54,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-vue-next'
+import { useToast } from '@/composables/useToast'
 
-interface Toast {
-  id: number
-  title: string
-  message: string
-  type: 'success' | 'error' | 'warning' | 'info'
-  duration: number
-  timeoutId?: number
-}
-
-const toasts = ref<Toast[]>([])
-let toastCounter = 0
-
-// Create a new toast
-const showToast = (title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info', duration: number = 5000) => {
-  const id = toastCounter++
-  const newToast: Toast = { id, title, message, type, duration }
-  
-  toasts.value.push(newToast)
-  
-  // Auto-remove toast after duration
-  const timeoutId = window.setTimeout(() => {
-    removeToast(id)
-  }, duration)
-  
-  // Store timeout ID for cleanup
-  newToast.timeoutId = timeoutId
-  
-  return id
-}
-
-// Remove a toast by ID
-const removeToast = (id: number) => {
-  const index = toasts.value.findIndex(toast => toast.id === id)
-  if (index !== -1) {
-    // Clear the timeout if it exists
-    if (toasts.value[index].timeoutId) {
-      clearTimeout(toasts.value[index].timeoutId)
-    }
-    toasts.value.splice(index, 1)
-  }
-}
-
-// IMPORTANT: Explicitly expose methods to parent components
-defineExpose({
-  showToast,
-  removeToast
-})
+const { toasts, removeToast } = useToast()
 </script>
 
 <style scoped>

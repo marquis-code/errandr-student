@@ -41,13 +41,13 @@
         <button type="submit" :disabled="loading"
           class="w-full py-3 bg-[#065fdb] hover:bg-[#054ec0] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#065fdb]/20">
           <Loader2 v-if="loading" class="animate-spin w-6 h-6" />
-          {{ loading ? 'Signing in...' : 'Sign In' }}
+          {{ loading ? 'signing in...' : 'sign in' }}
         </button>
 
         <!-- Divider -->
         <div class="flex items-center gap-3 my-6">
           <div class="flex-1 h-px bg-gray-100" />
-          <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">OR</span>
+          <span class="text-[10px] text-gray-400 font-bold">or</span>
           <div class="flex-1 h-px bg-gray-100" />
         </div>
 

@@ -1,32 +1,32 @@
 <template>
-  <section class="py-32 px-4 space-y-16">
-    <div class="text-center space-y-4">
-      <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight leading-none">What Students Say</h2>
-      <p class="text-sm font-bold text-gray-400">Stories from the campus community.</p>
+  <section class="py-16 px-4 space-y-12 bg-white">
+    <div class="text-center space-y-3">
+      <h2 class="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-none">What Students Say</h2>
+      <p class="text-sm font-bold text-gray-500">Stories from the campus community.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
       <div 
         v-for="(t, i) in testimonials" 
         :key="i"
-        class="bg-white p-10 rounded-3xl md:rounded-[3.5rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-700 group relative overflow-hidden"
+        class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-500 group relative overflow-hidden flex flex-col justify-between"
       >
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-gray-50 rounded-full blur-3xl group-hover:bg-parentPrimary/5 transition-colors" />
+        <div class="absolute -right-8 -top-8 w-24 h-24 bg-gray-50 rounded-full blur-2xl group-hover:bg-parentPrimary/5 transition-colors" />
         
-        <div class="flex items-center gap-4 mb-8">
-          <div class="w-14 h-14 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-2xl shadow-lg group-hover:rotate-12 transition-transform">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-xl bg-gray-900 text-white flex items-center justify-center text-xl shadow-sm group-hover:-translate-y-1 transition-transform">
              {{ t.emoji }}
           </div>
           <div>
-            <h4 class="font-bold text-gray-900 tracking-tight leading-none">{{ t.name }}</h4>
-            <p class="text-[11px] font-bold text-parentPrimary uppercase tracking-widest">{{ t.tag }}</p>
+            <h4 class="font-bold text-gray-900 tracking-tight leading-none text-base">{{ t.name }}</h4>
+            <p class="text-[10px] font-bold text-parentPrimary uppercase tracking-widest mt-0.5">{{ t.tag }}</p>
           </div>
         </div>
 
-        <p class="text-gray-600 font-bold text-lg leading-relaxed italic tracking-tight">"{{ t.quote }}"</p>
+        <p class="text-gray-600 font-medium text-sm leading-relaxed italic tracking-tight mb-6">"{{ t.quote }}"</p>
         
-        <div class="mt-8 pt-8 border-t border-gray-50 flex items-center gap-2">
-           <div v-for="j in 5" :key="j" class="w-2 h-2 rounded-full bg-amber-400" />
+        <div class="pt-4 border-t border-gray-50 flex items-center gap-1.5 mt-auto">
+           <div v-for="j in 5" :key="j" class="w-1.5 h-1.5 rounded-full bg-amber-400" />
         </div>
       </div>
     </div>

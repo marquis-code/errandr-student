@@ -87,13 +87,23 @@ instanceArray.forEach((instance) => {
       }
       if (err.response.status === 401) {
         console.log(err.response.data.error)
-        logOut();
-        showToast({
-          title: "Error",
-          message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
-          toastType: "error",
-          duration: 3000
-        });
+        
+        // Only redirect if NOT on a public browsing page
+        const publicPaths = ['/dashboard', '/vendors', '/search', '/', '/auth/login', '/auth/register'];
+        const isPublicPath = typeof window !== 'undefined' && 
+          (publicPaths.includes(window.location.pathname) || window.location.pathname.startsWith('/vendors/'));
+        
+        logOut(isPublicPath ? false : true);
+        
+        if (!isPublicPath) {
+          showToast({
+            title: "Session Expired",
+            message: "Please login to continue",
+            toastType: "error",
+            duration: 3000
+          });
+        }
+        
         return {
           type: "ERROR",
           ...err.response,
