@@ -1,98 +1,150 @@
 <template>
-  <div class="min-h-screen bg-white">
-    <!-- Nav -->
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 py-4">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-        <NuxtLink to="/" class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-lg bg-[#065fdb] flex items-center justify-center"><ShoppingBag class="w-4 h-4 text-white" /></div>
-          <span class="text-lg font-black text-gray-900 tracking-tight">Errandr</span>
+  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100 py-4">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex justify-between items-center">
+        <NuxtLink to="/" class="flex items-center gap-3 group">
+          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
         </NuxtLink>
-        <div class="flex items-center gap-6 text-sm font-semibold text-gray-500">
-          <NuxtLink to="/about" class="hover:text-[#065fdb] transition-colors">About</NuxtLink>
-          <NuxtLink to="/contact" class="hover:text-[#065fdb] transition-colors">Contact</NuxtLink>
-          <NuxtLink to="/faq" class="hover:text-[#065fdb] transition-colors">FAQ</NuxtLink>
-          <NuxtLink to="/terms" class="hover:text-[#065fdb] transition-colors">Terms</NuxtLink>
-          <NuxtLink to="/auth/login" class="text-[#065fdb] font-bold">Sign In</NuxtLink>
+        <div class="flex items-center gap-8">
+          <NuxtLink to="/about" class="text-[11px] font-black tracking-widest uppercase text-parentPrimary border-b-2 border-parentPrimary pb-1">About</NuxtLink>
+          <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white text-[11px] font-black tracking-widest uppercase rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
         </div>
       </div>
     </nav>
 
-    <!-- Content -->
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">About Errandr</h1>
-      <p class="text-lg text-gray-500 mb-10">The campus delivery platform built for students, by students.</p>
+    <!-- Hero Section -->
+    <section class="relative pt-40 pb-24 overflow-hidden">
+      <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-parentPrimary/5 rounded-full blur-[120px] translate-x-1/4"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50 rounded-full blur-[100px] -translate-x-1/4"></div>
+      </div>
 
-      <div class="prose prose-gray max-w-none">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Our Story</h2>
-        <p class="text-gray-600 leading-relaxed mb-6">
-          Errandr was born out of a simple frustration: getting food delivered on campus shouldn't be this hard. Founded in 2024 by a group of Nigerian university students, we set out to build a delivery platform designed specifically for the unique needs of campus communities across Nigeria.
-        </p>
-        <p class="text-gray-600 leading-relaxed mb-6">
-          Unlike traditional delivery apps that focus on metropolitan areas with long-distance logistics, Errandr operates exclusively within university campuses. This hyper-local focus allows us to offer faster deliveries, lower fees, and a deeply personal experience for both students ordering food and the vendors who serve them.
-        </p>
-
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Our Mission</h2>
-        <p class="text-gray-600 leading-relaxed mb-6">
-          To connect every student with their favorite campus meals and essentials through a reliable, affordable, and community-driven delivery network — while creating earning opportunities for student riders.
-        </p>
-
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">How It Works</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
-          <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-            <div class="w-10 h-10 bg-[#065fdb]/10 rounded-xl flex items-center justify-center text-[#065fdb] mb-4"><Search class="w-5 h-5" /></div>
-            <h3 class="font-bold text-gray-900 mb-2">Browse & Order</h3>
-            <p class="text-sm text-gray-500">Explore menus from restaurants, eateries, and student-run businesses right on your campus.</p>
-          </div>
-          <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-            <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 mb-4"><Bike class="w-5 h-5" /></div>
-            <h3 class="font-bold text-gray-900 mb-2">Campus Riders Deliver</h3>
-            <p class="text-sm text-gray-500">Fellow students pick up your order and walk or ride it directly to your hostel, library, or lecture hall.</p>
-          </div>
-          <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-            <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 mb-4"><Star class="w-5 h-5" /></div>
-            <h3 class="font-bold text-gray-900 mb-2">Rate & Repeat</h3>
-            <p class="text-sm text-gray-500">Leave reviews, save your favorites, and reorder in seconds. Building the campus food community together.</p>
-          </div>
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8">
+          <span class="w-2 h-2 rounded-full bg-parentPrimary animate-pulse"></span>
+          Our Mission & Vision
         </div>
-
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Our Values</h2>
-        <ul class="space-y-3 text-gray-600">
-          <li class="flex items-start gap-3"><CheckCircle class="w-5 h-5 text-[#065fdb] mt-0.5 shrink-0" /> <span><strong>Community First:</strong> We are students serving students. Every decision we make is to strengthen campus communities.</span></li>
-          <li class="flex items-start gap-3"><CheckCircle class="w-5 h-5 text-[#065fdb] mt-0.5 shrink-0" /> <span><strong>Accessibility:</strong> Low delivery fees and no minimum spend ensures every student can access the platform.</span></li>
-          <li class="flex items-start gap-3"><CheckCircle class="w-5 h-5 text-[#065fdb] mt-0.5 shrink-0" /> <span><strong>Empowerment:</strong> We create real earning opportunities for student riders and small campus vendors.</span></li>
-          <li class="flex items-start gap-3"><CheckCircle class="w-5 h-5 text-[#065fdb] mt-0.5 shrink-0" /> <span><strong>Reliability:</strong> On-time delivery and quality food handling are non-negotiable.</span></li>
-        </ul>
-
-        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Campuses We Serve</h2>
-        <p class="text-gray-600 leading-relaxed mb-4">
-          We are currently live on select campuses across Nigeria and expanding rapidly. If your university isn't listed yet, reach out — we'd love to launch there.
+        <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-10 max-w-4xl mx-auto">
+          Delivering value to <br />
+          <span class="text-parentPrimary italic bg-parentPrimary/5 px-6 rounded-3xl">every heart</span> on campus.
+        </h1>
+        <p class="text-xl text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed tracking-tight">
+          Starting from the <span class="text-gray-900">College of Medicine, University of Lagos (CMUL)</span>, Errandr is revolutionizing how campus communities eat, work, and thrive.
         </p>
-        <div class="flex flex-wrap gap-2 mb-8">
-          <span class="px-3 py-1.5 bg-gray-100 rounded-full text-sm font-semibold text-gray-700">University of Lagos</span>
-          <span class="px-3 py-1.5 bg-gray-100 rounded-full text-sm font-semibold text-gray-700">University of Ibadan</span>
-          <span class="px-3 py-1.5 bg-gray-100 rounded-full text-sm font-semibold text-gray-700">Covenant University</span>
-          <span class="px-3 py-1.5 bg-gray-100 rounded-full text-sm font-semibold text-gray-700">Obafemi Awolowo University</span>
-          <span class="px-3 py-1.5 bg-[#065fdb]/10 rounded-full text-sm font-bold text-[#065fdb]">+ More coming soon</span>
+      </div>
+    </section>
+
+    <!-- Value Propositions -->
+    <section class="py-24 bg-gray-50/50">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- For Students -->
+          <div class="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
+            <div class="w-16 h-16 bg-blue-50 rounded-[1.5rem] flex items-center justify-center text-parentPrimary mb-8 group-hover:scale-110 transition-transform">
+              <GraduationCap class="w-8 h-8" />
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">For Students</h3>
+            <p class="text-gray-500 font-bold leading-relaxed mb-6">Access your favorite meals within and outside school environs instantly. Focus on your studies while we handle the logistics.</p>
+            <div class="flex items-center gap-2 text-[10px] font-black text-parentPrimary uppercase tracking-widest">
+              <div class="h-px flex-1 bg-parentPrimary/10"></div>
+              Seamless Access
+            </div>
+          </div>
+
+          <!-- For Entrepreneurs -->
+          <div class="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
+            <div class="w-16 h-16 bg-emerald-50 rounded-[1.5rem] flex items-center justify-center text-emerald-600 mb-8 group-hover:scale-110 transition-transform">
+              <Store class="w-8 h-8" />
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">Entrepreneurs</h3>
+            <p class="text-gray-500 font-bold leading-relaxed mb-6">Empowering student vendors and local kitchens with a digital platform to scale their businesses and reach more customers.</p>
+            <div class="flex items-center gap-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+              <div class="h-px flex-1 bg-emerald-500/10"></div>
+              Growth Engine
+            </div>
+          </div>
+
+          <!-- For Erranders -->
+          <div class="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
+            <div class="w-16 h-16 bg-indigo-50 rounded-[1.5rem] flex items-center justify-center text-indigo-600 mb-8 group-hover:scale-110 transition-transform">
+              <Zap class="w-8 h-8" />
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">Erranders</h3>
+            <p class="text-gray-500 font-bold leading-relaxed mb-6">Creating high-yield earning opportunities for student riders. Earn while you walk or ride between your lectures.</p>
+            <div class="flex items-center gap-2 text-[10px] font-black text-indigo-600 uppercase tracking-widest">
+              <div class="h-px flex-1 bg-indigo-500/10"></div>
+              Walk to Earn
+            </div>
+          </div>
         </div>
       </div>
-    </main>
+    </section>
+
+    <!-- Mission Focus -->
+    <section class="py-32 bg-white overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10">
+        <div class="flex flex-col lg:flex-row items-center gap-20">
+          <div class="flex-1 space-y-10 text-center lg:text-left">
+            <h2 class="text-5xl md:text-6xl font-black tracking-tighter leading-[0.95] text-gray-900">
+              Meals accessible <br />
+              <span class="text-parentPrimary">wherever you are.</span>
+            </h2>
+            <p class="text-xl text-gray-500 font-bold leading-relaxed tracking-tight max-w-2xl">
+              From the halls of CMUL to every corner of the university environs, we bridge the gap. Our hyper-local network ensures that distance is never a barrier to quality nutrition and essential services.
+            </p>
+            <div class="pt-6">
+              <NuxtLink to="/auth/register" class="inline-flex items-center gap-4 px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-parentPrimary transition-all group">
+                Join our community
+                <ArrowRight class="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </NuxtLink>
+            </div>
+          </div>
+          <div class="flex-1 relative">
+            <div class="absolute -inset-10 bg-parentPrimary/10 blur-[100px] rounded-full animate-pulse-slow"></div>
+            <img 
+              src="@/assets/img/hero2.jpg" 
+              alt="Campus Delivery" 
+              class="relative z-10 rounded-[4rem] shadow-3xl border-8 border-white object-cover aspect-[5/4]"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-50 border-t border-gray-200 py-8">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400 font-medium">
-        <p>&copy; {{ new Date().getFullYear() }} Errandr Inc. All rights reserved.</p>
-        <div class="flex items-center gap-6">
-          <NuxtLink to="/about" class="hover:text-gray-600">About</NuxtLink>
-          <NuxtLink to="/contact" class="hover:text-gray-600">Contact</NuxtLink>
-          <NuxtLink to="/faq" class="hover:text-gray-600">FAQ</NuxtLink>
-          <NuxtLink to="/terms" class="hover:text-gray-600">Terms</NuxtLink>
+    <footer class="bg-gray-50 border-t border-gray-100 py-16">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col md:flex-row justify-between items-center gap-10">
+        <NuxtLink to="/" class="group">
+          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
+        </NuxtLink>
+        <div class="flex items-center gap-10 text-[10px] font-black tracking-[0.15em] uppercase text-gray-400">
+          <NuxtLink to="/about" class="text-parentPrimary font-black">About Us</NuxtLink>
+          <a href="#" class="hover:text-gray-900 transition-colors">Privacy</a>
+          <a href="#" class="hover:text-gray-900 transition-colors">Terms</a>
+          <a href="#" class="hover:text-gray-900 transition-colors">Contact</a>
         </div>
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© {{ new Date().getFullYear() }} Errandr Ltd • CMUL Native</p>
       </div>
     </footer>
   </div>
 </template>
+
 <script setup lang="ts">
-import { ShoppingBag, Search, Bike, Star, CheckCircle } from 'lucide-vue-next'
+import { GraduationCap, Store, Zap, ArrowRight } from 'lucide-vue-next'
 definePageMeta({ layout: false })
-useHead({ title: 'About Us - Errandr', meta: [{ name: 'description', content: 'Learn about Errandr — the campus food and essentials delivery platform for Nigerian university students.' }] })
+useHead({ 
+  title: 'About Errandr - Community Driven Delivery',
+  meta: [{ name: 'description', content: 'Errandr is focused on delivering value to students, entrepreneurs, and dispatchers, starting from CMUL, Lagos.' }] 
+})
 </script>
+
+<style scoped>
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(1.1); }
+}
+</style>

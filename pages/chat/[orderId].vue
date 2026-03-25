@@ -27,7 +27,7 @@
     <!-- Messages Area -->
     <div ref="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-dark-50">
       <div v-if="loadingMessages" class="flex items-center justify-center py-8">
-        <div class="animate-spin w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full" />
+        <div class="animate-spin w-6 h-6 border border-primary-500 border-t-transparent rounded-full" />
       </div>
 
       <div v-for="msg in messages" :key="msg._id" class="flex animate-fade-in" :class="isMyMessage(msg) ? 'justify-end' : 'justify-start'">

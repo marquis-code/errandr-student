@@ -30,6 +30,26 @@ export const useRealtimeNotifications = () => {
     })
   }
 
+  const handleOrderAccepted = (payload: any) => {
+    if (!payload) return
+    showToast({
+      title: '✅ Order Accepted!',
+      message: `${payload.errander?.firstName || 'A rider'} has accepted your order #${payload.orderNumber}!`,
+      toastType: 'success',
+      duration: 6000,
+    })
+  }
+
+  const handleOrderStatusUpdate = (payload: any) => {
+    if (!payload) return
+    showToast({
+      title: '📦 Order Update',
+      message: `Your order #${payload.orderNumber} is now ${payload.status?.replace(/_/g, ' ').toLowerCase()}`,
+      toastType: 'info',
+      duration: 6000,
+    })
+  }
+
   onMounted(() => {
     connectSocket()
 
@@ -38,6 +58,8 @@ export const useRealtimeNotifications = () => {
 
     socket.value.on('notification:new', handleNotification)
     socket.value.on('audit:log', handleAudit)
+    socket.value.on('notification:order-accepted', handleOrderAccepted)
+    socket.value.on('notification:order-status-update', handleOrderStatusUpdate)
   })
 
   onBeforeUnmount(() => {
@@ -45,6 +67,8 @@ export const useRealtimeNotifications = () => {
 
     socket.value.off('notification:new', handleNotification)
     socket.value.off('audit:log', handleAudit)
+    socket.value.off('notification:order-accepted', handleOrderAccepted)
+    socket.value.off('notification:order-status-update', handleOrderStatusUpdate)
     listenersAttached.value = false
   })
 }

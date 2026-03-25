@@ -10,6 +10,14 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
   },
 
+  nitro: {
+    prerender: {
+      routes: ['/', '/404.html'],
+      ignore: ['/dynamic-routes', '/api'],
+      failOnError: false
+    }
+  },
+
   devServer: {
     port: 3003,
     host: 'localhost'
@@ -87,12 +95,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'https://errandr-backend.onrender.com',
-      wsBase: process.env.WS_BASE_URL || 'https://errandr-backend.onrender.com',
+      apiBase: process.env.VITE_API_BASE_URL || "http://localhost:3005",
+      wsBase: process.env.WS_BASE_URL || process.env.VITE_WS_URL || "http://localhost:3005",
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || '',
       firebaseApiKey: process.env.FIREBASE_API_KEY || '',
       firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
-      firebaseProjectId: process.env.FIREBASE_PROJECT_ID || '',
+      firebaseProjectId: process.env.FIREBASE_PROJECT_ID || ''
     },
   },
 

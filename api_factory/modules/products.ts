@@ -18,6 +18,6 @@ export const products_api = {
   },
 
   getPopular: () => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.get('/vendors/popular');
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/products/popular');
   },
 };

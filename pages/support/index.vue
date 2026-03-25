@@ -62,6 +62,8 @@
 
 <script setup lang="ts">
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { useCustomToast } from '@/composables/core/useCustomToast';
+const { showToast } = useCustomToast();
 const reports = ref<any[]>([]);
 const submitting = ref(false);
 
@@ -91,8 +93,17 @@ const submitReport = async () => {
     Object.assign(form, { category: '', vendorName: '', title: '', description: '' });
     const res = await api.get<any[]>('/reports/mine');
     reports.value = res.data || [];
+    showToast({
+      title: 'Report Submitted',
+      message: 'We will review your report shortly.',
+      toastType: 'success'
+    });
   } catch (e: any) {
-    alert(e.data?.message || 'Failed to submit report');
+    showToast({
+      title: 'Submission Failed',
+      message: e.data?.message || 'Failed to submit report',
+      toastType: 'error'
+    });
   } finally { submitting.value = false; }
 };
 

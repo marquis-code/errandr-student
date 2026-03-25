@@ -10,6 +10,7 @@ export const useAuth = () => {
   const loading = ref(false);
 
   const login = async (payload: any) => {
+    const route = useRoute();
     loading.value = true;
     try {
       const res = await auth_api.login(payload);
@@ -20,6 +21,7 @@ export const useAuth = () => {
       const tokenValue = responseData?.token;
       
       if (!userData || !tokenValue) {
+        console.error('Login response format error:', responseData);
         throw { data: { message: 'Login failed: unexpected response format' } };
       }
       
@@ -34,7 +36,6 @@ export const useAuth = () => {
       
       // Navigate after setting credentials
       try {
-        const route = useRoute();
         const redirectPath = (route.query.redirect as string) || '/dashboard';
         await navigateTo(redirectPath);
       } catch (navError) {
@@ -43,6 +44,7 @@ export const useAuth = () => {
       
       return responseData;
     } catch (e: any) {
+      console.error('Login submission failed:', e);
       throw e;
     } finally {
       loading.value = false;
