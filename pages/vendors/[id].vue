@@ -20,7 +20,7 @@
       </div>
     </header>
 
-    <div class="max-w-[1400px] mx-auto animate-fade-in pb-32 px-6 pt-6">
+    <div class="max-w-[1400px] mx-auto animate-fade-in pb-32 px-4 md:px-6 pt-6">
       <!-- Compact Vendor Header -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 px-2 border-b border-gray-50 pb-6">
         <div class="flex items-center gap-4">
@@ -44,8 +44,16 @@
         
         <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide text-sans">
           <button 
+            @click="showMobileCartDrawer = true" 
+            class="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all whitespace-nowrap shadow-md shrink-0"
+          >
+            <ShoppingBag class="w-3.5 h-3.5" />
+            <span v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="bg-parentPrimary px-1.5 py-0.5 rounded-md text-[8px]">{{ cart.getVendorStats(vendor._id).itemCount }}</span>
+            <span v-else>View Packs</span>
+          </button>
+          <button 
             @click="handleStartGroupOrder"
-            class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black tracking-widest text-gray-900 hover:bg-gray-100 transition-all whitespace-nowrap"
+            class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black tracking-widest text-gray-900 hover:bg-gray-100 transition-all whitespace-nowrap shrink-0"
           >
             <Users class="w-3.5 h-3.5" />
             {{ activeCode ? `Group: ${activeCode}` : 'Group Order' }}
@@ -114,18 +122,20 @@
 
       <div class="flex flex-col lg:flex-row gap-10">
         <!-- Sticky Category Nav -->
-        <aside class="lg:w-48 shrink-0">
-          <div class="sticky top-24 space-y-1">
-            <h4 class="text-[9px] font-black text-gray-400 tracking-[0.2em] mb-4 px-2">Categories</h4>
-            <button
-              v-for="cat in categories"
-              :key="cat"
-              @click="scrollToCategory(cat)"
-              class="w-full text-left px-3 py-2.5 rounded-xl text-[11px] font-bold transition-all relative group"
-              :class="activeCategory === cat ? 'bg-gray-900 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
-            >
-              {{ toTitleCase(cat) }}
-            </button>
+        <aside class="lg:w-48 shrink-0 border-b border-gray-50 lg:border-none pb-4 lg:pb-0 mb-6 lg:mb-0">
+          <div class="sticky top-24">
+            <h4 class="hidden lg:block text-[9px] font-black text-gray-400 tracking-[0.2em] mb-4 px-2">Categories</h4>
+            <div class="flex lg:flex-col gap-2 overflow-x-auto scrollbar-hide">
+              <button
+                v-for="cat in categories"
+                :key="cat"
+                @click="scrollToCategory(cat)"
+                class="whitespace-nowrap lg:w-full text-left px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all relative group shrink-0"
+                :class="activeCategory === cat ? 'bg-gray-900 text-white shadow-md' : 'bg-gray-50/50 text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
+              >
+                {{ toTitleCase(cat) }}
+              </button>
+            </div>
           </div>
         </aside>
 
@@ -142,63 +152,85 @@
               <div class="h-px bg-gray-50 flex-1" />
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3 md:gap-5">
               <div 
                 v-for="product in groupedProducts[cat]" 
                 :key="product._id"
                 @click="selectedProduct = product"
-                class="group relative bg-white rounded-3xl border border-gray-100/50 p-4 hover:shadow-[0_20px_50px_rgba(0,0,0,0.04)] hover:border-parentPrimary/10 transition-all duration-500 cursor-pointer overflow-hidden"
+                class="group relative bg-white rounded-[1.25rem] md:rounded-3xl border border-gray-100/50 p-2 md:p-3 hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] hover:border-parentPrimary/20 transition-all duration-500 cursor-pointer overflow-hidden flex flex-col gap-3 md:gap-4"
               >
-                <div class="flex gap-4">
-                  <div class="w-24 h-24 md:w-28 md:h-28 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100/50 shrink-0 relative">
-                    <img :src="product.image || '/placeholder-food.jpg'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-                  </div>
+                <!-- Image Wrapper -->
+                <div class="w-full aspect-[4/3] rounded-xl md:rounded-2xl overflow-hidden bg-gray-50 border border-gray-100/50 shrink-0 relative">
+                  <img :src="product.image || '/placeholder-food.jpg'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-gray-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   
-                  <div class="flex-1 flex flex-col justify-between py-1 min-w-0">
-                    <div>
-                      <h3 class="text-sm font-black text-gray-900 tracking-tight truncate">{{ product.name }}</h3>
-                      <p class="text-[10px] font-bold text-gray-400 line-clamp-2 mt-1 leading-relaxed">{{ product.description || 'Freshly prepared with premium ingredients.' }}</p>
-                    </div>
-                    
-                    <div class="flex items-center justify-between mt-4">
-                      <div class="flex flex-col">
-                        <span class="text-base font-black text-gray-900 leading-none">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
-                        <span v-if="product.discountPrice" class="text-[8px] text-gray-400 line-through mt-1">₦{{ product.price.toLocaleString() }}</span>
-                      </div>
-                      
-                      <button 
-                        @click.stop="addToCart(product)"
-                        class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all shadow-lg shadow-black/5"
-                      >
-                        <Plus class="w-5 h-5" />
-                      </button>
-                    </div>
+                  <!-- Item Count Overlay -->
+                  <div v-if="getProductCount(product._id) > 0" class="absolute top-2 right-2 md:top-3 md:right-3 flex items-center gap-1.5 bg-gray-900/90 backdrop-blur-md text-white px-2.5 py-1.5 rounded-lg text-[10px] font-black shadow-xl z-10 border border-white/10">
+                    <ShoppingBag class="w-3.5 h-3.5" />
+                    {{ getProductCount(product._id) }}
                   </div>
                 </div>
-
-                <!-- Item Count Overlay -->
-                <div v-if="getProductCount(product._id) > 0" class="absolute top-2 right-2 flex items-center gap-1.5 bg-gray-900 text-white px-2 py-1 rounded-lg text-[10px] font-black shadow-xl">
-                  <ShoppingBag class="w-3 h-3" />
-                  {{ getProductCount(product._id) }}
+                
+                <!-- Content Area -->
+                <div class="flex-1 flex flex-col justify-between px-1 pb-1">
+                  <div>
+                    <h3 class="text-sm md:text-base font-black text-gray-900 tracking-tight leading-tight mb-1">{{ product.name }}</h3>
+                    <p class="hidden md:block text-[11px] font-bold text-gray-400 line-clamp-2 leading-relaxed">{{ product.description || 'Freshly prepared with premium ingredients.' }}</p>
+                  </div>
+                  
+                  <div class="flex items-end justify-between mt-4">
+                    <div class="flex flex-col">
+                      <span v-if="product.discountPrice" class="text-[9px] text-gray-400 line-through mb-0.5">₦{{ product.price.toLocaleString() }}</span>
+                      <span class="text-sm md:text-lg font-black text-gray-900 leading-none">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                    </div>
+                    
+                    <button 
+                      @click.stop="addToCart(product)"
+                      class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-parentPrimary/30 shadow-black/5 shrink-0"
+                    >
+                      <Plus class="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
         </div>
 
-        <!-- Compact Right Sidebar (Orders/Participants) -->
-        <aside class="w-full lg:w-[380px] shrink-0 space-y-8 mt-10 lg:mt-0">
-          <div class="sticky top-24 space-y-8">
+        <!-- Compact Right Sidebar / Mobile Drawer (Orders/Participants) -->
+        <aside 
+          class="shrink-0 transition-opacity z-50 text-sans"
+          :class="{
+            'fixed inset-0 bg-black/60 backdrop-blur-sm lg:static lg:bg-transparent lg:backdrop-blur-none flex flex-col justify-end lg:block opacity-100 visible': showMobileCartDrawer,
+            'hidden lg:block lg:w-[380px] opacity-0 lg:opacity-100 invisible lg:visible': !showMobileCartDrawer
+          }"
+        >
+          <!-- Mobile Close Overlay -->
+          <div v-if="showMobileCartDrawer" class="absolute inset-0 lg:hidden" @click="showMobileCartDrawer = false" />
+          
+          <div 
+            class="relative w-full lg:w-[380px] bg-white lg:bg-transparent rounded-t-[2.5rem] lg:rounded-none p-5 md:p-6 lg:p-0 h-[85vh] lg:h-auto overflow-y-auto scrollbar-hide lg:overflow-visible lg:sticky lg:top-24 mt-10 lg:mt-0 shadow-2xl lg:shadow-none transform transition-transform duration-300"
+            :class="showMobileCartDrawer ? 'translate-y-0' : 'translate-y-full lg:translate-y-0'"
+          >
+            <!-- Mobile Drawer Handle -->
+            <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-2 lg:hidden" />
+            <div class="flex items-center justify-between mb-4 lg:hidden" v-if="showMobileCartDrawer">
+              <h2 class="text-xl font-black text-gray-900 tracking-tight">Your Order</h2>
+              <button @click="showMobileCartDrawer = false" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-all">
+                <X class="w-4 h-4"/>
+              </button>
+            </div>
+            
+            <div class="space-y-8 pb-10 lg:pb-0">
             <!-- Participants -->
             <div v-if="groupOrder" class="space-y-4">
               <div class="flex items-center justify-between px-2">
                 <h3 class="text-[9px] font-black text-gray-400 tracking-[0.2em]">Participants ({{ groupOrder.participants.length }})</h3>
                 <button v-if="isHost" @click="copyInviteLink" class="text-[8px] font-black text-parentPrimary tracking-widest hover:underline uppercase">Copy Link</button>
               </div>
-              <div class="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-3">
-                <div v-for="p in groupOrder.participants" :key="p.user._id || p.user" class="p-3 bg-white border border-gray-50 rounded-xl shadow-sm flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-black text-[10px] text-gray-500 overflow-hidden shrink-0 border border-white shadow-sm">
+              <div class="lg:p-4 lg:bg-gray-50/50 lg:rounded-2xl lg:border lg:border-gray-100 space-y-3">
+                <div v-for="p in groupOrder.participants" :key="p.user._id || p.user" class="p-3 bg-gray-50 lg:bg-white border border-gray-100 lg:border-gray-50 rounded-xl lg:shadow-sm flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-white lg:bg-gray-100 flex items-center justify-center font-black text-[10px] text-gray-500 overflow-hidden shrink-0 border border-white lg:shadow-sm">
                     <img v-if="p.user.avatar" :src="p.user.avatar" class="w-full h-full object-cover" />
                     <span v-else>{{ p.user.firstName?.[0] }}</span>
                   </div>
@@ -245,14 +277,14 @@
             </div>
 
             <!-- Detailed Pack Summary (Pack Arrangement) -->
-            <div class="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-5">
+            <div class="lg:p-5 bg-white lg:rounded-2xl lg:border lg:border-gray-100 lg:shadow-sm space-y-5">
               <div class="flex items-center justify-between border-b border-gray-50 pb-4">
                 <h3 class="text-sm font-black text-gray-900 tracking-widest">Your Packs</h3>
                 <ShoppingCart class="w-5 h-5 text-parentPrimary" />
               </div>
 
-              <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="space-y-5 max-h-[500px] overflow-y-auto pr-1 scrollbar-hide">
-                <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-2">
+              <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="space-y-5 lg:max-h-[500px] lg:overflow-y-auto lg:pr-1 scrollbar-hide">
+                <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-3">
                   <!-- Pack Header -->
                   <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
@@ -269,19 +301,19 @@
                   </div>
                   
                   <!-- Pack Items -->
-                  <div class="space-y-2 pl-1">
-                    <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-4">
-                      <div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-gray-100 shadow-sm">
+                  <div class="space-y-3 pl-1">
+                    <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3 md:gap-4">
+                      <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden shrink-0 border border-gray-100 shadow-sm">
                         <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
                       </div>
                       <div class="flex-1 min-w-0">
-                        <p class="text-sm font-black text-gray-900 truncate tracking-tight">{{ toTitleCase(item.name) }}</p>
-                        <p class="text-xs font-black text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
+                        <p class="text-xs md:text-sm font-black text-gray-900 truncate tracking-tight mb-0.5">{{ toTitleCase(item.name) }}</p>
+                        <p class="text-[10px] md:text-xs font-black text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
                       </div>
-                      <div class="flex items-center gap-2 bg-gray-50 rounded-xl p-1.5 border border-gray-100">
-                        <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-7 h-7 rounded-lg bg-white text-gray-500 flex items-center justify-center hover:text-rose-500 transition-all text-sm font-bold shadow-sm">−</button>
-                        <span class="text-sm font-black min-w-[20px] text-center">{{ item.quantity }}</span>
-                        <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-7 h-7 rounded-lg bg-white text-gray-500 flex items-center justify-center hover:text-parentPrimary transition-all text-sm font-bold shadow-sm">+</button>
+                      <div class="flex items-center gap-1.5 md:gap-2 bg-gray-50 rounded-xl p-1 md:p-1.5 border border-gray-100 shrink-0">
+                        <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-6 h-6 md:w-7 md:h-7 rounded-lg bg-white text-gray-500 flex items-center justify-center hover:text-rose-500 transition-all text-sm font-bold shadow-sm">−</button>
+                        <span class="text-xs md:text-sm font-black min-w-[16px] md:min-w-[20px] text-center">{{ item.quantity }}</span>
+                        <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-6 h-6 md:w-7 md:h-7 rounded-lg bg-white text-gray-500 flex items-center justify-center hover:text-parentPrimary transition-all text-sm font-bold shadow-sm">+</button>
                       </div>
                     </div>
                   </div>
@@ -292,13 +324,13 @@
                   <Plus class="w-3.5 h-3.5" /> New Pack
                 </button>
 
-                <div class="pt-6 border-t border-gray-50 space-y-5">
+                <div class="pt-6 pb-24 lg:pb-0 border-t border-gray-50 space-y-5">
                   <div class="flex justify-between items-center text-xs font-black text-gray-400 tracking-[0.2em]">
                     <span>Subtotal</span>
                     <span class="text-xl font-black text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
                   </div>
-                  <NuxtLink :to="activeCode ? `/cart?group=${activeCode}` : '/cart'" class="block w-full py-5 bg-gray-900 text-white rounded-2xl text-center text-xs font-black tracking-[0.2em] hover:bg-parentPrimary transition-all shadow-xl shadow-gray-100">
-                    {{ activeCode ? 'Finalize Order' : 'Checkout Now' }}
+                  <NuxtLink :to="activeCode ? `/cart?group=${activeCode}` : '/cart'" class="block w-full py-5 bg-gray-900 text-white rounded-2xl text-center text-[10px] md:text-xs font-black tracking-[0.2em] hover:bg-parentPrimary transition-all shadow-xl shadow-gray-100 uppercase">
+                    {{ activeCode ? 'Finalize Order' : 'Checkout' }}
                   </NuxtLink>
                 </div>
               </div>
@@ -306,6 +338,7 @@
                 <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center mx-auto mb-3 text-lg">🛒</div>
                 <p class="text-[9px] font-bold text-gray-400 tracking-widest">Your cart is empty</p>
               </div>
+            </div>
             </div>
           </div>
         </aside>
@@ -483,6 +516,7 @@ const {
 } = useGroupOrder();
 const { showToast } = useToast();
 
+const showMobileCartDrawer = ref(false);
 const vendor = ref<any>(null);
 const products = ref<any[]>([]);
 const categories = ref<any[]>([]);
