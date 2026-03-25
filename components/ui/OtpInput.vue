@@ -9,7 +9,7 @@
       type="text"
       inputmode="numeric"
       maxlength="1"
-      class="w-12 h-14 sm:w-14 sm:h-16 text-center text-2xl font-black text-gray-900 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-[#065fdb] focus:ring-4 focus:ring-[#065fdb]/10 transition-all outline-none shadow-sm"
+      class="w-12 h-14 sm:w-14 sm:h-16 text-center text-2xl font-black text-gray-900 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-[#065fdb] focus:ring-4 focus:ring-[#065fdb]/10 transition-all outline-none shadow-sm"
       :class="{ 'border-[#065fdb] bg-white shadow-md': digits[index] }"
       @input="handleInput($event, index)"
       @keydown="handleKeyDown($event, index)"

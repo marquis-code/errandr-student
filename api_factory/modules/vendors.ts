@@ -5,6 +5,10 @@ export const vendors_api = {
     return GATEWAY_ENDPOINT.get('/vendors/online');
   },
 
+  getAll: (params?: any) => {
+    return GATEWAY_ENDPOINT.get('/vendors', { params });
+  },
+
   getStatistics: () => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get('/vendors/statistics');
   },
@@ -23,5 +27,9 @@ export const vendors_api = {
 
   getById: (id: string) => {
     return GATEWAY_ENDPOINT.get(`/vendors/${id}`);
+  },
+
+  getPopular: () => {
+    return GATEWAY_ENDPOINT.get('/vendors/popular');
   },
 };

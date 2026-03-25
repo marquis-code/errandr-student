@@ -5,9 +5,12 @@
 :root {
   --parent-primary: #065fdb;
   --parent-primary-rgb: 6, 95, 219;
-  --premium-shadow: 0 20px 50px -12px rgba(6, 95, 219, 0.15);
-  --glass-bg: rgba(255, 255, 255, 0.7);
+  --premium-shadow: 0 20px 50px -12px rgba(6, 95, 219, 0.25);
+  --glass-bg: rgba(230, 239, 252, 0.7);
   --glass-border: rgba(255, 255, 255, 0.5);
+  --parent-secondary: #E6EFFC;
+  --parent-accent: #0448A8;
+  --parent-dark: #1C1B19;
 }
 
 html,
@@ -99,7 +102,7 @@ input[type=number] {
 }
 
 .custom-checkbox {
-  @apply appearance-none w-6 h-6 border-2 border-gray-200 rounded-lg bg-white cursor-pointer relative transition-all checked:bg-parentPrimary checked:border-parentPrimary hover:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10;
+  @apply appearance-none w-6 h-6 border border-gray-200 rounded-lg bg-white cursor-pointer relative transition-all checked:bg-parentPrimary checked:border-parentPrimary hover:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10;
 }
 
 .custom-checkbox:checked::after {

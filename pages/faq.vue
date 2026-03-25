@@ -1,71 +1,129 @@
 <template>
-  <div class="min-h-screen bg-white">
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 py-4">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-        <NuxtLink to="/" class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-lg bg-[#065fdb] flex items-center justify-center"><ShoppingBag class="w-4 h-4 text-white" /></div>
-          <span class="text-lg font-black text-gray-900 tracking-tight">Errandr</span>
+  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100 py-4">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex justify-between items-center">
+        <NuxtLink to="/" class="flex items-center gap-3 group">
+          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
         </NuxtLink>
-        <div class="flex items-center gap-6 text-sm font-semibold text-gray-500">
-          <NuxtLink to="/about" class="hover:text-[#065fdb]">About</NuxtLink>
-          <NuxtLink to="/contact" class="hover:text-[#065fdb]">Contact</NuxtLink>
-          <NuxtLink to="/faq" class="hover:text-[#065fdb]">FAQ</NuxtLink>
-          <NuxtLink to="/terms" class="hover:text-[#065fdb]">Terms</NuxtLink>
+        <div class="flex items-center gap-8 text-[11px] font-black tracking-widest uppercase text-gray-400">
+          <NuxtLink to="/about" class="hover:text-parentPrimary transition-colors">About</NuxtLink>
+          <NuxtLink to="/faq" class="text-parentPrimary border-b-2 border-parentPrimary pb-1">FAQ</NuxtLink>
+          <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
         </div>
       </div>
     </nav>
 
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">Frequently Asked Questions</h1>
-      <p class="text-lg text-gray-500 mb-10">Everything you need to know about ordering on Errandr.</p>
+    <!-- Hero Section -->
+    <section class="relative pt-40 pb-20 overflow-hidden bg-gray-50/20">
+      <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-parentPrimary/5 rounded-full blur-[120px] translate-x-1/8"></div>
+      </div>
 
-      <div class="space-y-6">
-        <div v-for="(faq, i) in faqs" :key="i" class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
-          <button @click="openIndex = openIndex === i ? -1 : i" class="w-full flex items-center justify-between p-6 text-left">
-            <span class="font-bold text-gray-900">{{ faq.q }}</span>
-            <ChevronDown class="w-5 h-5 text-gray-400 transition-transform" :class="{ 'rotate-180': openIndex === i }" />
-          </button>
-          <div v-show="openIndex === i" class="px-6 pb-6 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4">
-            {{ faq.a }}
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
+          <HelpCircle class="w-3.5 h-3.5 text-parentPrimary" />
+          Common Inquiries
+        </div>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
+          Answers for the <br />
+          <span class="text-parentPrimary italic bg-parentPrimary/5 px-6 rounded-3xl">curious mind.</span>
+        </h1>
+        <p class="text-xl text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed tracking-tight">
+          Everything you need to know about the Errandr ecosystem, from ordering your first meal to becoming a campus dispatcher.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ Accordions -->
+    <section class="py-24 bg-white">
+      <div class="max-w-4xl mx-auto px-6 sm:px-10">
+        <div class="space-y-4">
+          <div v-for="(faq, i) in faqs" :key="i" 
+               class="group border border-gray-100 rounded-[2rem] overflow-hidden hover:border-parentPrimary/30 transition-all duration-500 shadow-sm hover:shadow-xl"
+               :class="{ 'bg-gray-50/50 border-parentPrimary/20': openIndex === i }">
+            <button @click="openIndex = openIndex === i ? -1 : i" 
+                    class="w-full flex items-center justify-between p-8 text-left group">
+              <span class="text-xl font-black text-gray-900 tracking-tight transition-colors" :class="{ 'text-parentPrimary': openIndex === i }">
+                {{ faq.q }}
+              </span>
+              <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-parentPrimary/10 group-hover:text-parentPrimary transition-all duration-500"
+                   :class="{ 'rotate-180 bg-parentPrimary text-white group-hover:bg-parentPrimary group-hover:text-white': openIndex === i }">
+                <ChevronDown class="w-5 h-5" />
+              </div>
+            </button>
+            <transition name="expand">
+              <div v-if="openIndex === i" class="px-8 pb-8 text-lg text-gray-500 font-bold leading-relaxed tracking-tight border-t border-gray-100 pt-6 animate-fade-in">
+                {{ faq.a }}
+              </div>
+            </transition>
+          </div>
+        </div>
+
+        <div class="mt-20 bg-gray-900 overflow-hidden relative p-12 md:p-16 rounded-[4rem] text-center shadow-2xl group">
+          <div class="absolute inset-0 bg-parentPrimary opacity-0 group-hover:opacity-10 transition-opacity duration-1000"></div>
+          <div class="relative z-10 space-y-6">
+            <h3 class="text-3xl font-black text-white tracking-tight">Still seeking clarity?</h3>
+            <p class="text-gray-400 font-bold max-w-md mx-auto">Our support team is active Mon–Sat, 8AM–9PM. We're always a message away.</p>
+            <div class="pt-4">
+              <NuxtLink to="/contact" class="inline-flex items-center gap-4 px-10 py-5 bg-white text-gray-900 rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-parentPrimary hover:text-white transition-all group">
+                Contact Support
+                <ArrowRight class="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="mt-12 bg-[#065fdb]/5 rounded-2xl p-8 border border-[#065fdb]/10 text-center">
-        <h3 class="font-bold text-gray-900 text-lg mb-2">Still have questions?</h3>
-        <p class="text-gray-500 text-sm mb-4">Our support team is available Monday through Saturday, 8AM to 9PM.</p>
-        <NuxtLink to="/contact" class="inline-flex items-center gap-2 px-6 py-2.5 bg-[#065fdb] text-white rounded-xl font-bold text-sm shadow-md hover:bg-[#054ec0] transition-colors">Contact Support</NuxtLink>
-      </div>
-    </main>
-
-    <footer class="bg-gray-50 border-t border-gray-200 py-8">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400 font-medium">
-        <p>&copy; {{ new Date().getFullYear() }} Errandr Inc.</p>
-        <div class="flex items-center gap-6">
-          <NuxtLink to="/about" class="hover:text-gray-600">About</NuxtLink>
-          <NuxtLink to="/contact" class="hover:text-gray-600">Contact</NuxtLink>
-          <NuxtLink to="/faq" class="hover:text-gray-600">FAQ</NuxtLink>
-          <NuxtLink to="/terms" class="hover:text-gray-600">Terms</NuxtLink>
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-100 py-16 mt-20">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col md:flex-row justify-between items-center gap-10">
+        <NuxtLink to="/" class="group">
+          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
+        </NuxtLink>
+        <div class="flex items-center gap-10 text-[10px] font-black tracking-[0.15em] uppercase text-gray-400">
+          <NuxtLink to="/about" class="hover:text-gray-900 transition-colors">About Us</NuxtLink>
+          <NuxtLink to="/terms" class="hover:text-gray-900 transition-colors">Terms</NuxtLink>
+          <NuxtLink to="/faq" class="text-parentPrimary font-black">FAQ</NuxtLink>
+          <NuxtLink to="/contact" class="hover:text-gray-900 transition-colors">Contact</NuxtLink>
         </div>
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© {{ new Date().getFullYear() }} Errandr Ltd • CMUL Native</p>
       </div>
     </footer>
   </div>
 </template>
+
 <script setup lang="ts">
-import { ShoppingBag, ChevronDown } from 'lucide-vue-next'
+import { ChevronDown, HelpCircle, ArrowRight } from 'lucide-vue-next'
 import { ref } from 'vue'
+
 definePageMeta({ layout: false })
-useHead({ title: 'FAQ - Errandr', meta: [{ name: 'description', content: 'Frequently asked questions about ordering food and essentials on Errandr.' }] })
+useHead({ 
+  title: 'FAQ - Errandr Support',
+  meta: [{ name: 'description', content: 'Answers to frequently asked questions about Errandr campus delivery.' }] 
+})
+
 const openIndex = ref(0)
 const faqs = [
   { q: 'How does Errandr work?', a: 'Browse menus from campus restaurants and vendors, add items to your cart, and place an order. A nearby student rider picks up your food and delivers it directly to your location on campus — hostel, library, or lecture hall.' },
-  { q: 'Is Errandr available on my campus?', a: 'We are currently live at the University of Lagos, University of Ibadan, Covenant University, and Obafemi Awolowo University. We are expanding rapidly — email campuses@errandr.com if you want us at your school.' },
-  { q: 'How much does delivery cost?', a: 'Delivery fees are set by each vendor and typically range from ₦100 to ₦500 depending on distance within campus. Many vendors offer free delivery for orders above a certain amount.' },
+  { q: 'Is Errandr available on my campus?', a: 'We are currently live at CMUL (College of Medicine, UNILAG), and expanding to other campuses. We focus on hyper-local logistics to ensure the fastest delivery within school environs.' },
+  { q: 'How much does delivery cost?', a: 'Delivery fees are set by each vendor and typically range from ₦100 to ₦500 depending on distance within campus. We optimize for high-yield, low-cost deliveries.' },
   { q: 'How do I pay for my order?', a: 'We support bank transfers, card payments via Paystack, and your Errandr wallet balance. You can top up your wallet at any time for faster checkouts.' },
   { q: 'How long does delivery take?', a: 'Since all deliveries are within campus, most orders arrive within 15–30 minutes. Estimated delivery time is shown before you place your order.' },
-  { q: 'Can I track my order in real-time?', a: 'Yes! Once a rider accepts your order, you can track their location live on the map until delivery is complete.' },
-  { q: 'What if there is a problem with my order?', a: 'You can report any issue directly from your order history page. Our support team reviews complaints within 1 hour during operating hours and will offer a refund or replacement as appropriate.' },
-  { q: 'Can I schedule an order for later?', a: 'Some vendors support pre-ordering. Look for the "Pre-order" badge on vendor profiles to order in advance for a specific time.' },
-  { q: 'How do I become a rider?', a: 'Visit the Errandr for Riders portal, create an account, and verify your student ID. Once approved, you can start accepting deliveries immediately.' },
+  { q: 'Can I track my order in real-time?', a: 'Yes! Once a rider accepts your order, you can track their status live. During batch windows, orders are optimized for group efficiency.' },
+  { q: 'What if there is a problem with my order?', a: 'You can report any issue directly from your order history page. Our support team reviews complaints within 1 hour during operating hours.' },
+  { q: 'Can I become an Errandr dispatcher?', a: 'Absolutely! Our walk-to-earn model allows any student to earn while they commute. Just register on the Dispatch app to get started.' }
 ]
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
