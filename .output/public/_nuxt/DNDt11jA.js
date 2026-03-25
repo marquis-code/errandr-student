@@ -1,0 +1,1 @@
+import{G as t}from"./DmNIKN2H.js";const o={getProducts:r=>t.get("/products",{params:r}),getProduct:r=>t.get(`/products/${r}`),getCategories:()=>t.get("/products/categories"),getOnline:()=>t.get("/vendors/online"),getPopular:()=>t.get("/products/popular")};export{o as p};
