@@ -1,0 +1,1 @@
+import{addressResolver as s}from"./CtIy_B7r.js";import{ax as a,ay as o}from"./C0Dt92r5.js";const d=a({defaults:{"@type":"Place"},resolve(e,r){return typeof e.address!="string"&&(e.address=o(e.address,r,s)),e}});export{d as placeResolver};

@@ -1,0 +1,1 @@
+import{ax as t}from"./C0Dt92r5.js";const s=t({defaults:{"@type":"ReadAction"},resolve(e,r){return e.target.includes(r.meta.url)||e.target.unshift(r.meta.url),e}});export{s as readActionResolver};
