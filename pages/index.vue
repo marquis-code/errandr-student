@@ -71,88 +71,153 @@
       </div>
     </Transition>
 
+    <!-- Search Overlay — Teleported to body root for guaranteed z-index -->
+    <Teleport to="body">
+      <div 
+        v-if="showSuggestions"
+        class="fixed inset-0 bg-black/50 z-[9998] transition-opacity duration-300"
+        @click="showSuggestions = false"
+      ></div>
+    </Teleport>
+
     <!-- Hero Section -->
     <section 
-      class="relative pt-28 pb-20 lg:pt-32 lg:pb-32 bg-white transition-all duration-500"
-      :class="showSuggestions ? 'z-[66]' : 'z-10'"
+      class="relative pt-36 pb-16 lg:pt-40 lg:pb-24 bg-white overflow-visible"
     >
-      <!-- Animated Background Elements -->
+      <!-- Background -->
       <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-0 -left-20 w-[600px] h-[600px] bg-parentPrimary/5 rounded-full blur-[120px] animate-pulse-slow" />
-        <div class="absolute bottom-0 -right-20 w-[600px] h-[600px] bg-secondary/30 rounded-full blur-[120px] animate-pulse-slow" style="animation-delay: 3s" />
+        <div class="absolute top-0 -left-20 w-[600px] h-[600px] bg-parentPrimary/[0.03] rounded-full blur-[150px] animate-pulse-slow" />
+        <div class="absolute bottom-0 -right-20 w-[600px] h-[600px] bg-secondary/[0.08] rounded-full blur-[150px] animate-pulse-slow" style="animation-delay: 3s" />
       </div>
 
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center lg:text-left">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          <div class="max-w-3xl mx-auto lg:mx-0">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
+        <div class="max-w-3xl mx-auto space-y-6">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-[10px] font-black tracking-[0.2em] uppercase animate-fade-in-up">
+            <Zap class="w-3.5 h-3.5 fill-current" /> Campus Delivery, Redefined
+          </div>
+          
+          <!-- Rotating Hero Heading (Optimized Size) -->
+          <div class="relative h-[120px] md:h-[180px] lg:h-[220px] overflow-hidden flex items-center justify-center">
+            <TransitionGroup name="hero-slide" tag="div" class="w-full">
+              <h1 
+                :key="currentHeadingIndex"
+                class="absolute inset-0 flex flex-col items-center justify-center text-3xl md:text-5xl lg:text-7xl font-extrabold tracking-tighter leading-[1.1] text-gray-900 px-4 font-onest"
+              >
+                <div class="max-w-max mx-auto text-center" v-html="heroHeadings[currentHeadingIndex].text"></div>
+                <!-- <div class="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500">
+                  <span class="w-1.5 h-1.5 rounded-full bg-parentPrimary animate-pulse"></span>
+                  <span class="text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase text-gray-400">
+                    {{ heroHeadings[currentHeadingIndex].lang }}
+                  </span>
+                </div> -->
+              </h1>
+            </TransitionGroup>
+          </div>
 
-            <!-- Dynamic Heading -->
-            <div class="min-h-[160px] md:min-h-[200px]">
-              <Transition name="fade-up" mode="out-in">
-                <div :key="currentSlide" class="space-y-6">
-                  <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] text-gray-900">
-                    {{ slides[currentSlide].title }} <br />
-                    <span class="text-parentPrimary italic bg-parentPrimary/5 px-4 rounded-3xl">{{ slides[currentSlide].highlight }}</span>
-                  </h1>
-                  <p class="text-lg md:text-xl text-gray-500 font-bold max-w-lg mx-auto lg:mx-0 leading-relaxed tracking-tight">
-                    {{ slides[currentSlide].description }}
-                  </p>
+          <!-- Rotating Slang Subtitle -->
+          <div class="h-8 overflow-hidden text-sm md:text-lg font-bold text-gray-400 tracking-tight flex items-center justify-center">
+             <span :key="currentSlangIndex" class="animate-vertical-marquee">{{ slangSlogans[currentSlangIndex] }}</span>
+          </div>
+
+          <!-- Search Bar -->
+          <div 
+            class="mt-8 max-w-xl mx-auto group relative transition-all duration-700"
+            style="isolation: isolate;"
+            :class="showSuggestions ? 'z-[200] scale-[1.03]' : 'z-20 scale-100'"
+          >
+            <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-20 blur-2xl transition-opacity duration-500"></div>
+            <div class="relative flex flex-col items-center bg-white border-2 border-gray-100 focus-within:border-parentPrimary p-2 rounded-[2rem] shadow-2xl transition-all duration-500 ring-0 focus-within:ring-8 focus-within:ring-parentPrimary/5">
+              <div class="w-full flex items-center">
+                <div class="w-12 h-12 flex items-center justify-center text-gray-400">
+                  <Search class="w-5 h-5" />
                 </div>
-              </Transition>
-            </div>
+                <input 
+                  type="text" 
+                  v-model="heroSearchQuery"
+                  @keyup.enter="handleHeroSearch"
+                  @focus="showSuggestions = true"
+                  @blur="handleSearchBlur"
+                  placeholder="What are you craving?" 
+                  class="flex-1 bg-transparent border-none outline-none text-sm font-bold text-gray-900 placeholder:text-gray-300 px-2"
+                />
+                <button 
+                  @click="handleHeroSearch"
+                  class="px-6 py-3.5 bg-gray-900 text-white rounded-[1.3rem] text-[10px] font-black tracking-widest uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl"
+                >
+                   Find Food
+                </button>
+              </div>
 
-            <!-- Search Focus Overlay -->
-            <div 
-              class="fixed inset-0 bg-gray-900/60 backdrop-blur-md z-[65] transition-opacity duration-700 pointer-events-none"
-              :class="showSuggestions ? 'opacity-100 !pointer-events-auto' : 'opacity-0'"
-              @click="showSuggestions = false"
-            ></div>
-
-            <div 
-              class="mt-12 max-w-xl mx-auto lg:mx-0 group relative transition-all duration-700"
-              :class="showSuggestions ? 'z-[70] scale-[1.03]' : 'z-20 scale-100'"
-            >
-              <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-20 blur-2xl transition-opacity duration-500"></div>
-              <div class="relative flex flex-col items-center bg-white border-2 border-gray-100 focus-within:border-parentPrimary p-2 rounded-[2rem] shadow-2xl transition-all duration-500 ring-0 focus-within:ring-8 focus-within:ring-parentPrimary/5">
-                <div class="w-full flex items-center">
-                  <div class="w-12 h-12 flex items-center justify-center text-gray-400">
-                    <Search class="w-6 h-6" />
+              <Transition name="fade-up">
+                <div 
+                  v-if="showSuggestions && (heroSearchSuggestions.length > 0 || isSearching || hasSearched || timeOfDaySuggestions.length > 0)"
+                  class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-100 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] overflow-hidden z-[75] p-2"
+                >
+                  <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
+                    <span class="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase">
+                      {{ heroSearchQuery ? 'Matching Meals' : `Suggested for ${suggestionTimeText}` }}
+                    </span>
+                    <div v-if="isSearching" class="w-4 h-4 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
                   </div>
-                  <input 
-                    type="text" 
-                    v-model="heroSearchQuery"
-                    @keyup.enter="handleHeroSearch"
-                    @focus="showSuggestions = true"
-                    @blur="handleSearchBlur"
-                    placeholder="What are you craving?" 
-                    class="flex-1 bg-transparent border-none outline-none text-base font-bold text-gray-900 placeholder:text-gray-300 px-2"
-                  />
-                  <button 
-                    @click="handleHeroSearch"
-                    class="px-8 py-4 bg-gray-900 text-white rounded-[1.3rem] text-xs font-black tracking-widest uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl"
-                  >
-                     Find Food
-                  </button>
-                </div>
-
-                <Transition name="fade-up">
-                  <div 
-                    v-if="showSuggestions && (heroSearchSuggestions.length > 0 || isSearching || hasSearched || timeOfDaySuggestions.length > 0)"
-                    class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-100 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] overflow-hidden z-[75] p-2"
-                  >
-                    <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
-                      <span class="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase">
-                        {{ heroSearchQuery ? 'Matching Meals' : `Suggested for ${suggestionTimeText}` }}
-                      </span>
-                      <div v-if="isSearching" class="w-4 h-4 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
+                  
+                  <div class="max-h-[350px] overflow-y-auto hide-scrollbar space-y-1 mt-1">
+                    <!-- Search results -->
+                    <div 
+                      v-for="product in heroSearchSuggestions" 
+                      :key="product._id"
+                      @click="router.push(`/vendors/${product.vendor._id || product.vendor}`)"
+                      class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
+                    >
+                      <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
+                        <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                        <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
+                          <Utensils class="w-5 h-5" />
+                        </div>
+                      </div>
+                      <div class="flex-1 text-left">
+                        <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+                      </div>
+                      <div class="text-right">
+                        <span class="text-xs font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+                      </div>
                     </div>
-                    
-                    <div class="max-h-[350px] overflow-y-auto hide-scrollbar space-y-1 mt-1">
-                      <!-- Search results -->
+
+                    <!-- Empty state -->
+                    <div v-if="!isSearching && hasSearched && heroSearchSuggestions.length === 0" class="p-8 text-center bg-gray-50/50 rounded-3xl m-2 border border-dashed border-gray-200">
+                      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md border border-gray-100">
+                        <span class="text-3xl">🍽️</span>
+                      </div>
+                      <p class="text-sm font-black text-gray-900 mb-1">No meals match "{{ heroSearchQuery }}"</p>
+                      <p class="text-[10px] font-bold text-gray-400 mb-4 max-w-xs mx-auto">Check out these popular picks for {{ suggestionTimeText.toLowerCase() }}!</p>
+                      
+                      <div v-if="timeOfDaySuggestions.length > 0" class="space-y-2 text-left">
+                        <div 
+                          v-for="product in timeOfDaySuggestions.slice(0, 4)" 
+                          :key="'tod-' + product._id"
+                          @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
+                          class="flex items-center gap-3 p-3 bg-white hover:bg-parentPrimary/5 rounded-xl border border-gray-100 cursor-pointer transition-all group hover:border-parentPrimary/20"
+                        >
+                          <div class="w-10 h-10 rounded-lg bg-gray-50 overflow-hidden flex-shrink-0 border border-gray-100">
+                            <img v-if="product.image" :src="product.image" class="w-full h-full object-cover" />
+                            <Utensils v-else class="w-4 h-4 m-auto text-parentPrimary/30" />
+                          </div>
+                          <div class="flex-1 min-w-0">
+                             <h4 class="text-[11px] font-black text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
+                             <p class="text-[9px] font-bold text-gray-400 uppercase tracking-tight">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+                          </div>
+                          <span class="text-[10px] font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Time-of-day suggestions -->
+                    <div v-if="!heroSearchQuery && timeOfDaySuggestions.length > 0">
                       <div 
-                        v-for="product in heroSearchSuggestions" 
-                        :key="product._id"
-                        @click="router.push(`/vendors/${product.vendor._id || product.vendor}`)"
+                        v-for="product in timeOfDaySuggestions" 
+                        :key="'focus-' + product._id"
+                        @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
                         class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
                       >
                         <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
@@ -169,127 +234,66 @@
                           <span class="text-xs font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
                         </div>
                       </div>
-
-                      <!-- EMPTY STATE: when user searched and got 0 results -->
-                      <div v-if="!isSearching && hasSearched && heroSearchSuggestions.length === 0" class="p-8 text-center bg-gray-50/50 rounded-3xl m-2 border border-dashed border-gray-200">
-                        <div class="w-20 h-20 bg-white rounded-[1.5rem] flex items-center justify-center mx-auto mb-5 shadow-md border border-gray-100">
-                          <span class="text-4xl">🍽️</span>
-                        </div>
-                        <p class="text-sm font-black text-gray-900 mb-2">No meals match "{{ heroSearchQuery }}"</p>
-                        <p class="text-[11px] font-bold text-gray-400 leading-relaxed mb-6 max-w-xs mx-auto">We couldn't find that meal, but check out these popular picks for {{ suggestionTimeText.toLowerCase() }}!</p>
-                        
-                        <div v-if="timeOfDaySuggestions.length > 0" class="space-y-2 text-left">
-                          <p class="text-[9px] font-black text-parentPrimary uppercase tracking-[0.2em] ml-2 mb-3 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-parentPrimary animate-pulse"></span>
-                            Popular for {{ suggestionTimeText }}
-                          </p>
-                          <div 
-                            v-for="product in timeOfDaySuggestions.slice(0, 4)" 
-                            :key="'tod-' + product._id"
-                            @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
-                            class="flex items-center gap-3 p-3 bg-white hover:bg-parentPrimary/5 rounded-xl border border-gray-100 cursor-pointer transition-all group hover:border-parentPrimary/20 hover:shadow-sm"
-                          >
-                            <div class="w-10 h-10 rounded-lg bg-gray-50 overflow-hidden flex-shrink-0 border border-gray-100">
-                              <img v-if="product.image" :src="product.image" class="w-full h-full object-cover" />
-                              <Utensils v-else class="w-4 h-4 m-auto text-parentPrimary/30" />
-                            </div>
-                            <div class="flex-1 min-w-0">
-                               <h4 class="text-[11px] font-black text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                               <p class="text-[9px] font-bold text-gray-400 uppercase tracking-tight">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
-                            </div>
-                            <span class="text-[10px] font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
-                          </div>
-                        </div>
-                        <div v-else class="py-4">
-                          <p class="text-[10px] font-bold text-gray-400">Try searching for something else 🔍</p>
-                        </div>
-                      </div>
-
-                      <!-- TIME-OF-DAY SUGGESTIONS: when input is focused but empty -->
-                      <div v-if="!heroSearchQuery && timeOfDaySuggestions.length > 0">
-                        <div 
-                          v-for="product in timeOfDaySuggestions" 
-                          :key="'focus-' + product._id"
-                          @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
-                          class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
-                        >
-                          <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
-                            <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                            <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
-                              <Utensils class="w-5 h-5" />
-                            </div>
-                          </div>
-                          <div class="flex-1 text-left">
-                            <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
-                          </div>
-                          <div class="text-right">
-                            <span class="text-xs font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   </div>
-                </Transition>
-              </div>
+                </div>
+              </Transition>
             </div>
-
           </div>
 
-          <!-- Featured Card Section -->
-          <div class="relative hidden lg:block h-[600px]">
-            <Transition name="scale-fade" mode="out-in">
-              <div :key="currentSlide" class="relative group h-full">
-                <!-- Floating Card 1 -->
-                <div class="absolute top-10 right-10 z-20 bg-white/90 backdrop-blur-2xl p-6 rounded-[2rem] shadow-2xl border border-white/50 animate-float">
-                  <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
-                      <Clock class="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">delivery in</p>
-                      <p class="text-xl font-black text-gray-900 leading-none">12 mins</p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Main Image Card -->
-                <div class="w-full h-full rounded-[4rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.12)] border-[12px] border-white relative">
-                  <img :src="slides[currentSlide].image" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                  <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent" />
-                  
-                  <div class="absolute bottom-12 left-12 right-12 flex justify-between items-end">
-                    <div class="space-y-2">
-                       <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-black tracking-widest uppercase">{{ slides[currentSlide].highlight }}</span>
-                       <h3 class="text-3xl font-black text-white tracking-tight">Top Rated Choice</h3>
-                    </div>
-                    <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-gray-900 shadow-2xl group-hover:rotate-12 transition-transform">
-                       <ArrowRight class="w-6 h-6" />
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Floating Card 2 -->
-                <div class="absolute bottom-20 -left-10 z-20 bg-white p-6 rounded-[2rem] shadow-2xl border border-gray-50 flex items-center gap-4 animate-float" style="animation-delay: 2s">
-                  <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&h=200" class="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <div class="flex gap-0.5 mb-1">
-                      <Star v-for="i in 5" :key="i" class="w-3 h-3 text-parentPrimary fill-current" />
-                    </div>
-                    <p class="text-xs font-black text-gray-900 truncate">Spicy Pepperoni Pizza</p>
-                  </div>
-                </div>
-              </div>
-            </Transition>
+          <!-- Quick Tags -->
+          <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+             <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest mr-1">E choke:</span>
+             <button v-for="tag in quickTags.slice(0,4)" :key="tag.label" 
+              class="px-4 py-2 bg-gray-50 hover:bg-white border border-gray-100 hover:border-parentPrimary/30 rounded-xl text-[9px] font-black text-gray-600 hover:text-parentPrimary transition-all shadow-sm hover:shadow-md"
+             >
+               {{ tag.label }}
+             </button>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- The Animated Visual Showroom (Former Carousel Images) -->
+    <ScrollGallery :images="heroVisuals" />
+
+
  <!-- Vendor Spotlight Marquee -->
  <LandingVendorMarquee />
+
+  <!-- Spin the Wheel Section -->
+  <section class="py-16 lg:py-24 bg-gray-50 border-t border-gray-100 overflow-hidden relative">
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle, #000 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div class="order-2 lg:order-1 flex justify-center">
+          <SpinWheel class="w-full max-w-md" />
+        </div>
+        <div class="order-1 lg:order-2 space-y-8 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-xs font-black uppercase tracking-widest mx-auto lg:mx-0">
+            <Sparkles class="w-4 h-4" /> Daily Luck
+          </div>
+          <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none">
+            Spin once. <br /><span class="text-parentPrimary italic">Win every day.</span>
+          </h2>
+          <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight max-w-md mx-auto lg:mx-0">
+            Try your luck on the Errandr Wheel of Fortune! Win delivery discounts, free meals, and exclusive campus vouchers. Reset every 24 hours.
+          </p>
+          <div class="flex items-center justify-center lg:justify-start gap-8 pt-4">
+            <div class="flex flex-col">
+              <span class="text-3xl font-black text-gray-900">100%</span>
+              <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Free to play</span>
+            </div>
+            <div class="w-px h-12 bg-gray-200"></div>
+            <div class="flex flex-col">
+              <span class="text-3xl font-black text-gray-900">24h</span>
+              <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Reset cycle</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
  <!-- Active Promotions -->
  <section v-if="activePromotions.length > 0" class="py-12 bg-white overflow-hidden border-t border-gray-100">
@@ -806,12 +810,13 @@ import hero1 from '@/assets/img/hero1.jpg'
 import hero2 from '@/assets/img/hero2.jpg'
 import hero12 from "@/assets/img/hero12.jpg"
 import hero14 from "@/assets/img/hero14.jpg"
+import ScrollGallery from '@/components/Landing/ScrollGallery.vue'
 import { 
   ArrowRight, Twitter, Instagram, Facebook,
   LogIn, ShoppingBag, Utensils, PlayCircle,
   Clock, MapPin, Star, Store, Bike, ChevronLeft, ChevronRight,
   ShieldCheck, CreditCard, Rocket, Megaphone,
-  Pizza, Flame, Beef, Coffee, Menu, X, Navigation, Repeat, Search, AlertCircle
+  Pizza, Flame, Beef, Coffee, Menu, X, Navigation, Repeat, Search, AlertCircle, Zap, ChevronUp, ArrowUpRight, Sparkles
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
@@ -938,39 +943,67 @@ const activePromotions = computed(() => {
  return promos.sort(() => Math.random() - 0.5)
 })
 
-const currentSlide = ref(0)
-const slides = [
- {
- title: "craving something?",
- highlight: "we'll bring it.",
- description: "oppose hunger sharp sharp! no stress yourself, make we carry food come your door.",
- image: hero1
- },
- {
- title: "hungry but lazy?",
- highlight: "we dey for you.",
- description: "school stress too much? order food from mavise, iyachidera or any vendor you like.",
- image: hero14
- },
- {
- title: "wetin you dey wait for?",
- highlight: "make we run am.",
- description: "from cafe to your hostel, we dey your back. just order, make we do the rest.",
- image: hero12
- },
- {
- title: "no more long queues.",
- highlight: "order sharp sharp.",
- description: "save your energy for classes. Errandr go help you pick up anything you need.",
- image: hero2
- }
+const currentSlangIndex = ref(0)
+const currentHeadingIndex = ref(0)
+
+const heroHeadings = [
+  { text: '<span class="text-parentPrimary italic">Sapa</span> dey finish.<br/>Have you eaten?', lang: '🇳🇬 Pidgin' },
+  { text: 'Ebi ń pa mí.<br/><span class="text-parentPrimary italic">Jẹun</span> ti tó!', lang: '🟢 Yoruba' },
+  { text: '<span class="text-parentPrimary italic">Agụụ</span> na-agụ m.<br/>Kedu ihe ị ga-eri?', lang: '🔴 Igbo' },
+  { text: 'Yunwa ta kashe ni.<br/><span class="text-parentPrimary italic">Abinci</span> ya zo!', lang: '🟡 Hausa' },
+  { text: 'Don\'t <span class="text-parentPrimary italic">do over!</span><br/>Order sharp sharp.', lang: '🇳🇬 Pidgin' },
+  { text: 'Oúnjẹ campus...<br/><span class="text-parentPrimary italic">zero stress</span> delivery.', lang: '🇳🇬 Pidgin' },
+  { text: 'Body go tell you<br/>if you <span class="text-parentPrimary italic">no chop.</span>', lang: '🇳🇬 Pidgin' },
+  { text: 'Who no chop,<br/><span class="text-parentPrimary italic">no fit read.</span>', lang: '🇳🇬 Pidgin' },
+  { text: 'Ẹ̀wà mà jẹ́ <br/>kó <span class="text-parentPrimary italic">dùn.</span> Chop now!', lang: '🟢 Yoruba' },
+  { text: 'Nwanne, <span class="text-parentPrimary italic">agụụ</span> <br/>adịghị mma.', lang: '🔴 Igbo' },
+  { text: 'Ciwon <span class="text-parentPrimary italic">ciki</span> <br/>ba wasa bane.', lang: '🟡 Hausa' },
+  { text: 'Food is ready.<br/><span class="text-parentPrimary italic">Level up</span> your day!', lang: '🇳🇬 Pidgin' },
 ]
 
-let slideInterval: any
-const startCarousel = () => {
- slideInterval = setInterval(() => {
- currentSlide.value = (currentSlide.value + 1) % slides.length
- }, 5000)
+const slangSlogans = [
+  "Sapa is real, but hunger is realer. 💸",
+  "No leave, no transfer—just chop. 🍽️",
+  "Awoof dey run belle, but Errandr dey save life. 🏃‍♂️",
+  "Body go tell you if you no chop. 💪",
+  "E choke! Best meals on campus. 🔥",
+  "Who no chop, no fit read. 📚",
+  "Ẹ̀wà mà jẹ́ kó dùn. Errandr got you. 🫡",
+  "Nwanne, order nri gị ugbu a! 🍛",
+  "Abinci mai kyau — cikin dakika! ⚡",
+  "Level up your food game. No capping. 🧢"
+]
+
+const floatingSlang = [
+  "DON'T DO OVER", "SAPA NICE ONE", "NO CAPPING", "CHOP LIFE", "E CHOKE", "AWOOF"
+]
+
+const slangStyle = (i: number) => {
+  const positions = [
+    { top: '15%', left: '5%' },
+    { top: '25%', right: '8%' },
+    { bottom: '20%', left: '10%' },
+    { bottom: '15%', right: '12%' },
+    { top: '60%', left: '2%' },
+    { top: '50%', right: '4%' }
+  ]
+  return positions[i]
+}
+
+const quickTags = [
+  { label: 'Sapa Friendly', icon: '💸', desc: 'Meals under ₦1,500' },
+  { label: 'Awoof Deals', icon: '🎁', desc: 'Buy 1 Get 1 Free' },
+  { label: 'Fast Dispatch', icon: '⚡', desc: 'Delivery in < 15 mins' },
+  { label: 'Late Night', icon: '🌙', desc: 'Open till 2AM' },
+]
+
+const heroVisuals = [hero1, hero14, hero12, hero2]
+
+const startSlangRotation = () => {
+  setInterval(() => {
+    currentSlangIndex.value = (currentSlangIndex.value + 1) % slangSlogans.length
+    currentHeadingIndex.value = (currentHeadingIndex.value + 1) % heroHeadings.length
+  }, 4000)
 }
 
 const navigateToVendor = (vendor: any) => {
@@ -986,12 +1019,11 @@ onMounted(() => {
  window.addEventListener('scroll', handleScroll)
  fetchVendors()
  fetchSuggestions()
- startCarousel()
+ startSlangRotation()
 })
 
 onUnmounted(() => {
  window.removeEventListener('scroll', handleScroll)
- if (slideInterval) clearInterval(slideInterval)
 })
 
 const scrollCarousel = (direction: 'left' | 'right', id: string) => {
@@ -1087,15 +1119,57 @@ const categories = [
   50% { opacity: 0.3; transform: scale(1.1); }
 }
 
-.slide-up-enter-active, .slide-up-leave-active {
-  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+.animate-vertical-marquee {
+  display: block;
+  animation: vertical-marquee 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(30px);
+
+@keyframes vertical-marquee {
+  0% { transform: translateY(100%); opacity: 0; }
+  10%, 90% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-100%); opacity: 0; }
 }
-.slide-up-leave-to {
+
+.animate-draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw 1.5s ease-out forwards 1s;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-float-various {
+  animation: float-various 10s ease-in-out infinite alternate;
+}
+
+@keyframes float-various {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(20px, -10px) rotate(2deg); }
+  66% { transform: translate(-10px, 20px) rotate(-2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Hero Heading Rotation */
+.hero-slide-enter-active,
+.hero-slide-leave-active {
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-slide-enter-from {
   opacity: 0;
-  transform: translateY(-30px);
+  transform: translateY(40px);
+}
+.hero-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-40px);
 }
 </style>

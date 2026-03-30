@@ -213,6 +213,35 @@
  </div>
 
  <div class="space-y-4">
+  <div class="bg-gray-50/50 p-4 rounded-2xl border border-gray-100 space-y-4 mb-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-parentPrimary/10 flex items-center justify-center text-lg">🎁</div>
+        <div class="min-w-0">
+          <p class="text-[10px] font-black text-gray-900 tracking-tight">Mystery Box</p>
+          <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest truncate">Random item for ₦800</p>
+        </div>
+      </div>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" v-model="isMysteryBox" class="sr-only peer">
+        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-parentPrimary"></div>
+      </label>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-lg">🏢</div>
+        <div class="min-w-0">
+          <p class="text-[10px] font-black text-gray-900 tracking-tight">Dorm Delivery</p>
+          <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest truncate">Split fee with hostel neighbors</p>
+        </div>
+      </div>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" v-model="isDormDelivery" class="sr-only peer">
+        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+      </label>
+    </div>
+  </div>
  <AnimatedInput 
  v-model="recipientName" 
  label="Recipient name" 
@@ -374,6 +403,8 @@ const vendorsMetadata = ref<Record<string, any>>({});
 const selectedPacks = ref<Record<string, any>>({}); // vendorId -> { name, price }
 const popularVendors = ref<any[]>([]);
 const loadingVendors = ref(false);
+const isMysteryBox = ref(false);
+const isDormDelivery = ref(false);
 
 const updateSelectedPack = (vendorId: string, packName: string) => {
  const pack = vendorsMetadata.value[vendorId]?.packs?.find((p: any) => p.name === packName);
@@ -478,6 +509,10 @@ const computedTotalDeliveryFee = computed(() => {
  const vendor = vendorsMetadata.value[vId];
  totalDelivery += vendor?.deliveryFee ?? 150;
  });
+
+ if (isDormDelivery.value) {
+  totalDelivery = Math.round(totalDelivery * 0.5);
+ }
  return totalDelivery;
 });
 
@@ -499,7 +534,7 @@ const computedTotalPackagingFee = computed(() => {
 const computedTotalServiceFee = computed(() => {
  const subtotal = groupOrder.value 
  ? groupOrder.value.participants.reduce((acc: number, p: any) => acc + p.items.reduce((sum: number, i: any) => sum + (i.price * i.quantity), 0), 0)
- : cartStore.subtotal.value;
+ : (isMysteryBox.value ? 800 : cartStore.subtotal.value);
  return Math.round(subtotal * 0.05);
 });
 
@@ -509,7 +544,7 @@ const groupSubtotal = computed(() => {
 });
 
 const subtotalBeforeFee = computed(() => {
- const subtotal = groupOrder.value ? groupSubtotal.value : cartStore.subtotal.value;
+ const subtotal = groupOrder.value ? groupSubtotal.value : (isMysteryBox.value ? 800 : cartStore.subtotal.value);
  const delivery = computedTotalDeliveryFee.value;
  const packaging = computedTotalPackagingFee.value;
  const service = computedTotalServiceFee.value;
@@ -723,7 +758,8 @@ const placeAllOrders = async (reference: string) => {
  name: 'Standard Packaging', 
  price: vendor?.packagingFee ?? 300 
  },
- weight: 1.0,
+  isMysteryBox: isMysteryBox.value,
+  isDormDelivery: isDormDelivery.value, weight: 1.0,
  });
  
  if (!firstOrderId) firstOrderId = res.data._id;

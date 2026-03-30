@@ -1,54 +1,129 @@
 <template>
- <div class="relative py-20 overflow-hidden bg-gray-900 border-y border-white/5">
- <div class="absolute inset-0 bg-gradient-to-r from-gray-900 via-transparent to-gray-900 z-10 pointer-events-none" />
- 
- <div class="flex flex-col gap-12">
- <!-- Marquee Row 1 -->
- <div class="flex overflow-hidden group">
- <div class="flex animate-marquee whitespace-nowrap gap-12 items-center py-4">
- <div v-for="vendor in vendors" :key="vendor" class="flex items-center gap-6 group/item">
- <span class="text-6xl md:text-8xl font-black text-white/5 hover:text-parentPrimary transition-colors duration-700 tracking-tighter font-display cursor-default selection:bg-none">
- {{ vendor }}
- </span>
- <div class="w-3 h-3 rounded-full bg-parentPrimary/20 group-hover/item:scale-150 transition-transform" />
- </div>
- </div>
- <!-- Duplicate for seamless loop -->
- <div class="flex animate-marquee whitespace-nowrap gap-12 items-center py-4" aria-hidden="true">
- <div v-for="vendor in vendors" :key="vendor + '-dup'" class="flex items-center gap-6 group/item">
- <span class="text-6xl md:text-8xl font-black text-white/5 hover:text-parentPrimary transition-colors duration-700 tracking-tighter font-display cursor-default selection:bg-none">
- {{ vendor }}
- </span>
- <div class="w-3 h-3 rounded-full bg-parentPrimary/20 group-hover/item:scale-150 transition-transform" />
- </div>
- </div>
- </div>
+  <div class="relative py-16 md:py-24 overflow-hidden bg-gray-950">
+    <!-- Sophisticated Background Glow -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,95,219,0.05),transparent_70%)]" />
+    <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+    <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
- <!-- Campus Favorite Vendors -->
- <div class="text-center relative z-20">
- <p class="text-[10px] font-bold text-parentPrimary tracking-widest">Bringing Happiness to Students' Doorsteps</p>
- </div>
- </div>
- </div>
+    <div class="flex flex-col gap-8 md:gap-12 relative z-10">
+      <!-- Row 1: Left to Right -->
+      <div class="flex overflow-hidden select-none">
+        <div class="flex animate-marquee-left whitespace-nowrap gap-8 md:gap-16 items-center">
+          <div v-for="(vendor, i) in vendors" :key="vendor" class="flex items-center gap-8 md:gap-16">
+            <span 
+              :class="[
+                'text-5xl md:text-8xl font-black tracking-tighter font-onest transition-colors duration-500',
+                i % 2 === 0 ? 'text-white/10 hover:text-white/20' : 'text-transparent stroke-text hover:text-white/5'
+              ]"
+            >
+              {{ vendor }}
+            </span>
+            <div class="flex flex-col gap-1 opacity-20">
+              <div class="w-8 h-1 bg-parentPrimary rounded-full" />
+              <div class="w-4 h-1 bg-parentPrimary rounded-full translate-x-4" />
+            </div>
+          </div>
+        </div>
+        <!-- Duplicates -->
+        <div class="flex animate-marquee-left whitespace-nowrap gap-8 md:gap-16 items-center" aria-hidden="true">
+          <div v-for="(vendor, i) in vendors" :key="vendor + '-dup'" class="flex items-center gap-8 md:gap-16">
+            <span 
+              :class="[
+                'text-5xl md:text-8xl font-black tracking-tighter font-onest transition-colors duration-500',
+                i % 2 === 0 ? 'text-white/10 hover:text-white/20' : 'text-transparent stroke-text hover:text-white/5'
+              ]"
+            >
+              {{ vendor }}
+            </span>
+            <div class="flex flex-col gap-1 opacity-20">
+              <div class="w-8 h-1 bg-parentPrimary rounded-full" />
+              <div class="w-4 h-1 bg-parentPrimary rounded-full translate-x-4" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Brand Label -->
+      <div class="flex items-center justify-center gap-4 py-2">
+        <div class="h-px w-8 md:w-16 bg-gradient-to-r from-transparent to-parentPrimary/30" />
+        <p class="text-[10px] md:text-sm font-black text-parentPrimary tracking-[0.4em] uppercase font-onest">
+          Bringing Happiness to Students' Doorsteps
+        </p>
+        <div class="h-px w-8 md:w-16 bg-gradient-to-l from-transparent to-parentPrimary/30" />
+      </div>
+
+      <!-- Row 2: Right to Left -->
+      <div class="flex overflow-hidden select-none">
+        <div class="flex animate-marquee-right whitespace-nowrap gap-8 md:gap-16 items-center">
+          <div v-for="(vendor, i) in [...vendors].reverse()" :key="vendor + '-rev'" class="flex items-center gap-8 md:gap-16">
+            <span 
+              :class="[
+                'text-5xl md:text-8xl font-black tracking-tighter font-onest transition-colors duration-500',
+                i % 2 !== 0 ? 'text-white/10 hover:text-white/20' : 'text-transparent stroke-text hover:text-white/5'
+              ]"
+            >
+              {{ vendor }}
+            </span>
+            <Zap class="w-6 h-6 md:w-12 md:h-12 text-parentPrimary/20 fill-current" />
+          </div>
+        </div>
+        <!-- Duplicates -->
+        <div class="flex animate-marquee-right whitespace-nowrap gap-8 md:gap-16 items-center" aria-hidden="true">
+          <div v-for="(vendor, i) in [...vendors].reverse()" :key="vendor + '-rev-dup'" class="flex items-center gap-8 md:gap-16">
+            <span 
+              :class="[
+                'text-5xl md:text-8xl font-black tracking-tighter font-onest transition-colors duration-500',
+                i % 2 !== 0 ? 'text-white/10 hover:text-white/20' : 'text-transparent stroke-text hover:text-white/5'
+              ]"
+            >
+              {{ vendor }}
+            </span>
+            <Zap class="w-6 h-6 md:w-12 md:h-12 text-parentPrimary/20 fill-current" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { Zap } from 'lucide-vue-next';
 const vendors = [
- 'Mavise', 'Iya Chidera', 'Aunty Iyabo', 
- 'Smoothie Daddy', 'Chikoke', 'Tasty Delight', 
- 'Iya Warris', 'Just Spices', 'Iya Monisca'
+  'Mavise', 'Iya Chidera', 'Aunty Iyabo', 
+  'Smoothie Daddy', 'Chikoke', 'Tasty Delight', 
+  'Iya Warris', 'Just Spices', 'Iya Monisca'
 ];
 </script>
 
 <style scoped>
-@keyframes marquee {
- 0% { transform: translateX(0); }
- 100% { transform: translateX(-100%); }
+.font-onest {
+  font-family: 'Onest', sans-serif;
 }
-.animate-marquee {
- animation: marquee 40s linear infinite;
+
+.stroke-text {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
 }
-.group:hover .animate-marquee {
- animation-play-state: paused;
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee-left {
+  animation: marquee-left 60s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: marquee-right 60s linear infinite;
+}
+
+.flex:hover .animate-marquee-left,
+.flex:hover .animate-marquee-right {
+  animation-play-state: paused;
 }
 </style>

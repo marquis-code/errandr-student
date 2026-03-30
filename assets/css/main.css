@@ -23,7 +23,7 @@ body {
   font-family: 'Onest', sans-serif;
 }
 
-h1, h2, h3, h4, .font-display {
+h1, h2, h3, h4, .font-display, .font-onest {
   font-family: 'Onest', sans-serif;
   @apply font-bold tracking-tight;
 }

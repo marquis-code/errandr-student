@@ -472,6 +472,23 @@ const rating = ref(0);
 const hoverRating = ref(0);
 const reviewText = ref('');
 const submittingRating = ref(false);
+const cancelling = ref(false);
+
+const cancelOrder = async () => {
+  if (!confirm('Are you sure you want to cancel this order? You will receive a full refund to your wallet.')) return;
+  cancelling.value = true;
+  try {
+    await api.post(`/orders/${route.params.id}/cancel`, {
+      reason: 'Cancelled by user'
+    });
+    fetchOrder();
+  } catch (error) {
+    console.error('Cancellation failed', error);
+    alert('Failed to cancel order. Please try again later.');
+  } finally {
+    cancelling.value = false;
+  }
+};
 
 const submitRating = async () => {
  if (rating.value === 0) return;
