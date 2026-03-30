@@ -1,0 +1,1 @@
+import{_ as t,o as s,c,$ as n}from"./Ct0XXXl1.js";const r={},o={class:"min-h-screen bg-white flex items-center justify-center p-4"};function a(e,_){return s(),c("div",o,[n(e.$slots,"default")])}const i=t(r,[["render",a]]);export{i as default};

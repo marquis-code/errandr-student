@@ -17,38 +17,26 @@
  </div>
  </div>
  
- <!-- Navigation -->
- <nav class="flex-1 space-y-1 relative z-10">
- <NuxtLink
- v-for="item in navItems"
- :key="item.path"
- :to="item.path"
- class="flex items-center px-5 py-3.5 text-xs font-bold rounded-2xl transition-all group/nav relative overflow-hidden"
- :class="isActive(item.path) 
- ? 'bg-gray-900 text-white shadow-md' 
- : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'"
- >
- <component :is="item.icon" class="w-4 h-4 mr-4 transition-transform group-hover/nav:scale-110"></component>
- {{ item.label }}
- <div v-if="isActive(item.path)" class="absolute right-4 w-1 h-1 rounded-full bg-parentPrimary shadow-[0_0_10px_rgba(6,95,219,0.8)]"></div>
- </NuxtLink>
- 
- <!-- Notifications Link with Badge -->
- <NuxtLink
- to="/notifications"
- class="flex items-center px-5 py-3.5 text-xs font-bold rounded-2xl transition-all group/nav relative overflow-hidden"
- :class="route.path === '/notifications' 
- ? 'bg-gray-900 text-white shadow-md' 
- : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'"
- >
- <Bell class="w-4 h-4 mr-4 transition-transform group-hover/nav:scale-110"></Bell>
- Notifications
- <div v-if="unreadCount > 0" class="ml-auto min-w-[18px] h-4.5 px-1 bg-parentPrimary rounded-full flex items-center justify-center text-[8px] font-bold text-white">
- {{ unreadCount > 9 ? '9+' : unreadCount }}
- </div>
- <div v-if="route.path === '/notifications'" class="absolute right-4 w-1 h-1 rounded-full bg-parentPrimary shadow-[0_0_10px_rgba(6,95,219,0.8)]"></div>
- </NuxtLink>
- </nav>
+  <!-- Desktop Navigation -->
+  <nav class="flex-1 space-y-8 relative z-10 overflow-y-auto hide-scrollbar pb-10">
+    <div v-for="group in navGroups" :key="group.label" class="space-y-1">
+      <p class="px-5 text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 opacity-50">{{ group.label }}</p>
+      
+      <NuxtLink
+        v-for="item in group.items"
+        :key="item.path"
+        :to="item.path"
+        class="flex items-center px-5 py-3 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all group/nav relative overflow-hidden"
+        :class="isActive(item.path) 
+          ? 'bg-gray-900 text-white shadow-xl shadow-black/10' 
+          : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'"
+      >
+        <component :is="item.icon" class="w-4 h-4 mr-4 transition-transform group-hover/nav:scale-110" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
+        {{ item.label }}
+        <div v-if="isActive(item.path)" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-parentPrimary shadow-[0_0_15px_rgba(6,95,219,1)]"></div>
+      </NuxtLink>
+    </div>
+  </nav>
 
  <!-- Profile Section -->
  <div class="mt-auto pt-6 border-t border-gray-100 relative z-10">
@@ -129,22 +117,26 @@
  </button>
  </div>
 
- <!-- Mobile Nav -->
- <nav class="flex-1 space-y-2">
- <NuxtLink
- v-for="item in navItems"
- :key="item.path"
- :to="item.path"
- class="flex items-center px-6 py-4 text-[10px] font-bold rounded-2xl transition-all"
- :class="isActive(item.path) 
- ? 'bg-gray-900 text-white shadow-xl' 
- : 'text-gray-400 hover:bg-gray-50'"
- @click="showMobileMenu = false"
- >
- <component :is="item.icon" class="w-5 h-5 mr-4"></component>
- {{ item.label }}
- </NuxtLink>
- </nav>
+  <!-- Mobile Nav -->
+  <nav class="flex-1 space-y-6 overflow-y-auto hide-scrollbar py-4">
+    <div v-for="group in navGroups" :key="group.label" class="space-y-1">
+      <p class="px-6 text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2 opacity-40">{{ group.label }}</p>
+      
+      <NuxtLink
+        v-for="item in group.items"
+        :key="item.path"
+        :to="item.path"
+        class="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all"
+        :class="isActive(item.path) 
+          ? 'bg-gray-900 text-white shadow-xl shadow-black/10' 
+          : 'text-gray-400 hover:bg-gray-50'"
+        @click="showMobileMenu = false"
+      >
+        <component :is="item.icon" class="w-5 h-5 mr-4" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
+        {{ item.label }}
+      </NuxtLink>
+    </div>
+  </nav>
 
  <!-- Mobile Exit -->
  <div class="mt-auto space-y-4">
@@ -240,7 +232,10 @@ import {
  Menu, 
  X,
  Bell,
- ArrowLeft
+ ArrowLeft,
+ Target,
+ Trophy,
+ HelpCircle
 } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
@@ -250,17 +245,35 @@ useRealtimeNotifications() // Initialize listener
 
 const route = useRoute()
 const router = useRouter()
-const { user } = useUser()
+const { user, logOut } = useUser()
 const { toasts, removeToast } = useToast()
 const showMobileMenu = ref(false)
 const logoutModalOpen = ref(false)
 
-const navItems = [
- { path: '/dashboard', label: 'Home', icon: Home },
- { path: '/dashboard/search', label: 'Search', icon: Search },
- { path: '/dashboard/orders', label: 'Orders', icon: ShoppingBag },
- { path: '/dashboard/favorites', label: 'Favorites', icon: Heart },
- { path: '/dashboard/profile', label: 'My Profile', icon: User }
+const navGroups = [
+  {
+    label: 'Menu',
+    items: [
+      { path: '/dashboard', label: 'Home', icon: Home },
+      { path: '/dashboard/search', label: 'Search', icon: Search },
+      { path: '/dashboard/orders', label: 'Orders', icon: ShoppingBag },
+      { path: '/dashboard/favorites', label: 'Favorites', icon: Heart }
+    ]
+  },
+  {
+    label: 'Rewards & Social',
+    items: [
+      { path: '/dashboard/quests', label: 'Campus Quests', icon: Target },
+      { path: '/dashboard/leaderboard', label: 'Hall of Fame', icon: Trophy }
+    ]
+  },
+  {
+    label: 'Support',
+    items: [
+      { path: '/dashboard/how-it-works', label: 'How it Works', icon: HelpCircle },
+      { path: '/dashboard/profile', label: 'My Profile', icon: User }
+    ]
+  }
 ]
 
 const isDashboard = computed(() => route.path === '/dashboard' || route.path === '/')
@@ -300,13 +313,10 @@ const isActive = (path: string) => {
  return route.path.startsWith(path);
 }
 
-const confirmLogout = () => {
- if (process.client) {
- localStorage.removeItem('user')
- localStorage.removeItem('token')
- logoutModalOpen.value = false
- window.location.reload()
- }
+const confirmLogout = async () => {
+  await logOut()
+  logoutModalOpen.value = false
+  window.location.href = '/'
 }
 
 watch(() => route.path, () => showMobileMenu.value = false)

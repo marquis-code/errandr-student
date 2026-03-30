@@ -10,6 +10,15 @@ interface User {
   phone: string;
   avatar?: string;
   matricNumber?: string;
+  points?: number;
+  streakCount?: number;
+  totalOrders?: number;
+  totalDeliveries?: number;
+  isPro?: boolean;
+  referralCode?: string;
+  referralCount?: number;
+  department?: string;
+  faculty?: string;
 }
 
 export const useUser = () => {
@@ -40,7 +49,7 @@ export const useUser = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('errandr_cart');
       if (shouldRedirect) {
-        window.location.href = '/auth/login';
+        window.location.href = '/';
       }
     }
   };

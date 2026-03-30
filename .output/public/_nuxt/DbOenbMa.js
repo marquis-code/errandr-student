@@ -1,0 +1,1 @@
+import{_ as c,ay as t,o as a,c as _,b as e,aI as r}from"./Ct0XXXl1.js";const s={};function l(m,u){const n=t("FullScreenLoader"),o=r;return a(),_("main",null,[e(n),e(o)])}const d=c(s,[["render",l]]);export{d as default};
