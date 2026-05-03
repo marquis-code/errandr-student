@@ -7,7 +7,7 @@
  <aside class="hidden lg:flex flex-col w-60 h-[calc(100vh-2rem)] fixed left-4 top-4 bottom-4 transition-all duration-700 z-50">
  <div class="h-full bg-white rounded-3xl flex flex-col p-6 overflow-hidden relative group border border-gray-100 shadow-sm">
  <!-- Logo -->
- <div class="mb-10 px-4 pt-4 relative z-10 flex items-center gap-4">
+ <NuxtLink to="/" class="mb-10 px-4 pt-4 relative z-10 flex items-center gap-4 group cursor-pointer block hover:opacity-80 transition-opacity">
  <div class="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:bg-parentPrimary transition-all duration-500">
  <ShoppingBag class="w-5 h-5"></ShoppingBag>
  </div>
@@ -15,7 +15,7 @@
  <span class="text-xl font-bold text-gray-900 tracking-tighter leading-none mb-0.5">Errandr</span>
  <span class="text-[8px] font-bold text-gray-400 leading-none">Your campus companion</span>
  </div>
- </div>
+ </NuxtLink>
  
   <!-- Desktop Navigation -->
   <nav class="flex-1 space-y-8 relative z-10 overflow-y-auto hide-scrollbar pb-10">
@@ -28,12 +28,12 @@
         :to="item.path"
         class="flex items-center px-5 py-3 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all group/nav relative overflow-hidden"
         :class="isActive(item.path) 
-          ? 'bg-gray-900 text-white shadow-xl shadow-black/10' 
+          ? 'bg-gray-900 text-white' 
           : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'"
       >
         <component :is="item.icon" class="w-4 h-4 mr-4 transition-transform group-hover/nav:scale-110" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
         {{ item.label }}
-        <div v-if="isActive(item.path)" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-parentPrimary shadow-[0_0_15px_rgba(6,95,219,1)]"></div>
+        <div v-if="isActive(item.path)" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-parentPrimary"></div>
       </NuxtLink>
     </div>
   </nav>
@@ -128,7 +128,7 @@
         :to="item.path"
         class="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all"
         :class="isActive(item.path) 
-          ? 'bg-gray-900 text-white shadow-xl shadow-black/10' 
+          ? 'bg-gray-900 text-white' 
           : 'text-gray-400 hover:bg-gray-50'"
         @click="showMobileMenu = false"
       >
@@ -235,7 +235,8 @@ import {
  ArrowLeft,
  Target,
  Trophy,
- HelpCircle
+ HelpCircle,
+ Wallet
 } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
@@ -265,6 +266,12 @@ const navGroups = [
     items: [
       { path: '/dashboard/quests', label: 'Campus Quests', icon: Target },
       { path: '/dashboard/leaderboard', label: 'Hall of Fame', icon: Trophy }
+    ]
+  },
+  {
+    label: 'Finances',
+    items: [
+      { path: '/dashboard/wallet', label: 'My Wallet', icon: Wallet }
     ]
   },
   {

@@ -11,10 +11,10 @@
 
     <!-- Core Steps -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-       <div v-for="(step, i) in mainSteps" :key="i" class="bg-white border border-gray-100 p-8 rounded-[3rem] shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+       <div v-for="(step, i) in mainSteps" :key="i" class="bg-white border border-gray-100 p-8 rounded-[3rem]  hover: transition-all group relative overflow-hidden">
           <div class="absolute -right-10 -top-10 w-32 h-32 bg-gray-50 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
           <div class="relative z-10">
-             <div class="w-14 h-14 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:rotate-12 group-hover:bg-parentPrimary transition-all">
+             <div class="w-14 h-14 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-3xl mb-8  group-hover:rotate-12 group-hover:bg-parentPrimary transition-all">
                 {{ step.icon }}
              </div>
              <h3 class="text-xl font-black text-gray-900 tracking-tighter mb-2">{{ step.title }}</h3>
@@ -26,8 +26,8 @@
     <!-- Detailed Modules -->
     <section class="space-y-6">
        <div v-for="(module, i) in modules" :key="i" 
-          class="flex flex-col lg:flex-row gap-8 p-10 rounded-[3rem] border border-gray-100 shadow-sm transition-all"
-          :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-900 text-white lg:flex-row-reverse border-gray-800 shadow-2xl'"
+          class="flex flex-col lg:flex-row gap-8 p-10 rounded-[3rem] border border-gray-100  transition-all"
+          :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-900 text-white lg:flex-row-reverse border-gray-800 '"
        >
           <div class="flex-1 space-y-6">
              <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary">
@@ -52,13 +52,13 @@
     </section>
 
     <!-- FAQ CTA -->
-    <div class="bg-parentPrimary rounded-[4rem] p-12 text-center text-white shadow-2xl shadow-parentPrimary/20 relative overflow-hidden group">
+    <div class="bg-parentPrimary rounded-[4rem] p-12 text-center text-white  Primary/20 relative overflow-hidden group">
        <div class="absolute -left-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-[100px] group-hover:scale-150 transition-transform duration-1000"></div>
        <div class="relative z-10 space-y-6">
           <h2 class="text-3xl font-black tracking-tight leading-none italic">Still got questions?</h2>
           <p class="text-white/80 text-sm font-bold max-w-sm mx-auto leading-relaxed">Our support team is here for you 24/7. Whether it's a refund issue or a vendor request, we've got you covered.</p>
           <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
-             <NuxtLink to="/support" class="bg-white text-parentPrimary px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl">Contact Support</NuxtLink>
+             <NuxtLink to="/support" class="bg-white text-parentPrimary px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all ">Contact Support</NuxtLink>
              <NuxtLink to="/dashboard" class="bg-parentPrimary/20 backdrop-blur-md border border-white/20 px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">Go to Dashboard</NuxtLink>
           </div>
        </div>

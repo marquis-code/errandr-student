@@ -14,7 +14,7 @@
         <div class="flex justify-between items-center">
           <!-- Logo -->
           <NuxtLink to="/" class="flex items-center gap-3 group">
-            <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 lg:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
+            <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 lg:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
           </NuxtLink>
           
           <!-- Desktop Nav -->
@@ -25,16 +25,99 @@
             </a>
           </div>
 
-          <div class="flex items-center gap-3">
-            <NuxtLink to="/auth/login" class="hidden sm:flex px-6 py-3 text-[11px] font-black text-gray-900 tracking-widest uppercase hover:text-parentPrimary transition-colors">
-              Log in
-            </NuxtLink>
-            <NuxtLink to="/auth/register" class="px-8 py-3.5 bg-gray-900 text-white text-[11px] font-black tracking-widest uppercase rounded-2xl shadow-2xl shadow-black/10 hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all">
-              Join Now
-            </NuxtLink>
+          <div class="flex items-center gap-2 lg:gap-4">
+            <!-- User is Logged In -->
+            <template v-if="user">
+              <!-- Notifications -->
+              <Menu as="div" class="relative">
+                <MenuButton class="w-11 h-11 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-all relative">
+                  <Bell class="w-5 h-5" />
+                  <div v-if="unreadCount > 0" class="absolute top-2 right-2 w-2 h-2 bg-parentPrimary rounded-full border-2 border-white shadow-sm"></div>
+                </MenuButton>
+                <Transition
+                  enter-active-class="transition duration-100 ease-out"
+                  enter-from-class="transform scale-95 opacity-0"
+                  enter-to-class="transform scale-100 opacity-100"
+                  leave-active-class="transition duration-75 ease-in"
+                  leave-from-class="transform scale-100 opacity-100"
+                  leave-to-class="transform scale-95 opacity-0"
+                >
+                  <MenuItems class="fixed inset-x-4 md:absolute md:inset-x-auto md:right-0 mt-20 md:mt-4 w-auto md:w-80 origin-top-right divide-y divide-gray-50 rounded-3xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 focus:outline-none z-[75] overflow-hidden">
+                    <div class="px-6 py-4 bg-gray-50/50">
+                      <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Notifications ({{ unreadCount }})</p>
+                    </div>
+                    <div class="p-4 flex flex-col items-center justify-center text-center space-y-3 py-10">
+                      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-gray-100">
+                         <BellOff class="w-8 h-8 text-gray-200" />
+                      </div>
+                      <p class="text-xs font-bold text-gray-900 leading-none">No new alerts</p>
+                      <p class="text-[10px] font-bold text-gray-400 max-w-[180px]">We'll let you know when your order status changes.</p>
+                    </div>
+                    <div class="p-2">
+                       <NuxtLink to="/notifications" class="w-full py-3 flex items-center justify-center text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors bg-gray-50/50 rounded-2xl">View All Notifications</NuxtLink>
+                    </div>
+                  </MenuItems>
+                </Transition>
+              </Menu>
+
+              <!-- Profile Dropdown -->
+              <Menu as="div" class="relative">
+                <MenuButton class="flex items-center gap-3 p-1 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-all p-1.5 focus:outline-none">
+                  <div class="w-9 h-9 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm border border-gray-800">
+                    {{ user.firstName?.[0] || user.email?.[0] }}
+                  </div>
+                  <ChevronDown class="w-4 h-4 text-gray-400 mr-2" />
+                </MenuButton>
+                <Transition
+                  enter-active-class="transition duration-100 ease-out"
+                  enter-from-class="transform scale-95 opacity-0"
+                  enter-to-class="transform scale-100 opacity-100"
+                  leave-active-class="transition duration-75 ease-in"
+                  leave-from-class="transform scale-100 opacity-100"
+                  leave-to-class="transform scale-95 opacity-0"
+                >
+                  <MenuItems class="fixed inset-x-4 md:absolute md:inset-x-auto md:right-0 mt-20 md:mt-4 w-auto md:w-56 origin-top-right divide-y divide-gray-50 rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 focus:outline-none z-[75] overflow-hidden">
+                    <div class="px-5 py-4">
+                      <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Signed in as</p>
+                      <p class="text-xs font-black text-gray-900 truncate tracking-tight">{{ user.firstName }} {{ user.lastName }}</p>
+                    </div>
+                    <div class="p-2">
+                      <MenuItem v-slot="{ active }">
+                        <NuxtLink to="/dashboard" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-600', 'flex w-full items-center rounded-xl px-3 py-3 text-xs font-bold transition-colors']">
+                          <Home class="w-4 h-4 mr-3" /> Dashboard
+                        </NuxtLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active }">
+                        <NuxtLink to="/dashboard/profile" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-600', 'flex w-full items-center rounded-xl px-3 py-3 text-xs font-bold transition-colors']">
+                          <User class="w-4 h-4 mr-3" /> My Profile
+                        </NuxtLink>
+                      </MenuItem>
+                    </div>
+                    <div class="p-2">
+                      <MenuItem v-slot="{ active }">
+                        <button @click="handleLogout" :class="[active ? 'bg-rose-50 text-rose-500' : 'text-rose-500', 'flex w-full items-center rounded-xl px-3 py-3 text-xs font-bold transition-colors uppercase tracking-widest']">
+                          <LogOut class="w-4 h-4 mr-3" /> Log out
+                        </button>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </Transition>
+              </Menu>
+            </template>
+
+            <!-- Visitor state -->
+            <template v-else>
+              <NuxtLink to="/auth/login" class="px-6 py-3 text-[11px] font-black text-gray-900 tracking-widest uppercase hover:text-parentPrimary transition-colors">
+                Log in
+              </NuxtLink>
+              <NuxtLink to="/auth/register" class="hidden md:flex px-8 py-3.5 bg-gray-900 text-white text-[11px] font-black tracking-widest uppercase rounded-2xl shadow-2xl shadow-black/10 hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all">
+                Join Now
+              </NuxtLink>
+            </template>
+
             <!-- Mobile Toggle -->
             <button @click="showMobileMenu = !showMobileMenu" class="md:hidden w-11 h-11 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-gray-900 hover:bg-gray-100 transition-all">
-              <Menu v-if="!showMobileMenu" class="w-5 h-5" />
+              <MenuIcon v-if="!showMobileMenu" class="w-5 h-5" />
               <X v-else class="w-5 h-5" />
             </button>
           </div>
@@ -58,11 +141,17 @@
             </a>
           </div>
           <div class="h-px bg-gray-50 w-full"></div>
-          <NuxtLink to="/auth/login" class="block text-xl font-bold text-gray-400 hover:text-gray-900 transition-colors">Log into your account</NuxtLink>
+          <NuxtLink v-if="!user" to="/auth/login" class="block text-xl font-bold text-gray-400 hover:text-gray-900 transition-colors">Log into your account</NuxtLink>
+          <NuxtLink v-else to="/dashboard" class="block text-xl font-bold text-parentPrimary hover:text-gray-900 transition-colors">Go to Dashboard &rarr;</NuxtLink>
         </div>
         
         <div class="space-y-6">
-          <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">The perfect campus companion</p>
+          <NuxtLink v-if="!user" to="/auth/register" class="block w-full py-5 bg-gray-900 text-white text-center text-sm font-black tracking-widest uppercase rounded-[1.5rem] shadow-xl">
+            Join Now
+          </NuxtLink>
+          <button v-else @click="handleLogout" class="block w-full py-5 bg-rose-50 text-rose-500 text-center text-sm font-black tracking-widest uppercase rounded-[1.5rem] border border-rose-100">
+            Log out
+          </button>
           <div class="flex gap-4">
             <a href="#" class="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400"><Twitter class="w-5 h-5" /></a>
             <a href="#" class="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400"><Instagram class="w-5 h-5" /></a>
@@ -71,13 +160,22 @@
       </div>
     </Transition>
 
-    <!-- Search Overlay — Teleported to body root for guaranteed z-index -->
+    <!-- Search Overlay — Premium Glassmorphism -->
     <Teleport to="body">
-      <div 
-        v-if="showSuggestions"
-        class="fixed inset-0 bg-black/50 z-[9998] transition-opacity duration-300"
-        @click="showSuggestions = false"
-      ></div>
+      <Transition
+        enter-active-class="transition-opacity duration-300 ease-out"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-200 ease-in"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div 
+          v-if="showSuggestions"
+          class="fixed inset-0 bg-gray-900/10 backdrop-blur-xl z-[9998]"
+          @click="showSuggestions = false"
+        ></div>
+      </Transition>
     </Teleport>
 
     <!-- Hero Section -->
@@ -93,9 +191,9 @@
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
         <div class="max-w-3xl mx-auto space-y-6">
           <!-- Badge -->
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-[10px] font-black tracking-[0.2em] uppercase animate-fade-in-up">
+          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-[10px] font-black tracking-[0.2em] uppercase animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
             <Zap class="w-3.5 h-3.5 fill-current" /> Campus Delivery, Redefined
-          </div>
+          </NuxtLink>
           
           <!-- Rotating Hero Heading (Optimized Size) -->
           <div class="relative h-[120px] md:h-[180px] lg:h-[220px] overflow-hidden flex items-center justify-center">
@@ -127,27 +225,27 @@
             :class="showSuggestions ? 'z-[200] scale-[1.03]' : 'z-20 scale-100'"
           >
             <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-20 blur-2xl transition-opacity duration-500"></div>
-            <div class="relative flex flex-col items-center bg-white border-2 border-gray-100 focus-within:border-parentPrimary p-2 rounded-[2rem] shadow-2xl transition-all duration-500 ring-0 focus-within:ring-8 focus-within:ring-parentPrimary/5">
-              <div class="w-full flex items-center">
-                <div class="w-12 h-12 flex items-center justify-center text-gray-400">
-                  <Search class="w-5 h-5" />
-                </div>
-                <input 
-                  type="text" 
-                  v-model="heroSearchQuery"
-                  @keyup.enter="handleHeroSearch"
-                  @focus="showSuggestions = true"
-                  @blur="handleSearchBlur"
-                  placeholder="What are you craving?" 
-                  class="flex-1 bg-transparent border-none outline-none text-sm font-bold text-gray-900 placeholder:text-gray-300 px-2"
-                />
-                <button 
-                  @click="handleHeroSearch"
-                  class="px-6 py-3.5 bg-gray-900 text-white rounded-[1.3rem] text-[10px] font-black tracking-widest uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl"
-                >
-                   Find Food
-                </button>
+            <div class="relative flex items-center bg-white border-2 border-gray-100 focus-within:border-parentPrimary p-1.5 md:p-2 rounded-[2.5rem] shadow-2xl transition-all duration-500 ring-0 focus-within:ring-8 focus-within:ring-parentPrimary/5">
+              <div class="w-10 md:w-12 h-10 md:h-12 flex items-center justify-center text-gray-400 flex-shrink-0">
+                <Search class="w-4 md:w-5 h-4 md:h-5" />
               </div>
+              <input 
+                type="text" 
+                v-model="heroSearchQuery"
+                @keyup.enter="handleHeroSearch"
+                @focus="showSuggestions = true"
+                @blur="handleSearchBlur"
+                placeholder="What are you craving?" 
+                class="flex-1 bg-transparent border-none outline-none text-xs md:text-sm font-bold text-gray-900 placeholder:text-gray-300 px-1 md:px-2 min-w-0"
+              />
+              <button 
+                @click="handleHeroSearch"
+                class="px-4 md:px-8 py-3 md:py-4 bg-gray-900 text-white rounded-[2rem] text-[9px] md:text-[10px] font-black tracking-widest uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl whitespace-nowrap flex-shrink-0 flex items-center gap-2"
+              >
+                 <span>Find Food</span>
+                 <ArrowRight class="w-3 md:w-4 h-3 md:h-4" />
+              </button>
+            </div>
 
               <Transition name="fade-up">
                 <div 
@@ -238,28 +336,29 @@
                   </div>
                 </div>
               </Transition>
-            </div>
           </div>
 
           <!-- Quick Tags -->
-          <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+          <!-- <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
              <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest mr-1">E choke:</span>
              <button v-for="tag in quickTags.slice(0,4)" :key="tag.label" 
               class="px-4 py-2 bg-gray-50 hover:bg-white border border-gray-100 hover:border-parentPrimary/30 rounded-xl text-[9px] font-black text-gray-600 hover:text-parentPrimary transition-all shadow-sm hover:shadow-md"
              >
                {{ tag.label }}
              </button>
-          </div>
+          </div> -->
         </div>
       </div>
     </section>
 
     <!-- The Animated Visual Showroom (Former Carousel Images) -->
-    <ScrollGallery :images="heroVisuals" />
+    <LandingScrollGallery :images="heroVisuals" />
 
 
  <!-- Vendor Spotlight Marquee -->
- <LandingVendorMarquee />
+  <LandingVendorMarquee />
+
+
 
   <!-- Spin the Wheel Section -->
   <section class="py-16 lg:py-24 bg-gray-50 border-t border-gray-100 overflow-hidden relative">
@@ -310,10 +409,10 @@
  
  <div class="max-w-7xl mx-auto pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-0">
  <div class="flex overflow-x-auto gap-6 pb-8 hide-scrollbar snap-x snap-mandatory">
- <div v-for="(promo, idx) in activePromotions" :key="idx" 
- @click="navigateTo(`/vendors/${promo.vendorId}`)"
- class="min-w-[300px] sm:min-w-[400px] snap-start shrink-0 group cursor-pointer relative flex flex-col bg-white rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 overflow-hidden"
- >
+        <div v-for="(promo, idx) in activePromotions" :key="idx" 
+          @click="handlePromoClick(promo)"
+          class="min-w-[300px] sm:min-w-[400px] snap-start shrink-0 group cursor-pointer relative flex flex-col bg-white rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+        >
  <div class="relative h-[200px] w-full overflow-hidden bg-gray-100">
  <img :src="promo.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Promo" />
  <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
@@ -454,57 +553,7 @@
  @close="isClosedModalOpen = false" 
  />
 
- <!-- UI Feature: Meal Planner -->
- <section class="py-16 lg:py-24 bg-gray-900 relative overflow-hidden">
- <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 30px 30px;"></div>
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
- <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
- <div class="order-2 lg:order-1">
- <div class="relative">
- <div class="absolute -inset-4 bg-parentPrimary/20 blur-3xl rounded-full"></div>
- <div class="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-3xl md:rounded-[3rem] p-6 lg:p-8 shadow-xl">
- <div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
- <div class="space-y-1">
- <h4 class="text-white font-bold text-xl">Meal Planner</h4>
- <p class="text-parentPrimary text-[10px] font-bold">Plan your budget</p>
- </div>
- <Repeat class="w-6 h-6 text-parentPrimary animate-spin-slow" />
- </div>
- <div class="space-y-4">
- <div v-for="i in 3" :key="i" class="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
- <div class="flex items-center gap-4">
- <div class="w-10 h-10 rounded-xl bg-parentPrimary/10 flex items-center justify-center text-parentPrimary font-bold">M{{i}}</div>
- <div>
- <p class="text-white text-xs font-bold">Breakfast Planned</p>
- <p class="text-gray-500 text-[9px] font-bold">Vendor: Mavise + Tasty Delight</p>
- </div>
- </div>
- <div class="text-right">
- <p class="text-parentPrimary font-bold text-xs">₦1,250</p>
- <p class="text-emerald-500 text-[8px] font-bold ">Optimized</p>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- <div class="order-1 lg:order-2 space-y-8">
- <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-xs font-bold">
- Free Tool
- </div>
- <h2 class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-none">
- Plan your meal. <br />Manage your <span class="text-parentPrimary">funds.</span>
- </h2>
- <p class="text-gray-400 text-lg font-bold leading-relaxed tracking-tight">
- The meal planner helps you organize your weekly food around campus vendors while maintaining budget control. It's unique, free, and built for students.
- </p>
- <div class="pt-4">
- <NuxtLink to="/meal-planner" class="px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold text-xs hover:bg-parentPrimary hover:text-white transition-all shadow-xl">start planning now &rarr;</NuxtLink>
- </div>
- </div>
- </div>
- </div>
- </section>
+
 
  <!-- UI Feature: Custom Errands -->
  <section class="py-12 lg:py-16 bg-white relative overflow-hidden">
@@ -549,205 +598,118 @@
  </div>
  </section>
 
- <!-- Join the Errandr Network -->
- <section class="py-16 lg:py-24 bg-white relative overflow-hidden">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
- <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
- <div class="relative group">
- <div class="absolute -inset-10 bg-parentPrimary/5 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-1000"></div>
- <div class="relative z-10 bg-gray-900 rounded-3xl lg:rounded-[4rem] p-8 lg:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-white/5">
- <div class="absolute top-0 right-0 p-8">
- <Bike class="w-32 h-32 text-parentPrimary opacity-10 -rotate-12" />
- </div>
- <div class="space-y-6 relative z-10">
- <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white text-[10px] font-bold ">
- Campus Network
- </div>
- <h3 class="text-4xl font-bold text-white tracking-tight leading-none">
- Help Others. <br /><span class="text-parentPrimary">Earn Extra.</span>
- </h3>
- <p class="text-gray-400 text-sm font-bold tracking-tight leading-relaxed max-w-sm">
- Join Errandr. Deliver food, pick up packages, and bring happiness to your fellow students' doorsteps.
- </p>
- <div class="pt-4">
- <a href="http://dispatch.errandr.shop/auth/register" class="inline-flex items-center gap-4 px-10 py-5 bg-white text-gray-900 rounded-2xl font-bold text-sm hover:bg-parentPrimary hover:text-white transition-all shadow-xl">Join to Bring Happiness &rarr;</a>
- </div>
- </div>
- </div>
- </div>
- <div class="space-y-8">
- <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-xs font-bold">
- Student Program
- </div>
- <h2 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-none">
- Your Hub. <br />Your <span class="text-parentPrimary">Side Hustle.</span>
- </h2>
- <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight">
- Errandr empowers you to manage deliveries for your peers, making extra cash while helping the campus grow.
- </p>
- <ul class="space-y-4">
- <li v-for="benefit in ['Flexible Hours', 'Instant Payouts', 'Campus-Wide Reach', 'Zero Signup Fees']" :key="benefit" class="flex items-center gap-3">
- <div class="w-5 h-5 rounded-full bg-parentPrimary/10 flex items-center justify-center text-parentPrimary">
- <Star class="w-3 h-3 fill-current" />
- </div>
- <span class="text-xs font-bold text-gray-900 ">{{ benefit }}</span>
- </li>
- </ul>
- </div>
- </div>
- </div>
- </section>
 
- <!-- Student Business Hub -->
- <section class="py-16 lg:py-24 bg-gray-50 relative border-t border-gray-100">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
- <div class="bg-parentPrimary rounded-3xl lg:rounded-[4rem] p-8 md:p-12 lg:p-20 relative overflow-hidden text-center shadow-lg shadow-parentPrimary/20">
- <div class="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl hidden md:block"></div>
- <div class="relative z-10 max-w-2xl mx-auto space-y-8">
- <h2 class="text-4xl md:text-6xl font-bold text-white tracking-tight leading-none">
- Student Business? <br /><span class="text-white/60">List it for free.</span>
- </h2>
- <p class="text-white/80 text-lg font-bold tracking-tight leading-relaxed">
- We support students. Whether you sell hair products, gadgets, or custom shirts, listing on Errandr is 100% free. No hidden fees.
- </p>
- <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
- <a href="http://vendor.errandr.shop/auth/register" class="px-10 py-5 bg-white text-parentPrimary rounded-2xl font-bold text-sm hover:scale-105 transition-all shadow-xl">Start Selling Now</a>
- </div>
- </div>
- </div>
- </div>
- </section>
 
- <!-- Local Favorites (Outside School) -->
- <section class="py-16 lg:py-24 bg-white relative overflow-hidden">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
- <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
- <div class="space-y-6 lg:space-y-8">
- <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs font-bold">
- City Favorites
- </div>
- <h2 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-none">
- Craving something <br />from <span class="text-parentPrimary">town?</span>
- </h2>
- <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight">
- Get your favorite meals from top restaurants outside the campus gate delivered to your hostel. Same fast delivery, same Errandr quality.
- </p>
- <div class="flex flex-wrap gap-4">
- <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
- <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
- <span class="text-xs font-bold text-gray-400">Town Deliveries</span>
- </div>
- <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
- <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
- <span class="text-xs font-bold text-gray-400">Gate Pickups</span>
- </div>
- </div>
- </div>
- <div class="relative hidden sm:block">
- <div class="absolute -inset-10 bg-emerald-100/30 blur-[100px] rounded-full"></div>
- <img src="@/assets/img/hero2.jpg" class="relative z-10 rounded-3xl lg:rounded-[3rem] shadow-xl border-2 md:border-8 border-white object-cover h-[400px] w-full" />
- </div>
- </div>
- </div>
- </section>
 
- <!-- How it works -->
- <section id="how-it-works" class="py-24 bg-gray-50">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
- <div class="text-center max-w-2xl mx-auto mb-16">
- <p class="text-parentPrimary font-bold text-sm mb-3">Simple Process</p>
- <h3 class="text-4xl font-bold text-gray-900 tracking-tight mb-4">Steps to get your meal</h3>
- <p class="text-gray-500 font-medium text-lg">We've made it easy for you to focus on your studies while we handle the errands.</p>
- </div>
 
- <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
- <!-- Connecting Line (Desktop) -->
- <div class="hidden md:block absolute top-[4.5rem] left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
- 
- <div v-for="(step, index) in steps" :key="index" class="relative z-10 flex flex-col items-center text-center">
- <div class="w-24 h-24 bg-white rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 flex items-center justify-center text-parentPrimary mb-6 transform group hover:-translate-y-2 transition-transform">
- <component :is="step.icon" class="w-10 h-10" />
- <div class="absolute -right-2 -top-2 w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center font-bold text-xs ring-4 ring-gray-50 shadow-sm">
- {{ index + 1 }}
- </div>
- </div>
- <h4 class="text-xl font-bold text-gray-900 tracking-tight mb-2">{{ step.title }}</h4>
- <p class="text-gray-500 font-medium leading-relaxed px-4">{{ step.description }}</p>
- </div>
- </div>
- </div>
- </section>
 
- <!-- Categories Grid -->
- <section id="categories" class="py-24 overflow-hidden border-t border-gray-100 bg-white">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
- <div class="flex items-end justify-between mb-12">
- <div>
- <h2 class="text-4xl font-bold text-gray-900 tracking-tight mb-3">Craving Anything Specific?</h2>
- <p class="text-gray-500 font-medium text-lg max-w-xl">Explore the most ordered categories on campus today.</p>
- </div>
- <NuxtLink to="/vendors" class="hidden sm:flex items-center gap-2 text-parentPrimary font-bold hover:gap-3 transition-all px-6 py-3 rounded-xl bg-parentPrimary/5 border border-parentPrimary/10 hover:bg-parentPrimary/10">
- View full menu <ArrowRight class="w-5 h-5" />
- </NuxtLink>
- </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-      <div 
-        v-for="cat in categories" 
-        :key="cat.name" 
-        @click="router.push(`/vendors?category=${cat.key}`)"
-        class="group cursor-pointer"
-      >
-        <div class="relative h-40 md:h-48 rounded-[2rem] overflow-hidden shadow-sm border border-gray-100">
-          <img :src="cat.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Category Image" />
-          <div class="absolute inset-0 bg-gray-900/40 group-hover:bg-gray-900/50 transition-colors"></div>
-          <div class="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center">
-            <component :is="cat.icon" class="w-8 h-8 mb-3 opacity-90 group-hover:scale-110 transition-transform" />
-            <h4 class="font-bold text-lg"> {{ cat.name }}</h4>
-            <p class="text-xs text-gray-200 mt-1 opacity-100 transition-opacity">Browse &rarr;</p>
+ <!-- How it works (Redesigned to match Image 2) -->
+  <section id="how-it-works" class="py-24 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex flex-col lg:flex-row justify-between items-end mb-16 gap-6">
+        <div class="space-y-4 max-w-2xl">
+          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-parentPrimary">How It Works</p>
+          <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter leading-tight italic">
+            Getting your <span class="text-parentPrimary">chop</span> with Errandr is simple and sharp-sharp.
+          </h2>
+        </div>
+        <p class="text-gray-400 font-bold text-sm max-w-xs lg:text-right">From choosing your plug to hostel delivery, we guide you every step of the way.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div v-for="(step, i) in [
+          { title: 'Pick your Plug', desc: 'Select the campus restaurant or vendor that fits your current vibes and budget.', icon: '🏪', bg: 'bg-emerald-50' },
+          { title: 'Check the Menu', desc: 'Browse through updated menus and pick exactly what you want to eat.', icon: '📜', bg: 'bg-parentPrimary/10' },
+          { icon: '📱', title: 'Place Order', desc: 'Securely pay in seconds and get assigned an Errandr immediately.', bg: 'bg-blue-50' },
+          { icon: '🏠', title: 'Hostel Drop', desc: 'Your student Errander drops it off sharp-sharp at your door.', bg: 'bg-rose-50' }
+        ]" :key="i" class="p-8 pb-32 rounded-[2.5rem] relative overflow-hidden group hover:-translate-y-2 transition-all duration-500" :class="step.bg">
+          <div class="relative z-10 space-y-4">
+            <h3 class="text-xl font-black text-gray-900 tracking-tight">{{ step.title }}</h3>
+            <p class="text-xs text-gray-500 font-bold leading-relaxed">{{ step.desc }}</p>
+          </div>
+          <div class="absolute bottom-6 right-6 text-6xl opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+            {{ step.icon }}
           </div>
         </div>
       </div>
     </div>
- </div>
- </section>
+  </section>
 
- <!-- Student Testimonials -->
- <LandingTestimonials />
+  <!-- The Errandr Advantage (Redesigned to match Image 3) -->
+  <section id="advantage" class="py-24 bg-gray-50/50">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div class="space-y-8">
+        <div class="space-y-4">
+          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-parentPrimary">Why Choose Us</p>
+          <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-[0.9] italic">
+            Built on <span class="text-parentPrimary italic">trust,</span> <br/> speed, and vibes.
+          </h2>
+        </div>
+        <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight max-w-md">
+          We combine real-time student dispatchers with quality local vendors to deliver a campus experience you can depend on. No stress, just good chop.
+        </p>
+        <div class="pt-4">
+          <NuxtLink to="/about" class="inline-flex items-center gap-2 text-parentPrimary font-black text-sm hover:gap-4 transition-all group">
+            Learn more about Errandr <ArrowUpRight class="w-5 h-5 group-hover:rotate-45 transition-transform" />
+          </NuxtLink>
+        </div>
+      </div>
 
- <!-- CTA Section -->
- <section id="benefits" class="py-12 lg:py-16 bg-white relative">
- <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
- <div class="bg-gray-900 rounded-3xl lg:rounded-[2.5rem] p-8 lg:p-12 relative overflow-hidden flex flex-col items-center text-center shadow-lg">
- <div class="absolute -top-32 -right-32 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-parentPrimary/20 rounded-full blur-[80px]"></div>
- <div class="absolute -bottom-32 -left-32 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[80px]"></div>
- 
- <div class="relative z-10 max-w-2xl">
- <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-6 backdrop-blur-md border border-white/20 text-white shadow-inner">
- <Rocket class="w-8 h-8" />
- </div>
- <h2 class="text-3xl md:text-5xl font-bold text-white tracking-tight mb-4 leading-tight">
- Ready to satisfy your cravings?
- </h2>
- <p class="text-lg text-gray-400 font-medium mb-8 leading-relaxed">
- Join thousands of students who trust Errandr for their daily meals and essentials.
- </p>
- <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-8 py-4 bg-parentPrimary text-white rounded-xl font-bold text-base shadow-lg hover:-translate-y-0.5 transition-all">
- create errandr account
- </NuxtLink>
- <p class="mt-6 text-sm text-gray-500 font-medium">Already have an account? <NuxtLink to="/auth/login" class="text-white hover:underline underline-offset-4 cursor-pointer">login here</NuxtLink></p>
- </div>
- </div>
- </div>
- </section>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16 py-12 px-8 bg-white rounded-[3rem] border border-gray-100 shadow-xl relative">
+        <div v-for="feat in [
+          { title: 'Independent Riders', desc: 'Student dispatchers who know every corner of your hostel and campus.', icon: Target },
+          { title: 'Local Expertise', desc: 'We only partner with the best and cleanest vendors on your campus.', icon: Layers },
+          { title: 'Sapa Friendly', desc: 'Transparent pricing and minimal fees for every student pocket.', icon: ShieldCheck },
+          { title: 'Real-time Bants', desc: 'Track your order live and chat with your dispatcher instantly.', icon: MessageCircle }
+        ]" :key="feat.title" class="space-y-4">
+          <div class="w-12 h-12 rounded-2xl bg-parentPrimary/10 flex items-center justify-center text-parentPrimary">
+            <component :is="feat.icon" class="w-6 h-6" />
+          </div>
+          <div class="space-y-2">
+            <h4 class="text-lg font-black text-gray-900 tracking-tight">{{ feat.title }}</h4>
+            <p class="text-xs text-gray-500 font-bold leading-relaxed">{{ feat.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
- <!-- Footer -->
+  <!-- FAQ Section (New) -->
+  <LandingFAQ />
+
+  <!-- Contact Section (New) -->
+  <LandingContact />
+
+  <!-- CTA section -->
+  <section class="py-24 bg-gray-900 text-center overflow-hidden relative">
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-parentPrimary/10 rounded-full blur-[120px]"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]"></div>
+    
+  <div class="max-w-4xl mx-auto px-6 lg:px-10 relative z-10">
+  <h2 class="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 italic">
+  Enough bants. <br /><span class="text-parentPrimary">Let's get you fed.</span>
+  </h2>
+  <p class="text-lg text-gray-400 font-medium mb-8 leading-relaxed max-w-2xl mx-auto">
+  Join thousands of students who trust Errandr for their daily meals and hostel runs. Zero stress, 100% vibes.
+  </p>
+  <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-10 py-5 bg-parentPrimary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-[0_20px_50px_rgba(240,165,0,0.3)] hover:scale-105 active:scale-95 transition-all">
+    Join Errandr now
+  </NuxtLink>
+  <p class="mt-8 text-xs font-black text-gray-500 uppercase tracking-widest">Already have an account? <NuxtLink to="/auth/login" class="text-white hover:text-parentPrimary transition-colors underline underline-offset-8">Login here</NuxtLink></p>
+  </div>
+  </section>
+
+  <!-- Student Testimonials -->
+  <LandingTestimonials />
+
+  <!-- Footer -->
  <footer class="bg-gray-50 border-t border-gray-200 py-16">
  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
  <div class="md:col-span-1">
   <NuxtLink to="/" class="flex items-center gap-3 mb-8 group">
-  <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
+  <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
   </NuxtLink>
  <p class="text-gray-500 text-sm leading-relaxed mb-6 font-medium">The premium food delivery network built exclusively for the modern student community.</p>
  <div class="flex items-center gap-4">
@@ -805,18 +767,27 @@
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { useNotifications } from '@/composables/modules/notifications/useNotifications'
+import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import BatchDeliveryBanner from '@/components/BatchDeliveryBanner.vue'
-import hero1 from '@/assets/img/hero1.jpg'
-import hero2 from '@/assets/img/hero2.jpg'
-import hero12 from "@/assets/img/hero12.jpg"
-import hero14 from "@/assets/img/hero14.jpg"
-import ScrollGallery from '@/components/Landing/ScrollGallery.vue'
+import { useUser } from "@/composables/modules/auth/user"
+import hero1 from '@/assets/img/hero1.webp'
+import hero2 from '@/assets/img/hero2.webp'
+import hero12 from "@/assets/img/hero12.webp"
+import hero14 from "@/assets/img/hero14.webp"
+import LandingScrollGallery from '@/components/Landing/ScrollGallery.vue'
+import LandingVendorMarquee from '@/components/Landing/VendorMarquee.vue'
+import LandingTestimonials from '@/components/Landing/Testimonials.vue'
+import LandingFAQ from '@/components/Landing/FAQ.vue'
+import LandingContact from '@/components/Landing/Contact.vue'
 import { 
   ArrowRight, Twitter, Instagram, Facebook,
   LogIn, ShoppingBag, Utensils, PlayCircle,
   Clock, MapPin, Star, Store, Bike, ChevronLeft, ChevronRight,
   ShieldCheck, CreditCard, Rocket, Megaphone,
-  Pizza, Flame, Beef, Coffee, Menu, X, Navigation, Repeat, Search, AlertCircle, Zap, ChevronUp, ArrowUpRight, Sparkles
+  Pizza, Flame, Beef, Coffee, Menu as MenuIcon, X, Navigation, Repeat, Search, AlertCircle, Zap, ChevronUp, ArrowUpRight, Sparkles,
+  Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
@@ -832,6 +803,8 @@ useHead({
  ]
 })
 
+import { useCart } from '@/composables/modules/cart';
+
 const scrolled = ref(false)
 const router = useRouter()
 const showMobileMenu = ref(false)
@@ -840,6 +813,15 @@ const loadingVendors = ref(true)
 const vendors = ref<any[]>([])
 const selectedVendorForModal = ref<any>(null)
 const isClosedModalOpen = ref(false)
+const cartStore = useCart()
+const { user, logOut } = useUser()
+const { unreadCount } = useNotifications()
+useRealtimeNotifications() // Listen for real-time updates
+
+const handleLogout = async () => {
+  await logOut()
+  window.location.reload()
+}
 
 // Search Suggestions
 const heroSearchSuggestions = ref<any[]>([])
@@ -899,9 +881,10 @@ watch(heroSearchQuery, () => {
 })
 
 const navLinks = [
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'Campus Favorites', href: '#featured' },
-  { label: 'Categories', href: '#categories' }
+  { label: 'Featured', href: '#featured' },
+  { label: 'Works', href: '#how-it-works' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'Contact', href: '#contact' }
 ]
 
 const handleHeroSearch = () => {
@@ -1006,6 +989,37 @@ const startSlangRotation = () => {
   }, 4000)
 }
 
+const handlePromoClick = async (promo: any) => {
+  // If promo has a link to a specific product (format: product:ID)
+  if (promo.link && promo.link.startsWith('product:')) {
+    const productId = promo.link.split(':')[1];
+    try {
+      const res = await products_api.getProduct(productId);
+      const product = res.data?.data || res.data;
+      if (product) {
+        // Clear cart for "Special Direct Order"
+        cartStore.clearCart();
+        cartStore.addItem({
+          productId: product._id,
+          vendorId: promo.vendorId,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          quantity: 1,
+          customizations: []
+        });
+        navigateTo('/cart');
+        return;
+      }
+    } catch (e) {
+      console.error('Failed to quick-buy product', e);
+    }
+  }
+  
+  // Default: Go to vendor
+  navigateTo(`/vendors/${promo.vendorId}`);
+}
+
 const navigateToVendor = (vendor: any) => {
  if (!vendor.isOpen) {
  selectedVendorForModal.value = vendor
@@ -1049,9 +1063,9 @@ const getInitials = (name: string) => {
 };
 
 const steps = [
- { icon: Store, title: 'Browse Menus', description: 'Explore local campus restaurants and selection from your familiar vendors like Mavise or Iya Chidera.' },
- { icon: CreditCard, title: 'Plan Meals', description: 'Use our Meal Planner to manage your budget and ensure a balanced diet across campus.' },
- { icon: Bike, title: 'Fast Delivery', description: 'A fellow student handles the errand, dropping it off directly at your location.' }
+ { icon: Store, title: 'Check the Menu', description: 'Find your fav school spots and see what is cooking. We plug you to Mavise, Iya Chidera and more.' },
+ { icon: CreditCard, title: 'Budget Your Chop', description: 'Use our Meal Planner to manage your cash and ensure you are eating well across the week.' },
+ { icon: Bike, title: 'Flash Delivery', description: 'A student Errander handles your run, dropping it off sharp-sharp at your hostel door.' }
 ]
 
 const categories = [

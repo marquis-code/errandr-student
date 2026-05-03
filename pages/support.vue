@@ -87,7 +87,8 @@
 import { ChevronLeft, Info } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { useRouter, useHead } from '#imports';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { reports_api } from '@/api_factory/modules/reports';
+import { orders_api } from '@/api_factory/modules/orders';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 const router = useRouter();
 const { showToast } = useCustomToast();
@@ -117,43 +118,40 @@ const formatDate = (date: string) => new Date(date).toLocaleDateString();
 const submitReport = async () => {
  isSubmitting.value = true;
  try {
- await api.post('/reports', form.value);
- // Reset form
- form.value = { subject: '', description: '', orderId: null };
- // Reload reports
- await loadReports();
- showToast({
-   title: 'Report Submitted',
-   message: 'Our team will look into it.',
-   toastType: 'success'
- });
+  await reports_api.create(form.value);
+  form.value = { subject: '', description: '', orderId: null };
+  await loadReports();
+  showToast({
+    title: 'Report Submitted',
+    message: 'Our team will look into it.',
+    toastType: 'success'
+  });
  } catch (e) {
- showToast({
-   title: 'Submission Failed',
-   message: 'Could not send report. Please try again.',
-   toastType: 'error'
- });
+  showToast({
+    title: 'Submission Failed',
+    message: 'Could not send report. Please try again.',
+    toastType: 'error'
+  });
  } finally {
- isSubmitting.value = false;
+  isSubmitting.value = false;
  }
 };
 
 const loadReports = async () => {
  try {
- const res = await api.get('/reports/mine');
- reports.value = res.data;
+  const res = await reports_api.getMine();
+  reports.value = res.data || [];
  } catch (e) { console.error(e); }
 };
 
 const loadOrders = async () => {
  try {
- const res = await api.get<any[]>('/orders');
- orders.value = res.data.slice(0, 5); // Just show last 5 orders
+  const res = await orders_api.getAllOrders();
+  orders.value = (res.data || []).slice(0, 5);
  } catch (e) { console.error(e); }
 };
 
 const viewReport = (report: any) => {
- // Logic to view individual report thread
  console.log('Viewing report:', report);
 };
 

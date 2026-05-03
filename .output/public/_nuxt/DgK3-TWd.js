@@ -1,0 +1,1 @@
+import{N as r}from"./D4ovnJCm.js";const o={getProducts:e=>r.get("/products",{params:e}),getProduct:e=>r.get(`/products/${e}`),getCategories:()=>r.get("/products/categories"),getOnline:()=>r.get("/vendors/online"),getPopular:()=>r.get("/products/popular"),search:e=>r.get(`/products/search?q=${encodeURIComponent(e)}`),getByVendor:e=>r.get(`/products/vendor/${e}`)};export{o as p};

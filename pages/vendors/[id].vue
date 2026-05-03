@@ -1,26 +1,20 @@
 <template>
   <div class="min-h-screen bg-white" v-if="vendor">
-    <!-- Standalone Header -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-50">
-      <div class="max-w-[1400px] mx-auto flex items-center justify-between px-6 py-3">
-        <div class="flex items-center gap-3">
-          <button @click="navigateTo('/vendors')" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all">
-            <ArrowLeft class="w-4 h-4 text-gray-900" />
-          </button>
-          <NuxtLink to="/dashboard" class="text-lg font-bold text-gray-900 tracking-tighter">Errandr</NuxtLink>
-        </div>
-        <div class="flex items-center gap-3">
-          <NuxtLink to="/cart" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all relative">
-            <ShoppingCart class="w-4 h-4 text-gray-900" />
-            <div v-if="cart.itemCount.value > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary border border-white rounded-full flex items-center justify-center">
-              <span class="text-[8px] font-bold text-white">{{ cart.itemCount.value > 9 ? '9+' : cart.itemCount.value }}</span>
-            </div>
-          </NuxtLink>
-        </div>
-      </div>
-    </header>
+    <CoreAppNavbar show-back />
 
-    <div class="max-w-[1400px] mx-auto animate-fade-in pb-32 px-4 md:px-6 pt-6">
+    <div class="max-w-[1400px] mx-auto animate-fade-in pb-32 px-4 md:px-6 pt-6 relative">
+      <!-- Group Order Sticky Callout (Mobile) - Brand Focused -->
+      <div v-if="!activeCode" class="lg:hidden mb-6 bg-gray-900 rounded-3xl p-5 shadow-xl shadow-gray-200 flex items-center justify-between text-white overflow-hidden relative">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-parentPrimary/20 rounded-full blur-2xl"></div>
+        <div class="absolute -left-4 -bottom-4 w-16 h-16 bg-white/5 rounded-full blur-xl"></div>
+        <div class="relative z-10">
+          <p class="text-[8px] font-black uppercase tracking-[0.25em] mb-1.5 text-parentPrimary">Together is better</p>
+          <h4 class="text-sm font-black tracking-tight leading-tight">Order with friends &<br/>split delivery fees! 👥</h4>
+        </div>
+        <button @click="handleStartGroupOrder" class="relative z-10 px-5 py-2.5 bg-parentPrimary text-white rounded-xl text-[10px] font-black tracking-widest shadow-lg shadow-parentPrimary/20 active:scale-95 transition-all">
+          INVITE
+        </button>
+      </div>
       <!-- Compact Vendor Header -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 px-2 border-b border-gray-50 pb-6">
         <div class="flex items-center gap-4">
@@ -44,22 +38,29 @@
         
         <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide text-sans">
           <button 
+            @click="handleStartGroupOrder"
+            class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-widest transition-all whitespace-nowrap shrink-0 shadow-sm border animate-bounce-slow"
+            :class="activeCode ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-parentPrimary text-white border-parentPrimary shadow-parentPrimary/20'"
+          >
+            <Users class="w-4 h-4" />
+            {{ activeCode ? `GROUP ACTIVE: ${activeCode}` : 'START GROUP ORDER' }}
+          </button>
+          
+          <button 
             @click="showMobileCartDrawer = true" 
-            class="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all whitespace-nowrap shadow-md shrink-0"
+            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-2xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all whitespace-nowrap shadow-md shrink-0"
           >
             <ShoppingBag class="w-3.5 h-3.5" />
             <span v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="bg-parentPrimary px-1.5 py-0.5 rounded-md text-[8px]">{{ cart.getVendorStats(vendor._id).itemCount }}</span>
-            <span v-else>View Packs</span>
+            <span v-else>My Items</span>
           </button>
+
           <button 
-            @click="handleStartGroupOrder"
-            class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black tracking-widest text-gray-900 hover:bg-gray-100 transition-all whitespace-nowrap shrink-0"
+            @click="toggleFavoriteVendor"
+            class="p-2.5 rounded-2xl transition-all shrink-0 border"
+            :class="isFavorited ? 'bg-rose-50 border-rose-100 text-rose-500 shadow-sm' : 'bg-gray-50 border-gray-100 text-gray-400 hover:text-rose-500'"
           >
-            <Users class="w-3.5 h-3.5" />
-            {{ activeCode ? `Group: ${activeCode}` : 'Group Order' }}
-          </button>
-          <button class="p-2.5 bg-gray-50 border border-gray-100 rounded-xl hover:text-rose-500 transition-all shrink-0">
-            <Heart class="w-4 h-4" />
+            <Heart class="w-4 h-4" :class="{ 'fill-rose-500': isFavorited }" />
           </button>
         </div>
       </div>
@@ -71,7 +72,7 @@
             v-for="(banner, idx) in activeBanners" 
             :key="idx"
             class="flex-shrink-0 w-full md:w-[480px] h-[180px] rounded-2xl overflow-hidden relative shadow-sm border border-gray-50 snap-start group cursor-pointer"
-            @click="banner.link ? navigateTo(banner.link, { external: true }) : null"
+            @click="handleBannerClick(banner)"
           >
             <img :src="banner.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent flex flex-col justify-end p-6">
@@ -320,9 +321,18 @@
                 </div>
 
                 <!-- Add New Pack -->
-                <button @click="addNewPack(vendor._id)" class="w-full py-3.5 border border-dashed border-gray-200 rounded-xl text-[10px] font-black text-gray-400 tracking-widest hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
-                  <Plus class="w-3.5 h-3.5" /> New Pack
-                </button>
+                <div class="grid grid-cols-2 gap-3">
+                  <button @click="addNewPack(vendor._id)" class="py-3.5 border border-dashed border-gray-200 rounded-xl text-[10px] font-black text-gray-400 tracking-widest hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
+                    <Plus class="w-3.5 h-3.5" /> New Pack
+                  </button>
+                  <button 
+                    v-if="showMobileCartDrawer"
+                    @click="showMobileCartDrawer = false" 
+                    class="py-3.5 bg-gray-900 text-white rounded-xl text-[10px] font-black text-center tracking-widest uppercase hover:bg-parentPrimary transition-all"
+                  >
+                    Keep Shopping
+                  </button>
+                </div>
 
                 <div class="pt-6 pb-24 lg:pb-0 border-t border-gray-50 space-y-5">
                   <div class="flex justify-between items-center text-xs font-black text-gray-400 tracking-[0.2em]">
@@ -391,95 +401,104 @@
     </div>
 
     <!-- Group Naming Modal -->
-    <div v-if="showGroupNamingModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in text-sans">
-      <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 animate-fade-in-up">
-        <div class="flex items-center gap-4 mb-8">
-          <div class="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center shadow-lg text-gray-900">
-            <Users class="w-6 h-6" />
-          </div>
-          <div>
-            <h3 class="text-xl font-black text-gray-900 tracking-tight">Name your group</h3>
-            <p class="text-[10px] font-black text-gray-400 mt-1 tracking-widest">e.g., "Sunday Brunch"</p>
-          </div>
+    <div v-if="showGroupNamingModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+      <div class="bg-white w-full max-w-xs rounded-[2rem] shadow-2xl p-8 animate-fade-in-up flex flex-col items-center text-center">
+        <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner text-gray-400">
+          <Users class="w-6 h-6" />
         </div>
-        <div class="space-y-6">
-          <div class="bg-gray-50 p-1 rounded-2xl border border-transparent focus-within:border-parentPrimary transition-all">
-            <UiAnimatedInput 
-              v-model="groupName" 
-              label="Group Name" 
-              @keyup.enter="confirmStartGroupOrder"
-            />
-          </div>
-          <div class="flex gap-4">
+        <h3 class="text-lg font-black text-gray-900 tracking-tight mb-1">Name your group</h3>
+        <p class="text-[10px] font-bold text-gray-400 mb-8 uppercase tracking-widest">e.g., "Sunday Brunch with the boys"</p>
+        
+        <div class="w-full space-y-4">
+          <input 
+            v-model="groupName" 
+            label="Group Name" 
+            placeholder="Type group name here..."
+            @keyup.enter="confirmStartGroupOrder"
+            class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/30 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-300"
+          />
+          
+          <div class="flex gap-2 pt-2">
             <button 
               @click="showGroupNamingModal = false" 
-              class="flex-1 py-4 bg-gray-50 text-gray-900 rounded-2xl font-black text-[10px] tracking-widest hover:bg-gray-100 transition-all font-sans"
+              class="flex-1 py-3.5 bg-gray-50 text-gray-400 rounded-xl font-black text-[10px] tracking-widest hover:text-gray-900 transition-all font-sans"
             >
               Cancel
             </button>
             <button 
               @click="confirmStartGroupOrder" 
               :disabled="!groupName.trim() || groupLoading"
-              class="flex-1 py-4 bg-gray-900 text-white rounded-2xl font-black text-[10px] tracking-widest hover:bg-parentPrimary transition-all shadow-xl disabled:opacity-50 font-sans"
+              class="flex-1 py-3.5 bg-gray-900 text-white rounded-xl font-black text-[10px] tracking-widest hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50 font-sans"
             >
-              <span v-if="groupLoading">Starting...</span>
-              <span v-else>Start Order</span>
+              <span v-if="groupLoading">Creating...</span>
+              <span v-else>Let's Go!</span>
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Product Detail Modal -->
-    <div v-if="selectedProduct" class="fixed inset-0 z-[110] flex items-center justify-center p-4 md:p-10 bg-black/60 backdrop-blur-md animate-fade-in">
-      <div class="bg-white w-full max-w-4xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-fade-in-up">
-        <div class="md:w-1/2 aspect-square md:aspect-auto relative bg-gray-50 border-r border-gray-100">
-          <img :src="selectedProduct.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
-          <div class="absolute top-6 left-6">
-            <button @click="selectedProduct = null" class="w-12 h-12 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center text-white hover:bg-white/40 transition-all">
-              <X class="w-6 h-6" />
+    <!-- Product Detail Modal (Compact Bottom Sheet on Mobile) -->
+    <Teleport to="body">
+      <div v-if="selectedProduct" class="fixed inset-0 z-[110] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/60 backdrop-blur-sm animate-fade-in" @click.self="selectedProduct = null">
+        <div class="bg-white rounded-t-[2.5rem] md:rounded-[2rem] w-full md:max-w-sm overflow-hidden relative shadow-2xl animate-slide-up-mobile md:animate-zoom-in">
+          <!-- Product Image -->
+          <div class="h-56 md:h-64 relative group">
+            <img :src="selectedProduct.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <button @click="selectedProduct = null" class="absolute top-4 right-4 w-9 h-9 bg-black/40 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-black/60 transition-all border border-white/10 shadow-lg">
+              <X class="w-5 h-5" />
             </button>
-          </div>
-        </div>
-        <div class="flex-1 p-8 md:p-12 flex flex-col scrollbar-hide overflow-y-auto max-h-[80vh] md:max-h-none">
-          <div class="flex-1">
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-[10px] font-black text-parentPrimary tracking-[0.2em]">{{ selectedProduct.category }}</p>
-              <div class="flex items-center gap-1 text-[10px] font-black text-amber-500">
-                <Star class="w-3 h-3 fill-current" /> 4.8
-              </div>
+            <div class="absolute bottom-4 left-6">
+              <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[8px] font-black tracking-widest uppercase mb-2 inline-block shadow-sm">{{ selectedProduct.category }}</span>
+              <h2 class="text-xl md:text-2xl font-black text-white tracking-tight leading-tight">{{ selectedProduct.name }}</h2>
             </div>
-            <h2 class="text-4xl font-black text-gray-900 tracking-tighter mb-4 ">{{ selectedProduct.name }}</h2>
-            <p class="text-sm font-bold text-gray-400 leading-relaxed italic mb-8">
-              {{ selectedProduct.description || 'Our signature dish, prepared with the finest ingredients to satisfy your cravings.' }}
+          </div>
+
+          <!-- Content -->
+          <div class="p-6 md:p-8 space-y-6 pb-20 md:pb-8">
+            <p class="text-gray-500 font-bold text-xs md:text-sm leading-relaxed tracking-tight">
+              {{ selectedProduct.description || 'Freshly prepared with premium ingredients. Perfect for any time of day on campus.' }}
             </p>
 
-            <div class="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-100">
-              <div class="flex items-center justify-between mb-4">
-                <h4 class="text-[10px] font-black text-gray-400 tracking-widest">Dietary Info</h4>
-                <Info class="w-3.5 h-3.5 text-gray-300" />
+            <div class="flex items-center justify-between pt-2">
+              <div>
+                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Price</p>
+                <p class="text-2xl font-black text-gray-900 tracking-tighter">₦{{ (selectedProduct.discountPrice || selectedProduct.price).toLocaleString() }}</p>
               </div>
-              <div class="flex flex-wrap gap-2">
-                <span class="px-3 py-1 bg-white border border-gray-100 rounded-lg text-[8px] font-bold text-gray-600 tracking-widest">Gluten Free</span>
-                <span class="px-3 py-1 bg-white border border-gray-100 rounded-lg text-[8px] font-bold text-gray-600 tracking-widest">Fresh</span>
-              </div>
+              <button 
+                @click="addToCart(selectedProduct); selectedProduct = null"
+                class="bg-gray-900 text-white px-8 py-4 rounded-2xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all shadow-xl shadow-gray-200 active:scale-95"
+              >
+                ADD TO CHOP
+              </button>
             </div>
-          </div>
-
-          <div class="pt-8 border-t border-gray-100 flex items-center justify-between gap-6">
-            <div>
-              <p class="text-[9px] font-black text-gray-400 tracking-widest mb-1">Total Price</p>
-              <p class="text-3xl font-black text-gray-900 tracking-tighter">₦{{ (selectedProduct.discountPrice || selectedProduct.price).toLocaleString() }}</p>
-            </div>
-            <button 
-              @click="addToCart(selectedProduct); selectedProduct = null"
-              class="flex-1 bg-gray-900 text-white rounded-[1.5rem] py-5 font-black text-xs tracking-[0.2em] hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-3"
-            >
-              <Plus class="w-4 h-4" /> Add to Cart
-            </button>
           </div>
         </div>
       </div>
+    </Teleport>
+    <!-- Floating Cart Bar (Mobile) - Moved higher to avoid chat icons -->
+    <div 
+      v-if="cart.getVendorStats(vendor._id).itemCount > 0 && !showMobileCartDrawer"
+      class="fixed bottom-24 left-0 right-0 z-[50] lg:hidden p-3 bg-white/10 backdrop-blur-sm pointer-events-none"
+    >
+      <button 
+        @click="showMobileCartDrawer = true"
+        class="w-full flex items-center justify-between bg-gray-900/95 backdrop-blur-md text-white rounded-2xl px-5 py-4 shadow-2xl active:scale-[0.98] transition-transform pointer-events-auto"
+      >
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-parentPrimary rounded-xl flex items-center justify-center text-white text-xs font-black">
+            {{ cart.getVendorStats(vendor._id).itemCount }}
+          </div>
+          <div class="text-left">
+            <p class="text-xs font-black tracking-tight">{{ cart.getVendorStats(vendor._id).packs.length }} pack{{ cart.getVendorStats(vendor._id).packs.length > 1 ? 's' : '' }}</p>
+            <p class="text-[9px] font-bold text-gray-400 tracking-widest">Tap to review</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-lg font-black tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</p>
+        </div>
+      </button>
     </div>
   </div>
 
@@ -499,7 +518,9 @@ import { useRoute, useHead, navigateTo } from '#imports';
 import { useCart } from '@/composables/modules/cart';
 import { useUser } from '@/composables/modules/auth/user';
 import { useGroupOrder } from '@/composables/modules/group-order';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { useFavorites } from '@/composables/modules/favorites';
+import { vendors_api } from '@/api_factory/modules/vendors';
+import { products_api } from '@/api_factory/modules/products';
 import { useToast } from '@/composables/useToast';
 
 definePageMeta({
@@ -521,6 +542,7 @@ const vendor = ref<any>(null);
 const products = ref<any[]>([]);
 const categories = ref<any[]>([]);
 const activeCategory = ref('');
+const isFavorited = ref(false);
 const activeBatch = computed(() => {
   if (!vendor.value?.batchSchedule) return null;
   return vendor.value.batchSchedule.find((b: any) => b.isActive && new Date(b.deadline) > new Date());
@@ -624,8 +646,46 @@ const addToCart = (product: any) => {
     quantity: 1,
     customizations: [],
   });
+  // showToast('Added to cart! 🛒', 'success');
   if (activeCode.value) {
     setTimeout(() => syncWithCart(vendor.value._id), 100);
+  }
+};
+
+const { toggleFavorite, fetchFavorites: checkFavs, isFavorited: checkIsFav } = useFavorites();
+
+const toggleFavoriteVendor = async () => {
+  if (!user.value) {
+    showToast('Please log in to save favorites', 'error');
+    return;
+  }
+  const success = await toggleFavorite({ vendorId: vendor.value._id });
+  if (success) {
+    isFavorited.value = !isFavorited.value;
+    showToast(isFavorited.value ? 'Saved to favorites ❤️' : 'Removed from favorites', 'success');
+  } else {
+    showToast('Could not update favorites', 'error');
+  }
+};
+
+const checkIfFavorited = async () => {
+  if (!user.value) return;
+  await checkFavs();
+  isFavorited.value = checkIsFav(vendor.value?._id);
+};
+
+const handleBannerClick = (banner: any) => {
+  // If banner has associated products, add them to cart and go to checkout
+  if (banner.products && banner.products.length > 0) {
+    banner.products.forEach((p: any) => {
+      addToCart(p);
+    });
+    navigateTo('/cart');
+  } else if (banner.link) {
+    navigateTo(banner.link, { external: true });
+  } else {
+    // Just show a toast about the promo
+    showToast(`${banner.title} — ${banner.description}`, 'success');
   }
 };
 
@@ -689,8 +749,8 @@ onMounted(async () => {
   cart.initCart();
   try {
     const [vendorRes, productsRes] = await Promise.all([
-      api.get<any>(`/vendors/${route.params.id}`),
-      api.get<any[]>(`/products/vendor/${route.params.id}`),
+      vendors_api.getById(route.params.id as string),
+      products_api.getByVendor(route.params.id as string),
     ]);
     if (vendorRes.data && !(vendorRes as any).type) {
       vendor.value = vendorRes.data;
@@ -702,6 +762,7 @@ onMounted(async () => {
     categories.value = uniqueCats;
     if (uniqueCats.length > 0) activeCategory.value = uniqueCats[0];
     window.addEventListener('scroll', handleScroll);
+    checkIfFavorited();
     if (route.query.group) {
       handleJoinGroup(route.query.group as string);
     }
@@ -784,6 +845,14 @@ useHead({
 }
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
   to { opacity: 1; transform: translateY(0); }
 }
 </style>

@@ -29,5 +29,15 @@ export const useStudentOrders = () => {
     } catch (e) { /* Error handled by axios */ }
   };
 
-  return { loading, orders, fetchOrders, cancelOrder };
+  const createOrder = async (payload: any) => {
+    loading.value = true;
+    try {
+      const res = await orders_api.createOrder(payload);
+      return res.data;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return { loading, orders, fetchOrders, cancelOrder, createOrder };
 };

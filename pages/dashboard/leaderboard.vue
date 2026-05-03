@@ -16,13 +16,13 @@
       <!-- Top 3 Podium -->
       <div class="lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
         <div v-for="(leader, idx) in podium" :key="idx" 
-          class="relative bg-white border border-gray-100 p-8 rounded-[3rem] shadow-sm flex flex-col items-center text-center group hover:scale-[1.02] transition-all"
+          class="relative bg-white border border-gray-100 p-8 rounded-[3rem]  flex flex-col items-center text-center group hover:scale-[1.02] transition-all"
           :class="idx === 0 ? 'border-amber-200 bg-amber-50/20 md:-translate-y-4' : ''"
         >
-          <div class="absolute -top-3 -right-3 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black shadow-lg" :class="getPodiumBadge(idx)">
+          <div class="absolute -top-3 -right-3 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black " :class="getPodiumBadge(idx)">
             {{ idx + 1 }}
           </div>
-          <div class="w-24 h-24 rounded-[2rem] bg-gray-900 mb-6 overflow-hidden border-4 border-white shadow-xl relative">
+          <div class="w-24 h-24 rounded-[2rem] bg-gray-900 mb-6 overflow-hidden border-4 border-white  relative">
              <img v-if="leader.avatar" :src="leader.avatar" class="w-full h-full object-cover" />
              <div v-else class="w-full h-full flex items-center justify-center text-2xl font-black bg-parentPrimary/10 text-parentPrimary uppercase">
                 {{ leader.firstName[0] }}{{ leader.lastName[0] }}
@@ -30,7 +30,7 @@
           </div>
           <h3 class="text-lg font-black text-gray-900 tracking-tight mb-1">{{ leader.firstName }} {{ leader.lastName }}</h3>
           <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">{{ leader.faculty || 'Unspecified' }}</p>
-          <div class="px-4 py-2 bg-white rounded-xl border border-gray-100 text-sm font-black text-parentPrimary tracking-tighter shadow-sm">
+          <div class="px-4 py-2 bg-white rounded-xl border border-gray-100 text-sm font-black text-parentPrimary tracking-tighter ">
              {{ leader.points }} PTS
           </div>
         </div>
@@ -43,7 +43,7 @@
 
       <!-- Rewards Info Side -->
       <div class="lg:col-span-4 space-y-6">
-        <div class="bg-gray-900 rounded-[2.5rem] p-8 text-white shadow-2xi relative overflow-hidden group">
+        <div class="bg-gray-900 rounded-[2.5rem] p-8 text-white  relative overflow-hidden group">
           <div class="absolute -right-10 -top-10 w-40 h-40 bg-parentPrimary/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
           <div class="relative z-10">
             <h4 class="text-xl font-black tracking-tighter mb-4 italic">Hall of Fame Perks</h4>
@@ -71,16 +71,29 @@
 
 <script setup lang="ts">
 import { Trophy } from 'lucide-vue-next'
+import { ref, onMounted } from 'vue';
+import { useRewards } from '@/composables/modules/rewards';
 
 definePageMeta({
   layout: 'student'
 })
 
-const podium = ref([
-  { firstName: 'Adebayo', lastName: 'O.', faculty: 'Engineering', points: 14500, avatar: null },
-  { firstName: 'Chinelo', lastName: 'A.', faculty: 'Social Sc.', points: 12200, avatar: null },
-  { firstName: 'Ibrahim', lastName: 'K.', faculty: 'Arts', points: 11800, avatar: null }
-])
+const { leaders, fetchLeaderboard } = useRewards();
+
+onMounted(async () => {
+  await fetchLeaderboard('points');
+});
+
+const podium = computed(() => {
+  return leaders.value.slice(0, 3).map(l => ({
+    ...l,
+    firstName: l.firstName || 'Student',
+    lastName: l.lastName || '',
+    faculty: l.faculty || 'Campus',
+    points: l.points || 0,
+    avatar: l.avatar
+  }));
+});
 
 const perks = [
   { icon: '🚀', title: 'Priority Dispatch', desc: 'Orders are prioritized by top-tier errands.' },
@@ -89,8 +102,8 @@ const perks = [
 ]
 
 const getPodiumBadge = (idx: number) => {
-  if (idx === 0) return 'bg-amber-400 text-amber-900'
-  if (idx === 1) return 'bg-slate-300 text-slate-700'
+  if (idx === 0) return 'bg-amber-400 text-amber-900 shadow-amber-200 shadow-xl'
+  if (idx === 1) return 'bg-slate-200 text-slate-800'
   return 'bg-amber-600 text-amber-100'
 }
 

@@ -451,7 +451,7 @@ import {
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from '#imports';
 import { ref, computed, onMounted } from 'vue';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { orders_api } from '@/api_factory/modules/orders';
 import OrderChat from '@/components/core/OrderChat.vue';
 import UiModal from '@/components/ui/UiModal.vue';
 import { useUser } from '@/composables/modules/auth/user';
@@ -478,9 +478,7 @@ const cancelOrder = async () => {
   if (!confirm('Are you sure you want to cancel this order? You will receive a full refund to your wallet.')) return;
   cancelling.value = true;
   try {
-    await api.post(`/orders/${route.params.id}/cancel`, {
-      reason: 'Cancelled by user'
-    });
+    await orders_api.cancelOrder(route.params.id as string);
     fetchOrder();
   } catch (error) {
     console.error('Cancellation failed', error);
@@ -494,15 +492,15 @@ const submitRating = async () => {
  if (rating.value === 0) return;
  submittingRating.value = true;
  try {
- const res = await api.put(`/orders/${route.params.id}/rate`, {
- rating: rating.value,
- review: reviewText.value
- });
- order.value = res.data;
+  const res = await orders_api.rateOrder(route.params.id as string, {
+    rating: rating.value,
+    review: reviewText.value
+  });
+  order.value = res.data;
  } catch (error) {
- console.error('Failed to submit rating', error);
+  console.error('Failed to submit rating', error);
  } finally {
- submittingRating.value = false;
+  submittingRating.value = false;
  }
 };
 
@@ -522,12 +520,12 @@ const triggerSupportChat = (id: string, name: string, avatar?: string) => {
 const fetchOrder = async () => {
  loading.value = true;
  try {
- const res = await api.get(`/orders/${route.params.id}`);
- order.value = res.data;
+  const res = await orders_api.getOrder(route.params.id as string);
+  order.value = res.data;
  } catch (e) {
- console.error('Failed to fetch order', e);
+  console.error('Failed to fetch order', e);
  } finally {
- loading.value = false;
+  loading.value = false;
  }
 };
 
@@ -568,12 +566,12 @@ const reorder = async () => {
  if (!order.value) return;
  reordering.value = true;
  try {
- const res = await api.post(`/orders/${order.value._id}/reorder`);
- navigateTo('/cart');
+  await orders_api.reorder(order.value._id);
+  navigateTo('/cart');
  } catch (e) {
- console.error('Reorder failed', e);
+  console.error('Reorder failed', e);
  } finally {
- reordering.value = false;
+  reordering.value = false;
  }
 };
 

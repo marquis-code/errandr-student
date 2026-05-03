@@ -20,4 +20,12 @@ export const products_api = {
   getPopular: () => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get('/products/popular');
   },
+
+  search: (query: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/products/search?q=${encodeURIComponent(query)}`);
+  },
+
+  getByVendor: (vendorId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/products/vendor/${vendorId}`);
+  },
 };

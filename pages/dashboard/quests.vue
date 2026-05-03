@@ -15,7 +15,7 @@
       <div class="lg:col-span-2 space-y-8">
         <rewards-quests-view />
         
-        <div class="bg-gray-950 rounded-[2.5rem] p-10 text-white relative overflow-hidden group shadow-2xl">
+        <div class="bg-gray-950 rounded-[2.5rem] p-10 text-white relative overflow-hidden group ">
           <div class="absolute -right-20 -top-20 w-64 h-64 bg-parentPrimary/20 rounded-full blur-[100px] group-hover:scale-150 transition-transform duration-1000"></div>
           <div class="relative z-10">
             <h3 class="text-2xl font-black tracking-tighter mb-4 italic">The Errandr Legend</h3>
@@ -32,7 +32,7 @@
 
       <!-- Sidebar Info -->
       <div class="space-y-6">
-        <div class="bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm">
+        <div class="bg-white border border-gray-100 rounded-[2.5rem] p-8 ">
           <h4 class="text-sm font-black text-gray-900 uppercase tracking-widest mb-6">How Quests Work</h4>
           <ul class="space-y-6">
              <li v-for="(step, i) in steps" :key="i" class="flex gap-4">
@@ -45,7 +45,7 @@
           </ul>
         </div>
 
-        <div class="bg-parentPrimary rounded-[2.5rem] p-8 text-white shadow-lg shadow-parentPrimary/20">
+        <div class="bg-parentPrimary rounded-[2.5rem] p-8 text-white  Primary/20">
           <Trophy class="w-10 h-10 mb-4 opacity-50" />
           <h4 class="text-lg font-black tracking-tighter mb-2 leading-tight">Climb the Hall of Fame</h4>
           <p class="text-[10px] font-bold text-white/70 mb-6 leading-relaxed">Top erranders and customers get special perks every weekend.</p>

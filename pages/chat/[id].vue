@@ -135,7 +135,7 @@
 import { ArrowLeft, CheckCheck, Smile, Paperclip, Send, Mic, Video, Phone, MoreVertical } from 'lucide-vue-next';
 import { ref, onMounted, nextTick } from 'vue';
 import { useRoute, useRouter, useHead } from '#imports';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { orders_api } from '@/api_factory/modules/orders';
 import { useUser } from '@/composables/modules/auth/user';
 import { useSocket } from '@/composables/useSocket';
 
@@ -210,13 +210,13 @@ const sendMessage = () => {
 
 onMounted(async () => {
  try {
- const orderRes = await api.get<any>(`/orders/${route.params.id}`);
- order.value = orderRes.data;
- const messagesRes = await api.get<any[]>(`/chat/order/${route.params.id}`);
- messages.value = messagesRes.data;
- scrollToBottom();
+  const orderRes = await orders_api.getOrder(route.params.id as string);
+  order.value = orderRes.data;
+  const messagesRes = await orders_api.getOrderChat(route.params.id as string);
+  messages.value = messagesRes.data;
+  scrollToBottom();
  } catch (e) {
- console.error(e);
+  console.error(e);
  }
 
  connect();

@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { reports_api } from '@/api_factory/modules/reports';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 const { showToast } = useCustomToast();
 const reports = ref<any[]>([]);
@@ -89,9 +89,9 @@ const timeAgo = (date: string) => {
 const submitReport = async () => {
   submitting.value = true;
   try {
-    await api.post('/reports', form);
+    await reports_api.create(form);
     Object.assign(form, { category: '', vendorName: '', title: '', description: '' });
-    const res = await api.get<any[]>('/reports/mine');
+    const res = await reports_api.getMine();
     reports.value = res.data || [];
     showToast({
       title: 'Report Submitted',
@@ -109,8 +109,8 @@ const submitReport = async () => {
 
 onMounted(async () => {
   try { 
-    const res = await api.get<any[]>('/reports/mine');
-    reports.value = res.data;
+    const res = await reports_api.getMine();
+    reports.value = res.data || [];
   }
   catch (e) { /* not yet logged in */ }
 });

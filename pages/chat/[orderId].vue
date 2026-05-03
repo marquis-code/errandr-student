@@ -103,7 +103,7 @@
 import { ChevronLeft, Phone, Smile, Send } from 'lucide-vue-next';
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute, useRouter, useHead } from '#imports';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { orders_api } from '@/api_factory/modules/orders';
 import { useUser } from '@/composables/modules/auth/user';
 import { useSocket } from '@/composables/useSocket';
 
@@ -170,8 +170,8 @@ onMounted(async () => {
   try {
     // Load message history
     const [messagesRes, orderRes] = await Promise.all([
-      api.get<any[]>(`/chat/order/${orderId.value}`),
-      api.get<any>(`/orders/${orderId.value}`),
+      orders_api.getOrderChat(orderId.value),
+      orders_api.getOrder(orderId.value),
     ]);
     messages.value = messagesRes.data || [];
     otherUser.value = orderRes.data.errander || orderRes.data.customer;

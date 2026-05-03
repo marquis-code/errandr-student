@@ -4,6 +4,10 @@ export const orders_api = {
   getOrders: () => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/mine');
   },
+
+  getAllOrders: () => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders');
+  },
   
   getOrder: (id: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get(`/orders/${id}`);
@@ -31,5 +35,17 @@ export const orders_api = {
 
   getBatchStatus: () => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/batch/status');
+  },
+
+  rateOrder: (id: string, payload: any) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${id}/rate`, payload);
+  },
+
+  reorder: (id: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${id}/reorder`);
+  },
+
+  getOrderChat: (orderId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/chat/order/${orderId}`);
   },
 };

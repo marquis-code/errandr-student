@@ -18,11 +18,11 @@
  <div 
  v-for="fav in favorites" 
  :key="fav._id" 
- class="group bg-white rounded-2xl p-4 border border-gray-50 shadow-sm hover:shadow-md hover:border-gray-100 transition-all cursor-pointer flex items-center justify-between gap-3"
+ class="group bg-white rounded-2xl p-4 border border-gray-50  hover: hover:border-gray-100 transition-all cursor-pointer flex items-center justify-between gap-3"
  @click="selectedFavorite = fav"
  >
  <div class="flex items-center gap-4 flex-1 min-w-0">
- <div class="relative w-14 h-14 md:w-16 md:h-16 rounded-2xl overflow-hidden shadow-inner flex-shrink-0 border border-gray-100 bg-gray-50">
+ <div class="relative w-14 h-14 md:w-16 md:h-16 rounded-2xl overflow-hidden  flex-shrink-0 border border-gray-100 bg-gray-50">
  <img
  :src="fav.product?.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'"
  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -104,7 +104,7 @@
  <button
  v-if="selectedFavorite.product?.isAvailable"
  @click="quickAddToCart(selectedFavorite); selectedFavorite = null;"
- class="w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-[0.2em] shadow-lg hover:bg-parentPrimary transition-all active:scale-95"
+ class="w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-[0.2em]  hover:bg-parentPrimary transition-all active:scale-95"
  >
  Add to Cart
  </button>
@@ -125,7 +125,7 @@
 import { Heart, Plus } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { favorites_api } from '@/api_factory/modules/favorites';
 import { useCart } from '@/composables/modules/cart';
 import { useToast } from '@/composables/useToast';
 import SideDrawer from '@/components/ui/SideDrawer.vue';
@@ -144,32 +144,32 @@ const selectedFavorite = ref<any>(null);
 
 const removeFavorite = async (fav: any) => {
  try {
- await api.post('/favorites/toggle', { productId: fav.product._id });
- favorites.value = favorites.value.filter((f) => f._id !== fav._id);
- showToast('Removed from favorites', 'success');
+  await favorites_api.toggle({ productId: fav.product._id });
+  favorites.value = favorites.value.filter((f) => f._id !== fav._id);
+  showToast('Removed from favorites', 'success');
  } catch (e) { 
- console.error(e);
- showToast('Failed to remove from favorites', 'error');
+  console.error(e);
+  showToast('Failed to remove from favorites', 'error');
  }
 };
 
 const quickAddToCart = (fav: any) => {
  addItem({
- productId: fav.product._id,
- vendorId: fav.vendor._id,
- name: fav.product.name,
- price: fav.product.price,
- image: fav.product.image,
- quantity: 1,
- customizations: [],
+  productId: fav.product._id,
+  vendorId: fav.vendor._id,
+  name: fav.product.name,
+  price: fav.product.price,
+  image: fav.product.image,
+  quantity: 1,
+  customizations: [],
  });
  showToast('Added to cart', 'success');
 };
 
 onMounted(async () => {
  try {
- const res = await api.get<any[]>('/favorites');
- favorites.value = res.data;
+  const res = await favorites_api.getFavorites();
+  favorites.value = res.data || [];
  } catch (e) { console.error(e); }
  finally { loading.value = false; }
 });
