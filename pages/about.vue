@@ -4,7 +4,7 @@
     <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100 py-4">
       <div class="max-w-7xl mx-auto px-6 sm:px-10 flex justify-between items-center">
         <NuxtLink to="/" class="flex items-center gap-3 group">
-          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
+          <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
         </NuxtLink>
         <div class="flex items-center gap-8">
           <NuxtLink to="/about" class="text-[11px] font-black tracking-widest uppercase text-parentPrimary border-b-2 border-parentPrimary pb-1">About</NuxtLink>
@@ -103,7 +103,7 @@
           <div class="flex-1 relative">
             <div class="absolute -inset-10 bg-parentPrimary/10 blur-[100px] rounded-full animate-pulse-slow"></div>
             <img 
-              src="@/assets/img/hero2.jpg" 
+              src="@/assets/img/hero2.webp" 
               alt="Campus Delivery" 
               class="relative z-10 rounded-[4rem] shadow-3xl border-8 border-white object-cover aspect-[5/4]"
             />
@@ -116,7 +116,7 @@
     <footer class="bg-gray-50 border-t border-gray-100 py-16">
       <div class="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col md:flex-row justify-between items-center gap-10">
         <NuxtLink to="/" class="group">
-          <img src="@/assets/img/logo.png" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
+          <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
         </NuxtLink>
         <div class="flex items-center gap-10 text-[10px] font-black tracking-[0.15em] uppercase text-gray-400">
           <NuxtLink to="/about" class="text-parentPrimary font-black">About Us</NuxtLink>

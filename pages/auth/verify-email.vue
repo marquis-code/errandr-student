@@ -40,6 +40,13 @@
         </button>
       </form>
 
+      <!-- Welcome Modal -->
+      <WelcomeModal 
+        :is-open="showWelcome" 
+        :first-name="firstName" 
+        @close="handleWelcomeClose" 
+      />
+
       <div class="mt-auto pt-12 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400 font-medium">
         <p>&copy; {{ new Date().getFullYear() }} Errandr</p>
         <NuxtLink to="/terms" class="hover:text-gray-600">Terms</NuxtLink>
@@ -62,6 +69,8 @@ const { verifyOTP, loading } = useAuth()
 const email = ref('')
 const otp = ref('')
 const error = ref('')
+const showWelcome = ref(false)
+const firstName = ref('')
 
 onMounted(() => {
   if (route.query.email) {
@@ -74,10 +83,17 @@ onMounted(() => {
 const handleVerify = async () => {
   error.value = ''
   try {
-    await verifyOTP(email.value, otp.value.trim())
+    const res = await verifyOTP(email.value, otp.value.trim(), { redirect: false })
+    firstName.value = res?.user?.firstName || 'Errander'
+    showWelcome.value = true
   } catch (e: any) {
     error.value = e.data?.message || 'Invalid code or it has expired. Please double-check.'
   }
+}
+
+const handleWelcomeClose = () => {
+  showWelcome.value = false
+  navigateTo('/dashboard')
 }
 
 useHead({ title: 'Verify Email - Errandr' })

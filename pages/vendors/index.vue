@@ -1,21 +1,6 @@
 <template>
  <div class="min-h-screen bg-white">
- <!-- Standalone Header -->
- <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-50">
- <div class="max-w-[1400px] mx-auto flex items-center justify-between px-6 py-3">
- <div class="flex items-center gap-3">
- <NuxtLink to="/dashboard" class="w-9 h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg">
- <ShoppingBag class="w-4 h-4" />
- </NuxtLink>
- <NuxtLink to="/dashboard" class="text-lg font-bold text-gray-900 tracking-tighter">Errandr</NuxtLink>
- </div>
- <div class="flex items-center gap-3">
- <NuxtLink to="/cart" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all relative">
- <ShoppingCart class="w-4 h-4 text-gray-900" />
- </NuxtLink>
- </div>
- </div>
- </header>
+  <CoreAppNavbar />
 
   <div class="max-w-[1400px] animate-fade-in pb-32 px-6 pt-6">
     <div class="flex flex-col lg:flex-row items-start">
@@ -230,6 +215,14 @@
                 </div>
               </div>
 
+              <!-- Like Button -->
+              <button 
+                @click.stop="toggleFavoriteVendor(vendor)"
+                class="absolute top-3 left-3 w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/40 transition-all z-10"
+              >
+                <Heart class="w-4 h-4" :class="{ 'fill-rose-500 text-rose-500': isVendorFavorited(vendor._id) }" />
+              </button>
+
               <!-- Status Badge -->
               <div class="absolute top-3 right-3 flex flex-col gap-2 items-end">
                 <div v-if="!vendor.isOpen" class="px-3 py-1 bg-gray-900/90 backdrop-blur-md rounded-full text-white text-[9px] font-black tracking-widest shadow-lg">
@@ -294,10 +287,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useHead } from '#imports';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 import { ShoppingBag, ShoppingCart, Search, Tag, Clock, ChevronDown, Star, Heart, ArrowLeft, Filter } from 'lucide-vue-next';
 import { useCart } from '@/composables/modules/cart';
 import { useUser } from '@/composables/modules/auth/user';
+import { useVendors } from '@/composables/modules/vendors';
+import { useFavorites } from '@/composables/modules/favorites';
 import FilterPopover from '@/components/ui/FilterPopover.vue';
 import UiSideDrawer from '@/components/ui/SideDrawer.vue';
 
@@ -316,6 +310,7 @@ const showMobileFilters = ref(false);
 const maxDeliveryFee = ref(1000);
 const minRating = ref('0');
 const sortBy = ref('popularity');
+const { favoriteVendorIds, fetchFavorites, toggleFavorite, isVendorFavorited } = useFavorites();
 
 const sortOptions = [
  { label: 'Popularity', value: 'popularity' },
@@ -413,7 +408,17 @@ const filteredVendors = computed(() => {
 });
 
 const handleApplyFilters = () => {
- // This is handled by computed properties automatically
+  // This is handled by computed properties automatically
+};
+
+const toggleFavoriteVendor = async (vendor: any) => {
+  if (!user.value) {
+    import('@/composables/useToast').then(({ useToast }) => {
+      useToast().showToast('Please log in to save favorites', 'error');
+    });
+    return;
+  }
+  await toggleFavorite({ vendorId: vendor._id });
 };
 
 const resetDeliveryFee = () => {
@@ -434,74 +439,29 @@ const resetAllFilters = () => {
  sortBy.value = 'popularity';
 };
 
+const { fetchPopularVendors: _fetchAllVendors } = useVendors();
+import { vendors_api } from '@/api_factory/modules/vendors';
+
 onMounted(async () => {
  try {
- const res = await api.get<any>('/vendors');
- const rawVendors = res.data?.vendors || res.data || [];
- 
- if (rawVendors.length === 0) {
- // Use premium mock data if API is empty to show the UI
- vendors.value = [
- {
- _id: 'mock1',
- storeName: 'Mavise Restaurant',
- category: 'restaurant',
- banner: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80',
- logo: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&q=80',
- rating: 4.8,
- preparationTime: 25,
- deliveryFee: 200,
- isOpen: true,
- offers: ['20% OFF on first order']
- },
- {
- _id: 'mock2',
- storeName: 'Quick Bites',
- category: 'snacks',
- banner: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=800&q=80',
- rating: 4.5,
- preparationTime: 15,
- deliveryFee: 100,
- isOpen: true,
- offers: ['Free Drink with Burger']
- },
- {
- _id: 'mock3',
- storeName: 'Mama Put Central',
- category: 'eatery',
- banner: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
- rating: 4.9,
- preparationTime: 30,
- deliveryFee: 150,
- isOpen: true
- }
- ];
- } else {
- vendors.value = rawVendors.map((v: any) => ({
- ...v,
- offers: v.offers && v.offers.length > 0 ? v.offers : 
- (Math.random() > 0.7 ? ['Special Discount'] : [])
- }));
- }
+  const res = await vendors_api.getAll();
+  const rawVendors = res.data?.vendors || res.data || [];
+  if (rawVendors.length === 0) {
+    vendors.value = [
+      { _id: 'mock1', storeName: 'Mavise Restaurant', category: 'restaurant', banner: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', logo: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&q=80', rating: 4.8, preparationTime: 25, deliveryFee: 200, isOpen: true, offers: ['20% OFF on first order'] },
+      { _id: 'mock2', storeName: 'Quick Bites', category: 'snacks', banner: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=800&q=80', rating: 4.5, preparationTime: 15, deliveryFee: 100, isOpen: true, offers: ['Free Drink with Burger'] },
+      { _id: 'mock3', storeName: 'Mama Put Central', category: 'eatery', banner: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80', rating: 4.9, preparationTime: 30, deliveryFee: 150, isOpen: true }
+    ];
+  } else {
+    vendors.value = rawVendors.map((v: any) => ({ ...v, offers: v.offers?.length > 0 ? v.offers : (Math.random() > 0.7 ? ['Special Discount'] : []) }));
+  }
  } catch (e) {
- console.error('API failed, using mock data for demo', e);
- // Fallback on error too
- vendors.value = [
- {
- _id: 'mock1',
- storeName: 'Mavise Restaurant (Demo)',
- category: 'restaurant',
- banner: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80',
- logo: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&q=80',
- rating: 4.8,
- preparationTime: 25,
- deliveryFee: 200,
- isOpen: true
- }
- ];
+  console.error('API failed, using mock data for demo', e);
+  vendors.value = [{ _id: 'mock1', storeName: 'Mavise Restaurant (Demo)', category: 'restaurant', banner: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', logo: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&q=80', rating: 4.8, preparationTime: 25, deliveryFee: 200, isOpen: true }];
  } finally {
- loading.value = false;
+  loading.value = false;
  }
+ if (user.value) fetchFavorites();
 });
 
 useHead({ title: 'Vendors - Errandr' });

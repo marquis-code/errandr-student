@@ -71,9 +71,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
+import { useRewards } from '@/composables/modules/rewards';
 
-const loading = ref(true);
-const leaders = ref<any[]>([]);
+const { loading, leaders, fetchLeaderboard } = useRewards();
 const activeType = ref<'points' | 'orders' | 'deliveries'>('points');
 
 const types = [
@@ -82,18 +82,8 @@ const types = [
   { key: 'deliveries', label: 'Hustle' }
 ];
 
-const fetchLeaderboard = async () => {
-  loading.value = true;
-  try {
-    const { data } = await useFetch(`/api/rewards/leaderboard?type=${activeType.value}`);
-    if (data.value) {
-      leaders.value = data.value as any[];
-    }
-  } catch (e) {
-    console.error('Failed to fetch leaderboard:', e);
-  } finally {
-    loading.value = false;
-  }
+const loadLeaderboard = () => {
+  fetchLeaderboard(activeType.value);
 };
 
 const getRankClass = (idx: number) => {
@@ -109,6 +99,6 @@ const getScoreLabel = (user: any) => {
   return `${user.points || 0} PTS`;
 };
 
-watch(activeType, fetchLeaderboard);
-onMounted(fetchLeaderboard);
+watch(activeType, loadLeaderboard);
+onMounted(loadLeaderboard);
 </script>

@@ -1,10 +1,10 @@
 <template>
  <div class="max-w-xl mx-auto space-y-6 pb-32 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary pt-8 px-4">
  <!-- Compact Identity Header -->
- <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden group">
+ <div class="bg-white p-6 rounded-2xl border border-gray-100  relative overflow-hidden group">
  <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
  <div class="relative z-10 flex items-center gap-6">
- <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-md transform group-hover:rotate-3 transition-transform duration-500">
+ <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-xl font-black  transform group-hover:rotate-3 transition-transform duration-500">
  {{ user?.firstName?.[0] }}{{ user?.lastName?.[0] }}
  </div>
  <div class="flex-1 min-w-0">

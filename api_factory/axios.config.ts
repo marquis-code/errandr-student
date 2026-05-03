@@ -84,7 +84,7 @@ instanceArray.forEach((instance) => {
         console.log(err.response.data.error)
         
         // Only redirect if NOT on a public browsing page
-        const publicPaths = ['/dashboard', '/vendors', '/search', '/', '/auth/login', '/auth/register'];
+        const publicPaths = ['/dashboard', '/vendors', '/search', '/', '/auth/login', '/auth/register', '/cart'];
         const isPublicPath = typeof window !== 'undefined' && 
           (publicPaths.includes(window.location.pathname) || window.location.pathname.startsWith('/vendors/'));
         

@@ -8,7 +8,7 @@
  :key="status.key" 
  @click="activeFilter = status.key"
  class="px-5 py-2.5 rounded-xl text-[10px] font-bold transition-all tracking-widest whitespace-nowrap border"
- :class="activeFilter === status.key ? 'bg-parentPrimary text-white border-parentPrimary shadow-md' : 'text-gray-400 bg-white border-gray-100 hover:border-gray-200'"
+ :class="activeFilter === status.key ? 'bg-parentPrimary text-white border-parentPrimary ' : 'text-gray-400 bg-white border-gray-100 hover:border-gray-200'"
  >
  {{ status.label }}
  </button>
@@ -44,11 +44,11 @@
  <div 
  v-for="order in filteredOrders" 
  :key="order._id" 
- class="group bg-white rounded-2xl p-4 border border-gray-50 shadow-sm hover:shadow-md hover:border-gray-100 transition-all cursor-pointer flex items-center justify-between gap-3"
+ class="group bg-white rounded-2xl p-4 border border-gray-50  hover: hover:border-gray-100 transition-all cursor-pointer flex items-center justify-between gap-3"
  @click="selectedOrder = order"
  >
  <div class="flex items-center gap-4 flex-1 min-w-0">
- <div class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl shadow-inner border border-white group-hover:bg-parentPrimary/10 transition-colors shrink-0">
+ <div class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl  border border-white group-hover:bg-parentPrimary/10 transition-colors shrink-0">
  {{ statusEmoji(order.status) }}
  </div>
  <div class="min-w-0">
@@ -81,7 +81,7 @@
  <SideDrawer :isOpen="!!selectedOrder" @close="selectedOrder = null">
  <template v-if="selectedOrder">
  <div class="flex flex-col items-center justify-center py-10 border-b border-gray-50 text-center px-6">
- <div class="w-16 h-16 bg-gray-900 text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg mb-6 transform -rotate-6 animate-float">
+ <div class="w-16 h-16 bg-gray-900 text-white rounded-2xl flex items-center justify-center text-3xl  mb-6 transform -rotate-6 animate-float">
  {{ statusEmoji(selectedOrder.status) }}
  </div>
  <h3 class="text-xl font-bold text-gray-900 tracking-tight leading-none mb-3">Order #{{ selectedOrder.orderNumber }}</h3>
@@ -91,9 +91,9 @@
  </div>
 
  <div class="p-6 space-y-6">
- <div class="bg-white rounded-2xl p-6 space-y-6 border border-gray-100 shadow-sm">
+ <div class="bg-white rounded-2xl p-6 space-y-6 border border-gray-100 ">
  <div class="flex items-center gap-4">
- <div class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center text-lg shadow-md">🏪</div>
+ <div class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center text-lg ">🏪</div>
  <div class="space-y-0.5">
  <p class="text-[8px] font-bold tracking-widest text-gray-400">Vendor</p>
  <p class="text-sm font-bold text-gray-900">{{ selectedOrder.vendor?.storeName || 'Unknown Vendor' }}</p>
@@ -115,14 +115,14 @@
  
  <button 
  @click="navigateTo(`/dashboard/orders/${selectedOrder._id}`)" 
- class="w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-extrabold tracking-widest shadow-lg shadow-gray-900/20 hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 group"
+ class="w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-extrabold tracking-widest  -900/20 hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 group"
  >
  Track Errand <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
  </button>
 
  <button
  @click="handleReorder(selectedOrder)"
- class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-extrabold tracking-widest border border-gray-100 shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+ class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-extrabold tracking-widest border border-gray-100  hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
  >
  Order Again
  </button>

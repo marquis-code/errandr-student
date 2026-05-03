@@ -204,7 +204,7 @@
 <script setup lang="ts">
 import { Wallet, UtensilsCrossed, Zap, Lightbulb, ChefHat, ChevronLeft, Target, ArrowUpRight } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { meal_planner_api } from '@/api_factory/modules/meal-planner';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 
 definePageMeta({
@@ -219,7 +219,6 @@ const plan = ref<any>(null);
 const router = useRouter();
 
 const handleMealClick = (meal: any) => {
-  // Extract vendor ID from the first option's product
   const vendorId = meal.options?.[0]?.product?.vendor?._id || meal.options?.[0]?.product?.vendor;
   if (vendorId) {
     router.push(`/vendors/${vendorId}`);
@@ -228,27 +227,27 @@ const handleMealClick = (meal: any) => {
 
 const generatePlan = async () => {
  if (budget.value < 500) {
- showToast({
-   title: 'Insufficient Budget',
-   message: 'Please enter a budget of at least ₦500',
-   toastType: 'warning'
- });
- return;
+  showToast({
+    title: 'Insufficient Budget',
+    message: 'Please enter a budget of at least ₦500',
+    toastType: 'warning'
+  });
+  return;
  }
  
  loading.value = true;
  try {
- const res = await api.get<any>(`/meal-planner?budget=${budget.value}&mealsPerDay=${mealsPerDay.value}`);
- plan.value = res.data;
+  const res = await meal_planner_api.generatePlan({ budget: budget.value, mealsPerDay: mealsPerDay.value });
+  plan.value = res.data;
  } catch (e) {
- console.error(e);
- showToast({
-    title: 'Optimization Failed',
-    message: 'Could not generate plan. Please try again.',
-    toastType: 'error'
-  });
+  console.error(e);
+  showToast({
+     title: 'Optimization Failed',
+     message: 'Could not generate plan. Please try again.',
+     toastType: 'error'
+   });
  } finally {
- loading.value = false;
+  loading.value = false;
  }
 };
 

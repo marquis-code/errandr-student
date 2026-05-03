@@ -65,11 +65,11 @@
             </div>
             <h3 class="text-2xl lg:text-3xl font-black text-white tracking-tight mb-2">{{ card.label }}</h3>
             <p class="text-white/70 text-xs lg:text-sm font-bold leading-relaxed max-w-sm">{{ card.description }}</p>
-            <div class="mt-4 flex items-center gap-3">
+            <NuxtLink to="/vendors" class="mt-4 flex items-center gap-3">
               <div class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 text-white text-[10px] font-black tracking-widest uppercase hover:bg-white/20 transition-colors">
-                Explore →
+                Chop Now →
               </div>
-            </div>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -78,40 +78,59 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps<{
   images: string[]
 }>()
 
 const activeCard = ref(2) // Start with middle card expanded
+let autoScrollInterval: any = null
 
 const cards = [
   {
-    label: 'Restaurants',
+    label: 'Campus Meals',
     icon: '🍽️',
-    description: 'Order from the best campus restaurants and eateries. Rice, beans, swallow — everything you love.',
+    description: 'The best plug for rice, beans, or swallow. We bring the heat straight from school restaurants to your hostel.',
     get image() { return props.images[0] || '' }
   },
   {
-    label: 'Fast Food',
+    label: 'Quick Chow',
     icon: '🍔',
-    description: 'Burgers, shawarma, pizza and more. Fast, hot, and delivered to your door.',
+    description: 'Sharp-sharp shawarma, burgers, and small chops. Perfect for when lecture is over and hunger is real.',
     get image() { return props.images[1] || '' }
   },
   {
-    label: 'Local Markets',
+    label: 'Market Runs',
     icon: '🥬',
-    description: 'Fresh produce, grains, proteins, fruits, and other groceries from local markets closest to you.',
+    description: 'No time for market? No wahala. We pick up fresh veggies, proteins, and fruits for your room cooking.',
     get image() { return props.images[2] || '' }
   },
   {
-    label: 'Snacks & Drinks',
+    label: 'Sips & Munchies',
     icon: '🧃',
-    description: 'Chinchin, puff-puff, zobo, chapman — all the campus favorites in one place.',
+    description: 'Zobo, puff-puff, plantain chips — all your favorite steady vibes in one place.',
     get image() { return props.images[3] || '' }
   }
 ]
+
+const startAutoScroll = () => {
+  autoScrollInterval = setInterval(() => {
+    activeCard.value = (activeCard.value + 1) % cards.length
+  }, 4000)
+}
+
+const stopAutoScroll = () => {
+  if (autoScrollInterval) clearInterval(autoScrollInterval)
+}
+
+onMounted(() => {
+  startAutoScroll()
+})
+
+onUnmounted(() => {
+  stopAutoScroll()
+})
 </script>
 
 <style scoped>

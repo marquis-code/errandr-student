@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6 md:space-y-12 pb-32 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary" v-if="order">
     <!-- Header -->
-    <div class="bg-gray-900 rounded-[1.5rem] md:rounded-[2rem] p-6 lg:p-10 relative overflow-hidden group shadow-2xl border border-white/5 mt-4 mx-4">
+    <div class="bg-gray-900 rounded-[1.5rem] md:rounded-[2rem] p-6 lg:p-10 relative overflow-hidden group  border border-white/5 mt-4 mx-4">
       <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
       <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 text-center md:text-left">
         <div class="space-y-3">
@@ -15,7 +15,7 @@
         </div>
         
         <div class="flex items-center justify-center gap-4 bg-white/5 backdrop-blur-xl p-4 md:p-6 rounded-2xl border border-white/10 group-hover:scale-105 transition-all duration-500 max-w-xs mx-auto md:mx-0">
-          <div class="w-12 h-12 md:w-14 md:h-14 bg-parentPrimary rounded-xl md:rounded-2xl flex items-center justify-center text-white font-bold shadow-lg shadow-parentPrimary/30">
+          <div class="w-12 h-12 md:w-14 md:h-14 bg-parentPrimary rounded-xl md:rounded-2xl flex items-center justify-center text-white font-bold  Primary/30">
             <Clock class="w-6 h-6 md:w-7 md:h-7" />
           </div>
           <div class="text-left">
@@ -29,11 +29,11 @@
     <!-- Order Interaction -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4">
       <!-- Verification -->
-      <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden group translate-y-0 hover:-translate-y-1 transition-all duration-300">
+      <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100  relative overflow-hidden group translate-y-0 hover:-translate-y-1 transition-all duration-300">
         <div class="absolute -right-5 -top-5 w-24 h-24 bg-gray-50 rounded-full blur-2xl group-hover:bg-parentPrimary/10 transition-colors" />
         <h4 class="text-[10px] font-bold text-gray-400 tracking-widest mb-4 uppercase">Verification Code</h4>
         <div class="flex flex-wrap items-center gap-2 justify-center lg:justify-start">
-          <div v-for="(digit, idx) in (order.uniqueCode || '').split('')" :key="idx" class="w-10 h-10 md:w-12 md:h-12 bg-gray-50 rounded-xl flex items-center justify-center text-xl md:text-2xl font-bold text-gray-900 border border-gray-100 group-hover:bg-white group-hover:border-parentPrimary/30 transition-all shadow-inner">
+          <div v-for="(digit, idx) in (order.uniqueCode || '').split('')" :key="idx" class="w-10 h-10 md:w-12 md:h-12 bg-gray-50 rounded-xl flex items-center justify-center text-xl md:text-2xl font-bold text-gray-900 border border-gray-100 group-hover:bg-white group-hover:border-parentPrimary/30 transition-all ">
             {{ digit }}
           </div>
         </div>
@@ -41,8 +41,8 @@
       </div>
 
       <!-- Delivery Errandr -->
-      <div v-if="order.errander" class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col items-center text-center group translate-y-0 hover:-translate-y-1 transition-all duration-300">
-        <div class="w-14 h-14 bg-gray-900 rounded-xl flex items-center justify-center mb-4 text-white text-xl font-bold shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 uppercase">
+      <div v-if="order.errander" class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100  flex flex-col items-center text-center group translate-y-0 hover:-translate-y-1 transition-all duration-300">
+        <div class="w-14 h-14 bg-gray-900 rounded-xl flex items-center justify-center mb-4 text-white text-xl font-bold  group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 uppercase">
           {{ order.errander.firstName?.[0] }}{{ order.errander.lastName?.[0] }}
         </div>
         <div class="space-y-1 mb-6">
@@ -51,13 +51,13 @@
           <p class="text-[10px] text-parentPrimary font-bold tracking-widest mt-1 bg-parentPrimary/5 px-3 py-1.5 rounded-full inline-block">{{ order.errander.phone }}</p>
         </div>
         <div class="flex gap-2 w-full">
-          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-[10px] font-bold tracking-widest hover:bg-parentPrimary transition-all shadow-md active:scale-95 text-center uppercase">Call</a>
+          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-[10px] font-bold tracking-widest hover:bg-parentPrimary transition-all  active:scale-95 text-center uppercase">Call</a>
           <NuxtLink :to="`/chat/${order._id}`" class="flex-1 py-3 bg-white border border-gray-100 text-gray-900 rounded-xl text-[10px] font-bold tracking-widest hover:bg-gray-50 transition-all active:scale-95 text-center uppercase">Chat</NuxtLink>
         </div>
       </div>
 
       <!-- ETA Card -->
-      <div class="bg-parentPrimary p-6 md:p-8 rounded-[2rem] text-white overflow-hidden relative group translate-y-0 hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-parentPrimary/20">
+      <div class="bg-parentPrimary p-6 md:p-8 rounded-[2rem] text-white overflow-hidden relative group translate-y-0 hover:-translate-y-1 transition-all duration-300  Primary/20">
         <div class="absolute -top-4 -right-4 p-8 transform rotate-12 group-hover:rotate-0 transition-transform duration-700 opacity-20 hidden md:block">
           <Bike class="w-24 h-24" />
         </div>
@@ -81,10 +81,10 @@
 
     <!-- Live Map Placeholder -->
     <div class="px-4">
-      <div class="bg-gray-50 h-48 md:h-64 rounded-[2rem] border-2 md:border-8 border-white shadow-md relative overflow-hidden group">
+      <div class="bg-gray-50 h-48 md:h-64 rounded-[2rem] border-2 md:border-8 border-white  relative overflow-hidden group">
         <div class="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/0,0,1,0/1200x600?access_token=token')] bg-cover bg-center grayscale opacity-30" />
         <div class="absolute inset-0 flex items-center justify-center">
-          <div class="flex flex-col items-center gap-3 text-center p-4 md:p-6 bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 shadow-sm">
+          <div class="flex flex-col items-center gap-3 text-center p-4 md:p-6 bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 ">
             <Navigation class="w-6 h-6 md:w-8 md:h-8 text-parentPrimary animate-bounce" />
             <p class="text-[10px] md:text-xs font-bold text-gray-900 tracking-widest uppercase">Map tracking active</p>
           </div>
@@ -94,7 +94,7 @@
 
     <!-- Dual Rating Section -->
     <section v-if="order && order.status === 'DELIVERED' && (!order.hasRatedVendor || !order.hasRatedErrander)" class="max-w-4xl mx-auto px-4 mt-8 slide-up">
-      <div class="bg-gray-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden group shadow-2xl border border-white/5">
+      <div class="bg-gray-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden group  border border-white/5">
         <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-50 transition-opacity duration-1000" />
         
         <div class="relative z-10 text-center mb-10">
@@ -145,7 +145,7 @@
           <button 
             @click="submitRatings"
             :disabled="isSubmittingRating || (!ratingForm.vendorRating && !ratingForm.erranderRating)"
-            class="w-full py-5 bg-parentPrimary text-white rounded-[2rem] font-black text-sm tracking-[0.1em] uppercase shadow-2xl shadow-parentPrimary/30 disabled:opacity-50 disabled:grayscale transition-all active:scale-95 group/btn"
+            class="w-full py-5 bg-parentPrimary text-white rounded-[2rem] font-black text-sm tracking-[0.1em] uppercase  Primary/30 disabled:opacity-50 disabled:grayscale transition-all active:scale-95 group/btn"
           >
             <span class="flex items-center justify-center gap-2">
               {{ isSubmittingRating ? 'Saving Feedback...' : 'Submit Ratings' }}
@@ -158,7 +158,7 @@
 
     <!-- Order Items -->
     <section class="max-w-4xl mx-auto px-4">
-      <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden">
+      <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100  relative overflow-hidden">
         <h4 class="text-lg font-bold text-gray-900 tracking-tight mb-6 uppercase">Order Summary</h4>
 
         <div class="space-y-4">
@@ -195,8 +195,8 @@
 
     <!-- Support -->
     <div class="max-w-4xl mx-auto px-4 pb-40">
-      <button class="w-full py-5 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-row items-center justify-center gap-3 group hover:bg-gray-100 transition-all duration-300 active:scale-95 shadow-sm">
-        <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors shadow-sm">
+      <button class="w-full py-5 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-row items-center justify-center gap-3 group hover:bg-gray-100 transition-all duration-300 active:scale-95 ">
+        <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors ">
           <ShieldCheck class="w-5 h-5" />
         </div>
         <span class="text-[10px] font-black text-gray-400 tracking-widest uppercase group-hover:text-gray-900 transition-colors">Need help? Errandr Support</span>
@@ -231,7 +231,7 @@ import {
 } from 'lucide-vue-next';
 import { ref, onMounted, reactive } from 'vue';
 import { useRoute, useHead } from '#imports';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { orders_api } from '@/api_factory/modules/orders';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 
 definePageMeta({
@@ -252,7 +252,7 @@ const ratingForm = reactive({
 
 onMounted(async () => {
   try {
-    const res = await api.get<any>(`/orders/${route.params.id}`);
+    const res = await orders_api.getOrder(route.params.id as string);
     order.value = res.data;
   } catch (e) {
     console.error(e);
@@ -262,14 +262,14 @@ onMounted(async () => {
 const submitRatings = async () => {
   isSubmittingRating.value = true;
   try {
-    await api.put(`/orders/${order.value._id}/rate`, ratingForm);
+    await orders_api.rateOrder(order.value._id, ratingForm);
     showToast({
       title: "Feedback Saved! 🎉",
       message: "You've earned 20 points! Thank you for helping us improve campus deliveries.",
       toastType: "success"
     });
     // Refresh order data
-    const res = await api.get<any>(`/orders/${route.params.id}`);
+    const res = await orders_api.getOrder(route.params.id as string);
     order.value = res.data;
   } catch (e) {
     showToast({

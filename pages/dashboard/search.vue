@@ -7,7 +7,7 @@
  v-model="query"
  type="text"
  placeholder="Search for restaurants, snacks, or groceries..."
- class="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl shadow-sm focus:ring-4 focus:ring-parentPrimary/5 focus:border-parentPrimary transition-all text-sm font-bold placeholder:text-gray-300"
+ class="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl  focus:ring-4 focus:ring-parentPrimary/5 focus:border-parentPrimary transition-all text-sm font-bold placeholder:text-gray-300"
  autofocus
  @input="debouncedSearch"
  />
@@ -33,16 +33,16 @@
  <div
  v-for="item in results"
  :key="item._id"
- class="bg-white rounded-[1.5rem] p-3 border border-gray-50 shadow-sm hover:shadow-xl hover:border-gray-200 transition-all duration-500 group cursor-pointer relative overflow-hidden"
+ class="bg-white rounded-[1.5rem] p-3 border border-gray-50  hover: hover:border-gray-200 transition-all duration-500 group cursor-pointer relative overflow-hidden"
  @click="router.push(`/vendors/${item.vendor?._id}`)"
  >
- <div class="relative h-40 rounded-2xl overflow-hidden mb-4 shadow-inner">
+ <div class="relative h-40 rounded-2xl overflow-hidden mb-4 ">
  <img :src="item.image || 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=400&h=400&fit=crop'" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-1000" />
  <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
  
  <!-- Price Badge -->
  <div class="absolute bottom-3 left-3">
- <span class="px-3 py-1 bg-white/95 backdrop-blur-xl rounded-lg text-[10px] font-bold text-gray-900 border border-white/10 shadow-sm">
+ <span class="px-3 py-1 bg-white/95 backdrop-blur-xl rounded-lg text-[10px] font-bold text-gray-900 border border-white/10 ">
  ₦{{ item.price?.toLocaleString() }}
  </span>
  </div>
@@ -84,7 +84,7 @@
 import { Search, ArrowRight } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { products_api } from '@/api_factory/modules/products';
 
 definePageMeta({
  layout: 'student'
@@ -98,13 +98,13 @@ const searching = ref(false);
 
 const performSearch = async () => {
  if (!query.value.trim()) {
- results.value = [];
- return;
+  results.value = [];
+  return;
  }
  searching.value = true;
  try {
- const res = await api.get<any>(`/products/search?q=${encodeURIComponent(query.value)}`);
- results.value = res.data.products || [];
+  const res = await products_api.search(query.value);
+  results.value = (res.data as any)?.products || res.data || [];
  } catch (e) { console.error(e); }
  finally { searching.value = false; }
 };
@@ -117,8 +117,8 @@ const debouncedSearch = () => {
 
 onMounted(() => {
  if (route.query.q) {
- query.value = route.query.q as string;
- performSearch();
+  query.value = route.query.q as string;
+  performSearch();
  }
 });
 

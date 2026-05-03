@@ -147,17 +147,18 @@
 <script setup lang="ts">
 import { MapPin, Navigation, Zap, ChevronLeft, Loader2 } from 'lucide-vue-next';
 import { ref, computed, onMounted } from 'vue';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 import { useUser } from '@/composables/modules/auth/user';
+import { usePayments } from '@/composables/modules/payments';
+import { useStudentOrders } from '@/composables/modules/orders';
 import { useRoute, useRouter, navigateTo } from '#imports';
 
-definePageMeta({
-  layout: 'student'
-})
+definePageMeta({ layout: 'student' });
 
 const { showToast } = useCustomToast();
 const { user } = useUser();
+const { initializePayment, verifyPayment } = usePayments();
+const { createOrder } = useStudentOrders();
 const router = useRouter();
 const route = useRoute();
 
@@ -173,9 +174,7 @@ const form = ref({
 const baseFee = computed(() => form.value.urgency === 'express' ? 850 : 450);
 const serviceFee = computed(() => Math.round((baseFee.value + Number(form.value.estimatedItemCost || 0)) * 0.05));
 
-const subtotalBeforeFee = computed(() => {
-  return baseFee.value + Number(form.value.estimatedItemCost || 0) + serviceFee.value;
-});
+const subtotalBeforeFee = computed(() => baseFee.value + Number(form.value.estimatedItemCost || 0) + serviceFee.value);
 
 const paystackFee = computed(() => {
   const amount = subtotalBeforeFee.value;
@@ -188,97 +187,47 @@ const paystackFee = computed(() => {
 const finalTotal = computed(() => subtotalBeforeFee.value + paystackFee.value);
 
 const isFormValid = computed(() => 
-  form.value.pickupLocation && 
-  form.value.dropoffLocation && 
-  form.value.description &&
-  finalTotal.value > 0
+  form.value.pickupLocation && form.value.dropoffLocation && form.value.description && finalTotal.value > 0
 );
 
 const startPayment = async () => {
-  if (!user.value?.email) {
-    showToast({
-      title: 'Auth Required',
-      message: 'Please sign in to place a request.',
-      toastType: 'warning'
-    });
-    return;
-  }
-
+  if (!user.value?.email) return showToast({ title: 'Auth Required', message: 'Please sign in.', toastType: 'warning' });
   placing.value = true;
   try {
-    const res = await api.post('/payments/initialize', {
+    const res = await initializePayment({
       amount: Math.round(finalTotal.value),
-      customer: {
-        name: `${user.value.firstName} ${user.value.lastName}`,
-        email: user.value.email,
-      },
+      customer: { name: `${user.value.firstName} ${user.value.lastName}`, email: user.value.email },
       callback_url: `${window.location.origin}/errands/custom`,
-      metadata: {
-        type: 'custom_errand',
-        ...form.value,
-      },
+      metadata: { type: 'custom_errand', ...form.value },
     });
-
-    const authUrl = (res.data as any)?.data?.authorization_url;
+    const authUrl = res?.data?.authorization_url || res?.authorization_url;
     if (authUrl) {
-      // Store form data temporarily to re-populate on callback if needed
       localStorage.setItem('pending_errand', JSON.stringify(form.value));
       window.location.href = authUrl;
     }
   } catch (e: any) {
     placing.value = false;
-    showToast({
-      title: 'Error',
-      message: e.response?.data?.message || 'Payment initialization failed.',
-      toastType: 'error'
-    });
   }
 };
 
 onMounted(async () => {
-  // Check for payment callback
   if (route.query.reference) {
     placing.value = true;
     const savedForm = localStorage.getItem('pending_errand');
-    if (savedForm) {
-       form.value = JSON.parse(savedForm);
-    }
+    if (savedForm) form.value = JSON.parse(savedForm);
 
     try {
-      const verifyRes = await api.get(`/payments/verify?reference=${route.query.reference}`);
-      const paymentData = (verifyRes.data as any)?.data;
-      
-      if (paymentData?.status === 'success') {
-        // Create the actual order
-        await api.post('/orders', {
-          type: 'custom_errand',
-          ...form.value,
-          paymentReference: route.query.reference,
-        });
-        
-        showToast({
-          title: 'Success!',
-          message: 'Your request has been placed and paid.',
-          toastType: 'success'
-        });
+      const paymentData = await verifyPayment(route.query.reference as string);
+      if (paymentData?.status === 'success' || (paymentData as any)?.data?.status === 'success') {
+        await createOrder({ type: 'custom_errand', ...form.value, paymentReference: route.query.reference });
+        showToast({ title: 'Success!', message: 'Request placed.', toastType: 'success' });
         localStorage.removeItem('pending_errand');
         navigateTo('/orders');
       } else {
         placing.value = false;
-        showToast({
-          title: 'Payment Failed',
-          message: 'The transaction was not successful.',
-          toastType: 'error'
-        });
       }
     } catch (e) {
-      console.error(e);
       placing.value = false;
-      showToast({
-        title: 'Error',
-        message: 'Could not verify payment callback.',
-        toastType: 'error'
-      });
     }
   }
 });

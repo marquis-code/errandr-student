@@ -54,7 +54,7 @@
 import { ChevronLeft, MessageSquare } from 'lucide-vue-next';
 import { ref, onMounted, nextTick } from 'vue';
 import { useRoute, useHead } from '#imports';
-import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import { reports_api } from '@/api_factory/modules/reports';
 
 const route = useRoute();
 const report = ref<any>(null);
@@ -66,7 +66,7 @@ const statusBadge = (s: string) => ({ pending: 'badge-orange', investigating: 'b
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return;
   try {
-    const res = await api.post(`/reports/${route.params.id}/message`, { message: newMessage.value.trim() });
+    const res = await reports_api.addMessage(route.params.id as string, newMessage.value.trim());
     report.value = res.data;
     newMessage.value = '';
     nextTick(() => threadContainer.value?.scrollTo({ top: threadContainer.value.scrollHeight, behavior: 'smooth' }));
@@ -75,7 +75,7 @@ const sendMessage = async () => {
 
 onMounted(async () => {
   try { 
-    const res = await api.get(`/reports/${route.params.id}`);
+    const res = await reports_api.getById(route.params.id as string);
     report.value = res.data;
   }
   catch (e) { console.error(e); }
