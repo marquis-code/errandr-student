@@ -86,7 +86,6 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
           if (!isRelevant) return;
         }
 
-        // Strict deduplication by _id
         if (!message._id || !messages.value.some(m => m._id === message._id)) {
           messages.value.push(message);
         }

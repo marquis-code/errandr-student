@@ -3,7 +3,6 @@ import { useUser } from "@/composables/modules/auth/user";
 import { useCustomToast } from '@/composables/core/useCustomToast'
 const { showToast } = useCustomToast();
 
-// const { token, logOut } = useUser(); // REMOVED TOP-LEVEL CALL
 
 const $GATEWAY_ENDPOINT_WITHOUT_VERSION = "https://api.erranders.org";
 const $GATEWAY_ENDPOINT = "https://api.erranders.org/api/v1";
@@ -81,7 +80,6 @@ instanceArray.forEach((instance) => {
       if (err.response.status === 401) {
         console.log(err.response.data.error)
         
-        // Only redirect if NOT on a public browsing page
         const publicPaths = ['/dashboard', '/vendors', '/search', '/', '/auth/login', '/auth/register', '/cart'];
         const isPublicPath = typeof window !== 'undefined' && 
           (publicPaths.includes(window.location.pathname) || window.location.pathname.startsWith('/vendors/'));

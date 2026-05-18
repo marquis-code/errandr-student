@@ -5,9 +5,7 @@ import { useStorage } from "@vueuse/core"
 export const useGetBusiness = () => {
     const loading = ref(false)
     const error = ref<string | null>(null)
-    // Global state for business
     const business = useState<Business | null>('active_business', () => null)
-    // Persist business to localStorage for chat and other features
     const cachedBusiness = useStorage<Business | null>('cached_business', null, undefined, {
         serializer: {
             read: (v: string) => v ? JSON.parse(v) : null,
@@ -27,7 +25,6 @@ export const useGetBusiness = () => {
             const res = (await business_api.getBySubdomain(subdomain)) as any
             if (res.data?.success) {
                 business.value = res.data.data
-                // Cache business for use across app (chat, etc.)
                 cachedBusiness.value = res.data.data
             } else {
                 throw new Error('Business not found')
