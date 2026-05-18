@@ -14,7 +14,6 @@ export const useToast = () => {
     const id = counter++
     toasts.value.push({ id, message, type })
     
-    // Use window.setTimeout for proper typing in Nuxt
     if (process.client) {
       window.setTimeout(() => {
         removeToast(id)
