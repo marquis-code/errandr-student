@@ -95,8 +95,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.VITE_API_BASE_URL || "http://localhost:3005",
-      wsBase: process.env.WS_BASE_URL || process.env.VITE_WS_URL || "http://localhost:3005",
+      apiBase: process.env.VITE_API_BASE_URL || "https://api.erranders.org",
+      wsBase: process.env.WS_BASE_URL || process.env.VITE_WS_URL || "https://api.erranders.org",
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || '',
       firebaseApiKey: process.env.FIREBASE_API_KEY || '',
       firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
