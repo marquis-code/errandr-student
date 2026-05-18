@@ -1,1 +1,0 @@
-import{N as e}from"./D4ovnJCm.js";const o={create:r=>e.post("/reports",r),getMine:()=>e.get("/reports/mine"),getById:r=>e.get(`/reports/${r}`),addMessage:(r,t)=>e.post(`/reports/${r}/message`,{message:t})};export{o as r};
