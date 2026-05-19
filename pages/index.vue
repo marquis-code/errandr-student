@@ -2,163 +2,7 @@
  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
  <BatchDeliveryBanner />
     <!-- Navbar -->
-    <nav 
-      class="fixed w-[95%] left-1/2 -translate-x-1/2 z-[60] transition-all duration-500 rounded-[2rem] mt-4"
-      :class="[
-        scrolled 
-          ? 'bg-white/70 backdrop-blur-2xl border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.05)] py-3' 
-          : 'bg-transparent py-5'
-      ]"
-    >
-      <div class="max-w-7xl mx-auto px-6 lg:px-10">
-        <div class="flex justify-between items-center">
-          <!-- Logo -->
-          <NuxtLink to="/" class="flex items-center gap-3 group">
-            <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 lg:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
-          </NuxtLink>
-          
-          <!-- Desktop Nav -->
-          <div class="hidden md:flex items-center gap-10">
-            <a v-for="link in navLinks" :key="link.href" :href="link.href" class="text-[11px] font-black text-gray-400 hover:text-gray-900 tracking-[0.2em] uppercase transition-all relative group">
-              {{ link.label }}
-              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-parentPrimary transition-all group-hover:w-full"></span>
-            </a>
-          </div>
-
-          <div class="flex items-center gap-2 lg:gap-4">
-            <!-- User is Logged In -->
-            <template v-if="user">
-              <!-- Notifications -->
-              <Menu as="div" class="relative">
-                <MenuButton class="w-11 h-11 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-all relative">
-                  <Bell class="w-5 h-5" />
-                  <div v-if="unreadCount > 0" class="absolute top-2 right-2 w-2 h-2 bg-parentPrimary rounded-full border-2 border-white shadow-sm"></div>
-                </MenuButton>
-                <Transition
-                  enter-active-class="transition duration-100 ease-out"
-                  enter-from-class="transform scale-95 opacity-0"
-                  enter-to-class="transform scale-100 opacity-100"
-                  leave-active-class="transition duration-75 ease-in"
-                  leave-from-class="transform scale-100 opacity-100"
-                  leave-to-class="transform scale-95 opacity-0"
-                >
-                  <MenuItems class="fixed inset-x-4 md:absolute md:inset-x-auto md:right-0 mt-20 md:mt-4 w-auto md:w-80 origin-top-right divide-y divide-gray-50 rounded-3xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 focus:outline-none z-[75] overflow-hidden">
-                    <div class="px-6 py-4 bg-gray-50/50">
-                      <p class="text-sm font-black text-gray-400 uppercase  leading-none">Notifications ({{ unreadCount }})</p>
-                    </div>
-                    <div class="p-4 flex flex-col items-center justify-center text-center space-y-3 py-10">
-                      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-gray-100">
-                         <BellOff class="w-8 h-8 text-gray-200" />
-                      </div>
-                      <p class="text-sm font-bold text-gray-900 leading-none">No new alerts</p>
-                      <p class="text-sm font-bold text-gray-400 max-w-[180px]">We'll let you know when your order status changes.</p>
-                    </div>
-                    <div class="p-2">
-                       <NuxtLink to="/notifications" class="w-full py-3 flex items-center justify-center text-sm font-black text-gray-400 uppercase  hover:text-gray-900 transition-colors bg-gray-50/50 rounded-2xl">View All Notifications</NuxtLink>
-                    </div>
-                  </MenuItems>
-                </Transition>
-              </Menu>
-
-              <!-- Profile Dropdown -->
-              <Menu as="div" class="relative">
-                <MenuButton class="flex items-center gap-3 p-1 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-all p-1.5 focus:outline-none">
-                  <div class="w-9 h-9 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold text-sm uppercase shadow-sm border border-gray-800">
-                    {{ user.firstName?.[0] || user.email?.[0] }}
-                  </div>
-                  <ChevronDown class="w-4 h-4 text-gray-400 mr-2" />
-                </MenuButton>
-                <Transition
-                  enter-active-class="transition duration-100 ease-out"
-                  enter-from-class="transform scale-95 opacity-0"
-                  enter-to-class="transform scale-100 opacity-100"
-                  leave-active-class="transition duration-75 ease-in"
-                  leave-from-class="transform scale-100 opacity-100"
-                  leave-to-class="transform scale-95 opacity-0"
-                >
-                  <MenuItems class="fixed inset-x-4 md:absolute md:inset-x-auto md:right-0 mt-20 md:mt-4 w-auto md:w-56 origin-top-right divide-y divide-gray-50 rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 focus:outline-none z-[75] overflow-hidden">
-                    <div class="px-5 py-4">
-                      <p class="text-sm font-black text-gray-400 uppercase  leading-none mb-1">Signed in as</p>
-                      <p class="text-sm font-black text-gray-900 truncate tracking-tight">{{ user.firstName }} {{ user.lastName }}</p>
-                    </div>
-                    <div class="p-2">
-                      <MenuItem v-slot="{ active }">
-                        <NuxtLink to="/dashboard" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-600', 'flex w-full items-center rounded-xl px-3 py-3 text-sm font-bold transition-colors']">
-                          <Home class="w-4 h-4 mr-3" /> Dashboard
-                        </NuxtLink>
-                      </MenuItem>
-                      <MenuItem v-slot="{ active }">
-                        <NuxtLink to="/dashboard/profile" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-600', 'flex w-full items-center rounded-xl px-3 py-3 text-sm font-bold transition-colors']">
-                          <User class="w-4 h-4 mr-3" /> My Profile
-                        </NuxtLink>
-                      </MenuItem>
-                    </div>
-                    <div class="p-2">
-                      <MenuItem v-slot="{ active }">
-                        <button @click="handleLogout" :class="[active ? 'bg-rose-50 text-rose-500' : 'text-rose-500', 'flex w-full items-center rounded-xl px-3 py-3 text-sm font-bold transition-colors uppercase ']">
-                          <LogOut class="w-4 h-4 mr-3" /> Log out
-                        </button>
-                      </MenuItem>
-                    </div>
-                  </MenuItems>
-                </Transition>
-              </Menu>
-            </template>
-
-            <!-- Visitor state -->
-            <template v-else>
-              <NuxtLink to="/auth/login" class="px-6 py-3 text-[11px] font-black text-gray-900  uppercase hover:text-parentPrimary transition-colors">
-                Log in
-              </NuxtLink>
-              <NuxtLink to="/auth/register" class="hidden md:flex px-8 py-3.5 bg-gray-900 text-white text-[11px] font-black  uppercase rounded-2xl shadow-2xl shadow-black/10 hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all">
-                Join Now
-              </NuxtLink>
-            </template>
-
-            <!-- Mobile Toggle -->
-            <button @click="showMobileMenu = !showMobileMenu" class="md:hidden w-11 h-11 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-gray-900 hover:bg-gray-100 transition-all">
-              <MenuIcon v-if="!showMobileMenu" class="w-5 h-5" />
-              <X v-else class="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Mobile Menu Overlay -->
-    <Transition name="fade-slide">
-      <div v-if="showMobileMenu" class="fixed inset-0 z-[55] bg-white pt-32 px-10 pb-10 md:hidden flex flex-col justify-between">
-        <div class="space-y-8">
-          <div class="flex flex-col gap-6">
-            <a 
-              v-for="link in navLinks" 
-              :key="link.href" 
-              :href="link.href" 
-              @click="showMobileMenu = false"
-              class="text-4xl font-black text-gray-900 tracking-tighter hover:text-parentPrimary transition-colors"
-            >
-              {{ link.label }}
-            </a>
-          </div>
-          <div class="h-px bg-gray-50 w-full"></div>
-          <NuxtLink v-if="!user" to="/auth/login" class="block text-xl font-bold text-gray-400 hover:text-gray-900 transition-colors">Log into your account</NuxtLink>
-          <NuxtLink v-else to="/dashboard" class="block text-xl font-bold text-parentPrimary hover:text-gray-900 transition-colors">Go to Dashboard &rarr;</NuxtLink>
-        </div>
-        
-        <div class="space-y-6">
-          <NuxtLink v-if="!user" to="/auth/register" class="block w-full py-5 bg-gray-900 text-white text-center text-sm font-black  uppercase rounded-[1.5rem] shadow-xl">
-            Join Now
-          </NuxtLink>
-          <button v-else @click="handleLogout" class="block w-full py-5 bg-rose-50 text-rose-500 text-center text-sm font-black  uppercase rounded-[1.5rem] border border-rose-100">
-            Log out
-          </button>
-          <div class="flex gap-4">
-            <a href="#" class="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400"><Twitter class="w-5 h-5" /></a>
-            <a href="#" class="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400"><Instagram class="w-5 h-5" /></a>
-          </div>
-        </div>
-      </div>
-    </Transition>
+    <LandingNavbar />
 
     <!-- Search Overlay — Premium Glassmorphism -->
     <Teleport to="body">
@@ -191,7 +35,7 @@
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
         <div class="max-w-3xl mx-auto space-y-6">
           <!-- Badge -->
-          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-black tracking-[0.2em] uppercase animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
+          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-black -[0.2em]  animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
             <Zap class="w-3.5 h-3.5 fill-current" /> Campus Delivery, Redefined
           </NuxtLink>
           
@@ -200,12 +44,12 @@
             <TransitionGroup name="hero-slide" tag="div" class="w-full">
               <h1 
                 :key="currentHeadingIndex"
-                class="absolute inset-0 flex flex-col items-center justify-center text-3xl md:text-5xl lg:text-7xl font-extrabold tracking-tighter leading-[1.1] text-gray-900 px-4 font-onest"
+                class="absolute inset-0 flex flex-col items-center justify-center text-3xl md:text-5xl lg:text-7xl font-extrabold -tighter leading-[1.1] text-gray-900 px-4 font-onest"
               >
                 <div class="max-w-max mx-auto text-center" v-html="heroHeadings[currentHeadingIndex].text"></div>
                 <!-- <div class="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500">
                   <span class="w-1.5 h-1.5 rounded-full bg-parentPrimary animate-pulse"></span>
-                  <span class="text-sm md:text-sm font-black tracking-[0.2em] uppercase text-gray-400">
+                  <span class="text-sm md:text-sm font-black -[0.2em]  text-gray-400">
                     {{ heroHeadings[currentHeadingIndex].lang }}
                   </span>
                 </div> -->
@@ -214,7 +58,7 @@
           </div>
 
           <!-- Rotating Slang Subtitle -->
-          <div class="h-8 overflow-hidden text-sm md:text-lg font-bold text-gray-400 tracking-tight flex items-center justify-center">
+          <div class="h-8 overflow-hidden text-sm md:text-lg font-bold text-gray-400 -tight flex items-center justify-center">
              <span :key="currentSlangIndex" class="animate-vertical-marquee">{{ slangSlogans[currentSlangIndex] }}</span>
           </div>
 
@@ -240,7 +84,7 @@
               />
               <button 
                 @click="handleHeroSearch"
-                class="px-4 md:px-8 py-3 md:py-4 bg-gray-900 text-white rounded-[2rem] text-sm md:text-sm font-black  uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl whitespace-nowrap flex-shrink-0 flex items-center gap-2"
+                class="px-4 md:px-8 py-3 md:py-4 bg-gray-900 text-white rounded-[2rem] text-sm md:text-sm font-black   hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl whitespace-nowrap flex-shrink-0 flex items-center gap-2"
               >
                  <span>Find Food</span>
                  <ArrowRight class="w-3 md:w-4 h-3 md:h-4" />
@@ -253,7 +97,7 @@
                   class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-100 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] overflow-hidden z-[75] p-2"
                 >
                   <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
-                    <span class="text-sm font-black text-gray-400 tracking-[0.2em] uppercase">
+                    <span class="text-sm font-black text-gray-400 -[0.2em] ">
                       {{ heroSearchQuery ? 'Matching Meals' : `Suggested for ${suggestionTimeText}` }}
                     </span>
                     <div v-if="isSearching" class="w-4 h-4 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
@@ -275,7 +119,7 @@
                       </div>
                       <div class="flex-1 text-left">
                         <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                        <p class="text-sm font-bold text-gray-400 uppercase ">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+                        <p class="text-sm font-bold text-gray-400  ">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
                       </div>
                       <div class="text-right">
                         <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
@@ -303,7 +147,7 @@
                           </div>
                           <div class="flex-1 min-w-0">
                              <h4 class="text-[11px] font-black text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                             <p class="text-sm font-bold text-gray-400 uppercase tracking-tight">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+                             <p class="text-sm font-bold text-gray-400  -tight">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
                           </div>
                           <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
                         </div>
@@ -326,7 +170,7 @@
                         </div>
                         <div class="flex-1 text-left">
                           <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                          <p class="text-sm font-bold text-gray-400 uppercase ">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+                          <p class="text-sm font-bold text-gray-400  ">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
                         </div>
                         <div class="text-right">
                           <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
@@ -340,7 +184,7 @@
 
           <!-- Quick Tags -->
           <!-- <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
-             <span class="text-sm font-black text-gray-300 uppercase  mr-1">E choke:</span>
+             <span class="text-sm font-black text-gray-300   mr-1">E choke:</span>
              <button v-for="tag in quickTags.slice(0,4)" :key="tag.label" 
               class="px-4 py-2 bg-gray-50 hover:bg-white border border-gray-100 hover:border-parentPrimary/30 rounded-xl text-sm font-black text-gray-600 hover:text-parentPrimary transition-all shadow-sm hover:shadow-md"
              >
@@ -351,48 +195,8 @@
       </div>
     </section>
 
-    <!-- The Animated Visual Showroom (Former Carousel Images) -->
-    <LandingScrollGallery :images="heroVisuals" />
 
 
- <!-- Vendor Spotlight Marquee -->
-  <LandingVendorMarquee />
-
-
-
-  <!-- Spin the Wheel Section -->
-  <section class="py-16 lg:py-24 bg-gray-50 border-t border-gray-100 overflow-hidden relative">
-    <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle, #000 1px, transparent 1px); background-size: 40px 40px;"></div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-        <div class="order-2 lg:order-1 flex justify-center">
-          <SpinWheel class="w-full max-w-md" />
-        </div>
-        <div class="order-1 lg:order-2 space-y-8 text-center lg:text-left">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-sm font-black uppercase  mx-auto lg:mx-0">
-            <Sparkles class="w-4 h-4" /> Daily Luck
-          </div>
-          <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none">
-            Spin once. <br /><span class="text-parentPrimary ">Win every day.</span>
-          </h2>
-          <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight max-w-md mx-auto lg:mx-0">
-            Try your luck on the Errandr Wheel of Fortune! Win delivery discounts, free meals, and exclusive campus vouchers. Reset every 24 hours.
-          </p>
-          <div class="flex items-center justify-center lg:justify-start gap-8 pt-4">
-            <div class="flex flex-col">
-              <span class="text-3xl font-black text-gray-900">100%</span>
-              <span class="text-sm font-black text-gray-400 uppercase ">Free to play</span>
-            </div>
-            <div class="w-px h-12 bg-gray-200"></div>
-            <div class="flex flex-col">
-              <span class="text-3xl font-black text-gray-900">24h</span>
-              <span class="text-sm font-black text-gray-400 uppercase ">Reset cycle</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
  <!-- Active Promotions -->
  <section v-if="activePromotions.length > 0" class="py-12 bg-white overflow-hidden border-t border-gray-100">
@@ -402,7 +206,7 @@
  <div class="inline-flex items-center gap-2 text-rose-500 font-bold text-sm mb-2 text-center">
  <Megaphone class="w-4 h-4" /> Live Offers
  </div>
- <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">Campus Bonanzas</h2>
+ <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 -tight">Campus Bonanzas</h2>
  </div>
  </div>
  </div>
@@ -424,7 +228,7 @@
  </div>
 
  <div class="absolute bottom-4 left-4 right-4">
- <h3 class="text-xl font-bold text-white tracking-tight leading-tight mb-1 truncate">{{ promo.title }}</h3>
+ <h3 class="text-xl font-bold text-white -tight leading-tight mb-1 truncate">{{ promo.title }}</h3>
  <p class="text-sm text-white/80 line-clamp-1 font-medium">{{ promo.description }}</p>
  </div>
  </div>
@@ -432,7 +236,7 @@
  <span class="text-sm font-bold text-gray-900 flex items-center gap-2">
  <Store class="w-3.5 h-3.5 text-gray-400" /> {{ promo.vendorName }}
  </span>
- <span class="text-sm font-black text-rose-500  uppercase bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-md">Claim Offer &rarr;</span>
+ <span class="text-sm font-black text-rose-500   bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-md">Claim Offer &rarr;</span>
  </div>
  </div>
  </div>
@@ -447,7 +251,7 @@
  <div class="inline-flex items-center gap-2 text-parentPrimary font-bold text-sm mb-2 text-center">
  <Store class="w-4 h-4" /> Top Rated
  </div>
- <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">Campus Favorites</h2>
+ <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 -tight">Campus Favorites</h2>
  </div>
  <div class="flex items-center gap-4">
  <NuxtLink to="/vendors" class="text-sm font-bold text-parentPrimary hover:underline underline-offset-4 hidden sm:block">View All Vendors &rarr;</NuxtLink>
@@ -476,9 +280,9 @@
   🌙
   </div>
   </div>
-  <h3 class="text-3xl font-black text-gray-900 mb-4 tracking-tighter">The Campus is Resting</h3>
+  <h3 class="text-3xl font-black text-gray-900 mb-4 -tighter">The Campus is Resting</h3>
   <p class="text-gray-500 font-bold text-lg mb-10 max-w-md leading-relaxed">Our favorite vendors are currently offline or catching a break. Check back soon for the best meals on campus!</p>
-  <div class="inline-flex items-center gap-3 px-8 py-4 bg-gray-50 rounded-2xl text-[11px] font-black text-gray-400 border border-gray-100 tracking-[0.2em] uppercase shadow-sm">
+  <div class="inline-flex items-center gap-3 px-8 py-4 bg-gray-50 rounded-2xl text-[11px] font-black text-gray-400 border border-gray-100 -[0.2em]  shadow-sm">
   <Clock class="w-4 h-4 text-parentPrimary" />
   Most vendors open at 8:00 AM
   </div>
@@ -492,7 +296,7 @@
   <!-- Closed Overlay -->
   <div v-if="!vendor.isOpen" class="absolute inset-0 z-20 bg-gray-900/60 backdrop-blur-[2px] flex items-center justify-center">
   <div class="px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-  <span class="text-white text-sm font-black tracking-[0.2em] uppercase">Closed Now</span>
+  <span class="text-white text-sm font-black -[0.2em] ">Closed Now</span>
   </div>
   </div>
   
@@ -518,20 +322,20 @@
               <div class="p-6 flex-1 flex flex-col justify-between">
                 <div>
                   <div class="flex items-center justify-between gap-4 mb-3">
-                    <h3 class="text-xl font-black text-gray-900 group-hover:text-parentPrimary transition-colors tracking-tight truncate">{{ vendor.storeName }}</h3>
+                    <h3 class="text-xl font-black text-gray-900 group-hover:text-parentPrimary transition-colors -tight truncate">{{ vendor.storeName }}</h3>
                     <div v-if="vendor.isOpen" class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100/50">
                       <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span class="text-sm font-black  uppercase">open</span>
+                      <span class="text-sm font-black  ">open</span>
                     </div>
                     <div v-else class="flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 text-gray-400 rounded-lg border border-gray-100">
                       <div class="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                      <span class="text-sm font-black  uppercase">{{ vendor.statusMessage || 'closed' }}</span>
+                      <span class="text-sm font-black  ">{{ vendor.statusMessage || 'closed' }}</span>
                     </div>
                   </div>
                   <p class="text-[13px] text-gray-500 line-clamp-2 mb-6 leading-relaxed font-medium group-hover:text-gray-600 transition-colors">{{ vendor.description }}</p>
                 </div>
                 <div class="flex items-center justify-between pt-5 border-t border-gray-50/80">
-                  <div class="flex items-center gap-4 text-sm font-black text-gray-400 tracking-tight">
+                  <div class="flex items-center gap-4 text-sm font-black text-gray-400 -tight">
                     <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors"><Clock class="w-3.5 h-3.5" /> {{ vendor.preparationTime || 20 }} min</span>
                     <span class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors"><Bike class="w-3.5 h-3.5" /> From ₦{{ vendor.baseDeliveryFee || 600 }}</span>
                   </div>
@@ -553,215 +357,97 @@
  @close="isClosedModalOpen = false" 
  />
 
-
-
- <!-- UI Feature: Custom Errands -->
- <section class="py-12 lg:py-16 bg-white relative overflow-hidden">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
- <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
- <div class="space-y-5 lg:space-y-6">
- <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-bold">
- Request Any Errand
- </div>
- <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight leading-none">
- Any item. <br />Any <span class="text-parentPrimary">location.</span>
- </h2>
- <p class="text-gray-500 text-base font-medium leading-relaxed tracking-tight">
- Not just food. Send an Errandr to your hostel to pick up items, deliver docs to class, or handle any request from Point A to Point B.
- </p>
- <div class="flex flex-wrap gap-4">
- <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
- <div class="w-2 h-2 rounded-full bg-parentPrimary"></div>
- <span class="text-sm font-bold text-gray-400">Hostel Pickups</span>
- </div>
- <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
- <div class="w-2 h-2 rounded-full bg-parentPrimary"></div>
- <span class="text-sm font-bold text-gray-400">Library Drops</span>
- </div>
- </div>
- <div class="pt-2">
- <NuxtLink to="/errands/custom" class="px-6 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-parentPrimary transition-all shadow-md inline-block">Request an Errand &rarr;</NuxtLink>
- </div>
- </div>
- <div class="relative hidden sm:block">
- <div class="absolute -inset-10 bg-blue-100/50 blur-[80px] rounded-full"></div>
- <img src="https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?w=800&q=80" class="relative z-10 rounded-3xl lg:rounded-[2.5rem] shadow-xl border-2 border-white object-cover aspect-video w-full" alt="Delivery in progress" />
- <div class="absolute -bottom-6 -left-6 bg-white p-4 lg:p-5 rounded-2xl shadow-xl border border-gray-50 max-w-[220px] z-20 animate-float">
- <div class="flex items-center gap-4 mb-4">
- <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">✓</div>
- <p class="text-sm font-bold text-gray-900">Errandr on the way</p>
- </div>
- <p class="text-sm font-bold text-gray-400 leading-relaxed ">Assigned to: Ade (Student Errandr)</p>
- </div>
- </div>
- </div>
- </div>
- </section>
-
-
-
-
-
-
-
- <!-- How it works (Redesigned to match Image 2) -->
-  <section id="how-it-works" class="py-24 bg-white overflow-hidden">
+  <!-- How it works (Redesigned & Condensed) -->
+  <section id="how-it-works" class="py-20 bg-white overflow-hidden border-t border-slate-100">
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
-      <div class="flex flex-col lg:flex-row justify-between items-end mb-16 gap-6">
-        <div class="space-y-4 max-w-2xl">
-          <p class="text-sm font-black tracking-[0.2em] uppercase text-parentPrimary">How It Works</p>
-          <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter leading-tight ">
-            Getting your <span class="text-parentPrimary">chop</span> with Errandr is simple and sharp-sharp.
-          </h2>
-        </div>
-        <p class="text-gray-400 font-bold text-sm max-w-xs lg:text-right">From choosing your plug to hostel delivery, we guide you every step of the way.</p>
+      <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+        <p class="text-sm font-black -[0.2em]  text-parentPrimary">How It Works</p>
+        <h2 class="text-3xl md:text-5xl font-black text-slate-900 -tighter leading-tight">
+          Three steps to <span class="text-parentPrimary">satisfaction.</span>
+        </h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto relative">
+        <div class="hidden md:block absolute top-12 left-1/6 right-1/6 h-0.5 bg-slate-100 -z-10"></div>
         <div v-for="(step, i) in [
-          { title: 'Pick your Plug', desc: 'Select the campus restaurant or vendor that fits your current vibes and budget.', icon: '🏪', bg: 'bg-emerald-50' },
-          { title: 'Check the Menu', desc: 'Browse through updated menus and pick exactly what you want to eat.', icon: '📜', bg: 'bg-parentPrimary/10' },
-          { icon: '📱', title: 'Place Order', desc: 'Securely pay in seconds and get assigned an Errandr immediately.', bg: 'bg-blue-50' },
-          { icon: '🏠', title: 'Hostel Drop', desc: 'Your student Errander drops it off sharp-sharp at your door.', bg: 'bg-rose-50' }
-        ]" :key="i" class="p-8 pb-32 rounded-[2.5rem] relative overflow-hidden group hover:-translate-y-2 transition-all duration-500" :class="step.bg">
-          <div class="relative z-10 space-y-4">
-            <h3 class="text-xl font-black text-gray-900 tracking-tight">{{ step.title }}</h3>
-            <p class="text-sm text-gray-500 font-bold leading-relaxed">{{ step.desc }}</p>
-          </div>
-          <div class="absolute bottom-6 right-6 text-6xl opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+          { title: 'Search & Select', desc: 'Find your favorite campus spot and browse their menu.', icon: '🔍', color: 'bg-emerald-50 text-emerald-600' },
+          { title: 'Order & Pay', desc: 'Securely place your order with a few taps.', icon: '💳', color: 'bg-blue-50 text-blue-600' },
+          { title: 'Receive', desc: 'Your Errander delivers directly to your hostel door.', icon: '📦', color: 'bg-parentPrimary/10 text-parentPrimary' }
+        ]" :key="i" class="text-center space-y-4 bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:-translate-y-1 transition-transform group">
+          <div :class="`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm border border-slate-50 ${step.color} group-hover:scale-110 transition-transform`">
             {{ step.icon }}
           </div>
+          <h3 class="text-xl font-black text-slate-900 -tight">{{ i + 1 }}. {{ step.title }}</h3>
+          <p class="text-sm text-slate-500 font-bold leading-relaxed">{{ step.desc }}</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- The Errandr Advantage (Redesigned to match Image 3) -->
-  <section id="advantage" class="py-24 bg-gray-50/50">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-      <div class="space-y-8">
-        <div class="space-y-4">
-          <p class="text-sm font-black tracking-[0.2em] uppercase text-parentPrimary">Why Choose Us</p>
-          <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-[0.9] ">
-            Built on <span class="text-parentPrimary ">trust,</span> <br/> speed, and vibes.
-          </h2>
+  <!-- Custom Errands + Why Choose Us (Merged & Condensed) -->
+  <section class="py-20 bg-slate-50 overflow-hidden border-t border-slate-100">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <!-- Left: Errands Pitch -->
+      <div class="space-y-6 max-w-xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-bold">
+          <Rocket class="w-4 h-4" /> Anything, anywhere on campus
         </div>
-        <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight max-w-md">
-          We combine real-time student dispatchers with quality local vendors to deliver a campus experience you can depend on. No stress, just good chop.
+        <h2 class="text-3xl md:text-5xl font-black text-slate-900 -tighter leading-tight">
+          Need more than <span class="text-parentPrimary">just food?</span>
+        </h2>
+        <p class="text-slate-500 text-lg font-medium leading-relaxed -tight">
+          Send an Errander to your hostel to pick up items, deliver documents to class, or handle any request from Point A to Point B across campus.
         </p>
         <div class="pt-4">
-          <NuxtLink to="/about" class="inline-flex items-center gap-2 text-parentPrimary font-black text-sm hover:gap-4 transition-all group">
-            Learn more about Errandr <ArrowUpRight class="w-5 h-5 group-hover:rotate-45 transition-transform" />
+          <NuxtLink to="/errands/custom" class="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm  -wide hover:bg-parentPrimary transition-colors shadow-lg shadow-slate-900/10">
+            Request an Errand
           </NuxtLink>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16 py-12 px-8 bg-white rounded-[3rem] border border-gray-100 shadow-xl relative">
+      <!-- Right: Advantages Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div v-for="feat in [
-          { title: 'Independent Riders', desc: 'Student dispatchers who know every corner of your hostel and campus.', icon: Target },
-          { title: 'Local Expertise', desc: 'We only partner with the best and cleanest vendors on your campus.', icon: Layers },
-          { title: 'Sapa Friendly', desc: 'Transparent pricing and minimal fees for every student pocket.', icon: ShieldCheck },
-          { title: 'Real-time Bants', desc: 'Track your order live and chat with your dispatcher instantly.', icon: MessageCircle }
-        ]" :key="feat.title" class="space-y-4">
-          <div class="w-12 h-12 rounded-2xl bg-parentPrimary/10 flex items-center justify-center text-parentPrimary">
-            <component :is="feat.icon" class="w-6 h-6" />
+          { title: 'Student Riders', desc: 'Dispatchers who know every corner of your campus.', icon: Target },
+          { title: 'Local Expertise', desc: 'Partnered with the best and cleanest vendors.', icon: Layers },
+          { title: 'Sapa Friendly', desc: 'Minimal fees for every student pocket.', icon: ShieldCheck },
+          { title: 'Real-time Bants', desc: 'Track live and chat with your dispatcher instantly.', icon: MessageCircle }
+        ]" :key="feat.title" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:border-parentPrimary/20 transition-all">
+          <div class="w-10 h-10 mb-4 rounded-xl bg-parentPrimary/10 flex items-center justify-center text-parentPrimary">
+            <component :is="feat.icon" class="w-5 h-5" />
           </div>
-          <div class="space-y-2">
-            <h4 class="text-lg font-black text-gray-900 tracking-tight">{{ feat.title }}</h4>
-            <p class="text-sm text-gray-500 font-bold leading-relaxed">{{ feat.desc }}</p>
-          </div>
+          <h4 class="text-base font-black text-slate-900 -tight mb-2">{{ feat.title }}</h4>
+          <p class="text-sm text-slate-500 font-medium leading-relaxed">{{ feat.desc }}</p>
         </div>
+      </div>
+    </div>
+  </section>  
+
+  <!-- CTA Section — Light Theme -->
+  <section class="relative py-20 overflow-hidden bg-gradient-to-b from-slate-50/80 via-white to-white border-t border-slate-100">
+    <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
+    <div class="max-w-3xl mx-auto px-6 lg:px-10 relative z-10 text-center space-y-6">
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 -tighter leading-tight">
+        Ready to <span class="text-parentPrimary">chop?</span>
+      </h2>
+      <p class="text-lg text-slate-500 font-medium max-w-xl mx-auto leading-relaxed">
+        Join thousands of students who trust Errander for their daily meals and hostel runs. Zero stress, 100% vibes.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+        <NuxtLink to="/auth/register" class="px-8 py-4 bg-parentPrimary text-white rounded-2xl font-black text-sm  -wide shadow-lg shadow-parentPrimary/20 hover:scale-105 active:scale-95 transition-all">
+          Join Errander Now
+        </NuxtLink>
+        <NuxtLink to="/auth/login" class="px-8 py-4 bg-white text-slate-600 rounded-2xl font-black text-sm  -wide border border-slate-200 hover:border-parentPrimary hover:text-parentPrimary transition-all">
+          Login
+        </NuxtLink>
       </div>
     </div>
   </section>
 
-  <!-- FAQ Section (New) -->
-  <LandingFAQ />
 
-  <!-- Contact Section (New) -->
-  <LandingContact />
-
-  <!-- CTA section -->
-  <section class="py-24 bg-gray-900 text-center overflow-hidden relative">
-    <div class="absolute -top-24 -left-24 w-96 h-96 bg-parentPrimary/10 rounded-full blur-[120px]"></div>
-    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]"></div>
-    
-  <div class="max-w-4xl mx-auto px-6 lg:px-10 relative z-10">
-  <h2 class="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 ">
-  Enough bants. <br /><span class="text-parentPrimary">Let's get you fed.</span>
-  </h2>
-  <p class="text-lg text-gray-400 font-medium mb-8 leading-relaxed max-w-2xl mx-auto">
-  Join thousands of students who trust Errandr for their daily meals and hostel runs. Zero stress, 100% vibes.
-  </p>
-  <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-10 py-5 bg-parentPrimary text-white rounded-2xl font-black text-sm uppercase  shadow-[0_20px_50px_rgba(240,165,0,0.3)] hover:scale-105 active:scale-95 transition-all">
-    Join Errandr now
-  </NuxtLink>
-  <p class="mt-8 text-sm font-black text-gray-500 uppercase ">Already have an account? <NuxtLink to="/auth/login" class="text-white hover:text-parentPrimary transition-colors underline underline-offset-8">Login here</NuxtLink></p>
-  </div>
-  </section>
-
-  <!-- Student Testimonials -->
-  <LandingTestimonials />
 
   <!-- Footer -->
- <footer class="bg-gray-50 border-t border-gray-200 py-16">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
- <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
- <div class="md:col-span-1">
-  <NuxtLink to="/" class="flex items-center gap-3 mb-8 group">
-  <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
-  </NuxtLink>
- <p class="text-gray-500 text-sm leading-relaxed mb-6 font-medium">The premium food delivery network built exclusively for the modern student community.</p>
- <div class="flex items-center gap-4">
- <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-parentPrimary hover:border-parentPrimary transition-colors shadow-sm">
- <Twitter class="w-4 h-4"/>
- </a>
- <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-parentPrimary hover:border-parentPrimary transition-colors shadow-sm">
- <Instagram class="w-4 h-4"/>
- </a>
- <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-parentPrimary hover:border-parentPrimary transition-colors shadow-sm">
- <Facebook class="w-4 h-4"/>
- </a>
- </div>
- </div>
- 
- <div>
- <h4 class="font-bold text-gray-900 mb-6 r text-sm">Platform</h4>
- <ul class="space-y-4 text-sm font-medium text-gray-500">
- <li><NuxtLink to="/about" class="hover:text-parentPrimary transition-colors">About Us</NuxtLink></li>
- <li><NuxtLink to="/contact" class="hover:text-parentPrimary transition-colors">Contact Support</NuxtLink></li>
- <li><NuxtLink to="/faq" class="hover:text-parentPrimary transition-colors">FAQ & Help</NuxtLink></li>
- </ul>
- </div>
-
- <div>
- <h4 class="font-bold text-gray-900 mb-6 r text-sm">Legal</h4>
- <ul class="space-y-4 text-sm font-medium text-gray-500">
- <li><NuxtLink to="/terms" class="hover:text-parentPrimary transition-colors">Terms of Service</NuxtLink></li>
- <li><NuxtLink to="/terms" class="hover:text-parentPrimary transition-colors">Privacy Policy</NuxtLink></li>
- </ul>
- </div>
- 
- <div>
- <h4 class="font-bold text-gray-900 mb-6 r text-sm">Join Us</h4>
- <ul class="space-y-4 text-sm font-medium text-gray-500">
- <li><a href="http://vendor.erranders.org" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Store class="w-4 h-4" /> List Your Business (Free)</a></li>
- <li><a href="http://dispatch.erranders.org" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Bike class="w-4 h-4" /> Become an Errandr</a></li>
- </ul>
- </div>
- </div>
- 
- <div class="pt-8 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
- <p class="text-sm font-medium text-gray-400">
- &copy; {{ new Date().getFullYear() }} Errandr Inc. All rights reserved.
- </p>
- <div class="flex gap-4">
- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/1200px-PayPal.svg.png" class="h-6 object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"/>
- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png" class="h-6 object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"/>
- </div>
- </div>
- </div>
- </footer>
+  <LandingFooter />
  </div>
 </template>
 
@@ -772,32 +458,28 @@ import { useNotifications } from '@/composables/modules/notifications/useNotific
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import BatchDeliveryBanner from '@/components/BatchDeliveryBanner.vue'
 import { useUser } from "@/composables/modules/auth/user"
-import hero1 from '@/assets/img/hero1.webp'
-import hero2 from '@/assets/img/hero2.webp'
-import hero12 from "@/assets/img/hero12.webp"
-import hero14 from "@/assets/img/hero14.webp"
-import LandingScrollGallery from '@/components/Landing/ScrollGallery.vue'
-import LandingVendorMarquee from '@/components/Landing/VendorMarquee.vue'
-import LandingTestimonials from '@/components/Landing/Testimonials.vue'
-import LandingFAQ from '@/components/Landing/FAQ.vue'
-import LandingContact from '@/components/Landing/Contact.vue'
 import { 
   ArrowRight, Twitter, Instagram, Facebook,
-  LogIn, ShoppingBag, Utensils, PlayCircle,
-  Clock, MapPin, Star, Store, Bike, ChevronLeft, ChevronRight,
-  ShieldCheck, CreditCard, Rocket, Megaphone,
-  Pizza, Flame, Beef, Coffee, Menu as MenuIcon, X, Navigation, Repeat, Search, AlertCircle, Zap, ChevronUp, ArrowUpRight, Sparkles,
+  Utensils,
+  Clock, Star, Store, Bike, ChevronLeft, ChevronRight,
+  ShieldCheck, Rocket, Megaphone,
+  Menu as MenuIcon, X, Search, ArrowUpRight,
   Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
+
+import hero1 from '@/assets/img/hero1.webp'
+import hero2 from '@/assets/img/hero2.webp'
+import hero12 from '@/assets/img/hero12.webp'
+import hero14 from '@/assets/img/hero14.webp'
 
 definePageMeta({
  layout: false
 })
 
 useHead({
- title: 'Errandr | Premium Campus Delivery',
+ title: 'Errander | Premium Campus Delivery',
  meta: [
  { name: 'description', content: 'The fastest food delivery for students. From your favorite campus restaurants straight to your hostel door.' }
  ]
@@ -1062,18 +744,6 @@ const getInitials = (name: string) => {
  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 };
 
-const steps = [
- { icon: Store, title: 'Check the Menu', description: 'Find your fav school spots and see what is cooking. We plug you to Mavise, Iya Chidera and more.' },
- { icon: CreditCard, title: 'Budget Your Chop', description: 'Use our Meal Planner to manage your cash and ensure you are eating well across the week.' },
- { icon: Bike, title: 'Flash Delivery', description: 'A student Errander handles your run, dropping it off sharp-sharp at your hostel door.' }
-]
-
-const categories = [
-  { name: 'Fast Food', icon: Pizza, image: 'https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=600&h=400&fit=crop', key: 'snacks' },
-  { name: 'Healthy & Fresh', icon: Flame, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop', key: 'restaurant' },
-  { name: 'Local Soups', icon: Beef, image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop', key: 'eatery' },
-  { name: 'Coffee & Drinks', icon: Coffee, image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600&h=400&fit=crop', key: 'drinks' },
-]
 </script>
 
 <style scoped>

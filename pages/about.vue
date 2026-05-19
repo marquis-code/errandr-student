@@ -1,17 +1,7 @@
 <template>
   <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100 py-4">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex justify-between items-center">
-        <NuxtLink to="/" class="flex items-center gap-3 group">
-          <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
-        </NuxtLink>
-        <div class="flex items-center gap-8">
-          <NuxtLink to="/about" class="text-[11px] font-black  uppercase text-parentPrimary border-b-2 border-parentPrimary pb-1">About</NuxtLink>
-          <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white text-[11px] font-black  uppercase rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
-        </div>
-      </div>
-    </nav>
+    <LandingNavbar />
 
     <!-- Hero Section -->
     <section class="relative pt-40 pb-24 overflow-hidden">
@@ -113,20 +103,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-50 border-t border-gray-100 py-16">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col md:flex-row justify-between items-center gap-10">
-        <NuxtLink to="/" class="group">
-          <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
-        </NuxtLink>
-        <div class="flex items-center gap-10 text-sm font-black tracking-[0.15em] uppercase text-gray-400">
-          <NuxtLink to="/about" class="text-parentPrimary font-black">About Us</NuxtLink>
-          <a href="#" class="hover:text-gray-900 transition-colors">Privacy</a>
-          <a href="#" class="hover:text-gray-900 transition-colors">Terms</a>
-          <a href="#" class="hover:text-gray-900 transition-colors">Contact</a>
-        </div>
-        <p class="text-sm font-bold text-gray-400 uppercase ">© {{ new Date().getFullYear() }} Errandr Ltd • CMUL Native</p>
-      </div>
-    </footer>
+    <LandingFooter />
   </div>
 </template>
 

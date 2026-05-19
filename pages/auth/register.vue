@@ -1,36 +1,19 @@
 <template>
-  <div class="min-h-screen w-full flex flex-col md:flex-row bg-white overflow-hidden">
-    <!-- Left Side: Image Panel -->
-    <div class="hidden md:block w-1/2 relative overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&h=1600&fit=crop" alt="African students on campus" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-b from-[#FF5C1A]/80 via-[#FF5C1A]/70 to-black/80"></div>
-      <div class="relative z-10 flex flex-col justify-between h-full p-6 md:p-12 lg:p-16">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
-            <ShoppingBag class="w-5 h-5 text-white" />
+  <div class="min-h-screen w-full flex flex-col items-center justify-center bg-white overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
+    <!-- Form Card -->
+    <div class="w-full max-w-md flex flex-col justify-center px-0 sm:px-6 py-12 bg-white sm:rounded-[2rem] relative z-10 my-8">
+      <div class="mb-10 text-center flex flex-col items-center">
+        <NuxtLink to="/" class="flex items-center gap-2 mb-8 inline-block group">
+          <div class="w-12 h-12 rounded-xl bg-parentPrimary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <ShoppingBag class="w-6 h-6 text-parentPrimary" />
           </div>
-          <span class="text-xl font-black text-white tracking-tighter">Errandr</span>
-        </div>
-        <div class="max-w-md">
-          <h2 class="text-5xl font-black text-white leading-[1.1] tracking-tighter mb-6">Join the campus delivery revolution.</h2>
-          <p class="text-white/70 text-lg font-medium leading-relaxed">Create your free account and start ordering food from your favorite campus spots today.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Side: Form -->
-    <div class="w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-20 lg:px-28 py-12 relative z-10 overflow-y-auto">
-      <div class="mb-10">
-        <div class="flex items-center gap-2 mb-6 md:hidden">
-          <div class="w-8 h-8 rounded-lg bg-[#FF5C1A] flex items-center justify-center"><ShoppingBag class="w-4 h-4 text-white" /></div>
-          <span class="text-xl font-bold text-gray-900 tracking-tight">Errandr</span>
-        </div>
+        </NuxtLink>
         <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">create account</h1>
         <p class="text-gray-500 text-lg">Join the campus delivery community</p>
       </div>
 
-      <form @submit.prevent="handleRegister" class="space-y-5 max-w-md">
-        <div class="grid grid-cols-2 gap-4">
+      <form @submit.prevent="handleRegister" class="space-y-5 max-w-md w-full">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UiAnimatedInput v-model="form.firstName" type="text" label="first name" required placeholder="" />
           <UiAnimatedInput v-model="form.lastName" type="text" label="last name" required placeholder="" />
         </div>
