@@ -5,7 +5,7 @@ export default defineNuxtConfig({
 
   site: {
     url: 'https://erranders.org',
-    name: 'Errandr',
+    name: 'Errander',
     description: 'Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.',
     defaultLocale: 'en',
   },
@@ -33,7 +33,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'Errandr - Student Portal',
+      title: 'Errander',
       htmlAttrs: { lang: "en" },
       meta: [
         { charset: "utf-8" },
@@ -47,12 +47,12 @@ export default defineNuxtConfig({
         },
         {
           name: "keywords",
-          content: 'Student delivery, campus food delivery, Errandr, food ordering, university delivery'
+          content: 'Student delivery, campus food delivery, Errander, food ordering, university delivery'
         },
-        { name: "author", content: "Errandr" },
+        { name: "author", content: "Errander" },
 
         // ✅ Open Graph (for social previews)
-        { property: "og:title", content: "Errandr — Student Portal" },
+        { property: "og:title", content: "Errander — Student Portal" },
         {
           property: "og:description",
           content:
