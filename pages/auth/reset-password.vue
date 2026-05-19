@@ -1,29 +1,16 @@
 <template>
-  <div class="min-h-screen w-full flex flex-col md:flex-row bg-white overflow-hidden">
-    <!-- Left Side: Image Panel -->
-    <div class="hidden md:block w-1/2 relative overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&h=1600&fit=crop" alt="Nigerian university students" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-b from-[#0284c7]/80 via-[#0284c7]/70 to-black/80"></div>
-      <div class="relative z-10 flex flex-col justify-between h-full p-6 md:p-12 lg:p-16">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
-            <ShoppingBag class="w-5 h-5 text-white" />
-          </div>
-          <span class="text-xl font-black text-white tracking-tighter">Errandr</span>
-        </div>
-        <div class="max-w-md">
-          <h2 class="text-5xl font-black text-white leading-[1.1] tracking-tighter mb-6">Choose a new password.</h2>
-          <p class="text-white/70 text-lg font-medium leading-relaxed">Enter the 6-digit code sent to your email and choose a strong new password to get back to ordering.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Side: Form -->
-    <div class="w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-20 lg:px-28 py-12 relative z-10">
-      <div class="mb-12">
-        <NuxtLink to="/auth/verify-reset-otp" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors mb-8 group">
+  <div class="min-h-screen w-full flex flex-col items-center justify-center bg-white overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
+    <!-- Form Card -->
+    <div class="w-full max-w-md flex flex-col justify-center px-0 sm:px-6 py-12 bg-white sm:rounded-[2rem] relative z-10 my-8">
+      <div class="mb-10 text-center flex flex-col items-center">
+        <NuxtLink to="/auth/verify-reset-otp" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors mb-6 group self-start absolute top-8 left-8 sm:static sm:mb-8 sm:self-center">
           <ArrowLeft class="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back
+        </NuxtLink>
+        <NuxtLink to="/" class="flex items-center gap-2 mb-8 inline-block group">
+          <div class="w-12 h-12 rounded-xl bg-parentPrimary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <ShoppingBag class="w-6 h-6 text-parentPrimary" />
+          </div>
         </NuxtLink>
         <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">set new password</h1>
         <p class="text-gray-500 text-lg">Choose a strong password to secure your account for <span class="font-semibold text-gray-900">{{ email }}</span></p>

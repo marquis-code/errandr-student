@@ -1,69 +1,76 @@
 <template>
-  <div class="bg-gray-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden">
+  <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm relative overflow-hidden">
     <!-- Background Accents -->
-    <div class="absolute -right-24 -top-24 w-64 h-64 bg-parentPrimary/20 rounded-full blur-[100px]"></div>
-    <div class="absolute -left-24 -bottom-24 w-48 h-48 bg-secondary/10 rounded-full blur-[80px]"></div>
+    <div class="absolute -right-24 -top-24 w-64 h-64 bg-parentPrimary/5 rounded-full blur-[100px]"></div>
 
     <div class="relative z-10 flex flex-col h-full">
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h3 class="text-2xl font-black tracking-tighter">Campus Hall of Fame</h3>
-          <p class="text-sm font-bold text-gray-400 uppercase  mt-1">Top orderers and riders this month</p>
+          <h3 class="text-lg font-black tracking-tight text-gray-900 leading-none">Campus Leaderboard</h3>
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Top orderers and riders this month</p>
         </div>
-        <div class="flex bg-white/5 p-1 rounded-2xl border border-white/10">
+        
+        <!-- Toggle Types -->
+        <div class="flex bg-gray-50 p-1 rounded-xl border border-gray-100 shrink-0">
           <button 
             v-for="t in types" 
             :key="t.key"
             @click="activeType = t.key"
-            class="px-4 py-2 rounded-xl text-sm font-black uppercase  transition-all"
-            :class="activeType === t.key ? 'bg-parentPrimary text-white shadow-lg' : 'text-gray-400 hover:text-white'"
+            class="px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all"
+            :class="activeType === t.key ? 'bg-parentPrimary text-white shadow-sm' : 'text-gray-400 hover:text-gray-700'"
           >
             {{ t.label }}
           </button>
         </div>
       </div>
 
-      <div v-if="loading" class="flex-1 space-y-4">
-        <div v-for="i in 5" :key="i" class="h-16 bg-white/5 rounded-3xl animate-pulse"></div>
+      <!-- Loading state -->
+      <div v-if="loading" class="flex-1 space-y-3">
+        <div v-for="i in 5" :key="i" class="h-14 bg-gray-50 rounded-xl animate-pulse"></div>
       </div>
 
-      <div v-else-if="leaders.length === 0" class="flex-1 flex flex-col items-center justify-center py-12">
-        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center text-3xl mb-4">🏆</div>
-        <p class="text-sm font-bold text-gray-500">The leaderboard is being initialized...</p>
+      <!-- Empty state -->
+      <div v-else-if="leaders.length === 0" class="flex-1 flex flex-col items-center justify-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl mb-3 shadow-sm border border-gray-100">🏆</div>
+        <p class="text-xs font-bold text-gray-400">Leaderboard is being updated...</p>
       </div>
 
-      <div v-else class="flex-1 space-y-3">
+      <!-- Leaders list -->
+      <div v-else class="flex-1 space-y-2">
         <div 
           v-for="(user, index) in leaders" 
           :key="user._id"
-          class="flex items-center gap-4 p-4 rounded-3xl border border-transparent hover:border-white/10 hover:bg-white/5 transition-all group"
+          class="flex items-center gap-3 p-3 rounded-xl border border-transparent hover:border-gray-100 hover:bg-gray-50/50 transition-all group"
         >
-          <div class="w-8 h-8 flex items-center justify-center font-black text-lg" :class="getRankClass(index)">
+          <div class="w-7 h-7 flex items-center justify-center font-black text-xs shrink-0 rounded-lg" :class="getRankClass(index)">
             #{{ index + 1 }}
           </div>
           
-          <div class="w-10 h-10 rounded-2xl bg-gray-800 flex-shrink-0 overflow-hidden border border-white/10">
+          <div class="w-9 h-9 rounded-xl bg-gray-50 flex-shrink-0 overflow-hidden border border-gray-100 relative">
             <img v-if="user.avatar" :src="user.avatar" class="w-full h-full object-cover" />
-            <div v-else class="w-full h-full flex items-center justify-center uppercase text-sm font-black text-parentPrimary bg-parentPrimary/10">
-              {{ user.firstName[0] }}{{ user.lastName[0] }}
+            <div v-else class="w-full h-full flex items-center justify-center uppercase text-xs font-black text-parentPrimary bg-parentPrimary/10">
+              {{ user.firstName?.[0] }}{{ user.lastName?.[0] }}
             </div>
           </div>
 
           <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-sm truncate uppercase tracking-tighter">{{ user.firstName }} {{ user.lastName }}</h4>
-            <p class="text-sm font-black text-gray-500 uppercase  truncate">{{ user.faculty || 'Unspecified' }}</p>
+            <h4 class="font-bold text-xs truncate text-gray-900">{{ user.firstName }} {{ user.lastName }}</h4>
+            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider truncate mt-0.5">{{ user.faculty || 'Campus' }}</p>
           </div>
 
-          <div class="text-right">
-            <p class="text-sm font-black text-parentPrimary tracking-tighter">{{ getScoreLabel(user) }}</p>
-            <p class="text-sm font-bold text-gray-500 uppercase ">Points: {{ user.points }}</p>
+          <div class="text-right shrink-0">
+            <p class="text-xs font-black text-parentPrimary tracking-tight">{{ getScoreLabel(user) }}</p>
+            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Points: {{ user.points }}</p>
           </div>
         </div>
       </div>
 
-      <div class="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
-        <p class="text-sm font-black text-gray-500 uppercase ">Updated in real-time</p>
-        <button class="text-sm font-black text-parentPrimary uppercase  hover:underline transition-all">View All Rankings →</button>
+      <!-- Footer action -->
+      <div class="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between text-[10px] font-black text-gray-400 uppercase tracking-wider">
+        <span>Updated real-time</span>
+        <NuxtLink to="/dashboard/leaderboard" class="text-parentPrimary hover:underline flex items-center gap-1">
+          View Podium →
+        </NuxtLink>
       </div>
     </div>
   </div>
@@ -87,18 +94,21 @@ const loadLeaderboard = () => {
 };
 
 const getRankClass = (idx: number) => {
-  if (idx === 0) return 'text-amber-400';
-  if (idx === 1) return 'text-slate-300';
-  if (idx === 2) return 'text-amber-600';
-  return 'text-gray-600';
+  if (idx === 0) return 'bg-amber-100 text-amber-800';
+  if (idx === 1) return 'bg-gray-100 text-gray-800';
+  if (idx === 2) return 'bg-amber-50 text-amber-700';
+  return 'text-gray-400';
 };
 
 const getScoreLabel = (user: any) => {
   if (activeType.value === 'orders') return `${user.totalOrders || 0} Orders`;
-  if (activeType.value === 'deliveries') return `${user.totalDeliveries || 0} Deliveries`;
+  if (activeType.value === 'deliveries') return `${user.totalDeliveries || 0} Hustles`;
   return `${user.points || 0} PTS`;
 };
 
 watch(activeType, loadLeaderboard);
 onMounted(loadLeaderboard);
 </script>
+
+<style scoped>
+</style>

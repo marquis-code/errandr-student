@@ -1,18 +1,7 @@
 <template>
   <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100 py-4">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex justify-between items-center">
-        <NuxtLink to="/" class="flex items-center gap-3 group">
-          <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
-        </NuxtLink>
-        <div class="flex items-center gap-8 text-[11px] font-black  uppercase text-gray-400">
-          <NuxtLink to="/about" class="hover:text-parentPrimary transition-colors">About</NuxtLink>
-          <NuxtLink to="/faq" class="text-parentPrimary border-b-2 border-parentPrimary pb-1">FAQ</NuxtLink>
-          <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
-        </div>
-      </div>
-    </nav>
+    <LandingNavbar />
 
     <!-- Hero Section -->
     <section class="relative pt-40 pb-20 overflow-hidden bg-gray-50/20">
@@ -77,20 +66,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-50 border-t border-gray-100 py-16 mt-20">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col md:flex-row justify-between items-center gap-10">
-        <NuxtLink to="/" class="group">
-          <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
-        </NuxtLink>
-        <div class="flex items-center gap-10 text-sm font-black tracking-[0.15em] uppercase text-gray-400">
-          <NuxtLink to="/about" class="hover:text-gray-900 transition-colors">About Us</NuxtLink>
-          <NuxtLink to="/terms" class="hover:text-gray-900 transition-colors">Terms</NuxtLink>
-          <NuxtLink to="/faq" class="text-parentPrimary font-black">FAQ</NuxtLink>
-          <NuxtLink to="/contact" class="hover:text-gray-900 transition-colors">Contact</NuxtLink>
-        </div>
-        <p class="text-sm font-bold text-gray-400 uppercase ">© {{ new Date().getFullYear() }} Errandr Ltd • CMUL Native</p>
-      </div>
-    </footer>
+    <LandingFooter class="mt-20" />
   </div>
 </template>
 

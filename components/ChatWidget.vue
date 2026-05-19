@@ -1,6 +1,6 @@
 <template>
  <ClientOnly>
- <div v-if="true" class="z-[99999] flex flex-col items-end gap-3 fixed bottom-6 right-6">
+ <div v-if="true" class="z-[90] flex flex-col items-end gap-3 fixed bottom-28 right-4 md:bottom-6 md:right-6">
  <Transition name="fade">
  <div
  v-if="isOpen"
