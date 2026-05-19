@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --parent-primary: #065fdb;
+  --parent-primary: #FF5C1A;
   --parent-primary-rgb: 6, 95, 219;
-  --premium-shadow: 0 20px 50px -12px rgba(6, 95, 219, 0.25);
+  --premium-shadow: 0 20px 50px -12px rgba(255, 92, 26, 0.25);
   --glass-bg: rgba(230, 239, 252, 0.7);
   --glass-border: rgba(255, 255, 255, 0.5);
-  --parent-secondary: #E6EFFC;
-  --parent-accent: #0448A8;
+  --parent-secondary: #FFF3ED;
+  --parent-accent: #C2410C;
   --parent-dark: #1C1B19;
 }
 
@@ -23,7 +23,12 @@ body {
   font-family: 'Onest', sans-serif;
 }
 
-h1, h2, h3, h4, .font-display, .font-onest {
+h1,
+h2,
+h3,
+h4,
+.font-display,
+.font-onest {
   font-family: 'Onest', sans-serif;
   @apply font-bold tracking-tight;
 }
@@ -50,18 +55,39 @@ h1, h2, h3, h4, .font-display, .font-onest {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes bounceSubtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 /* Hide scrollbar */
@@ -107,5 +133,5 @@ input[type=number] {
 
 .custom-checkbox:checked::after {
   content: '✓';
-  @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xs font-black shadow-sm;
+  @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-sm font-black shadow-sm;
 }

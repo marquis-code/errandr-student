@@ -3,7 +3,7 @@
     <!-- Left Side: Image Panel -->
     <div class="hidden md:block w-1/2 relative overflow-hidden">
       <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&h=1600&fit=crop" alt="Nigerian university students" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-b from-[#065fdb]/80 via-[#065fdb]/70 to-black/80"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-[#FF5C1A]/80 via-[#FF5C1A]/70 to-black/80"></div>
       <div class="relative z-10 flex flex-col justify-between h-full p-6 md:p-12 lg:p-16">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
@@ -35,13 +35,13 @@
         <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
 
         <button type="submit" :disabled="loading"
-          class="w-full py-4 bg-[#065fdb] hover:bg-[#054ec0] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#065fdb]/20">
+          class="w-full py-4 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#FF5C1A]/20">
           <Loader2 v-if="loading" class="animate-spin w-5 h-5" />
           {{ loading ? 'sending code...' : 'send reset code' }}
         </button>
       </form>
 
-      <div class="mt-auto pt-12 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400 font-medium">
+      <div class="mt-auto pt-12 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-400 font-medium">
         <p>&copy; {{ new Date().getFullYear() }} Errandr</p>
         <NuxtLink to="/terms" class="hover:text-gray-600">Terms</NuxtLink>
         <NuxtLink to="/terms" class="hover:text-gray-600">Privacy</NuxtLink>

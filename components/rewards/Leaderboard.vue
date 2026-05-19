@@ -8,14 +8,14 @@
       <div class="flex items-center justify-between mb-8">
         <div>
           <h3 class="text-2xl font-black tracking-tighter">Campus Hall of Fame</h3>
-          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Top orderers and riders this month</p>
+          <p class="text-sm font-bold text-gray-400 uppercase  mt-1">Top orderers and riders this month</p>
         </div>
         <div class="flex bg-white/5 p-1 rounded-2xl border border-white/10">
           <button 
             v-for="t in types" 
             :key="t.key"
             @click="activeType = t.key"
-            class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+            class="px-4 py-2 rounded-xl text-sm font-black uppercase  transition-all"
             :class="activeType === t.key ? 'bg-parentPrimary text-white shadow-lg' : 'text-gray-400 hover:text-white'"
           >
             {{ t.label }}
@@ -51,19 +51,19 @@
 
           <div class="flex-1 min-w-0">
             <h4 class="font-bold text-sm truncate uppercase tracking-tighter">{{ user.firstName }} {{ user.lastName }}</h4>
-            <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest truncate">{{ user.faculty || 'Unspecified' }}</p>
+            <p class="text-sm font-black text-gray-500 uppercase  truncate">{{ user.faculty || 'Unspecified' }}</p>
           </div>
 
           <div class="text-right">
             <p class="text-sm font-black text-parentPrimary tracking-tighter">{{ getScoreLabel(user) }}</p>
-            <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Points: {{ user.points }}</p>
+            <p class="text-sm font-bold text-gray-500 uppercase ">Points: {{ user.points }}</p>
           </div>
         </div>
       </div>
 
       <div class="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
-        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Updated in real-time</p>
-        <button class="text-xs font-black text-parentPrimary uppercase tracking-widest hover:underline transition-all">View All Rankings →</button>
+        <p class="text-sm font-black text-gray-500 uppercase ">Updated in real-time</p>
+        <button class="text-sm font-black text-parentPrimary uppercase  hover:underline transition-all">View All Rankings →</button>
       </div>
     </div>
   </div>

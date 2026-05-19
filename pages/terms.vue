@@ -6,7 +6,7 @@
         <NuxtLink to="/" class="flex items-center gap-3 group">
           <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
         </NuxtLink>
-        <div class="flex items-center gap-8 text-[11px] font-black tracking-widest uppercase">
+        <div class="flex items-center gap-8 text-[11px] font-black  uppercase">
           <NuxtLink to="/about" class="text-gray-400 hover:text-parentPrimary transition-colors">About</NuxtLink>
           <NuxtLink to="/terms" class="text-parentPrimary border-b-2 border-parentPrimary pb-1">Terms</NuxtLink>
           <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
@@ -21,12 +21,12 @@
       </div>
 
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-sm font-black tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
           <FileText class="w-3.5 h-3.5 text-parentPrimary" />
           Legal Framework
         </div>
         <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
-          Terms of <span class="text-parentPrimary italic">Service.</span>
+          Terms of <span class="text-parentPrimary ">Service.</span>
         </h1>
         <p class="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase">Last updated: January 25, 2026</p>
       </div>
@@ -57,13 +57,13 @@
         <NuxtLink to="/" class="group">
           <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
         </NuxtLink>
-        <div class="flex items-center gap-10 text-[10px] font-black tracking-[0.15em] uppercase text-gray-400">
+        <div class="flex items-center gap-10 text-sm font-black tracking-[0.15em] uppercase text-gray-400">
           <NuxtLink to="/about" class="hover:text-gray-900 transition-colors">About Us</NuxtLink>
           <NuxtLink to="/terms" class="text-parentPrimary font-black">Terms</NuxtLink>
           <NuxtLink to="/faq" class="hover:text-gray-900 transition-colors">FAQ</NuxtLink>
           <NuxtLink to="/contact" class="hover:text-gray-900 transition-colors">Contact</NuxtLink>
         </div>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© {{ new Date().getFullYear() }} Errandr Ltd • Community Driven</p>
+        <p class="text-sm font-bold text-gray-400 uppercase ">© {{ new Date().getFullYear() }} Errandr Ltd • Community Driven</p>
       </div>
     </footer>
   </div>
@@ -116,7 +116,7 @@ const termsSections = [
   },
   {
     title: "Contact Us",
-    content: "Questions regarding these Terms should be directed to <a href='mailto:legal@errandr.shop' class='text-parentPrimary hover:underline'>legal@errandr.shop</a> or via our Contact page."
+    content: "Questions regarding these Terms should be directed to <a href='mailto:legal@erranders.org' class='text-parentPrimary hover:underline'>legal@erranders.org</a> or via our Contact page."
   }
 ]
 </script>

@@ -8,7 +8,7 @@
       <button 
         v-if="notifications.length > 0 && unreadCount > 0"
         @click="markAllAsRead"
-        class="text-sm font-semibold text-[#065fdb] hover:bg-blue-50 px-4 py-2 rounded-xl transition-all"
+        class="text-sm font-semibold text-[#FF5C1A] hover:bg-blue-50 px-4 py-2 rounded-xl transition-all"
       >
         Mark all as read
       </button>
@@ -34,7 +34,7 @@
         @click="handleNotificationClick(notif)"
         :class="[
           'p-5 rounded-2xl border transition-all cursor-pointer group',
-          notif.read ? 'bg-white border-gray-100' : 'bg-[#065fdb]/[0.02] border-[#065fdb]/10'
+          notif.read ? 'bg-white border-gray-100' : 'bg-[#FF5C1A]/[0.02] border-[#FF5C1A]/10'
         ]"
       >
         <div class="flex gap-4">
@@ -52,7 +52,7 @@
               </div>
               <div class="flex flex-col items-end gap-2">
                 <span class="text-[11px] font-medium text-gray-400 whitespace-nowrap">{{ formatTime(notif.createdAt) }}</span>
-                <div v-if="!notif.read" class="w-2.5 h-2.5 bg-[#065fdb] rounded-full shadow-sm shadow-blue-400" />
+                <div v-if="!notif.read" class="w-2.5 h-2.5 bg-[#FF5C1A] rounded-full shadow-sm shadow-blue-400" />
               </div>
             </div>
             
@@ -60,7 +60,7 @@
             <div v-if="notif.data?.orderId" class="mt-4">
               <NuxtLink 
                 :to="`/orders/${notif.data.orderId}`"
-                class="inline-flex items-center text-sm font-bold text-[#065fdb] hover:gap-2 transition-all gap-1"
+                class="inline-flex items-center text-sm font-bold text-[#FF5C1A] hover:gap-2 transition-all gap-1"
               >
                 View Order Details
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -95,7 +95,7 @@ const getEmoji = (type: string) => {
 const getBgColor = (type: string) => {
   switch (type) {
     case 'ORDER_ACCEPTED': return 'bg-emerald-50 text-emerald-600'
-    case 'ORDER_STATUS_UPDATE': return 'bg-blue-50 text-[#065fdb]'
+    case 'ORDER_STATUS_UPDATE': return 'bg-blue-50 text-[#FF5C1A]'
     case 'NEW_ORDER_AVAILABLE': return 'bg-purple-50 text-purple-600'
     default: return 'bg-gray-50 text-gray-600'
   }

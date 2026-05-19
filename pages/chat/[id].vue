@@ -28,7 +28,7 @@
  >
  <!-- Date Marker -->
  <div class="flex justify-center mb-6 sticky top-2 z-10">
- <span class="px-3 py-1.5 bg-[#D1E9F6] text-[#54656F] text-[11.5px] font-bold rounded-lg shadow-sm tracking-wide backdrop-blur-sm bg-opacity-90">
+ <span class="px-3 py-1.5 bg-[#D1E9F6] text-[#54656F] text-[11.5px] font-bold rounded-lg shadow-sm  backdrop-blur-sm bg-opacity-90">
  Order {{ order?.orderNumber || 'Connecting...' }}
  </span>
  </div>

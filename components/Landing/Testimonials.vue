@@ -3,10 +3,10 @@
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
       <!-- Left side: Content -->
       <div class="space-y-8 text-center lg:text-left">
-        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-[10px] font-black uppercase tracking-widest">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-sm font-black uppercase ">
            💬 Words on the Street
         </div>
-        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none italic">
+        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none ">
           Trusted by <span class="text-parentPrimary">thousands</span> of <br/> students on campus.
         </h2>
         <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight max-w-md mx-auto lg:mx-0">
@@ -49,9 +49,9 @@
                 <div class="flex items-center gap-2">
                   <h4 class="font-black text-gray-900 tracking-tight text-lg">{{ t.name }}</h4>
                   <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-                  <p class="text-[10px] font-black text-parentPrimary uppercase tracking-widest">{{ t.tag }}</p>
+                  <p class="text-sm font-black text-parentPrimary uppercase ">{{ t.tag }}</p>
                 </div>
-                <p class="text-gray-500 font-bold text-sm leading-relaxed italic">
+                <p class="text-gray-500 font-bold text-sm leading-relaxed ">
                   "{{ t.quote }}"
                 </p>
               </div>

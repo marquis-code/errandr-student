@@ -23,7 +23,7 @@
         
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div class="space-y-2">
-            <p class="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Available Balance</p>
+            <p class="text-sm font-black text-white/40 uppercase tracking-[0.3em]">Available Balance</p>
             <div class="flex items-baseline gap-2">
               <span class="text-5xl font-black tracking-tighter">₦{{ (balance || 0).toLocaleString() }}</span>
               <button @click="handleFetchWallet" class="p-2 hover:bg-white/10 rounded-full transition-colors">
@@ -35,7 +35,7 @@
           <div class="flex gap-3">
             <button 
               @click="showTopup = true"
-              class="px-8 py-4 bg-emerald-500 text-white rounded-2xl text-[11px] font-black tracking-widest uppercase hover:scale-105 active:scale-95 transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2"
+              class="px-8 py-4 bg-emerald-500 text-white rounded-2xl text-[11px] font-black  uppercase hover:scale-105 active:scale-95 transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2"
             >
               <Plus class="w-4 h-4" />
               Add Money
@@ -58,7 +58,7 @@
         <div class="flex items-center justify-between px-2">
           <h2 class="text-xl font-black text-gray-900 tracking-tight">Recent Activity</h2>
           <div class="flex items-center gap-4">
-            <button class="text-xs font-bold text-emerald-600 hover:text-emerald-700 uppercase tracking-widest">View All</button>
+            <button class="text-sm font-bold text-emerald-600 hover:text-emerald-700 uppercase ">View All</button>
           </div>
         </div>
 
@@ -83,7 +83,7 @@
               </div>
               <div>
                 <p class="font-bold text-gray-900 leading-tight group-hover:text-emerald-600 transition-colors">{{ tx.description }}</p>
-                <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wider mt-0.5">
+                <p class="text-sm text-gray-400 font-medium uppercase r mt-0.5">
                   {{ new Date(tx.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) }}
                 </p>
               </div>
@@ -93,7 +93,7 @@
                 <p :class="tx.type === 'credit' ? 'text-emerald-500' : 'text-gray-900'" class="font-black text-lg tracking-tighter">
                   {{ tx.type === 'credit' ? '+' : '-' }}₦{{ tx.amount.toLocaleString() }}
                 </p>
-                <div class="flex items-center justify-end gap-1 font-bold text-[8px] uppercase tracking-widest mt-0.5" :class="tx.status === 'completed' ? 'text-emerald-400' : 'text-amber-400'">
+                <div class="flex items-center justify-end gap-1 font-bold text-[8px] uppercase  mt-0.5" :class="tx.status === 'completed' ? 'text-emerald-400' : 'text-amber-400'">
                   <div class="w-1 h-1 rounded-full bg-current"></div>
                   {{ tx.status }}
                 </div>
@@ -107,7 +107,7 @@
           <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <WalletIcon class="w-8 h-8 text-gray-300" />
           </div>
-          <p class="text-gray-400 font-bold uppercase text-xs tracking-widest">No transactions yet</p>
+          <p class="text-gray-400 font-bold uppercase text-sm ">No transactions yet</p>
         </div>
       </div>
     </div>
@@ -128,7 +128,7 @@
 
           <div class="space-y-6">
             <div>
-              <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Enter Amount</label>
+              <label class="text-sm font-black text-gray-400 uppercase  ml-1 mb-2 block">Enter Amount</label>
               <div class="relative">
                 <span class="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-gray-400">₦</span>
                 <input 
@@ -146,7 +146,7 @@
                 v-for="a in [1000, 2000, 5000]" 
                 :key="a"
                 @click="amount = a"
-                class="py-3 bg-gray-50 rounded-xl text-xs font-black text-gray-600 hover:bg-emerald-500 hover:text-white transition-all border border-gray-100"
+                class="py-3 bg-gray-50 rounded-xl text-sm font-black text-gray-600 hover:bg-emerald-500 hover:text-white transition-all border border-gray-100"
               >
                 +₦{{ a.toLocaleString() }}
               </button>
@@ -155,7 +155,7 @@
             <button 
               @click="initiateTopup"
               :disabled="loadingPayment || amount < 50"
-              class="w-full py-5 bg-gray-900 text-white rounded-2xl text-[11px] font-black tracking-widest uppercase hover:bg-gray-800 disabled:opacity-50 transition-all shadow-xl flex items-center justify-center gap-3 mt-4"
+              class="w-full py-5 bg-gray-900 text-white rounded-2xl text-[11px] font-black  uppercase hover:bg-gray-800 disabled:opacity-50 transition-all shadow-xl flex items-center justify-center gap-3 mt-4"
             >
               <Loader2 v-if="loadingPayment" class="w-4 h-4 animate-spin" />
               <span v-else>Continue with Paystack</span>
@@ -189,7 +189,7 @@
               <ShoppingBag v-else class="w-10 h-10" />
             </div>
             
-            <h3 class="text-[10px] font-black text-white/40 uppercase tracking-[0.5em] mb-2 relative z-10">Transaction Details</h3>
+            <h3 class="text-sm font-black text-white/40 uppercase tracking-[0.5em] mb-2 relative z-10">Transaction Details</h3>
             <p class="text-4xl font-black text-white tracking-tighter relative z-10">
               {{ selectedTx.type === 'credit' ? '+' : '-' }}₦{{ selectedTx.amount.toLocaleString() }}
             </p>
@@ -199,25 +199,25 @@
           <div class="p-8 space-y-8">
             <div class="space-y-6 bg-gray-50 rounded-[2rem] p-6 border border-gray-100">
               <div class="flex justify-between items-center group">
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Status</span>
-                <span :class="selectedTx.status === 'completed' ? 'text-emerald-500 bg-emerald-50' : 'text-amber-500 bg-amber-50'" class="text-[10px] font-black uppercase px-3 py-1 rounded-full border border-emerald-100/50 tracking-widest">
+                <span class="text-sm font-black text-gray-400 uppercase  leading-none">Status</span>
+                <span :class="selectedTx.status === 'completed' ? 'text-emerald-500 bg-emerald-50' : 'text-amber-500 bg-amber-50'" class="text-sm font-black uppercase px-3 py-1 rounded-full border border-emerald-100/50 ">
                   {{ selectedTx.status }}
                 </span>
               </div>
               
               <div class="flex justify-between items-start">
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1 leading-none">Description</span>
+                <span class="text-sm font-black text-gray-400 uppercase  mt-1 leading-none">Description</span>
                 <span class="text-sm font-black text-gray-900 text-right max-w-[200px] tracking-tight">{{ selectedTx.description }}</span>
               </div>
 
               <div class="flex justify-between items-center">
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Reference</span>
-                <span class="text-xs font-mono font-bold text-gray-900 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">{{ selectedTx.reference || 'N/A' }}</span>
+                <span class="text-sm font-black text-gray-400 uppercase  leading-none">Reference</span>
+                <span class="text-sm font-mono font-bold text-gray-900 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">{{ selectedTx.reference || 'N/A' }}</span>
               </div>
 
               <div class="flex justify-between items-center">
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Date</span>
-                <span class="text-xs font-black text-gray-600">{{ new Date(selectedTx.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' }) }}</span>
+                <span class="text-sm font-black text-gray-400 uppercase  leading-none">Date</span>
+                <span class="text-sm font-black text-gray-600">{{ new Date(selectedTx.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' }) }}</span>
               </div>
             </div>
 
@@ -225,21 +225,21 @@
             <div class="flex gap-4 print:hidden">
               <button 
                 @click="printReceipt"
-                class="flex-1 py-5 bg-gray-900 text-white rounded-[1.5rem] text-[11px] font-black tracking-widest uppercase hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-gray-200 flex items-center justify-center gap-3"
+                class="flex-1 py-5 bg-gray-900 text-white rounded-[1.5rem] text-[11px] font-black  uppercase hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-gray-200 flex items-center justify-center gap-3"
               >
                 <Printer class="w-4 h-4" />
                 Print Receipt
               </button>
               <button 
                 @click="selectedTx = null"
-                class="flex-1 py-5 bg-gray-50 text-gray-500 rounded-[1.5rem] text-[11px] font-black tracking-widest uppercase hover:bg-gray-100 transition-all"
+                class="flex-1 py-5 bg-gray-50 text-gray-500 rounded-[1.5rem] text-[11px] font-black  uppercase hover:bg-gray-100 transition-all"
               >
                 Close
               </button>
             </div>
             
             <div class="pt-4 border-t border-gray-100 text-center">
-               <p class="text-[10px] font-bold text-gray-300 uppercase tracking-widest leading-none">Errandr Campus Finance Hub</p>
+               <p class="text-sm font-bold text-gray-300 uppercase  leading-none">Errandr Campus Finance Hub</p>
             </div>
           </div>
         </div>

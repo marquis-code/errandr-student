@@ -6,7 +6,7 @@
  </NuxtLink>
  <div class="space-y-0.5">
  <h1 class="text-xl font-black text-gray-900 tracking-tight tracking-tighter">Payment Methods</h1>
- <p class="text-[9px] font-bold text-gray-400 tracking-widest">Manage your cards & billing</p>
+ <p class="text-sm font-bold text-gray-400 ">Manage your cards & billing</p>
  </div>
  </div>
 
@@ -17,9 +17,9 @@
  </div>
  <div class="relative z-10 space-y-2">
  <p class="text-sm font-bold text-gray-900 tracking-tight">No payment methods saved</p>
- <p class="text-[10px] font-bold text-gray-400 tracking-widest max-w-[200px] mx-auto leading-relaxed">Save your cards for faster checkout on your next order.</p>
+ <p class="text-sm font-bold text-gray-400  max-w-[200px] mx-auto leading-relaxed">Save your cards for faster checkout on your next order.</p>
  </div>
- <button class="relative z-10 w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-[0.2em]  -900/10 hover:bg-parentPrimary transition-all active:scale-95">Add Payment Method</button>
+ <button class="relative z-10 w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-black tracking-[0.2em]  -900/10 hover:bg-parentPrimary transition-all active:scale-95">Add Payment Method</button>
  </div>
  </div>
 </template>

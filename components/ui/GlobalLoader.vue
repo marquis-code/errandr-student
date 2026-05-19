@@ -3,11 +3,11 @@
     <div v-if="loading" class="fixed inset-0 z-[1000000] bg-white flex flex-col items-center justify-center">
       <div class="relative">
         <!-- Outer Glow -->
-        <div class="absolute inset-0 bg-[#065fdb] rounded-3xl blur-2xl opacity-20 animate-pulse"></div>
+        <div class="absolute inset-0 bg-[#FF5C1A] rounded-3xl blur-2xl opacity-20 animate-pulse"></div>
         
         <!-- Logo Container -->
         <div class="relative bg-white w-24 h-24 rounded-[2rem] shadow-2xl flex items-center justify-center border border-gray-50 overflow-hidden group">
-          <ShoppingBag class="w-10 h-10 text-[#065fdb] animate-bounce-slow" />
+          <ShoppingBag class="w-10 h-10 text-[#FF5C1A] animate-bounce-slow" />
           
           <!-- Glossy overlay -->
           <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent"></div>
@@ -18,9 +18,9 @@
       <div class="mt-8 flex flex-col items-center">
         <h2 class="text-xl font-black text-gray-900 tracking-tighter animate-pulse">Errandr</h2>
         <div class="mt-2 flex gap-1">
-          <div class="w-1.5 h-1.5 bg-[#065fdb] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-          <div class="w-1.5 h-1.5 bg-[#065fdb] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-          <div class="w-1.5 h-1.5 bg-[#065fdb] rounded-full animate-bounce"></div>
+          <div class="w-1.5 h-1.5 bg-[#FF5C1A] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+          <div class="w-1.5 h-1.5 bg-[#FF5C1A] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+          <div class="w-1.5 h-1.5 bg-[#FF5C1A] rounded-full animate-bounce"></div>
         </div>
       </div>
     </div>

@@ -50,9 +50,9 @@
  <!-- Business Hours List -->
  <div class="bg-gray-50 rounded-3xl p-6 space-y-3 mb-8">
  <div v-for="hour in sortedBusinessHours" :key="hour.day" 
- class="flex items-center justify-between text-xs font-bold"
+ class="flex items-center justify-between text-sm font-bold"
  :class="isToday(hour.day) ? 'text-parentPrimary' : 'text-gray-400'">
- <span class=" tracking-widest">{{ hour.day }}</span>
+ <span class=" ">{{ hour.day }}</span>
  <span v-if="hour.isClosed" class=" opacity-60">Closed</span>
  <span v-else>{{ formatTime(hour.open) }} - {{ formatTime(hour.close) }}</span>
  </div>

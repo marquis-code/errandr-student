@@ -14,7 +14,7 @@
               <h4 class="text-sm font-black text-white tracking-tight">
                 {{ status.message }}
               </h4>
-              <p class="text-[10px] text-gray-400 font-bold tracking-[0.15em] uppercase mt-0.5 flex items-center gap-2">
+              <p class="text-sm text-gray-400 font-bold tracking-[0.15em] uppercase mt-0.5 flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 Window Active until {{ status.end || '10:00' }} • Higher Priority Dispatch
               </p>
@@ -22,7 +22,7 @@
           </div>
 
           <div class="flex items-center gap-4">
-            <button @click="scrollToVendors" class="px-6 py-2.5 bg-parentPrimary text-white text-[10px] font-black tracking-widest uppercase rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-parentPrimary/20">
+            <button @click="scrollToVendors" class="px-6 py-2.5 bg-parentPrimary text-white text-sm font-black  uppercase rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-parentPrimary/20">
               Plan My Day
             </button>
             <button @click="dismiss" class="p-2 hover:bg-white/10 rounded-xl transition-colors text-white/40 hover:text-white">

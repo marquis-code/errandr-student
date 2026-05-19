@@ -6,7 +6,7 @@
         <NuxtLink to="/" class="flex items-center gap-3 group">
           <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
         </NuxtLink>
-        <div class="flex items-center gap-8 text-[11px] font-black tracking-widest uppercase text-gray-400">
+        <div class="flex items-center gap-8 text-[11px] font-black  uppercase text-gray-400">
           <NuxtLink to="/about" class="hover:text-parentPrimary transition-colors">About</NuxtLink>
           <NuxtLink to="/contact" class="text-parentPrimary border-b-2 border-parentPrimary pb-1">Contact</NuxtLink>
           <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
@@ -21,13 +21,13 @@
       </div>
 
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-sm font-black tracking-[0.2em] uppercase text-gray-400 mb-8">
           <span class="w-2 h-2 rounded-full bg-parentPrimary"></span>
           Direct Support
         </div>
         <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
           We're here for <br />
-          <span class="text-parentPrimary italic bg-parentPrimary/5 px-6 rounded-3xl">every student.</span>
+          <span class="text-parentPrimary  bg-parentPrimary/5 px-6 rounded-3xl">every student.</span>
         </h1>
         <p class="text-xl text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed tracking-tight">
           Have a question about an order? Want to bring Errandr to your campus? Reach out to our dedicated support team.
@@ -46,7 +46,7 @@
             </div>
             <h3 class="text-xl font-black text-gray-900 tracking-tight mb-3">Email Support</h3>
             <p class="text-[13px] text-gray-500 font-bold leading-relaxed mb-6">General inquiries and order issues.</p>
-            <a href="mailto:support@errandr.shop" class="text-sm font-black text-parentPrimary hover:underline">support@errandr.shop</a>
+            <a href="mailto:support@erranders.org" class="text-sm font-black text-parentPrimary hover:underline">support@erranders.org</a>
           </div>
 
           <!-- Expansion Card -->
@@ -56,7 +56,7 @@
             </div>
             <h3 class="text-xl font-black text-gray-900 tracking-tight mb-3">Campus Launch</h3>
             <p class="text-[13px] text-gray-500 font-bold leading-relaxed mb-6">Bring Errandr to your school environment.</p>
-            <a href="mailto:expansion@errandr.shop" class="text-sm font-black text-emerald-600 hover:underline">expansion@errandr.shop</a>
+            <a href="mailto:expansion@erranders.org" class="text-sm font-black text-emerald-600 hover:underline">expansion@erranders.org</a>
           </div>
 
           <!-- Phone Card -->
@@ -112,13 +112,13 @@
         <NuxtLink to="/" class="group">
           <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
         </NuxtLink>
-        <div class="flex items-center gap-10 text-[10px] font-black tracking-[0.15em] uppercase text-gray-400">
+        <div class="flex items-center gap-10 text-sm font-black tracking-[0.15em] uppercase text-gray-400">
           <NuxtLink to="/about" class="hover:text-gray-900 transition-colors">About Us</NuxtLink>
           <NuxtLink to="/terms" class="hover:text-gray-900 transition-colors">Terms</NuxtLink>
           <NuxtLink to="/faq" class="hover:text-gray-900 transition-colors">FAQ</NuxtLink>
           <NuxtLink to="/contact" class="text-parentPrimary font-black">Contact</NuxtLink>
         </div>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© {{ new Date().getFullYear() }} Errandr Ltd • CMUL Native</p>
+        <p class="text-sm font-bold text-gray-400 uppercase ">© {{ new Date().getFullYear() }} Errandr Ltd • CMUL Native</p>
       </div>
     </footer>
   </div>

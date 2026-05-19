@@ -3,10 +3,10 @@
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
       <!-- Left side: content -->
       <div class="space-y-8 text-center lg:text-left">
-        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-[10px] font-black uppercase tracking-widest">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-sm font-black uppercase ">
            🤔 Got Questions?
         </div>
-        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none italic">
+        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none ">
           Clear answers to <br/> <span class="text-parentPrimary">common questions</span> <br/> about the Hub.
         </h2>
         <div class="pt-4">

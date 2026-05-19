@@ -9,12 +9,12 @@
           </button>
           <div>
             <h1 class="text-lg font-black text-gray-900 leading-tight">Custom Errand</h1>
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Logistics & Delivery</p>
+            <p class="text-sm font-bold text-gray-400 uppercase tracking-[0.2em]">Logistics & Delivery</p>
           </div>
         </div>
         <div class="flex items-center gap-2 px-4 py-2 bg-parentPrimary/5 rounded-2xl border border-parentPrimary/10">
           <Zap class="w-3 h-3 text-parentPrimary animate-pulse" />
-          <span class="text-[10px] font-black text-parentPrimary uppercase tracking-widest">Active</span>
+          <span class="text-sm font-black text-parentPrimary uppercase ">Active</span>
         </div>
       </div>
     </header>
@@ -25,7 +25,7 @@
         <div class="absolute -right-10 -top-10 w-48 h-48 bg-parentPrimary/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
         <div class="relative z-10 space-y-2">
           <h2 class="text-2xl font-black tracking-tighter">Need something specific?</h2>
-          <p class="text-gray-400 text-xs font-bold leading-relaxed max-w-[280px]">From picking up laundry to buying unique items off-campus, our Errandrs have you covered.</p>
+          <p class="text-gray-400 text-sm font-bold leading-relaxed max-w-[280px]">From picking up laundry to buying unique items off-campus, our Errandrs have you covered.</p>
         </div>
       </div>
 
@@ -35,27 +35,27 @@
           <!-- Locations -->
           <div class="grid grid-cols-1 gap-4">
             <div class="space-y-2 relative group/field">
-              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Pickup From</label>
+              <label class="text-sm font-black text-gray-400 uppercase  ml-1">Pickup From</label>
               <div class="relative">
                 <MapPin class="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
                 <input 
                   v-model="form.pickupLocation"
                   type="text"
                   placeholder="e.g. OAU Gate, Faculty of Law"
-                  class="w-full pl-12 pr-6 py-5 bg-gray-50 border border-gray-100 rounded-2xl text-xs font-bold focus:bg-white focus:ring-[8px] focus:ring-parentPrimary/5 outline-none transition-all"
+                  class="w-full pl-12 pr-6 py-5 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold focus:bg-white focus:ring-[8px] focus:ring-parentPrimary/5 outline-none transition-all"
                 />
               </div>
             </div>
 
             <div class="space-y-2 relative group/field">
-              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Deliver To</label>
+              <label class="text-sm font-black text-gray-400 uppercase  ml-1">Deliver To</label>
               <div class="relative">
                 <Navigation class="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
                 <input 
                   v-model="form.dropoffLocation"
                   type="text"
                   placeholder="e.g. Moremi Hall, Room 402"
-                  class="w-full pl-12 pr-6 py-5 bg-gray-50 border border-gray-100 rounded-2xl text-xs font-bold focus:bg-white focus:ring-[8px] focus:ring-parentPrimary/5 outline-none transition-all"
+                  class="w-full pl-12 pr-6 py-5 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold focus:bg-white focus:ring-[8px] focus:ring-parentPrimary/5 outline-none transition-all"
                 />
               </div>
             </div>
@@ -63,18 +63,18 @@
 
           <!-- Description -->
           <div class="space-y-2">
-            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">What exactly do you need?</label>
+            <label class="text-sm font-black text-gray-400 uppercase  ml-1">What exactly do you need?</label>
             <textarea 
               v-model="form.description"
               placeholder="Please provide clear instructions for the Errandr..."
-              class="w-full p-6 bg-gray-50 border border-gray-100 rounded-2xl text-xs font-bold focus:bg-white focus:ring-[8px] focus:ring-parentPrimary/5 outline-none transition-all h-32 resize-none"
+              class="w-full p-6 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold focus:bg-white focus:ring-[8px] focus:ring-parentPrimary/5 outline-none transition-all h-32 resize-none"
             ></textarea>
           </div>
 
           <!-- Costs & Delivery -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Est. Item Cost (₦)</label>
+              <label class="text-sm font-black text-gray-400 uppercase  ml-1">Est. Item Cost (₦)</label>
               <input 
                 v-model="form.estimatedItemCost"
                 type="number"
@@ -83,13 +83,13 @@
               />
             </div>
             <div class="space-y-2">
-              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Delivery Urgency</label>
+              <label class="text-sm font-black text-gray-400 uppercase  ml-1">Delivery Urgency</label>
               <div class="flex p-1 bg-gray-50 rounded-2xl border border-gray-100">
                 <button 
                   v-for="opt in ['standard', 'express']" 
                   :key="opt"
                   @click="form.urgency = opt"
-                  class="flex-1 py-4 rounded-[0.9rem] text-[9px] font-black uppercase tracking-widest transition-all"
+                  class="flex-1 py-4 rounded-[0.9rem] text-sm font-black uppercase  transition-all"
                   :class="form.urgency === opt ? 'bg-white text-gray-900 shadow-sm border border-gray-50' : 'text-gray-400 hover:text-gray-600'"
                 >
                   {{ opt }}
@@ -101,28 +101,28 @@
 
         <!-- Order Summary -->
         <div class="pt-8 border-t border-gray-100 space-y-4">
-          <div class="flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          <div class="flex justify-between items-center text-sm font-bold text-gray-400 uppercase ">
             <span>Base Delivery ({{ form.urgency }})</span>
             <span class="text-gray-900">₦{{ baseFee.toLocaleString() }}</span>
           </div>
-          <div class="flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          <div class="flex justify-between items-center text-sm font-bold text-gray-400 uppercase ">
             <span>Item Reimbursement</span>
-            <span class="text-gray-900 text-xs">₦{{ Number(form.estimatedItemCost || 0).toLocaleString() }}</span>
+            <span class="text-gray-900 text-sm">₦{{ Number(form.estimatedItemCost || 0).toLocaleString() }}</span>
           </div>
-          <div class="flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          <div class="flex justify-between items-center text-sm font-bold text-gray-400 uppercase ">
             <span>Service & Paystack Fees</span>
             <span class="text-gray-900">₦{{ (serviceFee + paystackFee).toLocaleString() }}</span>
           </div>
 
           <div class="pt-6 mt-4 border-t-2 border-dashed border-gray-100 flex justify-between items-end">
             <div>
-              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Amount</p>
+              <p class="text-sm font-black text-gray-400 uppercase  mb-1">Total Amount</p>
               <span class="text-3xl font-black text-gray-900 tracking-tighter">₦{{ finalTotal.toLocaleString() }}</span>
             </div>
             <button 
               @click="startPayment"
               :disabled="!isFormValid"
-              class="px-8 py-5 bg-gray-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-parentPrimary hover:-translate-y-1 active:scale-95 transition-all shadow-xl shadow-gray-200 disabled:opacity-20"
+              class="px-8 py-5 bg-gray-900 text-white rounded-2xl text-sm font-black uppercase  hover:bg-parentPrimary hover:-translate-y-1 active:scale-95 transition-all shadow-xl shadow-gray-200 disabled:opacity-20"
             >
               Secure Checkout
             </button>

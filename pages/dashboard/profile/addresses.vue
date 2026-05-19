@@ -6,7 +6,7 @@
  </NuxtLink>
  <div class="space-y-0.5">
  <h1 class="text-xl font-black text-gray-900 tracking-tight tracking-tighter">My Addresses</h1>
- <p class="text-[9px] font-bold text-gray-400 tracking-widest">Manage your delivery locations</p>
+ <p class="text-sm font-bold text-gray-400 ">Manage your delivery locations</p>
  </div>
  </div>
 
@@ -17,9 +17,9 @@
  </div>
  <div class="relative z-10 space-y-2">
  <p class="text-sm font-bold text-gray-900 tracking-tight">No addresses found</p>
- <p class="text-[10px] font-bold text-gray-400 tracking-widest max-w-[200px] mx-auto leading-relaxed">Add your hostel or residency to speed up your deliveries.</p>
+ <p class="text-sm font-bold text-gray-400  max-w-[200px] mx-auto leading-relaxed">Add your hostel or residency to speed up your deliveries.</p>
  </div>
- <button class="relative z-10 w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-[0.2em]  -900/10 hover:bg-parentPrimary transition-all active:scale-95">Add New Address</button>
+ <button class="relative z-10 w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-black tracking-[0.2em]  -900/10 hover:bg-parentPrimary transition-all active:scale-95">Add New Address</button>
  </div>
  </div>
 </template>

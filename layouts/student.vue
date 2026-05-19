@@ -20,13 +20,13 @@
   <!-- Desktop Navigation -->
   <nav class="flex-1 space-y-8 relative z-10 overflow-y-auto hide-scrollbar pb-10">
     <div v-for="group in navGroups" :key="group.label" class="space-y-1">
-      <p class="px-5 text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 opacity-50">{{ group.label }}</p>
+      <p class="px-5 text-sm font-black text-gray-400 uppercase  mb-3 opacity-50">{{ group.label }}</p>
       
       <NuxtLink
         v-for="item in group.items"
         :key="item.path"
         :to="item.path"
-        class="flex items-center px-5 py-3 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all group/nav relative overflow-hidden"
+        class="flex items-center px-5 py-3 text-[11px] font-black uppercase  rounded-2xl transition-all group/nav relative overflow-hidden"
         :class="isActive(item.path) 
           ? 'bg-gray-900 text-white' 
           : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'"
@@ -45,14 +45,14 @@
  {{ userInitials }}
  </div>
  <div class="flex-1 min-w-0">
- <p class="text-[9px] font-bold text-gray-900 truncate">{{ userDisplayName }}</p>
- <p class="text-[10px] font-bold text-gray-400 truncate">Student member</p>
+ <p class="text-sm font-bold text-gray-900 truncate">{{ userDisplayName }}</p>
+ <p class="text-sm font-bold text-gray-400 truncate">Student member</p>
  </div>
  </div>
  
  <button
  @click="handleLogoutClick"
- class="mt-4 flex items-center w-full px-6 py-4 text-xs font-bold text-rose-500 hover:bg-rose-50 rounded-2xl transition-all"
+ class="mt-4 flex items-center w-full px-6 py-4 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-2xl transition-all"
  >
  <LogOut class="w-4 h-4 mr-4"></LogOut>
  Log out
@@ -120,13 +120,13 @@
   <!-- Mobile Nav -->
   <nav class="flex-1 space-y-6 overflow-y-auto hide-scrollbar py-4">
     <div v-for="group in navGroups" :key="group.label" class="space-y-1">
-      <p class="px-6 text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2 opacity-40">{{ group.label }}</p>
+      <p class="px-6 text-[8px] font-black text-gray-400 uppercase  mb-2 opacity-40">{{ group.label }}</p>
       
       <NuxtLink
         v-for="item in group.items"
         :key="item.path"
         :to="item.path"
-        class="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all"
+        class="flex items-center px-6 py-3.5 text-sm font-black uppercase  rounded-2xl transition-all"
         :class="isActive(item.path) 
           ? 'bg-gray-900 text-white' 
           : 'text-gray-400 hover:bg-gray-50'"
@@ -142,7 +142,7 @@
  <div class="mt-auto space-y-4">
  <button
  @click="handleLogoutClick"
- class="flex items-center justify-center w-full px-6 py-5 text-[10px] font-bold text-rose-500 bg-rose-50 rounded-2xl"
+ class="flex items-center justify-center w-full px-6 py-5 text-sm font-bold text-rose-500 bg-rose-50 rounded-2xl"
  >
  <LogOut class="w-4 h-4 mr-3"></LogOut>
  Log out
@@ -163,7 +163,7 @@
  </button>
  <div>
  <h1 class="text-2xl font-bold text-gray-900 tracking-tight leading-none mb-1">{{ pageTitle }}</h1>
- <p class="text-xs font-bold text-gray-400 tracking-wider ">{{ pageDescription }}</p>
+ <p class="text-sm font-bold text-gray-400 r ">{{ pageDescription }}</p>
  </div>
  </div>
  <div class="flex items-center gap-4">
@@ -175,10 +175,10 @@
  <div class="w-px h-8 bg-gray-100 mx-2"></div>
  
  <div class="flex flex-col items-end">
- <span class="text-[10px] font-bold text-gray-300 mb-1 tracking-widest leading-none">Status</span>
+ <span class="text-sm font-bold text-gray-300 mb-1  leading-none">Status</span>
  <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-lg">
  <div class="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
- <span class="text-[10px] font-bold text-emerald-600 tracking-widest ">All systems go</span>
+ <span class="text-sm font-bold text-emerald-600  ">All systems go</span>
  </div>
  </div>
  </div>
@@ -209,8 +209,8 @@
  </p>
  </div>
  <div class="flex gap-3 w-full">
- <button @click="logoutModalOpen = false" class="flex-1 py-4 rounded-2xl text-[10px] font-bold text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all tracking-widest">Stay</button>
- <button @click="confirmLogout" class="flex-1 py-4 rounded-2xl text-[10px] font-bold text-white bg-rose-500 hover:bg-rose-600 transition-all tracking-widest shadow-lg shadow-rose-200">Log out</button>
+ <button @click="logoutModalOpen = false" class="flex-1 py-4 rounded-2xl text-sm font-bold text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all ">Stay</button>
+ <button @click="confirmLogout" class="flex-1 py-4 rounded-2xl text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 transition-all  shadow-lg shadow-rose-200">Log out</button>
  </div>
  </div>
  </div>

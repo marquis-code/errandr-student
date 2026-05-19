@@ -12,18 +12,18 @@
 
  <!-- Active Reports -->
  <div v-if="reports.length > 0" class="space-y-4">
- <h2 class="text-xs font-bold text-dark-500 tracking-widest">Active Tickets</h2>
+ <h2 class="text-sm font-bold text-dark-500 ">Active Tickets</h2>
  <div v-for="report in reports" :key="report._id" class="glass-card hover:border-primary-500/30 transition-all">
  <div class="flex justify-between items-start mb-3">
  <div>
  <span class="badge" :class="statusBadge(report.status)">{{ report.status }}</span>
  <h3 class="text-dark-900 font-semibold mt-2">{{ report.subject }}</h3>
  </div>
- <span class="text-[10px] text-dark-500">{{ formatDate(report.createdAt) }}</span>
+ <span class="text-sm text-dark-500">{{ formatDate(report.createdAt) }}</span>
  </div>
  <p class="text-dark-400 text-sm line-clamp-2">{{ report.description }}</p>
  <div class="mt-4 pt-4 border-t border-dark-100 flex justify-end">
- <button @click="viewReport(report)" class="text-primary-600 text-xs font-bold tracking-wider hover:text-primary-700">
+ <button @click="viewReport(report)" class="text-primary-600 text-sm font-bold r hover:text-primary-700">
  View Thread
  </button>
  </div>
@@ -39,7 +39,7 @@
  <h2 class="text-xl font-bold text-dark-900 mb-6">File a New Report</h2>
  <form @submit.prevent="submitReport" class="space-y-4">
  <div>
- <label class="block text-xs font-bold text-dark-400 tracking-widest mb-2">Subject</label>
+ <label class="block text-sm font-bold text-dark-400  mb-2">Subject</label>
  <select v-model="form.subject" class="glass-input w-full">
  <option value="" disabled>Select an issue category</option>
  <option value="missing_items">Missing Items</option>
@@ -52,7 +52,7 @@
  </div>
 
  <div v-if="orders.length > 0">
- <label class="block text-xs font-bold text-dark-400 tracking-widest mb-2">Related Order (Optional)</label>
+ <label class="block text-sm font-bold text-dark-400  mb-2">Related Order (Optional)</label>
  <select v-model="form.orderId" class="glass-input w-full">
  <option :value="null">None</option>
  <option v-for="order in orders" :key="order._id" :value="order._id">
@@ -62,7 +62,7 @@
  </div>
 
  <div>
- <label class="block text-xs font-bold text-dark-400 tracking-widest mb-2">Details</label>
+ <label class="block text-sm font-bold text-dark-400  mb-2">Details</label>
  <textarea 
  v-model="form.description" 
  rows="4" 
@@ -73,7 +73,7 @@
 
  <button 
  type="submit" 
- class="btn-primary w-full py-4 text-sm tracking-widest font-bold mt-4"
+ class="btn-primary w-full py-4 text-sm  font-bold mt-4"
  :disabled="isSubmitting || !form.subject || !form.description"
  >
  {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}

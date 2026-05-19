@@ -8,8 +8,8 @@
  <div class="bg-white rounded-[2rem] text-center p-16 border border-dashed border-gray-100 animate-fade-in">
  <div class="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 transform -rotate-12">❤️</div>
  <h2 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">No favorites yet</h2>
- <p class="text-[10px] font-bold text-gray-400 tracking-widest mb-8 text-center max-w-xs mx-auto">Tap the heart icon on any meal or item to save it here.</p>
- <NuxtLink to="/vendors" class="inline-flex px-8 py-4 bg-gray-900 text-white rounded-xl font-bold text-[10px] tracking-widest hover:bg-parentPrimary transition-all">Browse Vendors</NuxtLink>
+ <p class="text-sm font-bold text-gray-400  mb-8 text-center max-w-xs mx-auto">Tap the heart icon on any meal or item to save it here.</p>
+ <NuxtLink to="/vendors" class="inline-flex px-8 py-4 bg-gray-900 text-white rounded-xl font-bold text-sm  hover:bg-parentPrimary transition-all">Browse Vendors</NuxtLink>
  </div>
  </div>
 
@@ -35,7 +35,7 @@
  <h4 class="font-bold text-gray-900 text-[13px] md:text-sm tracking-tight truncate mb-0.5">{{ fav.product?.name }}</h4>
  <div class="flex items-center gap-2">
  <div class="w-1.5 h-1.5 rounded-full" :class="fav.vendor?.isOnline ? 'bg-emerald-500' : 'bg-gray-300'" />
- <p class="text-[9px] font-bold text-gray-400 tracking-widest truncate">{{ fav.vendor?.storeName }}</p>
+ <p class="text-sm font-bold text-gray-400  truncate">{{ fav.vendor?.storeName }}</p>
  </div>
  </div>
  </div>
@@ -91,7 +91,7 @@
  <p class="text-[8px] font-black tracking-[0.2em] text-gray-400 mb-0.5">Price</p>
  <p class="text-xl font-black text-gray-900">₦{{ selectedFavorite.product?.price?.toLocaleString() }}</p>
  </div>
- <div :class="selectedFavorite.product?.isAvailable ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'" class="px-3 py-1.5 rounded-lg border text-[8px] font-black tracking-widest">
+ <div :class="selectedFavorite.product?.isAvailable ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'" class="px-3 py-1.5 rounded-lg border text-[8px] font-black ">
  {{ selectedFavorite.product?.isAvailable ? 'Available' : 'Unavailable' }}
  </div>
  </div>
@@ -104,13 +104,13 @@
  <button
  v-if="selectedFavorite.product?.isAvailable"
  @click="quickAddToCart(selectedFavorite); selectedFavorite = null;"
- class="w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-[0.2em]  hover:bg-parentPrimary transition-all active:scale-95"
+ class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-black tracking-[0.2em]  hover:bg-parentPrimary transition-all active:scale-95"
  >
  Add to Cart
  </button>
  <button 
  @click="router.push(`/vendors/${selectedFavorite.vendor?._id}`)"
- class="w-full py-4 flex items-center justify-center bg-white text-gray-900 rounded-xl text-[10px] font-black tracking-[0.2em] border border-gray-100 hover:border-parentPrimary transition-all active:scale-95"
+ class="w-full py-4 flex items-center justify-center bg-white text-gray-900 rounded-xl text-sm font-black tracking-[0.2em] border border-gray-100 hover:border-parentPrimary transition-all active:scale-95"
  >
  Visit Restaurant
  </button>

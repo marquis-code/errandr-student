@@ -7,7 +7,7 @@
  v-for="status in filters" 
  :key="status.key" 
  @click="activeFilter = status.key"
- class="px-5 py-2.5 rounded-xl text-[10px] font-bold transition-all tracking-widest whitespace-nowrap border"
+ class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all  whitespace-nowrap border"
  :class="activeFilter === status.key ? 'bg-parentPrimary text-white border-parentPrimary ' : 'text-gray-400 bg-white border-gray-100 hover:border-gray-200'"
  >
  {{ status.label }}
@@ -34,8 +34,8 @@
  <div class="bg-white rounded-[2rem] text-center p-16 border border-dashed border-gray-100 animate-fade-in">
  <div class="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 transform -rotate-12">📋</div>
  <h2 class="text-xl font-bold text-gray-900 mb-2 tracking-tight">No orders yet</h2>
- <p class="text-[10px] font-bold text-gray-400 tracking-widest mb-8">Start your first Errand on campus</p>
- <NuxtLink to="/vendors" class="inline-flex px-8 py-4 bg-gray-900 text-white rounded-xl font-bold text-[10px] tracking-widest hover:bg-parentPrimary transition-all">Start Shopping</NuxtLink>
+ <p class="text-sm font-bold text-gray-400  mb-8">Start your first Errand on campus</p>
+ <NuxtLink to="/vendors" class="inline-flex px-8 py-4 bg-gray-900 text-white rounded-xl font-bold text-sm  hover:bg-parentPrimary transition-all">Start Shopping</NuxtLink>
  </div>
  </div>
 
@@ -54,21 +54,21 @@
  <div class="min-w-0">
  <div class="flex items-center gap-2 mb-1">
  <h3 class="font-black text-gray-900 text-base tracking-tight truncate flex-1 md:flex-none">#{{ order.orderNumber }}</h3>
- <span :class="getStatusBadge(order.status)" class="sm:hidden text-[8px] font-black tracking-widest px-2.5 py-1 rounded-md border shrink-0">
+ <span :class="getStatusBadge(order.status)" class="sm:hidden text-[8px] font-black  px-2.5 py-1 rounded-md border shrink-0">
  {{ formatStatus(order.status) }}
  </span>
  </div>
- <p class="text-[10px] font-bold text-gray-400 tracking-widest truncate">{{ order.vendor?.storeName || 'Custom Errand' }}</p>
+ <p class="text-sm font-bold text-gray-400  truncate">{{ order.vendor?.storeName || 'Custom Errand' }}</p>
  </div>
  </div>
 
  <div class="text-right px-3 shrink-0">
  <p class="text-sm font-black text-gray-900 leading-none mb-1">₦{{ order.total?.toLocaleString() }}</p>
- <p class="text-[9px] font-bold text-gray-400 tracking-widest">{{ timeAgo(order.createdAt) }}</p>
+ <p class="text-sm font-bold text-gray-400 ">{{ timeAgo(order.createdAt) }}</p>
  </div>
 
  <div class="shrink-0 flex items-center gap-3">
- <span :class="getStatusBadge(order.status)" class="hidden sm:block text-[8px] font-black tracking-widest px-3 py-1.5 rounded-lg border">
+ <span :class="getStatusBadge(order.status)" class="hidden sm:block text-[8px] font-black  px-3 py-1.5 rounded-lg border">
  {{ formatStatus(order.status) }}
  </span>
  <ChevronRight class="w-4 h-4 text-gray-300 group-hover:text-parentPrimary group-hover:translate-x-1 transition-all" />
@@ -85,7 +85,7 @@
  {{ statusEmoji(selectedOrder.status) }}
  </div>
  <h3 class="text-xl font-bold text-gray-900 tracking-tight leading-none mb-3">Order #{{ selectedOrder.orderNumber }}</h3>
- <span :class="getStatusBadge(selectedOrder.status)" class="text-[9px] font-black tracking-widest px-4 py-2 rounded-xl border bg-white">
+ <span :class="getStatusBadge(selectedOrder.status)" class="text-sm font-black  px-4 py-2 rounded-xl border bg-white">
  {{ formatStatus(selectedOrder.status) }}
  </span>
  </div>
@@ -95,17 +95,17 @@
  <div class="flex items-center gap-4">
  <div class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center text-lg ">🏪</div>
  <div class="space-y-0.5">
- <p class="text-[8px] font-bold tracking-widest text-gray-400">Vendor</p>
+ <p class="text-[8px] font-bold  text-gray-400">Vendor</p>
  <p class="text-sm font-bold text-gray-900">{{ selectedOrder.vendor?.storeName || 'Unknown Vendor' }}</p>
  </div>
  </div>
  
  <div class="pt-6 border-t border-gray-50 flex justify-between items-end">
  <div class="space-y-0.5">
- <p class="text-[8px] font-bold text-parentPrimary tracking-widest">Total Amount</p>
+ <p class="text-[8px] font-bold text-parentPrimary ">Total Amount</p>
  <p class="text-2xl font-bold text-gray-900 tracking-tight">₦{{ selectedOrder.total?.toLocaleString() }}</p>
  </div>
- <div class="text-[8px] font-bold text-gray-300 tracking-widest">NGN</div>
+ <div class="text-[8px] font-bold text-gray-300 ">NGN</div>
  </div>
  </div>
 
@@ -115,14 +115,14 @@
  
  <button 
  @click="navigateTo(`/dashboard/orders/${selectedOrder._id}`)" 
- class="w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-extrabold tracking-widest  -900/20 hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 group"
+ class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-extrabold   -900/20 hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 group"
  >
  Track Errand <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
  </button>
 
  <button
  @click="handleReorder(selectedOrder)"
- class="w-full py-4 bg-white text-gray-900 rounded-xl text-[10px] font-extrabold tracking-widest border border-gray-100  hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+ class="w-full py-4 bg-white text-gray-900 rounded-xl text-sm font-extrabold  border border-gray-100  hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
  >
  Order Again
  </button>
@@ -130,7 +130,7 @@
  <button
  v-if="['pending', 'confirmed'].includes(selectedOrder.status)"
  @click="cancelOrder(selectedOrder._id); selectedOrder = null;"
- class="w-full py-3.5 bg-rose-50 text-rose-500 rounded-xl text-[9px] font-bold tracking-widest border border-rose-100 hover:bg-rose-500 hover:text-white transition-all"
+ class="w-full py-3.5 bg-rose-50 text-rose-500 rounded-xl text-sm font-bold  border border-rose-100 hover:bg-rose-500 hover:text-white transition-all"
  >
  Cancel Errand
  </button>

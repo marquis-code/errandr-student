@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between mb-8">
       <div>
         <h3 class="text-2xl font-black text-gray-900 tracking-tighter">Campus Quests</h3>
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Earn bonus points for every mission</p>
+        <p class="text-sm font-bold text-gray-400 uppercase  mt-1">Earn bonus points for every mission</p>
       </div>
       <div class="w-12 h-12 bg-parentPrimary/10 rounded-2xl flex items-center justify-center text-parentPrimary">
         <Target class="w-6 h-6" />
@@ -37,13 +37,13 @@
                 <p class="text-[11px] font-medium text-gray-500">{{ quest.description }}</p>
               </div>
               <div class="text-right">
-                <span class="text-xs font-black text-emerald-600">+{{ quest.rewardPoints }} pts</span>
+                <span class="text-sm font-black text-emerald-600">+{{ quest.rewardPoints }} pts</span>
               </div>
             </div>
 
             <!-- Progress Bar -->
             <div class="mt-4">
-              <div class="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1.5">
+              <div class="flex items-center justify-between text-sm font-black uppercase  text-gray-400 mb-1.5">
                 <span>{{ quest.isCompleted ? 'Completed' : 'In Progress' }}</span>
                 <span>{{ quest.progress }} / {{ quest.targetValue }}</span>
               </div>
@@ -59,7 +59,7 @@
 
         <!-- Completion Overlay -->
         <div v-if="quest.isCompleted" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] rounded-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div class="px-4 py-2 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+          <div class="px-4 py-2 bg-emerald-500 text-white text-sm font-black uppercase  rounded-full shadow-lg">
             ✓ Mission Accomplished
           </div>
         </div>
