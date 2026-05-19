@@ -46,7 +46,7 @@
       <!-- Center Brand Label -->
       <div class="flex items-center justify-center gap-4 py-2">
         <div class="h-px w-8 md:w-16 bg-gradient-to-r from-transparent to-parentPrimary/30" />
-        <p class="text-[10px] md:text-sm font-black text-parentPrimary tracking-[0.4em] uppercase font-onest">
+        <p class="text-sm md:text-sm font-black text-parentPrimary tracking-[0.4em] uppercase font-onest">
           Bringing Happiness to Students' Doorsteps
         </p>
         <div class="h-px w-8 md:w-16 bg-gradient-to-l from-transparent to-parentPrimary/30" />

@@ -8,9 +8,9 @@
         </button>
         <div class="flex-1">
           <h2 class="text-dark-900 font-semibold text-sm">{{ report?.title }}</h2>
-          <p class="text-xs text-dark-400 capitalize">{{ report?.category?.replace(/_/g, ' ') }} • {{ report?.vendor?.storeName }}</p>
+          <p class="text-sm text-dark-400 capitalize">{{ report?.category?.replace(/_/g, ' ') }} • {{ report?.vendor?.storeName }}</p>
         </div>
-        <span :class="statusBadge(report?.status)" class="text-xs capitalize">{{ report?.status }}</span>
+        <span :class="statusBadge(report?.status)" class="text-sm capitalize">{{ report?.status }}</span>
       </div>
       <p class="text-sm text-dark-600 bg-dark-50 p-3 rounded-xl border border-dark-100">{{ report?.description }}</p>
     </div>
@@ -21,11 +21,11 @@
         <div class="max-w-[75%]">
           <div class="rounded-2xl px-4 py-2.5" :class="msg.isAdmin ? 'bg-white border border-dark-100 shadow-sm rounded-bl-sm' : 'bg-primary-600 text-white shadow-md rounded-br-sm'">
             <div v-if="msg.isAdmin" class="flex items-center gap-1 mb-1">
-              <span class="text-xs font-semibold text-accent-400">Admin</span>
+              <span class="text-sm font-semibold text-accent-400">Admin</span>
             </div>
             <p class="text-sm">{{ msg.message }}</p>
           </div>
-          <p class="text-[10px] text-dark-500 mt-0.5 px-1" :class="msg.isAdmin ? '' : 'text-right'">
+          <p class="text-sm text-dark-500 mt-0.5 px-1" :class="msg.isAdmin ? '' : 'text-right'">
             {{ new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
           </p>
         </div>

@@ -25,7 +25,7 @@
  <!-- Results Section -->
  <div v-if="query && results.length > 0" class="space-y-8">
  <div class="flex items-center gap-4 px-2">
- <h2 class="text-[10px] font-black text-gray-400 tracking-widest">Results for "{{ query }}"</h2>
+ <h2 class="text-sm font-black text-gray-400 ">Results for "{{ query }}"</h2>
  <div class="flex-1 h-px bg-gray-100" />
  </div>
 
@@ -42,7 +42,7 @@
  
  <!-- Price Badge -->
  <div class="absolute bottom-3 left-3">
- <span class="px-3 py-1 bg-white/95 backdrop-blur-xl rounded-lg text-[10px] font-bold text-gray-900 border border-white/10 ">
+ <span class="px-3 py-1 bg-white/95 backdrop-blur-xl rounded-lg text-sm font-bold text-gray-900 border border-white/10 ">
  ₦{{ item.price?.toLocaleString() }}
  </span>
  </div>
@@ -52,7 +52,7 @@
  <h4 class="font-bold text-gray-900 text-sm tracking-tight leading-none truncate">{{ item.name }}</h4>
  <div class="flex items-center gap-2">
  <div :class="item.vendor?.isOnline ? 'bg-emerald-500' : 'bg-gray-300'" class="w-1.5 h-1.5 rounded-full" />
- <p class="text-[9px] font-bold text-gray-400 truncate tracking-wider">
+ <p class="text-sm font-bold text-gray-400 truncate r">
  {{ item.vendor?.storeName }}
  </p>
  </div>
@@ -67,7 +67,7 @@
  <span class="text-4xl text-parentPrimary">🔭</span>
  </div>
  <h3 class="text-xl font-bold text-gray-900">No results found</h3>
- <p class="text-[10px] font-bold text-gray-400 tracking-widest mt-3">Try different keywords!</p>
+ <p class="text-sm font-bold text-gray-400  mt-3">Try different keywords!</p>
  </div>
 
  <div v-if="!query" class="bg-white border border-dashed border-gray-100 rounded-[2.5rem] text-center py-24 animate-fade-in mx-2">
@@ -75,7 +75,7 @@
  <span class="text-4xl text-parentPrimary">🔍</span>
  </div>
  <h3 class="text-xl font-bold text-gray-900">Start searching</h3>
- <p class="text-[10px] font-bold text-gray-400 tracking-widest mt-3">Find food, snacks, or groceries</p>
+ <p class="text-sm font-bold text-gray-400  mt-3">Find food, snacks, or groceries</p>
  </div>
  </div>
 </template>

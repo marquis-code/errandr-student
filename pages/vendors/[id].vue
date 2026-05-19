@@ -11,7 +11,7 @@
           <p class="text-[8px] font-black uppercase tracking-[0.25em] mb-1.5 text-parentPrimary">Together is better</p>
           <h4 class="text-sm font-black tracking-tight leading-tight">Order with friends &<br/>split delivery fees! 👥</h4>
         </div>
-        <button @click="handleStartGroupOrder" class="relative z-10 px-5 py-2.5 bg-parentPrimary text-white rounded-xl text-[10px] font-black tracking-widest shadow-lg shadow-parentPrimary/20 active:scale-95 transition-all">
+        <button @click="handleStartGroupOrder" class="relative z-10 px-5 py-2.5 bg-parentPrimary text-white rounded-xl text-sm font-black  shadow-lg shadow-parentPrimary/20 active:scale-95 transition-all">
           INVITE
         </button>
       </div>
@@ -23,7 +23,7 @@
           </div>
           <div>
             <h1 class="text-xl font-black text-gray-900 tracking-tight">{{ toTitleCase(vendor.storeName) }}</h1>
-            <div class="flex items-center gap-2 text-[10px] font-black text-gray-400 tracking-widest mt-1">
+            <div class="flex items-center gap-2 text-sm font-black text-gray-400  mt-1">
               <div class="flex items-center gap-1">
                 <Star class="w-3 h-3 text-amber-400 fill-current" />
                 <span class="text-gray-900">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
@@ -39,7 +39,7 @@
         <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide text-sans">
           <button 
             @click="handleStartGroupOrder"
-            class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-widest transition-all whitespace-nowrap shrink-0 shadow-sm border animate-bounce-slow"
+            class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-black  transition-all whitespace-nowrap shrink-0 shadow-sm border animate-bounce-slow"
             :class="activeCode ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-parentPrimary text-white border-parentPrimary shadow-parentPrimary/20'"
           >
             <Users class="w-4 h-4" />
@@ -48,7 +48,7 @@
           
           <button 
             @click="showMobileCartDrawer = true" 
-            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-2xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all whitespace-nowrap shadow-md shrink-0"
+            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-2xl text-sm font-black  hover:bg-parentPrimary transition-all whitespace-nowrap shadow-md shrink-0"
           >
             <ShoppingBag class="w-3.5 h-3.5" />
             <span v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="bg-parentPrimary px-1.5 py-0.5 rounded-md text-[8px]">{{ cart.getVendorStats(vendor._id).itemCount }}</span>
@@ -76,9 +76,9 @@
           >
             <img :src="banner.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent flex flex-col justify-end p-6">
-              <span class="absolute top-4 right-4 px-2 py-1 bg-rose-500 text-white rounded-md text-[8px] font-black tracking-widest shadow-sm">OFFER</span>
+              <span class="absolute top-4 right-4 px-2 py-1 bg-rose-500 text-white rounded-md text-[8px] font-black  shadow-sm">OFFER</span>
               <h3 class="text-base font-black text-white tracking-tight">{{ toTitleCase(banner.title) }}</h3>
-              <p class="text-[9px] font-bold text-white/80 tracking-widest mt-1">{{ banner.description }}</p>
+              <p class="text-sm font-bold text-white/80  mt-1">{{ banner.description }}</p>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@
       <div v-if="activeBatch" class="mb-10 px-2">
         <div class="bg-gray-900 rounded-3xl p-8 relative overflow-hidden group shadow-2xl">
           <div class="absolute -right-10 -top-10 w-40 h-40 bg-parentPrimary/20 rounded-full blur-[80px] group-hover:bg-parentPrimary/30 transition-all duration-700"></div>
-          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 uppercase tracking-widest">
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 uppercase ">
             <div class="space-y-4">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-parentPrimary text-white flex items-center justify-center shadow-lg">
@@ -98,13 +98,13 @@
               </div>
               <div class="flex flex-wrap gap-6">
                 <div>
-                  <p class="text-[10px] text-white/40 font-black mb-1">Accepting orders until</p>
-                  <p class="text-xs font-black text-parentPrimary">{{ new Date(activeBatch.deadline).toLocaleString() }}</p>
+                  <p class="text-sm text-white/40 font-black mb-1">Accepting orders until</p>
+                  <p class="text-sm font-black text-parentPrimary">{{ new Date(activeBatch.deadline).toLocaleString() }}</p>
                 </div>
                 <div class="w-px h-8 bg-white/10 hidden md:block"></div>
                 <div>
-                  <p class="text-[10px] text-white/40 font-black mb-1">Delivery on</p>
-                  <p class="text-xs font-black text-emerald-400">{{ new Date(activeBatch.deliveryDate).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }) }}</p>
+                  <p class="text-sm text-white/40 font-black mb-1">Delivery on</p>
+                  <p class="text-sm font-black text-emerald-400">{{ new Date(activeBatch.deliveryDate).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }) }}</p>
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@
         <!-- Sticky Category Nav -->
         <aside class="lg:w-48 shrink-0 border-b border-gray-50 lg:border-none pb-4 lg:pb-0 mb-6 lg:mb-0">
           <div class="sticky top-24">
-            <h4 class="hidden lg:block text-[9px] font-black text-gray-400 tracking-[0.2em] mb-4 px-2">Categories</h4>
+            <h4 class="hidden lg:block text-sm font-black text-gray-400 tracking-[0.2em] mb-4 px-2">Categories</h4>
             <div class="flex lg:flex-col gap-2 overflow-x-auto scrollbar-hide">
               <button
                 v-for="cat in categories"
@@ -149,7 +149,7 @@
             class="scroll-mt-32"
           >
             <div class="flex items-center gap-3 mb-6">
-              <h2 class="text-sm font-black text-gray-900 tracking-widest">{{ toTitleCase(cat) }}</h2>
+              <h2 class="text-sm font-black text-gray-900 ">{{ toTitleCase(cat) }}</h2>
               <div class="h-px bg-gray-50 flex-1" />
             </div>
 
@@ -166,7 +166,7 @@
                   <div class="absolute inset-0 bg-gradient-to-t from-gray-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   
                   <!-- Item Count Overlay -->
-                  <div v-if="getProductCount(product._id) > 0" class="absolute top-2 right-2 md:top-3 md:right-3 flex items-center gap-1.5 bg-gray-900/90 backdrop-blur-md text-white px-2.5 py-1.5 rounded-lg text-[10px] font-black shadow-xl z-10 border border-white/10">
+                  <div v-if="getProductCount(product._id) > 0" class="absolute top-2 right-2 md:top-3 md:right-3 flex items-center gap-1.5 bg-gray-900/90 backdrop-blur-md text-white px-2.5 py-1.5 rounded-lg text-sm font-black shadow-xl z-10 border border-white/10">
                     <ShoppingBag class="w-3.5 h-3.5" />
                     {{ getProductCount(product._id) }}
                   </div>
@@ -181,7 +181,7 @@
                   
                   <div class="flex items-end justify-between mt-4">
                     <div class="flex flex-col">
-                      <span v-if="product.discountPrice" class="text-[9px] text-gray-400 line-through mb-0.5">₦{{ product.price.toLocaleString() }}</span>
+                      <span v-if="product.discountPrice" class="text-sm text-gray-400 line-through mb-0.5">₦{{ product.price.toLocaleString() }}</span>
                       <span class="text-sm md:text-lg font-black text-gray-900 leading-none">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
                     </div>
                     
@@ -226,21 +226,21 @@
             <!-- Participants -->
             <div v-if="groupOrder" class="space-y-4">
               <div class="flex items-center justify-between px-2">
-                <h3 class="text-[9px] font-black text-gray-400 tracking-[0.2em]">Participants ({{ groupOrder.participants.length }})</h3>
-                <button v-if="isHost" @click="copyInviteLink" class="text-[8px] font-black text-parentPrimary tracking-widest hover:underline uppercase">Copy Link</button>
+                <h3 class="text-sm font-black text-gray-400 tracking-[0.2em]">Participants ({{ groupOrder.participants.length }})</h3>
+                <button v-if="isHost" @click="copyInviteLink" class="text-[8px] font-black text-parentPrimary  hover:underline uppercase">Copy Link</button>
               </div>
               <div class="lg:p-4 lg:bg-gray-50/50 lg:rounded-2xl lg:border lg:border-gray-100 space-y-3">
                 <div v-for="p in groupOrder.participants" :key="p.user._id || p.user" class="p-3 bg-gray-50 lg:bg-white border border-gray-100 lg:border-gray-50 rounded-xl lg:shadow-sm flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-white lg:bg-gray-100 flex items-center justify-center font-black text-[10px] text-gray-500 overflow-hidden shrink-0 border border-white lg:shadow-sm">
+                  <div class="w-8 h-8 rounded-full bg-white lg:bg-gray-100 flex items-center justify-center font-black text-sm text-gray-500 overflow-hidden shrink-0 border border-white lg:shadow-sm">
                     <img v-if="p.user.avatar" :src="p.user.avatar" class="w-full h-full object-cover" />
                     <span v-else>{{ p.user.firstName?.[0] }}</span>
                   </div>
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2">
-                      <p class="text-[10px] font-black text-gray-900 truncate">{{ p.user.firstName }} {{ p.user.lastName }}</p>
+                      <p class="text-sm font-black text-gray-900 truncate">{{ p.user.firstName }} {{ p.user.lastName }}</p>
                       <span v-if="p.user._id === groupOrder.host._id || p.user === groupOrder.host" class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-[7px] font-black uppercase">Host</span>
                     </div>
-                    <p class="text-[8px] font-bold text-gray-400 italic">{{ p.items?.length || 0 }} items • ₦{{ (p.total || 0).toLocaleString() }}</p>
+                    <p class="text-[8px] font-bold text-gray-400 ">{{ p.items?.length || 0 }} items • ₦{{ (p.total || 0).toLocaleString() }}</p>
                   </div>
                   <div class="flex items-center gap-2">
                     <div :class="p.isReady ? 'bg-emerald-500' : 'bg-gray-200'" class="w-1.5 h-1.5 rounded-full shadow-sm" />
@@ -252,7 +252,7 @@
                 <div class="pt-2 flex flex-col gap-2">
                   <button 
                     @click="toggleReady(!getMyStatus?.isReady)"
-                    class="w-full py-3 rounded-xl text-[9px] font-black tracking-widest transition-all border shadow-sm"
+                    class="w-full py-3 rounded-xl text-sm font-black  transition-all border shadow-sm"
                     :class="getMyStatus?.isReady ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-white text-gray-400 border-gray-100 hover:text-gray-900'"
                   >
                     {{ getMyStatus?.isReady ? 'You are Ready' : 'Mark as Ready' }}
@@ -262,14 +262,14 @@
                     v-if="isHost && groupOrder.status === 'open'"
                     @click="handleCheckoutGroupOrder"
                     :disabled="!canCheckout"
-                    class="w-full py-4 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all shadow-xl disabled:opacity-50"
+                    class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-black  hover:bg-parentPrimary transition-all shadow-xl disabled:opacity-50"
                   >
                     Checkout Everything
                   </button>
                   
                   <button 
                     @click="leaveGroupOrder"
-                    class="w-full py-2 text-[8px] font-black text-rose-400 tracking-widest hover:text-rose-600 transition-all uppercase"
+                    class="w-full py-2 text-[8px] font-black text-rose-400  hover:text-rose-600 transition-all uppercase"
                   >
                     Leave Group
                   </button>
@@ -280,7 +280,7 @@
             <!-- Detailed Pack Summary (Pack Arrangement) -->
             <div class="lg:p-5 bg-white lg:rounded-2xl lg:border lg:border-gray-100 lg:shadow-sm space-y-5">
               <div class="flex items-center justify-between border-b border-gray-50 pb-4">
-                <h3 class="text-sm font-black text-gray-900 tracking-widest">Your Packs</h3>
+                <h3 class="text-sm font-black text-gray-900 ">Your Packs</h3>
                 <ShoppingCart class="w-5 h-5 text-parentPrimary" />
               </div>
 
@@ -289,7 +289,7 @@
                   <!-- Pack Header -->
                   <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                      <span class="text-[11px] font-black bg-gray-900 text-white px-3 py-1 rounded-lg tracking-widest">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
+                      <span class="text-[11px] font-black bg-gray-900 text-white px-3 py-1 rounded-lg ">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
                     </div>
                     <div class="flex items-center gap-1">
                       <button @click="duplicatePack(vendor._id, pack)" class="p-1.5 text-gray-400 hover:text-parentPrimary transition-all" title="Duplicate pack">
@@ -308,12 +308,12 @@
                         <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
                       </div>
                       <div class="flex-1 min-w-0">
-                        <p class="text-xs md:text-sm font-black text-gray-900 truncate tracking-tight mb-0.5">{{ toTitleCase(item.name) }}</p>
-                        <p class="text-[10px] md:text-xs font-black text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
+                        <p class="text-sm md:text-sm font-black text-gray-900 truncate tracking-tight mb-0.5">{{ toTitleCase(item.name) }}</p>
+                        <p class="text-sm md:text-sm font-black text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
                       </div>
                       <div class="flex items-center gap-1.5 md:gap-2 bg-gray-50 rounded-xl p-1 md:p-1.5 border border-gray-100 shrink-0">
                         <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-6 h-6 md:w-7 md:h-7 rounded-lg bg-white text-gray-500 flex items-center justify-center hover:text-rose-500 transition-all text-sm font-bold shadow-sm">−</button>
-                        <span class="text-xs md:text-sm font-black min-w-[16px] md:min-w-[20px] text-center">{{ item.quantity }}</span>
+                        <span class="text-sm md:text-sm font-black min-w-[16px] md:min-w-[20px] text-center">{{ item.quantity }}</span>
                         <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-6 h-6 md:w-7 md:h-7 rounded-lg bg-white text-gray-500 flex items-center justify-center hover:text-parentPrimary transition-all text-sm font-bold shadow-sm">+</button>
                       </div>
                     </div>
@@ -322,31 +322,31 @@
 
                 <!-- Add New Pack -->
                 <div class="grid grid-cols-2 gap-3">
-                  <button @click="addNewPack(vendor._id)" class="py-3.5 border border-dashed border-gray-200 rounded-xl text-[10px] font-black text-gray-400 tracking-widest hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
+                  <button @click="addNewPack(vendor._id)" class="py-3.5 border border-dashed border-gray-200 rounded-xl text-sm font-black text-gray-400  hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
                     <Plus class="w-3.5 h-3.5" /> New Pack
                   </button>
                   <button 
                     v-if="showMobileCartDrawer"
                     @click="showMobileCartDrawer = false" 
-                    class="py-3.5 bg-gray-900 text-white rounded-xl text-[10px] font-black text-center tracking-widest uppercase hover:bg-parentPrimary transition-all"
+                    class="py-3.5 bg-gray-900 text-white rounded-xl text-sm font-black text-center  uppercase hover:bg-parentPrimary transition-all"
                   >
                     Keep Shopping
                   </button>
                 </div>
 
                 <div class="pt-6 pb-24 lg:pb-0 border-t border-gray-50 space-y-5">
-                  <div class="flex justify-between items-center text-xs font-black text-gray-400 tracking-[0.2em]">
+                  <div class="flex justify-between items-center text-sm font-black text-gray-400 tracking-[0.2em]">
                     <span>Subtotal</span>
                     <span class="text-xl font-black text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
                   </div>
-                  <NuxtLink :to="activeCode ? `/cart?group=${activeCode}` : '/cart'" class="block w-full py-5 bg-gray-900 text-white rounded-2xl text-center text-[10px] md:text-xs font-black tracking-[0.2em] hover:bg-parentPrimary transition-all shadow-xl shadow-gray-100 uppercase">
+                  <NuxtLink :to="activeCode ? `/cart?group=${activeCode}` : '/cart'" class="block w-full py-5 bg-gray-900 text-white rounded-2xl text-center text-sm md:text-sm font-black tracking-[0.2em] hover:bg-parentPrimary transition-all shadow-xl shadow-gray-100 uppercase">
                     {{ activeCode ? 'Finalize Order' : 'Checkout' }}
                   </NuxtLink>
                 </div>
               </div>
               <div v-else class="text-center py-6">
                 <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center mx-auto mb-3 text-lg">🛒</div>
-                <p class="text-[9px] font-bold text-gray-400 tracking-widest">Your cart is empty</p>
+                <p class="text-sm font-bold text-gray-400 ">Your cart is empty</p>
               </div>
             </div>
             </div>
@@ -366,34 +366,34 @@
           </button>
           <div class="absolute bottom-6 left-10">
             <h2 class="text-2xl font-black text-white tracking-tight">{{ toTitleCase(vendor.storeName) }}</h2>
-            <p class="text-[10px] font-bold text-white/70 mt-1 tracking-widest">{{ vendor.about || 'Store info available' }}</p>
+            <p class="text-sm font-bold text-white/70 mt-1 ">{{ vendor.about || 'Store info available' }}</p>
           </div>
         </div>
         <div class="p-10 space-y-8">
           <div class="space-y-4">
-            <h3 class="text-[9px] font-black text-gray-400 tracking-[0.2em] ">About the vendor</h3>
+            <h3 class="text-sm font-black text-gray-400 tracking-[0.2em] ">About the vendor</h3>
             <p class="text-[11px] text-gray-600 leading-relaxed font-bold">{{ vendor.description || 'No description available for this vendor.' }}</p>
           </div>
           <div class="grid grid-cols-2 gap-8">
             <div class="space-y-3">
-              <div class="flex items-center gap-2 text-[9px] font-black text-gray-400 tracking-[0.2em] ">
+              <div class="flex items-center gap-2 text-sm font-black text-gray-400 tracking-[0.2em] ">
                 <Clock class="w-3 h-3" /> Availability
               </div>
               <div class="space-y-1">
-                <p v-for="(hours, day) in vendor.availability" :key="day" class="text-[10px] font-bold text-gray-900">
+                <p v-for="(hours, day) in vendor.availability" :key="day" class="text-sm font-bold text-gray-900">
                   <span class="text-gray-400 w-16 inline-block tracking-tighter">{{ day }}:</span> {{ hours }}
                 </p>
-                <p v-if="!vendor.availability" class="text-[10px] font-bold text-gray-900">Available 24/7</p>
+                <p v-if="!vendor.availability" class="text-sm font-bold text-gray-900">Available 24/7</p>
               </div>
             </div>
             <div class="space-y-3">
-              <div class="flex items-center gap-2 text-[9px] font-black text-gray-400 tracking-[0.2em] ">
+              <div class="flex items-center gap-2 text-sm font-black text-gray-400 tracking-[0.2em] ">
                 <MapPin class="w-3 h-3" /> Location
               </div>
-              <p class="text-[10px] font-bold text-gray-900 leading-relaxed">{{ vendor.address || 'University Main campus' }}</p>
+              <p class="text-sm font-bold text-gray-900 leading-relaxed">{{ vendor.address || 'University Main campus' }}</p>
             </div>
           </div>
-          <button @click="showStoreInfo = false" class="w-full py-4 bg-gray-900 text-white rounded-2xl font-black text-[10px] tracking-widest hover:bg-parentPrimary transition-all shadow-xl">
+          <button @click="showStoreInfo = false" class="w-full py-4 bg-gray-900 text-white rounded-2xl font-black text-sm  hover:bg-parentPrimary transition-all shadow-xl">
             Got it
           </button>
         </div>
@@ -407,7 +407,7 @@
           <Users class="w-6 h-6" />
         </div>
         <h3 class="text-lg font-black text-gray-900 tracking-tight mb-1">Name your group</h3>
-        <p class="text-[10px] font-bold text-gray-400 mb-8 uppercase tracking-widest">e.g., "Sunday Brunch with the boys"</p>
+        <p class="text-sm font-bold text-gray-400 mb-8 uppercase ">e.g., "Sunday Brunch with the boys"</p>
         
         <div class="w-full space-y-4">
           <input 
@@ -421,14 +421,14 @@
           <div class="flex gap-2 pt-2">
             <button 
               @click="showGroupNamingModal = false" 
-              class="flex-1 py-3.5 bg-gray-50 text-gray-400 rounded-xl font-black text-[10px] tracking-widest hover:text-gray-900 transition-all font-sans"
+              class="flex-1 py-3.5 bg-gray-50 text-gray-400 rounded-xl font-black text-sm  hover:text-gray-900 transition-all font-sans"
             >
               Cancel
             </button>
             <button 
               @click="confirmStartGroupOrder" 
               :disabled="!groupName.trim() || groupLoading"
-              class="flex-1 py-3.5 bg-gray-900 text-white rounded-xl font-black text-[10px] tracking-widest hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50 font-sans"
+              class="flex-1 py-3.5 bg-gray-900 text-white rounded-xl font-black text-sm  hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50 font-sans"
             >
               <span v-if="groupLoading">Creating...</span>
               <span v-else>Let's Go!</span>
@@ -450,25 +450,25 @@
               <X class="w-5 h-5" />
             </button>
             <div class="absolute bottom-4 left-6">
-              <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[8px] font-black tracking-widest uppercase mb-2 inline-block shadow-sm">{{ selectedProduct.category }}</span>
+              <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[8px] font-black  uppercase mb-2 inline-block shadow-sm">{{ selectedProduct.category }}</span>
               <h2 class="text-xl md:text-2xl font-black text-white tracking-tight leading-tight">{{ selectedProduct.name }}</h2>
             </div>
           </div>
 
           <!-- Content -->
           <div class="p-6 md:p-8 space-y-6 pb-20 md:pb-8">
-            <p class="text-gray-500 font-bold text-xs md:text-sm leading-relaxed tracking-tight">
+            <p class="text-gray-500 font-bold text-sm md:text-sm leading-relaxed tracking-tight">
               {{ selectedProduct.description || 'Freshly prepared with premium ingredients. Perfect for any time of day on campus.' }}
             </p>
 
             <div class="flex items-center justify-between pt-2">
               <div>
-                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Price</p>
+                <p class="text-sm font-black text-gray-400 uppercase  mb-1">Total Price</p>
                 <p class="text-2xl font-black text-gray-900 tracking-tighter">₦{{ (selectedProduct.discountPrice || selectedProduct.price).toLocaleString() }}</p>
               </div>
               <button 
                 @click="addToCart(selectedProduct); selectedProduct = null"
-                class="bg-gray-900 text-white px-8 py-4 rounded-2xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all shadow-xl shadow-gray-200 active:scale-95"
+                class="bg-gray-900 text-white px-8 py-4 rounded-2xl text-sm font-black  hover:bg-parentPrimary transition-all shadow-xl shadow-gray-200 active:scale-95"
               >
                 ADD TO CHOP
               </button>
@@ -487,12 +487,12 @@
         class="w-full flex items-center justify-between bg-gray-900/95 backdrop-blur-md text-white rounded-2xl px-5 py-4 shadow-2xl active:scale-[0.98] transition-transform pointer-events-auto"
       >
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 bg-parentPrimary rounded-xl flex items-center justify-center text-white text-xs font-black">
+          <div class="w-8 h-8 bg-parentPrimary rounded-xl flex items-center justify-center text-white text-sm font-black">
             {{ cart.getVendorStats(vendor._id).itemCount }}
           </div>
           <div class="text-left">
-            <p class="text-xs font-black tracking-tight">{{ cart.getVendorStats(vendor._id).packs.length }} pack{{ cart.getVendorStats(vendor._id).packs.length > 1 ? 's' : '' }}</p>
-            <p class="text-[9px] font-bold text-gray-400 tracking-widest">Tap to review</p>
+            <p class="text-sm font-black tracking-tight">{{ cart.getVendorStats(vendor._id).packs.length }} pack{{ cart.getVendorStats(vendor._id).packs.length > 1 ? 's' : '' }}</p>
+            <p class="text-sm font-bold text-gray-400 ">Tap to review</p>
           </div>
         </div>
         <div class="text-right">

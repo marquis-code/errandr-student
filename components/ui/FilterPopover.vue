@@ -9,7 +9,7 @@
         active ? 'bg-parentPrimary/10 text-parentPrimary border-parentPrimary/20' : ''
       ]"
     >
-      <span class="text-xs font-bold">{{ label }}</span>
+      <span class="text-sm font-bold">{{ label }}</span>
       <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isOpen }" />
     </button>
 

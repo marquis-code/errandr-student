@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
       <div class="mb-12 text-center lg:text-left">
         <h2 class="text-2xl lg:text-4xl font-black text-gray-900 tracking-tighter mb-3">
-          Campus delivery, <span class="text-parentPrimary italic">redefined.</span>
+          Campus delivery, <span class="text-parentPrimary ">redefined.</span>
         </h2>
         <p class="text-gray-500 font-bold text-sm lg:text-base max-w-xl">
           From your favorite vendors straight to your hostel. No stress, just good vibes and great food.
@@ -47,7 +47,7 @@
                 <span class="text-xl lg:text-2xl">{{ card.icon }}</span>
               </div>
               <span 
-                class="text-white font-black text-sm lg:text-base tracking-widest uppercase"
+                class="text-white font-black text-sm lg:text-base  uppercase"
                 style="writing-mode: vertical-lr; text-orientation: mixed;"
               >
                 {{ card.label }}
@@ -64,9 +64,9 @@
               <span class="text-2xl lg:text-3xl">{{ card.icon }}</span>
             </div>
             <h3 class="text-2xl lg:text-3xl font-black text-white tracking-tight mb-2">{{ card.label }}</h3>
-            <p class="text-white/70 text-xs lg:text-sm font-bold leading-relaxed max-w-sm">{{ card.description }}</p>
+            <p class="text-white/70 text-sm lg:text-sm font-bold leading-relaxed max-w-sm">{{ card.description }}</p>
             <NuxtLink to="/vendors" class="mt-4 flex items-center gap-3">
-              <div class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 text-white text-[10px] font-black tracking-widest uppercase hover:bg-white/20 transition-colors">
+              <div class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 text-white text-sm font-black  uppercase hover:bg-white/20 transition-colors">
                 Chop Now →
               </div>
             </NuxtLink>

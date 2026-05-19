@@ -9,8 +9,8 @@
  </div>
  <div class="flex-1 min-w-0">
  <h1 class="text-xl font-black text-gray-900 leading-none truncate tracking-tighter">{{ fullName }}</h1>
- <p class="text-[10px] font-bold text-gray-400 mt-2 tracking-widest">{{ user?.email }}</p>
- <div v-if="user?.matricNumber" class="inline-flex items-center gap-2 mt-3 px-2 py-1 bg-gray-50 text-gray-500 rounded-lg border border-gray-100 text-[9px] font-black tracking-widest">
+ <p class="text-sm font-bold text-gray-400 mt-2 ">{{ user?.email }}</p>
+ <div v-if="user?.matricNumber" class="inline-flex items-center gap-2 mt-3 px-2 py-1 bg-gray-50 text-gray-500 rounded-lg border border-gray-100 text-sm font-black ">
  ID: {{ user?.matricNumber }}
  </div>
  </div>
@@ -20,7 +20,7 @@
  <!-- Navigation Menu -->
  <div class="space-y-4">
  <div class="flex items-center gap-4 px-2">
- <h3 class="text-[9px] font-black text-gray-400 tracking-[0.2em]">Account settings</h3>
+ <h3 class="text-sm font-black text-gray-400 tracking-[0.2em]">Account settings</h3>
  <div class="flex-1 h-px bg-gray-50" />
  </div>
 
@@ -31,8 +31,8 @@
  <ClipboardList class="w-5 h-5" />
  </div>
  <div class="flex-1 min-w-0">
- <span class="text-[11px] font-black text-gray-900 block truncate tracking-widest">My orders</span>
- <span class="text-[9px] text-gray-400 block mt-0.5 font-bold tracking-tighter">History</span>
+ <span class="text-[11px] font-black text-gray-900 block truncate ">My orders</span>
+ <span class="text-sm text-gray-400 block mt-0.5 font-bold tracking-tighter">History</span>
  </div>
  <ChevronRight class="w-3.5 h-3.5 text-gray-300 group-hover:translate-x-1 transition-transform" />
  </NuxtLink>
@@ -43,8 +43,8 @@
  <MapPin class="w-5 h-5" />
  </div>
  <div class="flex-1 min-w-0">
- <span class="text-[11px] font-black text-gray-900 block truncate tracking-widest">Addresses</span>
- <span class="text-[9px] text-gray-400 block mt-0.5 font-bold tracking-tighter">Locations</span>
+ <span class="text-[11px] font-black text-gray-900 block truncate ">Addresses</span>
+ <span class="text-sm text-gray-400 block mt-0.5 font-bold tracking-tighter">Locations</span>
  </div>
  <ChevronRight class="w-3.5 h-3.5 text-gray-300 group-hover:translate-x-1 transition-transform" />
  </NuxtLink>
@@ -55,8 +55,8 @@
  <CreditCard class="w-5 h-5" />
  </div>
  <div class="flex-1 min-w-0">
- <span class="text-[11px] font-black text-gray-900 block truncate tracking-widest">Payments</span>
- <span class="text-[9px] text-gray-400 block mt-0.5 font-bold tracking-tighter">Cards</span>
+ <span class="text-[11px] font-black text-gray-900 block truncate ">Payments</span>
+ <span class="text-sm text-gray-400 block mt-0.5 font-bold tracking-tighter">Cards</span>
  </div>
  <ChevronRight class="w-3.5 h-3.5 text-gray-300 group-hover:translate-x-1 transition-transform" />
  </NuxtLink>
@@ -67,8 +67,8 @@
  <Settings class="w-5 h-5" />
  </div>
  <div class="flex-1 min-w-0">
- <span class="text-[11px] font-black text-gray-900 block truncate tracking-widest">Security</span>
- <span class="text-[9px] text-gray-400 block mt-0.5 font-bold tracking-tighter">Password</span>
+ <span class="text-[11px] font-black text-gray-900 block truncate ">Security</span>
+ <span class="text-sm text-gray-400 block mt-0.5 font-bold tracking-tighter">Password</span>
  </div>
  <ChevronRight class="w-3.5 h-3.5 text-gray-300 group-hover:translate-x-1 transition-transform" />
  </NuxtLink>
@@ -78,16 +78,16 @@
  <!-- Help & Support Section -->
  <div class="space-y-4">
  <div class="flex items-center gap-4 px-2">
- <h3 class="text-[9px] font-black text-gray-400 tracking-[0.2em]">Support</h3>
+ <h3 class="text-sm font-black text-gray-400 tracking-[0.2em]">Support</h3>
  <div class="flex-1 h-px bg-gray-50" />
  </div>
  
  <div class="bg-gray-50/50 rounded-2xl p-2 space-y-1">
- <NuxtLink to="/support" class="w-full p-3 rounded-xl flex items-center justify-between hover:bg-white transition-all duration-300 text-[11px] font-bold text-gray-600 tracking-widest">
+ <NuxtLink to="/support" class="w-full p-3 rounded-xl flex items-center justify-between hover:bg-white transition-all duration-300 text-[11px] font-bold text-gray-600 ">
  <span>Get help</span>
  <ChevronRight class="w-3.5 h-3.5 text-gray-300" />
  </NuxtLink>
- <NuxtLink to="/terms" class="w-full p-3 rounded-xl flex items-center justify-between hover:bg-white transition-all duration-300 text-[11px] font-bold text-gray-600 tracking-widest">
+ <NuxtLink to="/terms" class="w-full p-3 rounded-xl flex items-center justify-between hover:bg-white transition-all duration-300 text-[11px] font-bold text-gray-600 ">
  <span>Terms</span>
  <ChevronRight class="w-3.5 h-3.5 text-gray-300" />
  </NuxtLink>
@@ -98,7 +98,7 @@
  <div class="pt-6">
  <button 
  @click="logOut()" 
- class="w-full py-4 bg-white text-rose-500 rounded-2xl text-[10px] font-black tracking-[0.2em] hover:bg-rose-50 transition-all border border-rose-50 active:scale-95 flex items-center justify-center gap-2"
+ class="w-full py-4 bg-white text-rose-500 rounded-2xl text-sm font-black tracking-[0.2em] hover:bg-rose-50 transition-all border border-rose-50 active:scale-95 flex items-center justify-center gap-2"
  >
  <span>Sign out</span>
  </button>

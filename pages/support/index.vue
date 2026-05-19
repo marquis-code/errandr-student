@@ -17,9 +17,9 @@
         </div>
         <div class="flex-1 min-w-0">
           <h3 class="font-medium text-dark-900 text-sm truncate">{{ report.title }}</h3>
-          <p class="text-xs text-dark-400">{{ report.vendor?.storeName }} • {{ timeAgo(report.createdAt) }}</p>
+          <p class="text-sm text-dark-400">{{ report.vendor?.storeName }} • {{ timeAgo(report.createdAt) }}</p>
         </div>
-        <span :class="statusBadge(report.status)" class="text-xs capitalize">{{ report.status }}</span>
+        <span :class="statusBadge(report.status)" class="text-sm capitalize">{{ report.status }}</span>
       </NuxtLink>
     </div>
 

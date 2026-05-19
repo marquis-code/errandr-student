@@ -44,17 +44,17 @@
                 >
                   <MenuItems class="fixed inset-x-4 md:absolute md:inset-x-auto md:right-0 mt-20 md:mt-4 w-auto md:w-80 origin-top-right divide-y divide-gray-50 rounded-3xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 focus:outline-none z-[75] overflow-hidden">
                     <div class="px-6 py-4 bg-gray-50/50">
-                      <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Notifications ({{ unreadCount }})</p>
+                      <p class="text-sm font-black text-gray-400 uppercase  leading-none">Notifications ({{ unreadCount }})</p>
                     </div>
                     <div class="p-4 flex flex-col items-center justify-center text-center space-y-3 py-10">
                       <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-gray-100">
                          <BellOff class="w-8 h-8 text-gray-200" />
                       </div>
-                      <p class="text-xs font-bold text-gray-900 leading-none">No new alerts</p>
-                      <p class="text-[10px] font-bold text-gray-400 max-w-[180px]">We'll let you know when your order status changes.</p>
+                      <p class="text-sm font-bold text-gray-900 leading-none">No new alerts</p>
+                      <p class="text-sm font-bold text-gray-400 max-w-[180px]">We'll let you know when your order status changes.</p>
                     </div>
                     <div class="p-2">
-                       <NuxtLink to="/notifications" class="w-full py-3 flex items-center justify-center text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors bg-gray-50/50 rounded-2xl">View All Notifications</NuxtLink>
+                       <NuxtLink to="/notifications" class="w-full py-3 flex items-center justify-center text-sm font-black text-gray-400 uppercase  hover:text-gray-900 transition-colors bg-gray-50/50 rounded-2xl">View All Notifications</NuxtLink>
                     </div>
                   </MenuItems>
                 </Transition>
@@ -63,7 +63,7 @@
               <!-- Profile Dropdown -->
               <Menu as="div" class="relative">
                 <MenuButton class="flex items-center gap-3 p-1 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-all p-1.5 focus:outline-none">
-                  <div class="w-9 h-9 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm border border-gray-800">
+                  <div class="w-9 h-9 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold text-sm uppercase shadow-sm border border-gray-800">
                     {{ user.firstName?.[0] || user.email?.[0] }}
                   </div>
                   <ChevronDown class="w-4 h-4 text-gray-400 mr-2" />
@@ -78,24 +78,24 @@
                 >
                   <MenuItems class="fixed inset-x-4 md:absolute md:inset-x-auto md:right-0 mt-20 md:mt-4 w-auto md:w-56 origin-top-right divide-y divide-gray-50 rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 focus:outline-none z-[75] overflow-hidden">
                     <div class="px-5 py-4">
-                      <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Signed in as</p>
-                      <p class="text-xs font-black text-gray-900 truncate tracking-tight">{{ user.firstName }} {{ user.lastName }}</p>
+                      <p class="text-sm font-black text-gray-400 uppercase  leading-none mb-1">Signed in as</p>
+                      <p class="text-sm font-black text-gray-900 truncate tracking-tight">{{ user.firstName }} {{ user.lastName }}</p>
                     </div>
                     <div class="p-2">
                       <MenuItem v-slot="{ active }">
-                        <NuxtLink to="/dashboard" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-600', 'flex w-full items-center rounded-xl px-3 py-3 text-xs font-bold transition-colors']">
+                        <NuxtLink to="/dashboard" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-600', 'flex w-full items-center rounded-xl px-3 py-3 text-sm font-bold transition-colors']">
                           <Home class="w-4 h-4 mr-3" /> Dashboard
                         </NuxtLink>
                       </MenuItem>
                       <MenuItem v-slot="{ active }">
-                        <NuxtLink to="/dashboard/profile" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-600', 'flex w-full items-center rounded-xl px-3 py-3 text-xs font-bold transition-colors']">
+                        <NuxtLink to="/dashboard/profile" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-600', 'flex w-full items-center rounded-xl px-3 py-3 text-sm font-bold transition-colors']">
                           <User class="w-4 h-4 mr-3" /> My Profile
                         </NuxtLink>
                       </MenuItem>
                     </div>
                     <div class="p-2">
                       <MenuItem v-slot="{ active }">
-                        <button @click="handleLogout" :class="[active ? 'bg-rose-50 text-rose-500' : 'text-rose-500', 'flex w-full items-center rounded-xl px-3 py-3 text-xs font-bold transition-colors uppercase tracking-widest']">
+                        <button @click="handleLogout" :class="[active ? 'bg-rose-50 text-rose-500' : 'text-rose-500', 'flex w-full items-center rounded-xl px-3 py-3 text-sm font-bold transition-colors uppercase ']">
                           <LogOut class="w-4 h-4 mr-3" /> Log out
                         </button>
                       </MenuItem>
@@ -107,10 +107,10 @@
 
             <!-- Visitor state -->
             <template v-else>
-              <NuxtLink to="/auth/login" class="px-6 py-3 text-[11px] font-black text-gray-900 tracking-widest uppercase hover:text-parentPrimary transition-colors">
+              <NuxtLink to="/auth/login" class="px-6 py-3 text-[11px] font-black text-gray-900  uppercase hover:text-parentPrimary transition-colors">
                 Log in
               </NuxtLink>
-              <NuxtLink to="/auth/register" class="hidden md:flex px-8 py-3.5 bg-gray-900 text-white text-[11px] font-black tracking-widest uppercase rounded-2xl shadow-2xl shadow-black/10 hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all">
+              <NuxtLink to="/auth/register" class="hidden md:flex px-8 py-3.5 bg-gray-900 text-white text-[11px] font-black  uppercase rounded-2xl shadow-2xl shadow-black/10 hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all">
                 Join Now
               </NuxtLink>
             </template>
@@ -146,10 +146,10 @@
         </div>
         
         <div class="space-y-6">
-          <NuxtLink v-if="!user" to="/auth/register" class="block w-full py-5 bg-gray-900 text-white text-center text-sm font-black tracking-widest uppercase rounded-[1.5rem] shadow-xl">
+          <NuxtLink v-if="!user" to="/auth/register" class="block w-full py-5 bg-gray-900 text-white text-center text-sm font-black  uppercase rounded-[1.5rem] shadow-xl">
             Join Now
           </NuxtLink>
-          <button v-else @click="handleLogout" class="block w-full py-5 bg-rose-50 text-rose-500 text-center text-sm font-black tracking-widest uppercase rounded-[1.5rem] border border-rose-100">
+          <button v-else @click="handleLogout" class="block w-full py-5 bg-rose-50 text-rose-500 text-center text-sm font-black  uppercase rounded-[1.5rem] border border-rose-100">
             Log out
           </button>
           <div class="flex gap-4">
@@ -191,7 +191,7 @@
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
         <div class="max-w-3xl mx-auto space-y-6">
           <!-- Badge -->
-          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-[10px] font-black tracking-[0.2em] uppercase animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
+          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-black tracking-[0.2em] uppercase animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
             <Zap class="w-3.5 h-3.5 fill-current" /> Campus Delivery, Redefined
           </NuxtLink>
           
@@ -205,7 +205,7 @@
                 <div class="max-w-max mx-auto text-center" v-html="heroHeadings[currentHeadingIndex].text"></div>
                 <!-- <div class="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500">
                   <span class="w-1.5 h-1.5 rounded-full bg-parentPrimary animate-pulse"></span>
-                  <span class="text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase text-gray-400">
+                  <span class="text-sm md:text-sm font-black tracking-[0.2em] uppercase text-gray-400">
                     {{ heroHeadings[currentHeadingIndex].lang }}
                   </span>
                 </div> -->
@@ -236,11 +236,11 @@
                 @focus="showSuggestions = true"
                 @blur="handleSearchBlur"
                 placeholder="What are you craving?" 
-                class="flex-1 bg-transparent border-none outline-none text-xs md:text-sm font-bold text-gray-900 placeholder:text-gray-300 px-1 md:px-2 min-w-0"
+                class="flex-1 bg-transparent border-none outline-none text-sm md:text-sm font-bold text-gray-900 placeholder:text-gray-300 px-1 md:px-2 min-w-0"
               />
               <button 
                 @click="handleHeroSearch"
-                class="px-4 md:px-8 py-3 md:py-4 bg-gray-900 text-white rounded-[2rem] text-[9px] md:text-[10px] font-black tracking-widest uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl whitespace-nowrap flex-shrink-0 flex items-center gap-2"
+                class="px-4 md:px-8 py-3 md:py-4 bg-gray-900 text-white rounded-[2rem] text-sm md:text-sm font-black  uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl whitespace-nowrap flex-shrink-0 flex items-center gap-2"
               >
                  <span>Find Food</span>
                  <ArrowRight class="w-3 md:w-4 h-3 md:h-4" />
@@ -253,7 +253,7 @@
                   class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-100 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] overflow-hidden z-[75] p-2"
                 >
                   <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
-                    <span class="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase">
+                    <span class="text-sm font-black text-gray-400 tracking-[0.2em] uppercase">
                       {{ heroSearchQuery ? 'Matching Meals' : `Suggested for ${suggestionTimeText}` }}
                     </span>
                     <div v-if="isSearching" class="w-4 h-4 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
@@ -275,10 +275,10 @@
                       </div>
                       <div class="flex-1 text-left">
                         <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+                        <p class="text-sm font-bold text-gray-400 uppercase ">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
                       </div>
                       <div class="text-right">
-                        <span class="text-xs font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+                        <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
                       </div>
                     </div>
 
@@ -288,7 +288,7 @@
                         <span class="text-3xl">🍽️</span>
                       </div>
                       <p class="text-sm font-black text-gray-900 mb-1">No meals match "{{ heroSearchQuery }}"</p>
-                      <p class="text-[10px] font-bold text-gray-400 mb-4 max-w-xs mx-auto">Check out these popular picks for {{ suggestionTimeText.toLowerCase() }}!</p>
+                      <p class="text-sm font-bold text-gray-400 mb-4 max-w-xs mx-auto">Check out these popular picks for {{ suggestionTimeText.toLowerCase() }}!</p>
                       
                       <div v-if="timeOfDaySuggestions.length > 0" class="space-y-2 text-left">
                         <div 
@@ -303,9 +303,9 @@
                           </div>
                           <div class="flex-1 min-w-0">
                              <h4 class="text-[11px] font-black text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                             <p class="text-[9px] font-bold text-gray-400 uppercase tracking-tight">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+                             <p class="text-sm font-bold text-gray-400 uppercase tracking-tight">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
                           </div>
-                          <span class="text-[10px] font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+                          <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
                         </div>
                       </div>
                     </div>
@@ -326,10 +326,10 @@
                         </div>
                         <div class="flex-1 text-left">
                           <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+                          <p class="text-sm font-bold text-gray-400 uppercase ">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
                         </div>
                         <div class="text-right">
-                          <span class="text-xs font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+                          <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
                         </div>
                       </div>
                     </div>
@@ -340,9 +340,9 @@
 
           <!-- Quick Tags -->
           <!-- <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
-             <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest mr-1">E choke:</span>
+             <span class="text-sm font-black text-gray-300 uppercase  mr-1">E choke:</span>
              <button v-for="tag in quickTags.slice(0,4)" :key="tag.label" 
-              class="px-4 py-2 bg-gray-50 hover:bg-white border border-gray-100 hover:border-parentPrimary/30 rounded-xl text-[9px] font-black text-gray-600 hover:text-parentPrimary transition-all shadow-sm hover:shadow-md"
+              class="px-4 py-2 bg-gray-50 hover:bg-white border border-gray-100 hover:border-parentPrimary/30 rounded-xl text-sm font-black text-gray-600 hover:text-parentPrimary transition-all shadow-sm hover:shadow-md"
              >
                {{ tag.label }}
              </button>
@@ -369,11 +369,11 @@
           <SpinWheel class="w-full max-w-md" />
         </div>
         <div class="order-1 lg:order-2 space-y-8 text-center lg:text-left">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-xs font-black uppercase tracking-widest mx-auto lg:mx-0">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-sm font-black uppercase  mx-auto lg:mx-0">
             <Sparkles class="w-4 h-4" /> Daily Luck
           </div>
           <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none">
-            Spin once. <br /><span class="text-parentPrimary italic">Win every day.</span>
+            Spin once. <br /><span class="text-parentPrimary ">Win every day.</span>
           </h2>
           <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight max-w-md mx-auto lg:mx-0">
             Try your luck on the Errandr Wheel of Fortune! Win delivery discounts, free meals, and exclusive campus vouchers. Reset every 24 hours.
@@ -381,12 +381,12 @@
           <div class="flex items-center justify-center lg:justify-start gap-8 pt-4">
             <div class="flex flex-col">
               <span class="text-3xl font-black text-gray-900">100%</span>
-              <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Free to play</span>
+              <span class="text-sm font-black text-gray-400 uppercase ">Free to play</span>
             </div>
             <div class="w-px h-12 bg-gray-200"></div>
             <div class="flex flex-col">
               <span class="text-3xl font-black text-gray-900">24h</span>
-              <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Reset cycle</span>
+              <span class="text-sm font-black text-gray-400 uppercase ">Reset cycle</span>
             </div>
           </div>
         </div>
@@ -418,21 +418,21 @@
  <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
  
  <div class="absolute top-4 left-4">
- <span class="px-3 py-1 bg-rose-500 text-white rounded-full text-[10px] font-black tracking-widest shadow-sm">
+ <span class="px-3 py-1 bg-rose-500 text-white rounded-full text-sm font-black  shadow-sm">
  PROMO
  </span>
  </div>
 
  <div class="absolute bottom-4 left-4 right-4">
  <h3 class="text-xl font-bold text-white tracking-tight leading-tight mb-1 truncate">{{ promo.title }}</h3>
- <p class="text-xs text-white/80 line-clamp-1 font-medium">{{ promo.description }}</p>
+ <p class="text-sm text-white/80 line-clamp-1 font-medium">{{ promo.description }}</p>
  </div>
  </div>
  <div class="p-5 flex items-center justify-between bg-white">
- <span class="text-xs font-bold text-gray-900 flex items-center gap-2">
+ <span class="text-sm font-bold text-gray-900 flex items-center gap-2">
  <Store class="w-3.5 h-3.5 text-gray-400" /> {{ promo.vendorName }}
  </span>
- <span class="text-[10px] font-black text-rose-500 tracking-widest uppercase bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-md">Claim Offer &rarr;</span>
+ <span class="text-sm font-black text-rose-500  uppercase bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-md">Claim Offer &rarr;</span>
  </div>
  </div>
  </div>
@@ -492,7 +492,7 @@
   <!-- Closed Overlay -->
   <div v-if="!vendor.isOpen" class="absolute inset-0 z-20 bg-gray-900/60 backdrop-blur-[2px] flex items-center justify-center">
   <div class="px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-  <span class="text-white text-[10px] font-black tracking-[0.2em] uppercase">Closed Now</span>
+  <span class="text-white text-sm font-black tracking-[0.2em] uppercase">Closed Now</span>
   </div>
   </div>
   
@@ -507,10 +507,10 @@
   </div>
 
                 <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 overflow-hidden">
-                  <span class="px-3 py-1.5 bg-gray-900/10 backdrop-blur-xl rounded-xl text-gray-900 text-[9px] font-black border border-gray-900/10 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary">
+                  <span class="px-3 py-1.5 bg-gray-900/10 backdrop-blur-xl rounded-xl text-gray-900 text-sm font-black border border-gray-900/10 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary">
                     {{ vendor.category }}
                   </span>
-                  <span v-if="vendor.rating" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md rounded-xl px-2.5 py-1.5 text-[10px] font-black text-gray-900 shadow-xl border border-gray-50 group-hover:scale-105 transition-transform duration-500">
+                  <span v-if="vendor.rating" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md rounded-xl px-2.5 py-1.5 text-sm font-black text-gray-900 shadow-xl border border-gray-50 group-hover:scale-105 transition-transform duration-500">
                     <Star class="w-3 h-3 text-parentPrimary fill-current" /> {{ vendor.rating.toFixed(1) }}
                   </span>
                 </div>
@@ -521,17 +521,17 @@
                     <h3 class="text-xl font-black text-gray-900 group-hover:text-parentPrimary transition-colors tracking-tight truncate">{{ vendor.storeName }}</h3>
                     <div v-if="vendor.isOpen" class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100/50">
                       <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span class="text-[9px] font-black tracking-widest uppercase">open</span>
+                      <span class="text-sm font-black  uppercase">open</span>
                     </div>
                     <div v-else class="flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 text-gray-400 rounded-lg border border-gray-100">
                       <div class="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                      <span class="text-[9px] font-black tracking-widest uppercase">{{ vendor.statusMessage || 'closed' }}</span>
+                      <span class="text-sm font-black  uppercase">{{ vendor.statusMessage || 'closed' }}</span>
                     </div>
                   </div>
                   <p class="text-[13px] text-gray-500 line-clamp-2 mb-6 leading-relaxed font-medium group-hover:text-gray-600 transition-colors">{{ vendor.description }}</p>
                 </div>
                 <div class="flex items-center justify-between pt-5 border-t border-gray-50/80">
-                  <div class="flex items-center gap-4 text-[10px] font-black text-gray-400 tracking-tight">
+                  <div class="flex items-center gap-4 text-sm font-black text-gray-400 tracking-tight">
                     <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors"><Clock class="w-3.5 h-3.5" /> {{ vendor.preparationTime || 20 }} min</span>
                     <span class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors"><Bike class="w-3.5 h-3.5" /> From ₦{{ vendor.baseDeliveryFee || 600 }}</span>
                   </div>
@@ -560,7 +560,7 @@
  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
  <div class="space-y-5 lg:space-y-6">
- <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold">
+ <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-bold">
  Request Any Errand
  </div>
  <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight leading-none">
@@ -572,11 +572,11 @@
  <div class="flex flex-wrap gap-4">
  <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
  <div class="w-2 h-2 rounded-full bg-parentPrimary"></div>
- <span class="text-xs font-bold text-gray-400">Hostel Pickups</span>
+ <span class="text-sm font-bold text-gray-400">Hostel Pickups</span>
  </div>
  <div class="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
  <div class="w-2 h-2 rounded-full bg-parentPrimary"></div>
- <span class="text-xs font-bold text-gray-400">Library Drops</span>
+ <span class="text-sm font-bold text-gray-400">Library Drops</span>
  </div>
  </div>
  <div class="pt-2">
@@ -589,9 +589,9 @@
  <div class="absolute -bottom-6 -left-6 bg-white p-4 lg:p-5 rounded-2xl shadow-xl border border-gray-50 max-w-[220px] z-20 animate-float">
  <div class="flex items-center gap-4 mb-4">
  <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">✓</div>
- <p class="text-xs font-bold text-gray-900">Errandr on the way</p>
+ <p class="text-sm font-bold text-gray-900">Errandr on the way</p>
  </div>
- <p class="text-[10px] font-bold text-gray-400 leading-relaxed ">Assigned to: Ade (Student Errandr)</p>
+ <p class="text-sm font-bold text-gray-400 leading-relaxed ">Assigned to: Ade (Student Errandr)</p>
  </div>
  </div>
  </div>
@@ -609,8 +609,8 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
       <div class="flex flex-col lg:flex-row justify-between items-end mb-16 gap-6">
         <div class="space-y-4 max-w-2xl">
-          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-parentPrimary">How It Works</p>
-          <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter leading-tight italic">
+          <p class="text-sm font-black tracking-[0.2em] uppercase text-parentPrimary">How It Works</p>
+          <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter leading-tight ">
             Getting your <span class="text-parentPrimary">chop</span> with Errandr is simple and sharp-sharp.
           </h2>
         </div>
@@ -626,7 +626,7 @@
         ]" :key="i" class="p-8 pb-32 rounded-[2.5rem] relative overflow-hidden group hover:-translate-y-2 transition-all duration-500" :class="step.bg">
           <div class="relative z-10 space-y-4">
             <h3 class="text-xl font-black text-gray-900 tracking-tight">{{ step.title }}</h3>
-            <p class="text-xs text-gray-500 font-bold leading-relaxed">{{ step.desc }}</p>
+            <p class="text-sm text-gray-500 font-bold leading-relaxed">{{ step.desc }}</p>
           </div>
           <div class="absolute bottom-6 right-6 text-6xl opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
             {{ step.icon }}
@@ -641,9 +641,9 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
       <div class="space-y-8">
         <div class="space-y-4">
-          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-parentPrimary">Why Choose Us</p>
-          <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-[0.9] italic">
-            Built on <span class="text-parentPrimary italic">trust,</span> <br/> speed, and vibes.
+          <p class="text-sm font-black tracking-[0.2em] uppercase text-parentPrimary">Why Choose Us</p>
+          <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-[0.9] ">
+            Built on <span class="text-parentPrimary ">trust,</span> <br/> speed, and vibes.
           </h2>
         </div>
         <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight max-w-md">
@@ -668,7 +668,7 @@
           </div>
           <div class="space-y-2">
             <h4 class="text-lg font-black text-gray-900 tracking-tight">{{ feat.title }}</h4>
-            <p class="text-xs text-gray-500 font-bold leading-relaxed">{{ feat.desc }}</p>
+            <p class="text-sm text-gray-500 font-bold leading-relaxed">{{ feat.desc }}</p>
           </div>
         </div>
       </div>
@@ -687,16 +687,16 @@
     <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]"></div>
     
   <div class="max-w-4xl mx-auto px-6 lg:px-10 relative z-10">
-  <h2 class="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 italic">
+  <h2 class="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 ">
   Enough bants. <br /><span class="text-parentPrimary">Let's get you fed.</span>
   </h2>
   <p class="text-lg text-gray-400 font-medium mb-8 leading-relaxed max-w-2xl mx-auto">
   Join thousands of students who trust Errandr for their daily meals and hostel runs. Zero stress, 100% vibes.
   </p>
-  <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-10 py-5 bg-parentPrimary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-[0_20px_50px_rgba(240,165,0,0.3)] hover:scale-105 active:scale-95 transition-all">
+  <NuxtLink to="/auth/register" class="inline-flex items-center justify-center px-10 py-5 bg-parentPrimary text-white rounded-2xl font-black text-sm uppercase  shadow-[0_20px_50px_rgba(240,165,0,0.3)] hover:scale-105 active:scale-95 transition-all">
     Join Errandr now
   </NuxtLink>
-  <p class="mt-8 text-xs font-black text-gray-500 uppercase tracking-widest">Already have an account? <NuxtLink to="/auth/login" class="text-white hover:text-parentPrimary transition-colors underline underline-offset-8">Login here</NuxtLink></p>
+  <p class="mt-8 text-sm font-black text-gray-500 uppercase ">Already have an account? <NuxtLink to="/auth/login" class="text-white hover:text-parentPrimary transition-colors underline underline-offset-8">Login here</NuxtLink></p>
   </div>
   </section>
 
@@ -726,7 +726,7 @@
  </div>
  
  <div>
- <h4 class="font-bold text-gray-900 mb-6 tracking-wider text-xs">Platform</h4>
+ <h4 class="font-bold text-gray-900 mb-6 r text-sm">Platform</h4>
  <ul class="space-y-4 text-sm font-medium text-gray-500">
  <li><NuxtLink to="/about" class="hover:text-parentPrimary transition-colors">About Us</NuxtLink></li>
  <li><NuxtLink to="/contact" class="hover:text-parentPrimary transition-colors">Contact Support</NuxtLink></li>
@@ -735,7 +735,7 @@
  </div>
 
  <div>
- <h4 class="font-bold text-gray-900 mb-6 tracking-wider text-xs">Legal</h4>
+ <h4 class="font-bold text-gray-900 mb-6 r text-sm">Legal</h4>
  <ul class="space-y-4 text-sm font-medium text-gray-500">
  <li><NuxtLink to="/terms" class="hover:text-parentPrimary transition-colors">Terms of Service</NuxtLink></li>
  <li><NuxtLink to="/terms" class="hover:text-parentPrimary transition-colors">Privacy Policy</NuxtLink></li>
@@ -743,10 +743,10 @@
  </div>
  
  <div>
- <h4 class="font-bold text-gray-900 mb-6 tracking-wider text-xs">Join Us</h4>
+ <h4 class="font-bold text-gray-900 mb-6 r text-sm">Join Us</h4>
  <ul class="space-y-4 text-sm font-medium text-gray-500">
- <li><a href="http://vendor.errandr.shop" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Store class="w-4 h-4" /> List Your Business (Free)</a></li>
- <li><a href="http://dispatch.errandr.shop" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Bike class="w-4 h-4" /> Become an Errandr</a></li>
+ <li><a href="http://vendor.erranders.org" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Store class="w-4 h-4" /> List Your Business (Free)</a></li>
+ <li><a href="http://dispatch.erranders.org" class="hover:text-parentPrimary transition-colors flex items-center gap-2"><Bike class="w-4 h-4" /> Become an Errandr</a></li>
  </ul>
  </div>
  </div>
@@ -930,18 +930,18 @@ const currentSlangIndex = ref(0)
 const currentHeadingIndex = ref(0)
 
 const heroHeadings = [
-  { text: '<span class="text-parentPrimary italic">Sapa</span> dey finish.<br/>Have you eaten?', lang: '🇳🇬 Pidgin' },
-  { text: 'Ebi ń pa mí.<br/><span class="text-parentPrimary italic">Jẹun</span> ti tó!', lang: '🟢 Yoruba' },
-  { text: '<span class="text-parentPrimary italic">Agụụ</span> na-agụ m.<br/>Kedu ihe ị ga-eri?', lang: '🔴 Igbo' },
-  { text: 'Yunwa ta kashe ni.<br/><span class="text-parentPrimary italic">Abinci</span> ya zo!', lang: '🟡 Hausa' },
-  { text: 'Don\'t <span class="text-parentPrimary italic">do over!</span><br/>Order sharp sharp.', lang: '🇳🇬 Pidgin' },
-  { text: 'Oúnjẹ campus...<br/><span class="text-parentPrimary italic">zero stress</span> delivery.', lang: '🇳🇬 Pidgin' },
-  { text: 'Body go tell you<br/>if you <span class="text-parentPrimary italic">no chop.</span>', lang: '🇳🇬 Pidgin' },
-  { text: 'Who no chop,<br/><span class="text-parentPrimary italic">no fit read.</span>', lang: '🇳🇬 Pidgin' },
-  { text: 'Ẹ̀wà mà jẹ́ <br/>kó <span class="text-parentPrimary italic">dùn.</span> Chop now!', lang: '🟢 Yoruba' },
-  { text: 'Nwanne, <span class="text-parentPrimary italic">agụụ</span> <br/>adịghị mma.', lang: '🔴 Igbo' },
-  { text: 'Ciwon <span class="text-parentPrimary italic">ciki</span> <br/>ba wasa bane.', lang: '🟡 Hausa' },
-  { text: 'Food is ready.<br/><span class="text-parentPrimary italic">Level up</span> your day!', lang: '🇳🇬 Pidgin' },
+  { text: '<span class="text-parentPrimary ">Sapa</span> dey finish.<br/>Have you eaten?', lang: '🇳🇬 Pidgin' },
+  { text: 'Ebi ń pa mí.<br/><span class="text-parentPrimary ">Jẹun</span> ti tó!', lang: '🟢 Yoruba' },
+  { text: '<span class="text-parentPrimary ">Agụụ</span> na-agụ m.<br/>Kedu ihe ị ga-eri?', lang: '🔴 Igbo' },
+  { text: 'Yunwa ta kashe ni.<br/><span class="text-parentPrimary ">Abinci</span> ya zo!', lang: '🟡 Hausa' },
+  { text: 'Don\'t <span class="text-parentPrimary ">do over!</span><br/>Order sharp sharp.', lang: '🇳🇬 Pidgin' },
+  { text: 'Oúnjẹ campus...<br/><span class="text-parentPrimary ">zero stress</span> delivery.', lang: '🇳🇬 Pidgin' },
+  { text: 'Body go tell you<br/>if you <span class="text-parentPrimary ">no chop.</span>', lang: '🇳🇬 Pidgin' },
+  { text: 'Who no chop,<br/><span class="text-parentPrimary ">no fit read.</span>', lang: '🇳🇬 Pidgin' },
+  { text: 'Ẹ̀wà mà jẹ́ <br/>kó <span class="text-parentPrimary ">dùn.</span> Chop now!', lang: '🟢 Yoruba' },
+  { text: 'Nwanne, <span class="text-parentPrimary ">agụụ</span> <br/>adịghị mma.', lang: '🔴 Igbo' },
+  { text: 'Ciwon <span class="text-parentPrimary ">ciki</span> <br/>ba wasa bane.', lang: '🟡 Hausa' },
+  { text: 'Food is ready.<br/><span class="text-parentPrimary ">Level up</span> your day!', lang: '🇳🇬 Pidgin' },
 ]
 
 const slangSlogans = [

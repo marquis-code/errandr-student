@@ -5,13 +5,13 @@
       <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
       <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 text-center md:text-left">
         <div class="space-y-3">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white text-[9px] font-bold tracking-widest mx-auto md:mx-0 uppercase">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white text-sm font-bold  mx-auto md:mx-0 uppercase">
             Order ID: {{ order._id?.slice(-8).toUpperCase() }}
           </div>
           <h1 class="text-2xl md:text-3xl font-black text-white tracking-tighter leading-tight uppercase">
             Order <span class="text-parentPrimary">{{ order.status?.replace(/_/g, ' ') }}</span>
           </h1>
-          <p class="text-white/60 text-xs md:text-sm font-medium leading-relaxed max-w-sm mx-auto md:mx-0">We're making sure your delivery arrives safely and on time.</p>
+          <p class="text-white/60 text-sm md:text-sm font-medium leading-relaxed max-w-sm mx-auto md:mx-0">We're making sure your delivery arrives safely and on time.</p>
         </div>
         
         <div class="flex items-center justify-center gap-4 bg-white/5 backdrop-blur-xl p-4 md:p-6 rounded-2xl border border-white/10 group-hover:scale-105 transition-all duration-500 max-w-xs mx-auto md:mx-0">
@@ -19,7 +19,7 @@
             <Clock class="w-6 h-6 md:w-7 md:h-7" />
           </div>
           <div class="text-left">
-            <p class="text-[8px] font-bold text-white/50 tracking-widest mb-0.5">Estimated Time</p>
+            <p class="text-[8px] font-bold text-white/50  mb-0.5">Estimated Time</p>
             <p class="text-lg md:text-xl font-bold text-white tracking-tight leading-none">12-15 Mins</p>
           </div>
         </div>
@@ -31,13 +31,13 @@
       <!-- Verification -->
       <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100  relative overflow-hidden group translate-y-0 hover:-translate-y-1 transition-all duration-300">
         <div class="absolute -right-5 -top-5 w-24 h-24 bg-gray-50 rounded-full blur-2xl group-hover:bg-parentPrimary/10 transition-colors" />
-        <h4 class="text-[10px] font-bold text-gray-400 tracking-widest mb-4 uppercase">Verification Code</h4>
+        <h4 class="text-sm font-bold text-gray-400  mb-4 uppercase">Verification Code</h4>
         <div class="flex flex-wrap items-center gap-2 justify-center lg:justify-start">
           <div v-for="(digit, idx) in (order.uniqueCode || '').split('')" :key="idx" class="w-10 h-10 md:w-12 md:h-12 bg-gray-50 rounded-xl flex items-center justify-center text-xl md:text-2xl font-bold text-gray-900 border border-gray-100 group-hover:bg-white group-hover:border-parentPrimary/30 transition-all ">
             {{ digit }}
           </div>
         </div>
-        <p class="text-[10px] font-bold text-gray-400 mt-4 leading-relaxed text-center lg:text-left">Show this code to your Errandr to confirm delivery.</p>
+        <p class="text-sm font-bold text-gray-400 mt-4 leading-relaxed text-center lg:text-left">Show this code to your Errandr to confirm delivery.</p>
       </div>
 
       <!-- Delivery Errandr -->
@@ -46,13 +46,13 @@
           {{ order.errander.firstName?.[0] }}{{ order.errander.lastName?.[0] }}
         </div>
         <div class="space-y-1 mb-6">
-          <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Your Errandr</p>
+          <p class="text-sm font-bold text-gray-400  uppercase">Your Errandr</p>
           <h3 class="font-bold text-gray-900 text-xl tracking-tight leading-tight">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
-          <p class="text-[10px] text-parentPrimary font-bold tracking-widest mt-1 bg-parentPrimary/5 px-3 py-1.5 rounded-full inline-block">{{ order.errander.phone }}</p>
+          <p class="text-sm text-parentPrimary font-bold  mt-1 bg-parentPrimary/5 px-3 py-1.5 rounded-full inline-block">{{ order.errander.phone }}</p>
         </div>
         <div class="flex gap-2 w-full">
-          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-[10px] font-bold tracking-widest hover:bg-parentPrimary transition-all  active:scale-95 text-center uppercase">Call</a>
-          <NuxtLink :to="`/chat/${order._id}`" class="flex-1 py-3 bg-white border border-gray-100 text-gray-900 rounded-xl text-[10px] font-bold tracking-widest hover:bg-gray-50 transition-all active:scale-95 text-center uppercase">Chat</NuxtLink>
+          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold  hover:bg-parentPrimary transition-all  active:scale-95 text-center uppercase">Call</a>
+          <NuxtLink :to="`/chat/${order._id}`" class="flex-1 py-3 bg-white border border-gray-100 text-gray-900 rounded-xl text-sm font-bold  hover:bg-gray-50 transition-all active:scale-95 text-center uppercase">Chat</NuxtLink>
         </div>
       </div>
 
@@ -66,13 +66,13 @@
             <MapPin class="w-4 h-4 text-white" />
           </div>
           <div>
-            <p class="text-[9px] font-bold tracking-widest mb-1 text-white/70 uppercase">Delivering to</p>
+            <p class="text-sm font-bold  mb-1 text-white/70 uppercase">Delivering to</p>
             <h3 class="text-lg md:text-xl font-bold tracking-tight leading-tight line-clamp-2">{{ order.deliveryAddress || 'Campus Residency' }}</h3>
           </div>
           <div class="pt-4 border-t border-white/10">
             <div class="flex items-center gap-2">
               <div class="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-              <span class="text-[10px] font-bold tracking-widest uppercase">Tracking Live</span>
+              <span class="text-sm font-bold  uppercase">Tracking Live</span>
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="flex flex-col items-center gap-3 text-center p-4 md:p-6 bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 ">
             <Navigation class="w-6 h-6 md:w-8 md:h-8 text-parentPrimary animate-bounce" />
-            <p class="text-[10px] md:text-xs font-bold text-gray-900 tracking-widest uppercase">Map tracking active</p>
+            <p class="text-sm md:text-sm font-bold text-gray-900  uppercase">Map tracking active</p>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@
         <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-50 transition-opacity duration-1000" />
         
         <div class="relative z-10 text-center mb-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-parentPrimary text-[10px] font-black uppercase tracking-widest mb-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-parentPrimary text-sm font-black uppercase  mb-4">
             <Sparkles class="w-3.5 h-3.5" /> earn 20 points
           </div>
           <h2 class="text-3xl md:text-4xl font-black tracking-tighter mb-2">How was your Errand?</h2>
@@ -111,7 +111,7 @@
             <div class="text-center">
               <Utensils class="w-8 h-8 text-parentPrimary mx-auto mb-3" />
               <h4 class="font-black text-lg tracking-tight uppercase">The Meal</h4>
-              <p class="text-[10px] font-bold text-white/40 uppercase tracking-widest">Rate the Vendor</p>
+              <p class="text-sm font-bold text-white/40 uppercase ">Rate the Vendor</p>
             </div>
             
             <div class="flex justify-center gap-2">
@@ -120,7 +120,7 @@
               </button>
             </div>
             
-            <textarea v-model="ratingForm.vendorReview" placeholder="Any feedback on the food?" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-xs font-medium focus:ring-2 focus:ring-parentPrimary outline-none min-h-[100px] transition-all" />
+            <textarea v-model="ratingForm.vendorReview" placeholder="Any feedback on the food?" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-parentPrimary outline-none min-h-[100px] transition-all" />
           </div>
 
           <!-- Errander Rating -->
@@ -128,7 +128,7 @@
             <div class="text-center">
               <Bike class="w-8 h-8 text-parentPrimary mx-auto mb-3" />
               <h4 class="font-black text-lg tracking-tight uppercase">The Delivery</h4>
-              <p class="text-[10px] font-bold text-white/40 uppercase tracking-widest">Rate your Errandr</p>
+              <p class="text-sm font-bold text-white/40 uppercase ">Rate your Errandr</p>
             </div>
             
             <div class="flex justify-center gap-2">
@@ -137,7 +137,7 @@
               </button>
             </div>
             
-            <textarea v-model="ratingForm.erranderReview" placeholder="How was the service?" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-xs font-medium focus:ring-2 focus:ring-parentPrimary outline-none min-h-[100px] transition-all" />
+            <textarea v-model="ratingForm.erranderReview" placeholder="How was the service?" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-parentPrimary outline-none min-h-[100px] transition-all" />
           </div>
         </div>
 
@@ -167,25 +167,25 @@
               <img :src="item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'" class="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-700" />
             </div>
             <div class="flex-1 min-w-0 pr-2">
-              <h5 class="text-xs md:text-sm font-bold text-gray-900 tracking-tight mb-0.5 truncate uppercase">{{ item.name }}</h5>
-              <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase">Qty: {{ item.quantity }} × ₦{{ item.price?.toLocaleString() }}</p>
+              <h5 class="text-sm md:text-sm font-bold text-gray-900 tracking-tight mb-0.5 truncate uppercase">{{ item.name }}</h5>
+              <p class="text-sm font-bold text-gray-400  uppercase">Qty: {{ item.quantity }} × ₦{{ item.price?.toLocaleString() }}</p>
             </div>
             <div class="text-right shrink-0">
-              <p class="text-xs md:text-sm font-bold text-gray-900 tracking-tight">₦{{ (item.price * item.quantity).toLocaleString() }}</p>
+              <p class="text-sm md:text-sm font-bold text-gray-900 tracking-tight">₦{{ (item.price * item.quantity).toLocaleString() }}</p>
             </div>
           </div>
 
           <div class="pt-6 border-t border-gray-50 space-y-3">
-            <div class="flex justify-between text-[10px] font-bold text-gray-400 tracking-widest uppercase">
+            <div class="flex justify-between text-sm font-bold text-gray-400  uppercase">
               <span>Subtotal</span>
               <span class="text-gray-900 font-black">₦{{ order.subtotal?.toLocaleString() }}</span>
             </div>
-            <div class="flex justify-between text-[10px] font-bold text-gray-400 tracking-widest uppercase">
+            <div class="flex justify-between text-sm font-bold text-gray-400  uppercase">
               <span>Fees & Delivery</span>
               <span class="text-gray-900 font-black">₦{{ (order.total - order.subtotal)?.toLocaleString() }}</span>
             </div>
             <div class="flex justify-between items-center pt-5 border-t border-gray-50 mt-2">
-              <span class="text-xs md:text-sm font-black text-gray-900 tracking-[0.2em] uppercase">Grand Total</span>
+              <span class="text-sm md:text-sm font-black text-gray-900 tracking-[0.2em] uppercase">Grand Total</span>
               <span class="text-xl md:text-3xl font-black text-parentPrimary tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
             </div>
           </div>
@@ -199,7 +199,7 @@
         <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors ">
           <ShieldCheck class="w-5 h-5" />
         </div>
-        <span class="text-[10px] font-black text-gray-400 tracking-widest uppercase group-hover:text-gray-900 transition-colors">Need help? Errandr Support</span>
+        <span class="text-sm font-black text-gray-400  uppercase group-hover:text-gray-900 transition-colors">Need help? Errandr Support</span>
       </button>
     </div>
   </div>
@@ -212,7 +212,7 @@
     </div>
     <div class="text-center">
       <h3 class="text-lg font-black text-gray-900 tracking-tighter uppercase mb-2">Fetching Order</h3>
-      <p class="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] animate-pulse">Syncing with satellite...</p>
+      <p class="text-sm font-black text-gray-300 uppercase tracking-[0.3em] animate-pulse">Syncing with satellite...</p>
     </div>
   </div>
 </template>

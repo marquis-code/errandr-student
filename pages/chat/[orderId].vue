@@ -13,7 +13,7 @@
           <p class="text-dark-900 font-semibold text-sm">{{ otherUser.firstName }} {{ otherUser.lastName }}</p>
           <div class="flex items-center gap-1">
             <span :class="isOnline ? 'status-online' : 'status-offline'" />
-            <span class="text-xs text-dark-400">{{ isOnline ? 'Online' : 'Offline' }}</span>
+            <span class="text-sm text-dark-400">{{ isOnline ? 'Online' : 'Offline' }}</span>
           </div>
         </div>
       </div>
@@ -51,9 +51,9 @@
             <p v-else class="text-sm leading-relaxed">{{ msg.message }}</p>
           </div>
           <div class="flex items-center gap-1 mt-0.5 px-1" :class="isMyMessage(msg) ? 'justify-end' : 'justify-start'">
-            <span class="text-[10px] text-dark-500">{{ formatTime(msg.createdAt) }}</span>
-            <span v-if="isMyMessage(msg) && msg.isRead" class="text-[10px] text-primary-400">✓✓</span>
-            <span v-else-if="isMyMessage(msg)" class="text-[10px] text-dark-500">✓</span>
+            <span class="text-sm text-dark-500">{{ formatTime(msg.createdAt) }}</span>
+            <span v-if="isMyMessage(msg) && msg.isRead" class="text-sm text-primary-400">✓✓</span>
+            <span v-else-if="isMyMessage(msg)" class="text-sm text-dark-500">✓</span>
           </div>
         </div>
       </div>

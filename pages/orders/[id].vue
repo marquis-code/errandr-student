@@ -13,9 +13,9 @@
  <div class="flex flex-col">
  <h1 class="text-lg font-black text-gray-900 tracking-tight leading-none">Order Status</h1>
  <div v-if="order" class="flex items-center gap-2 mt-1.5">
- <span class="text-[9px] font-black text-gray-400 tracking-wider ">ID: {{ order.orderNumber }}</span>
+ <span class="text-sm font-black text-gray-400 r ">ID: {{ order.orderNumber }}</span>
  <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
- <span class="text-[9px] font-bold text-gray-400 capitalize">{{ formatDate(order.createdAt) }}</span>
+ <span class="text-sm font-bold text-gray-400 capitalize">{{ formatDate(order.createdAt) }}</span>
  </div>
  </div>
  </div>
@@ -24,7 +24,7 @@
  <button 
  @click="reorder" 
  :disabled="reordering"
- class="px-4 py-2 bg-gray-900 text-white rounded-xl text-[9px] font-black tracking-wider hover:bg-parentPrimary hover:shadow-lg hover:shadow-parentPrimary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+ class="px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-black r hover:bg-parentPrimary hover:shadow-lg hover:shadow-parentPrimary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
  >
  <RefreshCw v-if="reordering" class="w-3 h-3 animate-spin" />
  <span>{{ reordering ? 'Processing' : 'Reorder Items' }}</span>
@@ -43,7 +43,7 @@
  <main class="max-w-7xl mx-auto px-4 py-8">
  <div v-if="loading" class="flex flex-col items-center justify-center py-32 space-y-4">
  <div class="w-10 h-10 border-2 border-gray-100 border-t-parentPrimary rounded-full animate-spin" />
- <p class="text-[10px] font-bold text-gray-400 tracking-widest animate-pulse">Retrieving order details...</p>
+ <p class="text-sm font-bold text-gray-400  animate-pulse">Retrieving order details...</p>
  </div>
 
  <div v-else-if="order" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -54,7 +54,7 @@
  <!-- Timeline Card -->
  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
  <div class="flex items-center justify-between border-b border-gray-50 pb-4">
- <h3 class="text-[10px] font-black text-gray-900 tracking-wider">Journey Progress</h3>
+ <h3 class="text-sm font-black text-gray-900 r">Journey Progress</h3>
  <Clock class="w-4 h-4 text-gray-300" />
  </div>
 
@@ -71,12 +71,12 @@
  </div>
  <div class="flex-1">
  <div class="flex items-center justify-between group">
- <h4 class="text-[11px] font-black tracking-widest transition-colors" :class="step.active ? 'text-gray-900' : 'text-gray-300'">
+ <h4 class="text-[11px] font-black  transition-colors" :class="step.active ? 'text-gray-900' : 'text-gray-300'">
  {{ step.label }}
  </h4>
- <span v-if="step.timestamp" class="text-[9px] font-bold text-gray-400 italic">{{ formatTime(step.timestamp) }}</span>
+ <span v-if="step.timestamp" class="text-sm font-bold text-gray-400 ">{{ formatTime(step.timestamp) }}</span>
  </div>
- <p v-if="step.active" class="text-[9px] font-bold text-parentPrimary/60 mt-0.5 tracking-wide animate-pulse">
+ <p v-if="step.active" class="text-sm font-bold text-parentPrimary/60 mt-0.5  animate-pulse">
  {{ idx === currentStepIndex ? 'Current Status' : 'Completed' }}
  </p>
  </div>
@@ -88,12 +88,12 @@
  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
  <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
  <div>
- <h3 class="text-[10px] font-black text-gray-900 tracking-wider">Order Breakdown</h3>
- <p class="text-[9px] font-bold text-gray-400 mt-0.5">{{ order.items?.length }} Items Ordered</p>
+ <h3 class="text-sm font-black text-gray-900 r">Order Breakdown</h3>
+ <p class="text-sm font-bold text-gray-400 mt-0.5">{{ order.items?.length }} Items Ordered</p>
  </div>
  <div class="flex items-center gap-2">
  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
- <span class="text-[9px] font-bold text-emerald-600 tracking-wider">Confirmed Receipt</span>
+ <span class="text-sm font-bold text-emerald-600 r">Confirmed Receipt</span>
  </div>
  </div>
 
@@ -102,10 +102,10 @@
  <div v-if="order.packs?.length > 0" class="space-y-8">
  <div v-for="(pack, pIdx) in order.packs" :key="pack._id || pIdx" class="space-y-4">
  <div class="flex items-center gap-3">
- <div class="w-6 h-6 rounded-lg bg-gray-900 text-white flex items-center justify-center text-[9px] font-black shadow-md">
+ <div class="w-6 h-6 rounded-lg bg-gray-900 text-white flex items-center justify-center text-sm font-black shadow-md">
  {{ Number(pIdx) + 1 }}
  </div>
- <h4 class="text-xs font-black text-gray-900 tracking-tight">{{ pack.name || `Pack ${Number(pIdx) + 1}` }}</h4>
+ <h4 class="text-sm font-black text-gray-900 tracking-tight">{{ pack.name || `Pack ${Number(pIdx) + 1}` }}</h4>
  <div class="flex-1 h-px bg-gray-100" />
  </div>
 
@@ -115,12 +115,12 @@
  <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
  </div>
  <div class="flex-1 min-w-0">
- <p class="text-xs font-bold text-gray-900 truncate tracking-tight ">{{ item.name }}</p>
- <p class="text-[9px] font-bold text-gray-400 mt-0.5">Qty: {{ item.quantity }}</p>
+ <p class="text-sm font-bold text-gray-900 truncate tracking-tight ">{{ item.name }}</p>
+ <p class="text-sm font-bold text-gray-400 mt-0.5">Qty: {{ item.quantity }}</p>
  </div>
  <div class="text-right">
- <p class="text-xs font-black text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
- <p class="text-[8px] font-medium text-gray-400 italic">₦{{ item.price?.toLocaleString() }}/unit</p>
+ <p class="text-sm font-black text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
+ <p class="text-[8px] font-medium text-gray-400 ">₦{{ item.price?.toLocaleString() }}/unit</p>
  </div>
  </div>
  </div>
@@ -134,12 +134,12 @@
  <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
  </div>
  <div class="flex-1 min-w-0">
- <p class="text-xs font-bold text-gray-900 truncate tracking-tight ">{{ item.name }}</p>
- <p class="text-[9px] font-bold text-gray-400 mt-0.5">Qty: {{ item.quantity }}</p>
+ <p class="text-sm font-bold text-gray-900 truncate tracking-tight ">{{ item.name }}</p>
+ <p class="text-sm font-bold text-gray-400 mt-0.5">Qty: {{ item.quantity }}</p>
  </div>
  <div class="text-right">
- <p class="text-xs font-black text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
- <p class="text-[8px] font-medium text-gray-400 italic">₦{{ item.price?.toLocaleString() }}/unit</p>
+ <p class="text-sm font-black text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
+ <p class="text-[8px] font-medium text-gray-400 ">₦{{ item.price?.toLocaleString() }}/unit</p>
  </div>
  </div>
  </div>
@@ -152,7 +152,7 @@
  
  <div class="relative z-10 space-y-5">
  <div class="flex items-center justify-between">
- <h3 class="text-[9px] font-black text-white/40 tracking-wider">Shipping To</h3>
+ <h3 class="text-sm font-black text-white/40 r">Shipping To</h3>
  <div class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center backdrop-blur-md border border-white/10 shadow-lg">
  <MapPin class="w-4 h-4 text-parentPrimary" />
  </div>
@@ -160,7 +160,7 @@
 
  <div class="space-y-2">
  <h4 class="text-xl font-bold tracking-tight">{{ order.recipientName || 'Student Resident' }}</h4>
- <p class="text-[11px] text-white/60 font-medium leading-relaxed italic line-clamp-2">
+ <p class="text-[11px] text-white/60 font-medium leading-relaxed  line-clamp-2">
  {{ order.deliveryAddress || order.specificAddress || 'No specific address provided' }}
  </p>
  </div>
@@ -170,8 +170,8 @@
  <Truck class="w-5 h-5 text-gray-400" />
  </div>
  <div class="flex-1">
- <p class="text-[9px] font-black text-white/40 tracking-widest">Method</p>
- <p class="text-[11px] font-bold text-white tracking-wider">{{ order.deliveryOption?.replace(/_/g, ' ') || 'Use an Errandr' }}</p>
+ <p class="text-sm font-black text-white/40 ">Method</p>
+ <p class="text-[11px] font-bold text-white r">{{ order.deliveryOption?.replace(/_/g, ' ') || 'Use an Errandr' }}</p>
  </div>
  </div>
  </div>
@@ -191,7 +191,7 @@
  <component :is="getStatusTheme(order.status).icon" class="w-6 h-6" />
  </div>
  <div>
- <p class="text-[9px] font-black text-gray-400 tracking-wider mb-0.5">Live Status</p>
+ <p class="text-sm font-black text-gray-400 r mb-0.5">Live Status</p>
  <h2 class="text-xl font-black text-gray-900 tracking-tight transition-all ">{{ order.status.replace(/_/g, ' ') }}</h2>
  </div>
  </div>
@@ -202,18 +202,18 @@
  <ShieldCheck class="w-4 h-4" />
  </div>
  <div class="flex-1 min-w-0">
- <p class="text-[8px] font-black text-emerald-600 tracking-wider mb-0.5 truncate">Verification Code</p>
- <p class="text-lg font-black text-gray-900 tracking-widest truncate">{{ order.uniqueCode }}</p>
+ <p class="text-[8px] font-black text-emerald-600 r mb-0.5 truncate">Verification Code</p>
+ <p class="text-lg font-black text-gray-900  truncate">{{ order.uniqueCode }}</p>
  </div>
  <div class="text-[8px] font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded border border-emerald-100 shadow-sm flex-shrink-0">Give to Rider</div>
  </div>
- <p class="text-[9px] font-medium text-gray-400 mt-3 relative z-10">Share this code with the rider upon delivery to confirm receipt.</p>
+ <p class="text-sm font-medium text-gray-400 mt-3 relative z-10">Share this code with the rider upon delivery to confirm receipt.</p>
  </div>
 
  <!-- Service Provider Info -->
  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
  <div class="p-6">
- <h3 class="text-[9px] font-black text-gray-400 tracking-wider mb-4">Service Provider</h3>
+ <h3 class="text-sm font-black text-gray-400 r mb-4">Service Provider</h3>
  
  <div class="flex items-center gap-4 mb-8">
  <div class="w-16 h-16 rounded-2xl border border-gray-100 shadow-inner overflow-hidden flex items-center justify-center bg-gray-50 flex-shrink-0">
@@ -222,7 +222,7 @@
  </div>
  <div class="flex-1 min-w-0">
  <h4 class="text-lg font-black text-gray-900 tracking-tight truncate">{{ order.vendor?.storeName || 'Vendor' }}</h4>
- <p class="text-[10px] font-bold text-parentPrimary flex items-center gap-1 tracking-widest truncate">
+ <p class="text-sm font-bold text-parentPrimary flex items-center gap-1  truncate">
  <ShieldCheck class="w-3 h-3 flex-shrink-0" /> Verified Errandr Vendor
  </p>
  </div>
@@ -231,20 +231,20 @@
  <div class="space-y-3">
  <button 
  @click="openChat(order.vendor?._id, order.vendor?.storeName, order.vendor?.logo)"
- class="w-full py-4 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-xl text-[9px] font-bold tracking-widest transition-all flex items-center justify-center gap-2 border border-gray-100"
+ class="w-full py-4 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-xl text-sm font-bold  transition-all flex items-center justify-center gap-2 border border-gray-100"
  >
  <MessageSquare class="w-3.5 h-3.5" /> Message Store
  </button>
  <button 
  v-if="order.errander?._id"
  @click="openChat(order.errander._id, order.errander.firstName + ' (Rider)', order.errander.avatar)"
- class="w-full py-4 bg-parentPrimary/5 hover:bg-parentPrimary/10 text-parentPrimary rounded-xl text-[9px] font-bold tracking-widest transition-all flex items-center justify-center gap-2 border border-parentPrimary/10"
+ class="w-full py-4 bg-parentPrimary/5 hover:bg-parentPrimary/10 text-parentPrimary rounded-xl text-sm font-bold  transition-all flex items-center justify-center gap-2 border border-parentPrimary/10"
  >
  <MessageSquare class="w-3.5 h-3.5" /> Message Rider
  </button>
  <button 
  @click="navigateTo(`/vendors/${order.vendor?._id}`)"
- class="w-full py-4 text-gray-400 hover:text-gray-900 text-[9px] font-bold tracking-widest transition-colors"
+ class="w-full py-4 text-gray-400 hover:text-gray-900 text-sm font-bold  transition-colors"
  >
  View Store Details
  </button>
@@ -254,29 +254,29 @@
 
  <!-- Payment Summary -->
  <div class="bg-gray-50/50 border border-gray-100 shadow-sm rounded-2xl p-6">
- <h3 class="text-[10px] font-black text-gray-900 tracking-wider mb-4">Payment Summary</h3>
+ <h3 class="text-sm font-black text-gray-900 r mb-4">Payment Summary</h3>
  <div class="space-y-2.5">
- <div class="flex justify-between items-center text-[9px] font-bold text-gray-500 tracking-wider">
+ <div class="flex justify-between items-center text-sm font-bold text-gray-500 r">
  <span>Cart Subtotal</span>
  <span class="text-gray-900">₦{{ order.subtotal?.toLocaleString() }}</span>
  </div>
- <div class="flex justify-between items-center text-[9px] font-bold text-gray-500 tracking-wider">
+ <div class="flex justify-between items-center text-sm font-bold text-gray-500 r">
  <span>Delivery Charge</span>
  <span class="text-gray-900">₦{{ order.deliveryFee?.toLocaleString() || 0 }}</span>
  </div>
- <div class="flex justify-between items-center text-[9px] font-bold text-gray-500 tracking-wider">
+ <div class="flex justify-between items-center text-sm font-bold text-gray-500 r">
  <span>Packaging Fee</span>
  <span class="text-gray-900">₦{{ order.packagingFee?.toLocaleString() || 0 }}</span>
  </div>
- <div class="flex justify-between items-center text-[9px] font-bold text-gray-500 tracking-wider">
+ <div class="flex justify-between items-center text-sm font-bold text-gray-500 r">
  <span>Service Charge (5%)</span>
  <span class="text-gray-900">₦{{ order.serviceFee?.toLocaleString() }}</span>
  </div>
  <div class="h-px bg-gray-200 my-3" />
  <div class="flex justify-between items-center pt-1">
  <div>
- <span class="text-[10px] font-black text-gray-900 tracking-wider">Grand Total</span>
- <p class="text-[8px] font-bold text-emerald-600 border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 inline-block tracking-wider">
+ <span class="text-sm font-black text-gray-900 r">Grand Total</span>
+ <p class="text-[8px] font-bold text-emerald-600 border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 inline-block r">
  <CreditCard class="w-2.5 h-2.5 inline-block -mt-0.5 mr-0.5" /> Paid via Card
  </p>
  </div>
@@ -289,7 +289,7 @@
  <div v-if="order.status === 'delivered' && !order.rating" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6 relative">
  <div class="text-center mb-4">
  <h3 class="text-base font-black text-gray-900 tracking-tight">How was your delivery?</h3>
- <p class="text-[9px] font-bold text-gray-400 tracking-wider mt-0.5">Rate your experience</p>
+ <p class="text-sm font-bold text-gray-400 r mt-0.5">Rate your experience</p>
  </div>
  
  <!-- Star Rating -->
@@ -332,8 +332,8 @@
  <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
  <Star class="w-6 h-6 text-yellow-400 fill-yellow-400" />
  </div>
- <p class="text-[11px] font-black text-emerald-600 tracking-widest">You rated this delivery {{ order.rating }} stars</p>
- <p v-if="order.review" class="text-xs font-bold text-gray-400 italic mt-2">"{{ order.review }}"</p>
+ <p class="text-[11px] font-black text-emerald-600 ">You rated this delivery {{ order.rating }} stars</p>
+ <p v-if="order.review" class="text-sm font-bold text-gray-400  mt-2">"{{ order.review }}"</p>
  </div>
 
  <!-- Help Section -->
@@ -344,12 +344,12 @@
  <LifeBuoy class="w-5 h-5 text-parentPrimary" />
  </div>
  <h3 class="text-base font-black tracking-tight">Need Assistance?</h3>
- <p class="text-[9px] font-bold text-white/80 tracking-wider">
+ <p class="text-sm font-bold text-white/80 r">
  Our agents are online 24/7 to resolve issues.
  </p>
  <button 
  @click="showSupportModal = true"
- class="w-full mt-2 py-3 bg-white text-parentPrimary rounded-lg text-[9px] font-black tracking-wider hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
+ class="w-full mt-2 py-3 bg-white text-parentPrimary rounded-lg text-sm font-black r hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
  >
  Join Support Chat
  </button>
@@ -365,8 +365,8 @@
  <Inbox class="w-10 h-10 text-gray-300" />
  </div>
  <h2 class="text-4xl font-black text-gray-900 tracking-tighter mb-4">Order Lost in Space</h2>
- <p class="text-sm font-bold text-gray-400 tracking-widest mb-10 italic">We couldn't find the order details you're looking for.</p>
- <button @click="navigateTo('/orders')" class="px-10 py-5 bg-gray-900 text-white rounded-[2rem] text-xs font-black tracking-[0.2em] shadow-2xl shadow-black/20 hover:scale-105 active:scale-95 transition-all">
+ <p class="text-sm font-bold text-gray-400  mb-10 ">We couldn't find the order details you're looking for.</p>
+ <button @click="navigateTo('/orders')" class="px-10 py-5 bg-gray-900 text-white rounded-[2rem] text-sm font-black tracking-[0.2em] shadow-2xl shadow-black/20 hover:scale-105 active:scale-95 transition-all">
  Back to My Orders
  </button>
  </div>
@@ -388,7 +388,7 @@
 
   <UiModal :isOpen="showSupportModal" @close="showSupportModal = false" title="Need Help?">
     <div class="space-y-4 pt-4">
-      <p class="text-xs text-gray-500 font-medium px-1">Please select who you would like to speak with regarding this order.</p>
+      <p class="text-sm text-gray-500 font-medium px-1">Please select who you would like to speak with regarding this order.</p>
       
       <div class="space-y-2">
         <button 
@@ -402,7 +402,7 @@
           </div>
           <div class="text-left flex-1 min-w-0">
             <h4 class="text-sm font-bold text-gray-900 truncate">Message the Store</h4>
-            <p class="text-[10px] text-gray-400 font-medium mt-0.5 truncate">{{ order.vendor.storeName }}</p>
+            <p class="text-sm text-gray-400 font-medium mt-0.5 truncate">{{ order.vendor.storeName }}</p>
           </div>
           <MessageSquare class="w-4 h-4 text-parentPrimary shrink-0" />
         </button>
@@ -418,7 +418,7 @@
           </div>
           <div class="text-left flex-1 min-w-0">
             <h4 class="text-sm font-bold text-gray-900 truncate">Message your Rider</h4>
-            <p class="text-[10px] text-gray-400 font-medium mt-0.5 truncate">{{ order.errander.firstName }} - Dispatch</p>
+            <p class="text-sm text-gray-400 font-medium mt-0.5 truncate">{{ order.errander.firstName }} - Dispatch</p>
           </div>
           <MessageSquare class="w-4 h-4 text-parentPrimary shrink-0" />
         </button>
@@ -432,7 +432,7 @@
           </div>
           <div class="text-left flex-1 min-w-0">
             <h4 class="text-sm font-bold text-gray-900 truncate">Errandr Support</h4>
-            <p class="text-[10px] text-gray-400 font-medium mt-0.5 truncate">Chat with an admin</p>
+            <p class="text-sm text-gray-400 font-medium mt-0.5 truncate">Chat with an admin</p>
           </div>
           <MessageSquare class="w-4 h-4 text-rose-500 shrink-0" />
         </button>

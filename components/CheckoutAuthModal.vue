@@ -35,14 +35,14 @@
             <button 
               @click="view = 'login'" 
               :class="[
-                'flex-1 py-3 px-4 rounded-xl text-xs font-black tracking-widest transition-all',
+                'flex-1 py-3 px-4 rounded-xl text-sm font-black  transition-all',
                 view === 'login' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'
               ]"
             >LOGIN</button>
             <button 
               @click="view = 'register'" 
               :class="[
-                'flex-1 py-3 px-4 rounded-xl text-xs font-black tracking-widest transition-all',
+                'flex-1 py-3 px-4 rounded-xl text-sm font-black  transition-all',
                 view === 'register' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'
               ]"
             >SIGN UP</button>
@@ -60,7 +60,7 @@
             <template v-if="view === 'login'">
               <div class="space-y-4">
                 <div class="group">
-                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Email Address</p>
+                  <p class="text-sm font-black text-gray-400 uppercase  mb-2 pl-1">Email Address</p>
                   <input 
                     v-model="loginForm.email" 
                     type="email" 
@@ -71,8 +71,8 @@
                 </div>
                 <div class="group">
                   <div class="flex items-center justify-between mb-2 px-1">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Password</p>
-                    <button type="button" class="text-[10px] font-black text-parentPrimary hover:underline">Forgot?</button>
+                    <p class="text-sm font-black text-gray-400 uppercase ">Password</p>
+                    <button type="button" class="text-sm font-black text-parentPrimary hover:underline">Forgot?</button>
                   </div>
                   <input 
                     v-model="loginForm.password" 
@@ -89,7 +89,7 @@
             <template v-else-if="view === 'register'">
               <div class="grid grid-cols-2 gap-4">
                 <div class="group col-span-1">
-                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">First Name</p>
+                  <p class="text-sm font-black text-gray-400 uppercase  mb-2 pl-1">First Name</p>
                   <input 
                     v-model="registerForm.firstName" 
                     type="text" 
@@ -99,7 +99,7 @@
                   />
                 </div>
                 <div class="group col-span-1">
-                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Last Name</p>
+                  <p class="text-sm font-black text-gray-400 uppercase  mb-2 pl-1">Last Name</p>
                   <input 
                     v-model="registerForm.lastName" 
                     type="text" 
@@ -110,7 +110,7 @@
                 </div>
               </div>
               <div class="group">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Email Address</p>
+                <p class="text-sm font-black text-gray-400 uppercase  mb-2 pl-1">Email Address</p>
                 <input 
                   v-model="registerForm.email" 
                   type="email" 
@@ -120,7 +120,7 @@
                 />
               </div>
               <div class="group">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Password</p>
+                <p class="text-sm font-black text-gray-400 uppercase  mb-2 pl-1">Password</p>
                 <input 
                   v-model="registerForm.password" 
                   type="password" 
@@ -148,12 +148,12 @@
                   />
                 </div>
                 <div class="text-center pt-2">
-                  <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-2">Haven't received it?</p>
+                  <p class="text-sm font-bold text-gray-400  uppercase mb-2">Haven't received it?</p>
                   <button 
                     type="button" 
                     @click="handleResend" 
                     :disabled="resendLoading || resendTimer > 0"
-                    class="text-xs font-black text-parentPrimary hover:underline disabled:text-gray-300 transition-all uppercase"
+                    class="text-sm font-black text-parentPrimary hover:underline disabled:text-gray-300 transition-all uppercase"
                   >
                     {{ resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code' }}
                   </button>
@@ -166,7 +166,7 @@
               <button 
                 type="submit" 
                 :disabled="loading"
-                class="w-full py-5 bg-gray-900 text-white rounded-2xl text-[10px] font-black tracking-[0.25em] uppercase hover:bg-parentPrimary transition-all shadow-xl shadow-gray-100 disabled:opacity-50 flex items-center justify-center gap-3 group"
+                class="w-full py-5 bg-gray-900 text-white rounded-2xl text-sm font-black tracking-[0.25em] uppercase hover:bg-parentPrimary transition-all shadow-xl shadow-gray-100 disabled:opacity-50 flex items-center justify-center gap-3 group"
               >
                 <template v-if="loading">
                   <Loader2 class="w-4 h-4 animate-spin text-white" />
@@ -180,7 +180,7 @@
             </div>
           </form>
 
-          <p v-if="view !== 'verify'" class="mt-8 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">
+          <p v-if="view !== 'verify'" class="mt-8 text-center text-sm font-bold text-gray-400 uppercase  leading-relaxed">
             By continuing, you agree to Errandr's <br/>
             <span class="text-gray-900 hover:underline cursor-pointer">Terms of Service</span> & <span class="text-gray-900 hover:underline cursor-pointer">Privacy Policy</span>
           </p>

@@ -5,13 +5,13 @@
 
     <div class="max-w-4xl mx-auto relative z-10">
       <div class="text-center space-y-6 mb-16">
-        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-[10px] font-black uppercase tracking-widest">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-sm font-black uppercase ">
            ✉️ Direct Connect
         </div>
-        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-[0.9] italic">
+        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-[0.9] ">
           Tell us what's on your <span class="text-parentPrimary">mind</span> <br/> and how we can reach you.
         </h2>
-        <p class="text-gray-400 font-bold tracking-widest uppercase text-[10px]">Reach out for partnerships, complaints, or just to say hi!</p>
+        <p class="text-gray-400 font-bold  uppercase text-sm">Reach out for partnerships, complaints, or just to say hi!</p>
       </div>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -84,7 +84,7 @@
           <button 
             type="submit"
             :disabled="loading"
-            class="px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center gap-3 mx-auto lg:mx-0"
+            class="px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center gap-3 mx-auto lg:mx-0"
           >
             <span v-if="loading">Sending...</span>
             <span v-else>Send Request</span>

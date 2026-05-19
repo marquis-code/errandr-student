@@ -9,13 +9,13 @@
  </NuxtLink>
  <div>
  <h1 class="text-xl font-black text-gray-900 tracking-tight">Purchase History</h1>
- <p class="text-[10px] font-bold text-gray-400 tracking-widest mt-0.5">Track and manage your orders</p>
+ <p class="text-sm font-bold text-gray-400  mt-0.5">Track and manage your orders</p>
  </div>
  </div>
  <div class="flex items-center gap-3">
  <div class="hidden sm:flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
  <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
- <span class="text-[9px] font-black text-gray-600 tracking-widest ">Live Tracking Active</span>
+ <span class="text-sm font-black text-gray-600  ">Live Tracking Active</span>
  </div>
  </div>
  </div>
@@ -25,7 +25,7 @@
  <!-- Stats Overview -->
  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
  <div v-for="stat in stats" :key="stat.label" class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
- <p class="text-[9px] font-black text-gray-400 tracking-[0.2em] mb-2">{{ stat.label }}</p>
+ <p class="text-sm font-black text-gray-400 tracking-[0.2em] mb-2">{{ stat.label }}</p>
  <div class="flex items-end justify-between">
  <h3 class="text-2xl font-black text-gray-900 tracking-tighter">{{ stat.value }}</h3>
  <div :class="`w-8 h-8 rounded-lg flex items-center justify-center bg-${stat.color}-50 text-${stat.color}-600`">
@@ -42,7 +42,7 @@
  :key="filter.value"
  @click="activeFilter = filter.value"
  :class="[
- 'px-5 py-2.5 rounded-xl text-[10px] font-black tracking-widest transition-all whitespace-nowrap border',
+ 'px-5 py-2.5 rounded-xl text-sm font-black  transition-all whitespace-nowrap border',
  activeFilter === filter.value 
  ? 'bg-gray-900 text-white border-gray-900 shadow-md' 
  : 'bg-white text-gray-400 border-gray-100 hover:border-gray-200'
@@ -63,7 +63,7 @@
  </div>
  <h3 class="text-lg font-black text-gray-900 tracking-tight">No orders found</h3>
  <p class="text-sm text-gray-400 font-medium mt-1">Looks like you haven't made any purchases yet.</p>
- <NuxtLink to="/vendors" class="mt-8 px-8 py-4 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all shadow-lg shadow-gray-100">Start Shopping</NuxtLink>
+ <NuxtLink to="/vendors" class="mt-8 px-8 py-4 bg-gray-900 text-white rounded-xl text-sm font-black  hover:bg-parentPrimary transition-all shadow-lg shadow-gray-100">Start Shopping</NuxtLink>
  </div>
 
  <div v-else class="space-y-4">
@@ -80,30 +80,30 @@
  </div>
  <div>
  <h4 class="font-black text-gray-900 text-sm tracking-tight truncate max-w-[150px]">{{ order.vendor?.storeName }}</h4>
- <p class="text-[9px] font-bold text-gray-400 tracking-widest mt-0.5">#{{ order.orderNumber }}</p>
+ <p class="text-sm font-bold text-gray-400  mt-0.5">#{{ order.orderNumber }}</p>
  </div>
  </div>
 
  <!-- Order Brief -->
  <div class="flex-1 grid grid-cols-2 md:grid-cols-3 gap-6">
  <div>
- <p class="text-[8px] font-black text-gray-400 tracking-widest mb-1">Items</p>
- <p class="text-xs font-bold text-gray-700">{{ order.items?.length || order.packs?.length || 0 }} items ordered</p>
+ <p class="text-[8px] font-black text-gray-400  mb-1">Items</p>
+ <p class="text-sm font-bold text-gray-700">{{ order.items?.length || order.packs?.length || 0 }} items ordered</p>
  </div>
  <div>
- <p class="text-[8px] font-black text-gray-400 tracking-widest mb-1">Total Paid</p>
+ <p class="text-[8px] font-black text-gray-400  mb-1">Total Paid</p>
  <p class="text-sm font-black text-gray-900">₦{{ order.total?.toLocaleString() }}</p>
  </div>
  <div class="hidden md:block">
- <p class="text-[8px] font-black text-gray-400 tracking-widest mb-1">Date</p>
- <p class="text-xs font-bold text-gray-700">{{ formatDate(order.createdAt) }}</p>
+ <p class="text-[8px] font-black text-gray-400  mb-1">Date</p>
+ <p class="text-sm font-bold text-gray-700">{{ formatDate(order.createdAt) }}</p>
  </div>
  </div>
 
  <!-- Status & Action -->
  <div class="flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-4 md:pt-0">
  <div :class="[
- 'px-4 py-1.5 rounded-full text-[9px] font-black tracking-widest border',
+ 'px-4 py-1.5 rounded-full text-sm font-black  border',
  getStatusClass(order.status)
  ]">
  {{ order.status?.replace('_', ' ') }}

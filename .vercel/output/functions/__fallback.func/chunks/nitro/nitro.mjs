@@ -4177,7 +4177,7 @@ const _inlineRuntimeConfig = {
       {
         "_priority": -3,
         "_context": "nuxt-site-config:config",
-        "url": "https://errandr.shop",
+        "url": "https://erranders.org",
         "name": "Errandr",
         "description": "Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.",
         "defaultLocale": "en"

@@ -4,7 +4,7 @@
     <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/5 via-transparent to-secondary/5 opacity-50 group-hover:opacity-100 transition-opacity duration-1000"></div>
     
     <div class="relative z-10 text-center mb-8">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-[10px] font-black tracking-widest uppercase mb-4">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-sm font-black  uppercase mb-4">
         <Sparkles class="w-3.5 h-3.5" /> Campus Luck
       </div>
       <h2 class="text-3xl font-black text-gray-900 tracking-tighter mb-2">Spin & Win</h2>
@@ -54,7 +54,7 @@
           >
             <div class="flex flex-col items-center gap-1 transform -rotate-90 origin-center">
               <component :is="segment.icon" class="w-6 h-6 text-white/50" />
-              <span class="text-[10px] font-black text-white uppercase tracking-tighter leading-none">{{ segment.label }}</span>
+              <span class="text-sm font-black text-white uppercase tracking-tighter leading-none">{{ segment.label }}</span>
             </div>
           </div>
         </div>
@@ -72,12 +72,12 @@
       <button 
         @click="spinPlan"
         :disabled="isSpinning"
-        class="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black text-xs tracking-[0.2em] uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:scale-100 shadow-2xl shadow-black/20"
+        class="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] uppercase hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:scale-100 shadow-2xl shadow-black/20"
       >
         {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}
       </button>
       
-      <p class="mt-4 text-[10px] font-black text-gray-300 uppercase tracking-widest">
+      <p class="mt-4 text-sm font-black text-gray-300 uppercase ">
         1 free spin per day
       </p>
     </div>
@@ -92,17 +92,17 @@
         <p class="text-lg font-bold text-parentPrimary mb-8">{{ result.label }}</p>
         
         <div v-if="result.success" class="bg-white/5 border border-white/10 rounded-3xl p-6 mb-10 w-full">
-          <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Your Reward Code</p>
+          <p class="text-sm font-black text-gray-500 uppercase  mb-2">Your Reward Code</p>
           <div class="flex items-center justify-between gap-4 bg-gray-900 p-4 rounded-2xl border border-white/5">
             <span class="text-xl font-mono font-black text-white">{{ result.reward?.code || 'ERR-LUCK-2026' }}</span>
             <button @click="copyCode(result.reward?.code)" class="p-2 hover:bg-white/10 rounded-xl text-parentPrimary transition-colors">
               <Copy class="w-5 h-5" />
             </button>
           </div>
-          <p class="mt-3 text-[10px] text-gray-400 font-bold">Applied automatically at checkout</p>
+          <p class="mt-3 text-sm text-gray-400 font-bold">Applied automatically at checkout</p>
         </div>
 
-        <button @click="result = null" class="px-10 py-4 bg-white text-gray-900 rounded-2xl font-black text-xs tracking-widest uppercase hover:bg-parentPrimary hover:text-white transition-all">
+        <button @click="result = null" class="px-10 py-4 bg-white text-gray-900 rounded-2xl font-black text-sm  uppercase hover:bg-parentPrimary hover:text-white transition-all">
           Awesome
         </button>
       </div>
@@ -123,10 +123,10 @@ const rotation = ref(0);
 const result = ref<any>(null);
 
 const segments = [
-  { label: 'Free Delivery', color: '#065fdb', icon: Bike },
+  { label: 'Free Delivery', color: '#FF5C1A', icon: Bike },
   { label: '₦500 Off', color: '#f43f5e', icon: Utensils },
   { label: 'Try Again', color: '#111827', icon: XCircle },
-  { label: '₦200 Off', color: '#065fdb', icon: GiftIcon },
+  { label: '₦200 Off', color: '#FF5C1A', icon: GiftIcon },
   { label: 'Free Delivery', color: '#f43f5e', icon: Bike },
   { label: 'Better luck', color: '#111827', icon: XCircle },
 ];

@@ -15,7 +15,7 @@
       <div class="w-full space-y-6 animate-fade-in" style="animation-delay: 100ms">
         <div class="flex items-center justify-between px-2">
           <h3 class="text-xl font-black text-gray-900 tracking-tight">Campus Favorites 🔥</h3>
-          <NuxtLink to="/vendors" class="text-xs font-bold text-parentPrimary hover:underline py-2 px-4 rounded-lg bg-parentPrimary/10">See all</NuxtLink>
+          <NuxtLink to="/vendors" class="text-sm font-bold text-parentPrimary hover:underline py-2 px-4 rounded-lg bg-parentPrimary/10">See all</NuxtLink>
         </div>
         <div v-if="loadingVendors" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div v-for="i in 3" :key="i" class="h-64 bg-gray-50 rounded-[2rem] border border-gray-100 animate-pulse"></div>
@@ -31,24 +31,24 @@
               <img :src="vendor.banner || vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
               <div class="absolute bottom-3 left-4 flex gap-2">
-                <span class="px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-md text-[9px] font-black text-white tracking-[0.2em] uppercase border border-white/20">
+                <span class="px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-md text-sm font-black text-white tracking-[0.2em] uppercase border border-white/20">
                   {{ vendor.preparationTime || 20 }} MIN
                 </span>
               </div>
               <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1.5 rounded-lg flex items-center gap-1 border border-white/50">
                 <Star class="w-3 h-3 text-amber-500 fill-current" />
-                <span class="text-[10px] font-black text-gray-900">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
+                <span class="text-sm font-black text-gray-900">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
               </div>
             </div>
             <div class="p-5 flex items-center justify-between gap-4">
               <div class="flex items-center gap-3 min-w-0">
                 <div class="w-10 h-10 rounded-xl border border-gray-100 overflow-hidden shrink-0 bg-gray-50">
                   <img v-if="vendor.logo" :src="vendor.logo" class="w-full h-full object-cover" />
-                  <span v-else class="w-full h-full flex items-center justify-center font-black text-gray-400 text-xs">{{ vendor.storeName?.[0] }}</span>
+                  <span v-else class="w-full h-full flex items-center justify-center font-black text-gray-400 text-sm">{{ vendor.storeName?.[0] }}</span>
                 </div>
                 <div class="min-w-0">
                   <h4 class="text-sm font-black text-gray-900 truncate tracking-tight">{{ vendor.storeName }}</h4>
-                  <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mt-0.5 truncate">{{ vendor.category }}</p>
+                  <p class="text-sm font-bold text-gray-400  uppercase mt-0.5 truncate">{{ vendor.category }}</p>
                 </div>
               </div>
               <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-parentPrimary group-hover:text-white transition-colors shrink-0">
@@ -72,12 +72,12 @@
              </button>
              <div>
                <h2 class="text-xl font-black text-gray-900 tracking-tight leading-none">Your Order</h2>
-               <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">{{ cartStore.itemCount }} items selected</p>
+               <p class="text-sm font-bold text-gray-400 uppercase  mt-1.5">{{ cartStore.itemCount }} items selected</p>
              </div>
           </div>
           <button 
             @click="showOrderBreakdown = true"
-            class="px-4 py-2.5 bg-gray-900 text-white rounded-2xl text-[10px] font-black tracking-widest hover:bg-parentPrimary transition-all uppercase"
+            class="px-4 py-2.5 bg-gray-900 text-white rounded-2xl text-sm font-black  hover:bg-parentPrimary transition-all uppercase"
           >
             Review Items
           </button>
@@ -93,7 +93,7 @@
             </div>
             <div>
               <h3 class="text-base font-black text-gray-900 tracking-tight">Delivery Details</h3>
-              <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase mt-0.5">Where should we drop it?</p>
+              <p class="text-sm font-bold text-gray-400  uppercase mt-0.5">Where should we drop it?</p>
             </div>
           </div>
 
@@ -104,8 +104,8 @@
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-xl border border-gray-100 group-hover:scale-105 transition-transform">🎁</div>
                   <div>
-                    <p class="text-xs font-black text-gray-900 leading-none mb-1">Mystery Box</p>
-                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Random item for ₦800</p>
+                    <p class="text-sm font-black text-gray-900 leading-none mb-1">Mystery Box</p>
+                    <p class="text-sm font-bold text-gray-400 uppercase ">Random item for ₦800</p>
                   </div>
                 </div>
                 <input type="checkbox" v-model="isMysteryBox" class="w-5 h-5 accent-parentPrimary cursor-pointer rounded">
@@ -115,8 +115,8 @@
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-xl border border-gray-100 group-hover:scale-105 transition-transform">🏢</div>
                   <div>
-                    <p class="text-xs font-black text-gray-900 leading-none mb-1">Dorm Delivery</p>
-                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Split fee with neighbors</p>
+                    <p class="text-sm font-black text-gray-900 leading-none mb-1">Dorm Delivery</p>
+                    <p class="text-sm font-bold text-gray-400 uppercase ">Split fee with neighbors</p>
                   </div>
                 </div>
                 <input type="checkbox" v-model="isDormDelivery" class="w-5 h-5 accent-emerald-500 cursor-pointer rounded">
@@ -129,7 +129,7 @@
 
             <div v-if="deliveryOption === 'use_an_errander'" class="animate-fade-in">
               <div class="bg-gray-50/70 p-4 rounded-2xl border border-gray-100">
-                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3">Hostel / Internal Campus Location</p>
+                <p class="text-sm font-black text-gray-400 uppercase  mb-3">Hostel / Internal Campus Location</p>
                 <textarea
                   v-model="specificAddress"
                   rows="3"
@@ -149,7 +149,7 @@
             </div>
             <div>
               <h3 class="text-base font-black text-gray-900 tracking-tight">Payment Method</h3>
-              <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase mt-0.5">Choose your chop strategy</p>
+              <p class="text-sm font-bold text-gray-400  uppercase mt-0.5">Choose your chop strategy</p>
             </div>
           </div>
 
@@ -163,7 +163,7 @@
                 <img src="~/assets/img/paystack.png" class="h-full object-contain" alt="Paystack" />
               </div>
               <div>
-                <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest leading-none mb-1">Pay with Card</p>
+                <p class="text-sm font-black text-gray-900 uppercase  leading-none mb-1">Pay with Card</p>
                 <p class="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">Instant & Secure</p>
               </div>
             </button>
@@ -178,12 +178,12 @@
               </div>
               <div>
                 <div class="flex items-center justify-between mb-1">
-                  <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest leading-none">My Wallet</p>
+                  <p class="text-sm font-black text-gray-900 uppercase  leading-none">My Wallet</p>
                   <div @click.stop="fetchWallet" class="p-1 hover:bg-emerald-100 rounded-md transition-colors cursor-pointer">
                     <RefreshCw :class="loadingPayment ? 'animate-spin' : ''" class="w-3 h-3 text-emerald-500" />
                   </div>
                 </div>
-                <p :class="balance < finalTotal ? 'text-rose-500' : 'text-emerald-600'" class="text-[10px] font-black uppercase tracking-tighter">
+                <p :class="balance < finalTotal ? 'text-rose-500' : 'text-emerald-600'" class="text-sm font-black uppercase tracking-tighter">
                   ₦{{ (balance || 0).toLocaleString() }}
                 </p>
               </div>
@@ -192,18 +192,18 @@
 
           <!-- Insufficient Funds / Top-up UI -->
           <div v-if="paymentMethod === 'wallet' && balance < finalTotal" class="mt-4 p-4 bg-rose-50 border border-rose-100 rounded-3xl animate-fade-in text-center">
-            <p class="text-[10px] font-bold text-rose-500 mb-4 tracking-tight uppercase">Your balance is too low for this order</p>
+            <p class="text-sm font-bold text-rose-500 mb-4 tracking-tight uppercase">Your balance is too low for this order</p>
             <div class="flex flex-col gap-2">
               <input 
                 v-model="topupAmount"
                 type="number"
                 placeholder="Amount to add"
-                class="w-full px-4 py-3 bg-white border border-rose-200 rounded-2xl text-xs font-black text-gray-900 outline-none focus:border-parentPrimary transition-all placeholder:text-gray-300"
+                class="w-full px-4 py-3 bg-white border border-rose-200 rounded-2xl text-sm font-black text-gray-900 outline-none focus:border-parentPrimary transition-all placeholder:text-gray-300"
               />
               <button 
                 @click="startTopup"
                 :disabled="loadingPayment || topupAmount <= 0"
-                class="w-full py-3 bg-gray-900 text-white rounded-2xl text-[9px] font-black tracking-widest uppercase hover:bg-parentPrimary transition-all disabled:opacity-50"
+                class="w-full py-3 bg-gray-900 text-white rounded-2xl text-sm font-black  uppercase hover:bg-parentPrimary transition-all disabled:opacity-50"
               >
                 {{ loadingPayment ? 'Initializing...' : 'Top-up with Paystack' }}
               </button>
@@ -232,7 +232,7 @@
                   </div>
                   <div>
                     <h3 class="text-base font-black text-gray-900 tracking-tight">{{ toTitleCase(vendorsMetadata[vendorId]?.storeName || 'Loading...') }}</h3>
-                    <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mt-1">{{ cartStore.getVendorStats(vendorId).itemCount }} items</p>
+                    <p class="text-sm font-bold text-gray-400  uppercase mt-1">{{ cartStore.getVendorStats(vendorId).itemCount }} items</p>
                   </div>
                 </div>
                 <button @click="cartStore.clearCart(vendorId)" class="p-2 text-gray-300 hover:text-rose-500 transition-all rounded-xl hover:bg-rose-50">
@@ -243,7 +243,7 @@
               <!-- Vendor Items (Packs) -->
               <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="pack.id" class="pl-14 space-y-4">
                  <div class="flex items-center gap-3">
-                   <span class="text-[10px] font-black bg-gray-900 text-white px-2.5 py-1 rounded-lg tracking-widest">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
+                   <span class="text-sm font-black bg-gray-900 text-white px-2.5 py-1 rounded-lg ">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
                  </div>
                  <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-5 group">
                    <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-gray-100 bg-gray-50">
@@ -251,7 +251,7 @@
                    </div>
                    <div class="flex-1 min-w-0">
                      <h4 class="font-black text-gray-900 text-sm truncate tracking-tight mb-1">{{ toTitleCase(item.name) }}</h4>
-                     <p class="text-parentPrimary font-black text-xs">₦{{ item.price?.toLocaleString() }} <span class="text-gray-400 font-bold ml-1">x{{ item.quantity }}</span></p>
+                     <p class="text-parentPrimary font-black text-sm">₦{{ item.price?.toLocaleString() }} <span class="text-gray-400 font-bold ml-1">x{{ item.quantity }}</span></p>
                    </div>
                    <div class="text-right">
                      <p class="font-black text-gray-900 text-sm tracking-tight text-sans">₦{{ (item.price * item.quantity).toLocaleString() }}</p>
@@ -273,7 +273,7 @@
           <button 
             @click="startPayment"
             :disabled="placing || (paymentMethod === 'wallet' && balance < finalTotal)"
-            class="relative z-10 px-8 py-4 bg-parentPrimary text-white rounded-2xl text-[10px] font-black tracking-widest hover:scale-105 active:scale-95 transition-all disabled:opacity-30 flex items-center gap-3 uppercase shadow-lg shadow-parentPrimary/20"
+            class="relative z-10 px-8 py-4 bg-parentPrimary text-white rounded-2xl text-sm font-black  hover:scale-105 active:scale-95 transition-all disabled:opacity-30 flex items-center gap-3 uppercase shadow-lg shadow-parentPrimary/20"
           >
             <div v-if="placing" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
             <span v-else>{{ placing ? '...' : 'Pay Now' }}</span>
@@ -287,19 +287,19 @@
         <div class="bg-white rounded-[2.5rem] border border-gray-100 p-8 space-y-6">
           <h3 class="text-sm font-black text-gray-900 tracking-[0.2em] uppercase">Order Summary</h3>
           <div class="space-y-4">
-            <div class="flex justify-between items-center text-xs font-bold text-gray-500">
+            <div class="flex justify-between items-center text-sm font-bold text-gray-500">
                <span>Subtotal</span>
                <span class="text-gray-900">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
             </div>
-            <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
+            <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-bold text-gray-500">
                <span>Delivery</span>
                <span class="text-gray-900">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
             </div>
-            <div class="flex justify-between items-center text-xs font-bold text-gray-500">
+            <div class="flex justify-between items-center text-sm font-bold text-gray-500">
                <span>Fees & Packaging</span>
                <span class="text-gray-900">₦{{ (computedTotalPackagingFee + computedTotalServiceFee).toLocaleString() }}</span>
             </div>
-             <div v-if="computedPaystackFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
+             <div v-if="computedPaystackFee > 0" class="flex justify-between items-center text-sm font-bold text-gray-500">
                <span>Processing Fee</span>
                <span class="text-gray-900">₦{{ computedPaystackFee.toLocaleString() }}</span>
             </div>
@@ -307,10 +307,10 @@
           <div class="pt-6 border-t-2 border-dashed border-gray-100">
              <div class="flex justify-between items-end mb-8">
                <div>
-                  <p class="text-[9px] font-black text-gray-400 tracking-widest uppercase mb-1">Total Payable</p>
+                  <p class="text-sm font-black text-gray-400  uppercase mb-1">Total Payable</p>
                   <h3 class="text-3xl font-black text-gray-900 tracking-tighter">₦{{ finalTotal.toLocaleString() }}</h3>
                </div>
-               <div class="text-[8px] font-black text-gray-400 uppercase text-right leading-relaxed tracking-widest">
+               <div class="text-[8px] font-black text-gray-400 uppercase text-right leading-relaxed ">
                   Secure Paystack<br/>Gateway Ready
                </div>
              </div>
@@ -318,7 +318,7 @@
              <button 
                 @click="startPayment"
                 :disabled="placing || (paymentMethod === 'wallet' && balance < finalTotal)"
-                class="w-full py-5 bg-gray-900 text-white rounded-2xl text-[11px] font-black tracking-widest hover:bg-parentPrimary transition-all disabled:opacity-40 flex items-center justify-center gap-3 uppercase shadow-none"
+                class="w-full py-5 bg-gray-900 text-white rounded-2xl text-[11px] font-black  hover:bg-parentPrimary transition-all disabled:opacity-40 flex items-center justify-center gap-3 uppercase shadow-none"
               >
                 <Loader2 v-if="placing" class="w-4 h-4 animate-spin" />
                 <span>{{ placing ? 'Processing...' : 'Complete Checkout' }}</span>
@@ -338,7 +338,7 @@
           <div class="flex items-center justify-between mb-8 px-2">
             <div>
               <h2 class="text-2xl font-black text-gray-900 tracking-tight">Review Items</h2>
-              <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mt-1">Check your packs & units</p>
+              <p class="text-sm font-bold text-gray-400  uppercase mt-1">Check your packs & units</p>
             </div>
             <button @click="showOrderBreakdown = false" class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
               <X class="w-5 h-5" />
@@ -351,25 +351,25 @@
                 <div class="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100">
                   <ShoppingBag class="w-4 h-4 text-parentPrimary" />
                 </div>
-                <h4 class="text-sm font-black text-gray-900 uppercase tracking-widest">{{ toTitleCase(vendorsMetadata[vendorId]?.storeName || '') }}</h4>
+                <h4 class="text-sm font-black text-gray-900 uppercase ">{{ toTitleCase(vendorsMetadata[vendorId]?.storeName || '') }}</h4>
               </div>
               
               <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="'mb-pack-' + pack.id" class="pl-4 border-l-2 border-gray-50 space-y-5">
                  <div class="flex items-center justify-between">
-                   <p class="text-[10px] font-black text-gray-300 tracking-widest uppercase">Pack {{ pIndex + 1 }}</p>
-                   <button @click="cartStore.removePack(vendorId, pack.id)" class="text-[9px] font-black text-rose-400 uppercase tracking-[0.2em] hover:text-rose-500">Remove Pack</button>
+                   <p class="text-sm font-black text-gray-300  uppercase">Pack {{ pIndex + 1 }}</p>
+                   <button @click="cartStore.removePack(vendorId, pack.id)" class="text-sm font-black text-rose-400 uppercase tracking-[0.2em] hover:text-rose-500">Remove Pack</button>
                  </div>
                  <div v-for="(item, iIndex) in pack.items" :key="'mb-item-'+iIndex" class="flex items-center gap-4">
                     <div class="w-12 h-12 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shrink-0">
                       <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
                     </div>
                     <div class="flex-1 min-w-0">
-                      <h5 class="text-xs font-black text-gray-900 truncate tracking-tight">{{ toTitleCase(item.name) }}</h5>
-                      <p class="text-[10px] font-bold text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
+                      <h5 class="text-sm font-black text-gray-900 truncate tracking-tight">{{ toTitleCase(item.name) }}</h5>
+                      <p class="text-sm font-bold text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
                     </div>
                     <div class="flex items-center gap-3 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
                       <button @click="cartStore.updateItemQuantity(vendorId, pack.id, iIndex, item.quantity - 1)" class="text-gray-400 font-bold hover:text-rose-500 transition-colors">−</button>
-                      <span class="text-xs font-black text-gray-900 min-w-[12px] text-center">{{ item.quantity }}</span>
+                      <span class="text-sm font-black text-gray-900 min-w-[12px] text-center">{{ item.quantity }}</span>
                       <button @click="cartStore.updateItemQuantity(vendorId, pack.id, iIndex, item.quantity + 1)" class="text-gray-400 font-bold hover:text-parentPrimary transition-colors">+</button>
                     </div>
                  </div>
@@ -377,7 +377,7 @@
             </div>
           </div>
           
-          <button @click="showOrderBreakdown = false" class="w-full py-5 bg-gray-900 text-white rounded-[2rem] text-[10px] font-black tracking-[0.2em] shadow-none uppercase mt-2">
+          <button @click="showOrderBreakdown = false" class="w-full py-5 bg-gray-900 text-white rounded-[2rem] text-sm font-black tracking-[0.2em] shadow-none uppercase mt-2">
             Done Reviewing
           </button>
         </div>
@@ -397,7 +397,7 @@
           
           <div class="space-y-4">
             <div class="relative group text-left">
-              <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Amount to Add (NGN)</p>
+              <p class="text-sm font-black text-gray-400 uppercase  mb-2 pl-1">Amount to Add (NGN)</p>
               <input 
                 v-model="topupAmount" 
                 type="number"
@@ -409,14 +409,14 @@
             <button 
               @click="startTopup" 
               :disabled="loadingPayment || topupAmount <= 0"
-              class="w-full py-4 bg-gray-900 text-white rounded-2xl text-xs font-black tracking-widest hover:bg-emerald-500 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              class="w-full py-4 bg-gray-900 text-white rounded-2xl text-sm font-black  hover:bg-emerald-500 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <Loader2 v-if="loadingPayment" class="w-4 h-4 animate-spin" />
               <span>FUND WALLET NOW</span>
             </button>
           </div>
           
-          <button @click="showTopupModal = false" class="mt-6 text-[10px] font-black text-gray-300 tracking-widest uppercase hover:text-gray-900 transition-colors">
+          <button @click="showTopupModal = false" class="mt-6 text-sm font-black text-gray-300  uppercase hover:text-gray-900 transition-colors">
             Maybe Later
           </button>
         </div>
@@ -425,13 +425,13 @@
 
     <!-- Full Screen Placing Order Loader -->
     <Transition name="fade">
-      <div v-if="placing" class="fixed inset-0 z-[250] bg-gray-900/95 backdrop-blur-xl flex flex-col items-center justify-center text-center p-6 text-white uppercase tracking-widest">
+      <div v-if="placing" class="fixed inset-0 z-[250] bg-gray-900/95 backdrop-blur-xl flex flex-col items-center justify-center text-center p-6 text-white uppercase ">
         <div class="w-24 h-24 mb-8 relative">
           <div class="absolute inset-0 border-4 border-white/10 rounded-full"></div>
           <div class="absolute inset-0 border-4 border-t-parentPrimary rounded-full animate-spin"></div>
         </div>
         <h2 class="text-2xl font-black mb-2">Finalizing chop...</h2>
-        <p class="text-white/40 font-bold text-[9px]">Redirecting to payment...</p>
+        <p class="text-white/40 font-bold text-sm">Redirecting to payment...</p>
       </div>
     </Transition>
 

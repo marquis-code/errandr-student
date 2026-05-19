@@ -4,11 +4,11 @@
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
       <div>
         <h1 class="text-3xl font-black text-gray-900 tracking-tight leading-none mb-2">Campus Hall of Fame</h1>
-        <p class="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">Top Orderers & Riders this Month</p>
+        <p class="text-sm font-black text-gray-400 uppercase tracking-[0.2em]">Top Orderers & Riders this Month</p>
       </div>
       <div class="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-100 rounded-full">
         <Trophy class="w-3.5 h-3.5 text-amber-600" />
-        <span class="text-[9px] font-black text-amber-700 uppercase tracking-[0.2em]">Next Update: Sunday 12PM</span>
+        <span class="text-sm font-black text-amber-700 uppercase tracking-[0.2em]">Next Update: Sunday 12PM</span>
       </div>
     </div>
 
@@ -29,7 +29,7 @@
              </div>
           </div>
           <h3 class="text-lg font-black text-gray-900 tracking-tight mb-1">{{ leader.firstName }} {{ leader.lastName }}</h3>
-          <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">{{ leader.faculty || 'Unspecified' }}</p>
+          <p class="text-sm font-black text-gray-400 uppercase  mb-4">{{ leader.faculty || 'Unspecified' }}</p>
           <div class="px-4 py-2 bg-white rounded-xl border border-gray-100 text-sm font-black text-parentPrimary tracking-tighter ">
              {{ leader.points }} PTS
           </div>
@@ -46,13 +46,13 @@
         <div class="bg-gray-900 rounded-[2.5rem] p-8 text-white  relative overflow-hidden group">
           <div class="absolute -right-10 -top-10 w-40 h-40 bg-parentPrimary/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
           <div class="relative z-10">
-            <h4 class="text-xl font-black tracking-tighter mb-4 italic">Hall of Fame Perks</h4>
+            <h4 class="text-xl font-black tracking-tighter mb-4 ">Hall of Fame Perks</h4>
             <div class="space-y-4">
                <div v-for="perk in perks" :key="perk.title" class="flex items-start gap-3">
                   <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-sm">{{ perk.icon }}</div>
                   <div>
-                     <p class="text-xs font-black tracking-tight text-white mb-0.5">{{ perk.title }}</p>
-                     <p class="text-[9px] font-medium text-gray-400 leading-relaxed uppercase tracking-widest">{{ perk.desc }}</p>
+                     <p class="text-sm font-black tracking-tight text-white mb-0.5">{{ perk.title }}</p>
+                     <p class="text-sm font-medium text-gray-400 leading-relaxed uppercase ">{{ perk.desc }}</p>
                   </div>
                </div>
             </div>
@@ -60,7 +60,7 @@
         </div>
 
         <div class="bg-parentPrimary/5 border border-parentPrimary/10 rounded-[2.5rem] p-8">
-           <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-relaxed">
+           <p class="text-sm font-black text-gray-400 uppercase  leading-relaxed">
              The Hall of Fame resets every 30 days. Top earners within each faculty receive a specialized badge and a digital certificate of accomplishment as an Errandr Top Performer.
            </p>
         </div>

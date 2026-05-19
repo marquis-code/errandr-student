@@ -7,8 +7,8 @@
           <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
         </NuxtLink>
         <div class="flex items-center gap-8">
-          <NuxtLink to="/about" class="text-[11px] font-black tracking-widest uppercase text-parentPrimary border-b-2 border-parentPrimary pb-1">About</NuxtLink>
-          <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white text-[11px] font-black tracking-widest uppercase rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
+          <NuxtLink to="/about" class="text-[11px] font-black  uppercase text-parentPrimary border-b-2 border-parentPrimary pb-1">About</NuxtLink>
+          <NuxtLink to="/auth/login" class="px-8 py-3 bg-gray-900 text-white text-[11px] font-black  uppercase rounded-2xl hover:bg-parentPrimary transition-all shadow-xl shadow-black/5">Sign In</NuxtLink>
         </div>
       </div>
     </nav>
@@ -21,13 +21,13 @@
       </div>
 
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-sm font-black tracking-[0.2em] uppercase text-gray-400 mb-8">
           <span class="w-2 h-2 rounded-full bg-parentPrimary animate-pulse"></span>
           Our Mission & Vision
         </div>
         <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-10 max-w-4xl mx-auto">
           Delivering value to <br />
-          <span class="text-parentPrimary italic bg-parentPrimary/5 px-6 rounded-3xl">every heart</span> on campus.
+          <span class="text-parentPrimary  bg-parentPrimary/5 px-6 rounded-3xl">every heart</span> on campus.
         </h1>
         <p class="text-xl text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed tracking-tight">
           Starting from the <span class="text-gray-900">College of Medicine, University of Lagos (CMUL)</span>, Errandr is revolutionizing how campus communities eat, work, and thrive.
@@ -46,7 +46,7 @@
             </div>
             <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">For Students</h3>
             <p class="text-gray-500 font-bold leading-relaxed mb-6">Access your favorite meals within and outside school environs instantly. Focus on your studies while we handle the logistics.</p>
-            <div class="flex items-center gap-2 text-[10px] font-black text-parentPrimary uppercase tracking-widest">
+            <div class="flex items-center gap-2 text-sm font-black text-parentPrimary uppercase ">
               <div class="h-px flex-1 bg-parentPrimary/10"></div>
               Seamless Access
             </div>
@@ -59,7 +59,7 @@
             </div>
             <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">Entrepreneurs</h3>
             <p class="text-gray-500 font-bold leading-relaxed mb-6">Empowering student vendors and local kitchens with a digital platform to scale their businesses and reach more customers.</p>
-            <div class="flex items-center gap-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+            <div class="flex items-center gap-2 text-sm font-black text-emerald-600 uppercase ">
               <div class="h-px flex-1 bg-emerald-500/10"></div>
               Growth Engine
             </div>
@@ -72,7 +72,7 @@
             </div>
             <h3 class="text-2xl font-black text-gray-900 tracking-tight mb-4">Erranders</h3>
             <p class="text-gray-500 font-bold leading-relaxed mb-6">Creating high-yield earning opportunities for student riders. Earn while you walk or ride between your lectures.</p>
-            <div class="flex items-center gap-2 text-[10px] font-black text-indigo-600 uppercase tracking-widest">
+            <div class="flex items-center gap-2 text-sm font-black text-indigo-600 uppercase ">
               <div class="h-px flex-1 bg-indigo-500/10"></div>
               Walk to Earn
             </div>
@@ -94,7 +94,7 @@
               From the halls of CMUL to every corner of the university environs, we bridge the gap. Our hyper-local network ensures that distance is never a barrier to quality nutrition and essential services.
             </p>
             <div class="pt-6">
-              <NuxtLink to="/auth/register" class="inline-flex items-center gap-4 px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-parentPrimary transition-all group">
+              <NuxtLink to="/auth/register" class="inline-flex items-center gap-4 px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-black text-sm uppercase  shadow-2xl hover:bg-parentPrimary transition-all group">
                 Join our community
                 <ArrowRight class="w-5 h-5 group-hover:translate-x-2 transition-transform" />
               </NuxtLink>
@@ -118,13 +118,13 @@
         <NuxtLink to="/" class="group">
           <img src="@/assets/img/logo.webp" alt="Errandr Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
         </NuxtLink>
-        <div class="flex items-center gap-10 text-[10px] font-black tracking-[0.15em] uppercase text-gray-400">
+        <div class="flex items-center gap-10 text-sm font-black tracking-[0.15em] uppercase text-gray-400">
           <NuxtLink to="/about" class="text-parentPrimary font-black">About Us</NuxtLink>
           <a href="#" class="hover:text-gray-900 transition-colors">Privacy</a>
           <a href="#" class="hover:text-gray-900 transition-colors">Terms</a>
           <a href="#" class="hover:text-gray-900 transition-colors">Contact</a>
         </div>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© {{ new Date().getFullYear() }} Errandr Ltd • CMUL Native</p>
+        <p class="text-sm font-bold text-gray-400 uppercase ">© {{ new Date().getFullYear() }} Errandr Ltd • CMUL Native</p>
       </div>
     </footer>
   </div>
