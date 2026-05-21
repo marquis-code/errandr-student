@@ -1,1 +1,0 @@
-import{aN as r,aO as m,aP as l}from"./BCUOv1Kf.js";import{listItemResolver as a}from"./B_skI8K9.js";const n=r({defaults:{"@type":"ItemList"},resolve(e,t){if(e.itemListElement){let s=1;e.itemListElement=m(e.itemListElement,t,a,{array:!0,afterResolve(i){l(i,"position",s++)}})}return e}});export{n as itemListResolver};

@@ -1,1 +1,0 @@
-import{_ as c,aC as t,o as a,c as _,b as e,aM as r}from"./BCUOv1Kf.js";const s={};function l(m,u){const n=t("FullScreenLoader"),o=r;return a(),_("main",null,[e(n),e(o)])}const d=c(s,[["render",l]]);export{d as default};
