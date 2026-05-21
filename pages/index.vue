@@ -279,6 +279,7 @@
     carouselId="carousel-recommended"
     @select-vendor="navigateToVendor"
     @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
   />
 
   <!-- Trending Vendors -->
@@ -291,6 +292,7 @@
     carouselId="carousel-trending"
     @select-vendor="navigateToVendor"
     @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
   />
 
   <!-- New to Erranders -->
@@ -303,6 +305,7 @@
     carouselId="carousel-new"
     @select-vendor="navigateToVendor"
     @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
   />
 
  <!-- Vendor Closed Modal -->
@@ -311,6 +314,12 @@
  :vendor="selectedVendorForModal" 
  @close="isClosedModalOpen = false" 
  />
+
+  <!-- Share Modal -->
+  <UiShareModal 
+    v-model:isOpen="isShareModalOpen" 
+    :vendor="selectedVendorForShare" 
+  />
 
   <!-- How it works (Redesigned & Condensed) -->
   <section id="how-it-works" class="py-20 bg-white overflow-hidden border-t border-slate-100">
@@ -452,8 +461,10 @@ const recommendedVendors = ref<any[]>([])
 const trendingVendors = ref<any[]>([])
 const newVendors = ref<any[]>([])
 const vendors = ref<any[]>([]) // Combined list for active promotions
-const selectedVendorForModal = ref<any>(null)
-const isClosedModalOpen = ref(false)
+const selectedVendorForModal = ref(null);
+const isClosedModalOpen = ref(false);
+const isShareModalOpen = ref(false);
+const selectedVendorForShare = ref(null);
 const cartStore = useCart()
 const { user, logOut } = useUser()
 const { unreadCount } = useNotifications()
@@ -680,13 +691,18 @@ const handlePromoClick = async (promo: any) => {
 }
 
 const navigateToVendor = (vendor: any) => {
- if (!vendor.isOpen) {
- selectedVendorForModal.value = vendor
- isClosedModalOpen.value = true
- return
- }
- router.push(`/vendors/${vendor._id}`)
-}
+  if (!vendor.isOpen && vendor.statusMessage !== 'open') {
+    selectedVendorForModal.value = vendor;
+    isClosedModalOpen.value = true;
+    return;
+  }
+  router.push(`/vendors/${vendor._id}`);
+};
+
+const handleShareVendor = (vendor: any) => {
+  selectedVendorForShare.value = vendor;
+  isShareModalOpen.value = true;
+};
 
 onMounted(() => {
  window.addEventListener('scroll', handleScroll)

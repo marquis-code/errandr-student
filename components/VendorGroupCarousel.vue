@@ -118,8 +118,13 @@
                   <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors"><Clock class="w-3.5 h-3.5" /> {{ vendor.preparationTime || 20 }} min</span>
                   <span class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors"><Bike class="w-3.5 h-3.5" /> From ₦{{ vendor.baseDeliveryFee || 600 }}</span>
                 </div>
-                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-parentPrimary group-hover:text-white group-hover:rotate-45 transition-all duration-500">
-                  <ArrowUpRight class="w-4 h-4" />
+                <div class="flex items-center gap-2">
+                  <button @click.stop="$emit('share-vendor', vendor)" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-parentPrimary hover:text-white transition-all duration-300">
+                    <Share2 class="w-4 h-4" />
+                  </button>
+                  <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-parentPrimary group-hover:text-white group-hover:rotate-45 transition-all duration-500">
+                    <ArrowUpRight class="w-4 h-4" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -131,7 +136,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight, Store, Star, Clock, Bike, ArrowUpRight, Bell, Sparkles, TrendingUp, Flame } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, Store, Star, Clock, Bike, ArrowUpRight, Bell, Sparkles, TrendingUp, Flame, Share2 } from 'lucide-vue-next'
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -142,7 +147,7 @@ const props = defineProps({
   carouselId: { type: String, required: true }
 })
 
-defineEmits(['select-vendor', 'notify'])
+defineEmits(['select-vendor', 'notify', 'share-vendor'])
 
 const scrollCarousel = (direction: 'left' | 'right') => {
   const container = document.getElementById(props.carouselId)

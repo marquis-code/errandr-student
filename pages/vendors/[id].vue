@@ -65,7 +65,7 @@
           </button>
           <div class="flex items-center gap-2">
             <button 
-              @click="shareStore"
+              @click="isShareModalOpen = true"
               class="w-10 h-10 rounded-2xl backdrop-blur-xl flex items-center justify-center border transition-all active:scale-95 bg-white/10 border-white/20 text-white hover:bg-white/20"
             >
               <Share2 class="w-4 h-4" />
@@ -726,6 +726,11 @@
     </Teleport>
 
     <!-- ============================================ -->
+    <!-- SHARE MODAL                                  -->
+    <!-- ============================================ -->
+    <UiShareModal v-model:isOpen="isShareModalOpen" :vendor="vendor" />
+
+    <!-- ============================================ -->
     <!-- PRODUCT DETAIL MODAL                         -->
     <!-- ============================================ -->
     <Teleport to="body">
@@ -793,8 +798,7 @@
 
 <script setup lang="ts">
 import { 
-  Plus, Minus, X, Copy, Trash2, ShoppingCart, 
-  Clock, Star, MapPin, ArrowRight, Heart, ArrowLeft, Search, Info, ChevronRight, Users, ShoppingBag, Calendar, Bike, Share2
+  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useHead, navigateTo } from '#imports';
@@ -804,6 +808,8 @@ import { useGroupOrder } from '@/composables/modules/group-order';
 import { useFavorites } from '@/composables/modules/favorites';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
+
+const isShareModalOpen = ref(false);
 import { useToast } from '@/composables/useToast';
 
 definePageMeta({
@@ -1106,34 +1112,7 @@ const handleCheckoutGroupOrder = async () => {
   }
 };
 
-const shareStore = () => {
-  if (!vendor.value || !vendor.value.subdomain) {
-    showToast('Store link not available', 'error');
-    return;
-  }
-  const protocol = window.location.protocol;
-  let baseHost = window.location.host;
-  const parts = window.location.hostname.split('.');
-  if (parts.length >= 3 || (parts.length >= 2 && parts[parts.length - 1] === 'localhost')) {
-    if (parts[0] !== 'www' && parts[0] !== 'student' && parts[0] !== 'vendor') {
-      const port = window.location.port ? `:${window.location.port}` : '';
-      baseHost = parts.slice(1).join('.') + port;
-    }
-  }
-  const shareUrl = `${protocol}//${vendor.value.subdomain}.${baseHost}/`;
-  if (navigator.share) {
-    navigator.share({
-      title: vendor.value.storeName,
-      text: `Check out ${vendor.value.storeName} on Errandr!`,
-      url: shareUrl,
-    }).catch(err => {
-      console.error('Error sharing:', err);
-    });
-  } else {
-    navigator.clipboard.writeText(shareUrl);
-    showToast('Store link copied to clipboard!', 'success');
-  }
-};
+// shareStore has been replaced by the ShareModal
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
