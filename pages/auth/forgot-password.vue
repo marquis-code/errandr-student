@@ -8,8 +8,8 @@
           Back to login
         </NuxtLink>
         <NuxtLink to="/" class="flex items-center gap-2 mb-8 inline-block group">
-          <div class="w-12 h-12 rounded-xl bg-parentPrimary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <ShoppingBag class="w-6 h-6 text-parentPrimary" />
+                <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
+            <img src="@/assets/img/logo-light.png" class="w-auto h-10" alt="Errandr" />
           </div>
         </NuxtLink>
         <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">forgot password</h1>
