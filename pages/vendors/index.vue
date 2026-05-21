@@ -95,13 +95,21 @@
               </span>
             </div>
 
-            <!-- Heart (Favorite) -->
-            <button 
-              @click.stop="toggleFavoriteVendor(vendor)"
-              class="absolute top-3 right-3 w-8 h-8 rounded-xl bg-white/80 backdrop-blur-md flex items-center justify-center text-gray-600 hover:text-rose-500 hover:bg-white transition-all z-10 shadow-sm"
-            >
-              <Heart class="w-4 h-4" :class="{ 'fill-rose-500 text-rose-500': isVendorFavorited(vendor._id) }" />
-            </button>
+            <!-- Actions (Favorite & Share) -->
+            <div class="absolute top-3 right-3 z-10 flex flex-col gap-2">
+              <button 
+                @click.stop="toggleFavoriteVendor(vendor)"
+                class="w-8 h-8 rounded-xl bg-white/80 backdrop-blur-md flex items-center justify-center text-gray-600 hover:text-rose-500 hover:bg-white transition-all shadow-sm"
+              >
+                <Heart class="w-4 h-4" :class="{ 'fill-rose-500 text-rose-500': isVendorFavorited(vendor._id) }" />
+              </button>
+              <button 
+                @click.stop="handleShareVendor(vendor)"
+                class="w-8 h-8 rounded-xl bg-white/80 backdrop-blur-md flex items-center justify-center text-gray-600 hover:text-parentPrimary hover:bg-white transition-all shadow-sm"
+              >
+                <Share2 class="w-4 h-4" />
+              </button>
+            </div>
 
             <!-- Logo overlay overlapping bottom-left edge -->
             <div class="absolute bottom-3 left-3 z-10">
@@ -201,6 +209,12 @@
       :isOpen="isClosedModalOpen" 
       :vendor="selectedVendorForModal" 
       @close="isClosedModalOpen = false" 
+    />
+
+    <!-- Share Modal -->
+    <UiShareModal 
+      v-model:isOpen="isShareModalOpen" 
+      :vendor="selectedVendorForShare" 
     />
 
     <!-- ============================================ -->
@@ -303,7 +317,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useHead } from '#imports';
-import { Search, Tag, Clock, Star, Heart, Filter, X } from 'lucide-vue-next';
+import { Search, Tag, Clock, Star, Heart, Filter, X, Share2 } from 'lucide-vue-next';
 import { useFavorites } from '@/composables/modules/favorites';
 import UiSelectInput from '@/components/ui/SelectInput.vue';
 import VendorClosedModal from '@/components/VendorClosedModal.vue';
@@ -344,6 +358,14 @@ const handleVendorClick = (vendor: any) => {
     return;
   }
   navigateTo(`/vendors/${vendor._id}`);
+};
+
+const isShareModalOpen = ref(false);
+const selectedVendorForShare = ref<any>(null);
+
+const handleShareVendor = (vendor: any) => {
+  selectedVendorForShare.value = vendor;
+  isShareModalOpen.value = true;
 };
 
 const allCategories = [
