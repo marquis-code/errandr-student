@@ -1,18 +1,42 @@
 import axios, { type AxiosResponse } from "axios";
 import { useUser } from "@/composables/modules/auth/user";
 import { useCustomToast } from '@/composables/core/useCustomToast'
-const { showToast } = useCustomToast();
 
+// Lazy-init toast to avoid calling composable outside Vue setup context
+let _showToast: ReturnType<typeof useCustomToast>['showToast'] | null = null;
+const getToast = () => {
+  if (!_showToast) {
+    try {
+      const { showToast } = useCustomToast();
+      _showToast = showToast;
+    } catch {
+      // Fallback: no-op during SSR/build
+      _showToast = (() => {}) as any;
+    }
+  }
+  return _showToast!;
+};
 
-const isDev = import.meta.env.DEV;
-const envApiUrl = import.meta.env.VITE_API_BASE_URL;
-const rawBaseUrl = envApiUrl || (isDev ? "http://localhost:3000" : "https://api.erranders.org");
-const cleanBaseUrl = rawBaseUrl.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
+// Use useRuntimeConfig() for the API base URL so Vercel env vars work correctly.
+// import.meta.env.VITE_* won't be populated on Vercel since .env is gitignored.
+const getBaseUrl = (): string => {
+  try {
+    const config = useRuntimeConfig();
+    return (config.public.apiBase as string) || 'https://api.erranders.org';
+  } catch {
+    // Fallback if called outside Nuxt context
+    const envApiUrl = import.meta.env?.VITE_API_BASE_URL;
+    return envApiUrl || 'https://api.erranders.org';
+  }
+};
+
+const cleanBaseUrl = getBaseUrl().replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
 const $GATEWAY_ENDPOINT_WITHOUT_VERSION = cleanBaseUrl;
 const $GATEWAY_ENDPOINT = `${cleanBaseUrl}/api/v1`;
 const $GATEWAY_ENDPOINT_V2 = `${cleanBaseUrl}/v2`;
 const $IMAGE_UPLOAD_ENDPOINT = cleanBaseUrl;
+
 
 export const GATEWAY_ENDPOINT = axios.create({
   baseURL: $GATEWAY_ENDPOINT,
@@ -71,7 +95,7 @@ instanceArray.forEach((instance) => {
     (err: any) => {
       const { logOut } = useUser();
       if (typeof err.response === "undefined") {
-        showToast({
+        getToast()({
           title: "Error",
           message: "kindly check your network connection",
           toastType: "error",
@@ -92,7 +116,7 @@ instanceArray.forEach((instance) => {
         logOut(isPublicPath ? false : true);
         
         if (!isPublicPath) {
-          showToast({
+          getToast()({
             title: "Session Expired",
             message: "Please login to continue",
             toastType: "error",
@@ -106,7 +130,7 @@ instanceArray.forEach((instance) => {
         };
       } else if (statusCodeStartsWith(err.response.status, 4)) {
         if (err.response.data.message) {
-          showToast({
+          getToast()({
             title: "Error",
             message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
             toastType: "error",
@@ -118,7 +142,7 @@ instanceArray.forEach((instance) => {
           ...err.response,
         };
       } else if (err.response.status === 500) {
-        showToast({
+        getToast()({
           title: "Error",
           message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
           toastType: "error",
@@ -129,7 +153,7 @@ instanceArray.forEach((instance) => {
           ...err.response,
         };
       } else if (err.response.status === 409) {
-        showToast({
+        getToast()({
           title: "Error",
           message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
           toastType: "error",
