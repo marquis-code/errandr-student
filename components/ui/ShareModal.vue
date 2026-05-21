@@ -103,9 +103,25 @@ const shareUrl = computed(() => {
   
   if (!vendorIdOrSlug) return window.location.href
   
-  // Due to DNS restrictions (NXDOMAIN), we must use path-based routing 
-  // until a wildcard DNS record (*.erranders.org) is explicitly configured.
-  return `${protocol}//${host}/vendors/${vendorIdOrSlug}`
+  // Vercel app or localhost, default to path-based sharing to avoid broken subdomains locally
+  if (host.includes('vercel.app') || host.includes('localhost')) {
+    return `${protocol}//${host}/vendors/${vendorIdOrSlug}`
+  }
+  
+  // Production custom domain (e.g., erranders.org)
+  const parts = window.location.hostname.split('.')
+  let baseHost = host
+  
+  // Strip existing subdomain if any to find the root domain
+  if (parts.length >= 3 && !['www', 'student', 'vendor'].includes(parts[0])) {
+    const port = window.location.port ? `:${window.location.port}` : ''
+    baseHost = parts.slice(1).join('.') + port
+  } else if (parts[0] === 'www' || parts[0] === 'student' || parts[0] === 'vendor') {
+    const port = window.location.port ? `:${window.location.port}` : ''
+    baseHost = parts.slice(1).join('.') + port
+  }
+  
+  return `${protocol}//${vendorIdOrSlug}.${baseHost}/`
 })
 
 const shareText = computed(() => `Check out ${props.vendor?.storeName} on Errandr!`)
