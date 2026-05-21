@@ -10,7 +10,7 @@
       </div>
 
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-sm font-black tracking-[0.2em] uppercase text-gray-400 mb-8 shadow-sm">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-100 text-sm font-black tracking-[0.2em] text-gray-400 mb-8 shadow-sm">
           <FileText class="w-3.5 h-3.5 text-parentPrimary" />
           Legal Framework
         </div>
