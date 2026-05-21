@@ -65,6 +65,12 @@
           </button>
           <div class="flex items-center gap-2">
             <button 
+              @click="shareStore"
+              class="w-10 h-10 rounded-2xl backdrop-blur-xl flex items-center justify-center border transition-all active:scale-95 bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
+              <Share2 class="w-4 h-4" />
+            </button>
+            <button 
               @click="toggleFavoriteVendor"
               class="w-10 h-10 rounded-2xl backdrop-blur-xl flex items-center justify-center border transition-all active:scale-95"
               :class="isFavorited ? 'bg-rose-500/20 border-rose-400/30 text-rose-400' : 'bg-white/10 border-white/20 text-white'"
@@ -788,7 +794,7 @@
 <script setup lang="ts">
 import { 
   Plus, Minus, X, Copy, Trash2, ShoppingCart, 
-  Clock, Star, MapPin, ArrowRight, Heart, ArrowLeft, Search, Info, ChevronRight, Users, ShoppingBag, Calendar, Bike
+  Clock, Star, MapPin, ArrowRight, Heart, ArrowLeft, Search, Info, ChevronRight, Users, ShoppingBag, Calendar, Bike, Share2
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useHead, navigateTo } from '#imports';
@@ -1097,6 +1103,35 @@ const handleCheckoutGroupOrder = async () => {
   } catch (e) {
     console.error('Checkout failed', e);
     showToast('Failed to checkout. Ensure payment is settled.', 'error');
+  }
+};
+
+const shareStore = () => {
+  if (!vendor.value || !vendor.value.subdomain) {
+    showToast('Store link not available', 'error');
+    return;
+  }
+  const protocol = window.location.protocol;
+  let baseHost = window.location.host;
+  const parts = window.location.hostname.split('.');
+  if (parts.length >= 3 || (parts.length >= 2 && parts[parts.length - 1] === 'localhost')) {
+    if (parts[0] !== 'www' && parts[0] !== 'student' && parts[0] !== 'vendor') {
+      const port = window.location.port ? `:${window.location.port}` : '';
+      baseHost = parts.slice(1).join('.') + port;
+    }
+  }
+  const shareUrl = `${protocol}//${vendor.value.subdomain}.${baseHost}/`;
+  if (navigator.share) {
+    navigator.share({
+      title: vendor.value.storeName,
+      text: `Check out ${vendor.value.storeName} on Errandr!`,
+      url: shareUrl,
+    }).catch(err => {
+      console.error('Error sharing:', err);
+    });
+  } else {
+    navigator.clipboard.writeText(shareUrl);
+    showToast('Store link copied to clipboard!', 'success');
   }
 };
 
