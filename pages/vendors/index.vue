@@ -142,17 +142,56 @@
         </div>
       </div>
 
-      <!-- Empty State -->
-      <div v-else class="w-full text-center py-20 px-6 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-        <div class="w-16 h-16 bg-white shadow-sm border border-gray-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🔍</div>
-        <h3 class="text-lg font-black text-gray-900 mb-1 tracking-tight">No stores match criteria</h3>
-        <p class="text-gray-500 text-xs font-medium mb-6 max-w-sm mx-auto">We couldn't find any stores matching your current filters. Try resetting them.</p>
-        <button 
-          @click="resetAllFilters"
-          class="px-8 py-3.5 bg-gray-900 text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-parentPrimary transition-colors shadow-xl"
-        >
-          Reset All Filters
-        </button>
+      <!-- Empty State: No filter results -->
+      <div v-else class="relative w-full overflow-hidden rounded-2xl border border-dashed border-gray-200 py-20 px-6 text-center">
+        <!-- Background layers -->
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-50/80 to-white pointer-events-none" />
+        <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-64 h-64 bg-parentPrimary/5 rounded-full blur-[80px] pointer-events-none" />
+
+        <!-- Emoji icon -->
+        <div class="relative z-10 w-16 h-16 bg-white rounded-2xl shadow-md border border-gray-100 flex items-center justify-center text-3xl mx-auto mb-5" style="animation: float 3s ease-in-out infinite;">
+          🔍
+        </div>
+
+        <!-- Copy -->
+        <div class="relative z-10 space-y-2 mb-6">
+          <h3 class="text-xl font-black text-gray-900 tracking-tight">Nothing Matches</h3>
+          <p class="text-sm text-gray-400 font-medium max-w-xs mx-auto leading-relaxed">
+            We couldn't find stores for your current filters. Try broadening your search!
+          </p>
+        </div>
+
+        <!-- Active filter chips (visual hint) -->
+        <div class="relative z-10 flex flex-wrap items-center justify-center gap-2 mb-8">
+          <span v-if="searchQuery" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-xs font-bold text-gray-600">
+            🔍 "{{ searchQuery }}"
+          </span>
+          <span v-if="selectedCategory !== 'all'" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-xs font-bold text-gray-600">
+            {{ allCategories.find(c => c.key === selectedCategory)?.icon }} {{ allCategories.find(c => c.key === selectedCategory)?.label }}
+          </span>
+          <span v-if="showOnlyOffers" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-xs font-bold text-gray-600">
+            🏷️ Offers only
+          </span>
+          <span v-if="showQuickDelivery" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-xs font-bold text-gray-600">
+            ⚡ Under 30 min
+          </span>
+        </div>
+
+        <!-- Actions -->
+        <div class="relative z-10 flex items-center justify-center gap-3">
+          <button
+            @click="resetAllFilters"
+            class="inline-flex items-center gap-2 px-6 py-2.5 bg-parentPrimary text-white rounded-xl text-xs font-black hover:scale-105 transition-transform shadow-md shadow-parentPrimary/20 active:scale-95"
+          >
+            Reset Filters
+          </button>
+          <NuxtLink
+            to="/dashboard"
+            class="inline-flex items-center px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-xs font-black hover:bg-gray-200 transition-colors active:scale-95"
+          >
+            Go Home
+          </NuxtLink>
+        </div>
       </div>
 
     </div>
@@ -457,5 +496,10 @@ const getInitials = (name: string) => {
 @keyframes slideUpMobile {
   from { opacity: 0; transform: translateY(100%); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 </style>

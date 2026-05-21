@@ -24,13 +24,10 @@
 
     <!-- Hero Section -->
     <section 
-      class="relative pt-36 pb-16 lg:pt-40 lg:pb-24 bg-white overflow-visible"
+      class="relative pt-36 pb-16 lg:pt-40 lg:pb-24 overflow-visible bg-gradient-to-b from-slate-50/80 via-white to-white border-b border-slate-100"
     >
-      <!-- Background -->
-      <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-0 -left-20 w-[600px] h-[600px] bg-parentPrimary/[0.03] rounded-full blur-[150px] animate-pulse-slow" />
-        <div class="absolute bottom-0 -right-20 w-[600px] h-[600px] bg-secondary/[0.08] rounded-full blur-[150px] animate-pulse-slow" style="animation-delay: 3s" />
-      </div>
+      <!-- Soft Minimalist Grid Dot Overlay -->
+      <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
 
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
         <div class="max-w-3xl mx-auto space-y-6">
@@ -91,95 +88,124 @@
               </button>
             </div>
 
-              <Transition name="fade-up">
-                <div 
-                  v-if="showSuggestions && (heroSearchSuggestions.length > 0 || isSearching || hasSearched || timeOfDaySuggestions.length > 0)"
-                  class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-100 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] overflow-hidden z-[75] p-2"
-                >
-                  <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
-                    <span class="text-sm font-black text-gray-400 -[0.2em] ">
-                      {{ heroSearchQuery ? 'Matching Meals' : `Suggested for ${suggestionTimeText}` }}
-                    </span>
-                    <div v-if="isSearching" class="w-4 h-4 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                  
-                  <div class="max-h-[350px] overflow-y-auto hide-scrollbar space-y-1 mt-1">
-                    <!-- Search results -->
-                    <div 
-                      v-for="product in heroSearchSuggestions" 
-                      :key="product._id"
-                      @click="router.push(`/vendors/${product.vendor._id || product.vendor}`)"
-                      class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
-                    >
-                      <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
-                        <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                        <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
-                          <Utensils class="w-5 h-5" />
-                        </div>
-                      </div>
-                      <div class="flex-1 text-left">
-                        <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                        <p class="text-sm font-bold text-gray-400  ">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
-                      </div>
-                      <div class="text-right">
-                        <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
-                      </div>
-                    </div>
+           <Transition name="fade-up">
+  <div
+    v-if="showSuggestions && (heroSearchSuggestions.length > 0 || isSearching || hasSearched || timeOfDaySuggestions.length > 0)"
+    class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-100 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] overflow-hidden z-[75] p-2"
+  >
+    <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
+      <span class="text-sm font-black text-gray-400 tracking-tight">
+        {{ heroSearchQuery ? 'Matching Meals' : `Suggested for ${suggestionTimeText}` }}
+      </span>
+      <div v-if="isSearching" class="w-4 h-4 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
+    </div>
 
-                    <!-- Empty state -->
-                    <div v-if="!isSearching && hasSearched && heroSearchSuggestions.length === 0" class="p-8 text-center bg-gray-50/50 rounded-3xl m-2 border border-dashed border-gray-200">
-                      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md border border-gray-100">
-                        <span class="text-3xl">🍽️</span>
-                      </div>
-                      <p class="text-sm font-black text-gray-900 mb-1">No meals match "{{ heroSearchQuery }}"</p>
-                      <p class="text-sm font-bold text-gray-400 mb-4 max-w-xs mx-auto">Check out these popular picks for {{ suggestionTimeText.toLowerCase() }}!</p>
-                      
-                      <div v-if="timeOfDaySuggestions.length > 0" class="space-y-2 text-left">
-                        <div 
-                          v-for="product in timeOfDaySuggestions.slice(0, 4)" 
-                          :key="'tod-' + product._id"
-                          @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
-                          class="flex items-center gap-3 p-3 bg-white hover:bg-parentPrimary/5 rounded-xl border border-gray-100 cursor-pointer transition-all group hover:border-parentPrimary/20"
-                        >
-                          <div class="w-10 h-10 rounded-lg bg-gray-50 overflow-hidden flex-shrink-0 border border-gray-100">
-                            <img v-if="product.image" :src="product.image" class="w-full h-full object-cover" />
-                            <Utensils v-else class="w-4 h-4 m-auto text-parentPrimary/30" />
-                          </div>
-                          <div class="flex-1 min-w-0">
-                             <h4 class="text-[11px] font-black text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                             <p class="text-sm font-bold text-gray-400  -tight">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
-                          </div>
-                          <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
-                        </div>
-                      </div>
-                    </div>
+    <div class="max-h-[350px] overflow-y-auto hide-scrollbar space-y-1 mt-1">
 
-                    <!-- Time-of-day suggestions -->
-                    <div v-if="!heroSearchQuery && timeOfDaySuggestions.length > 0">
-                      <div 
-                        v-for="product in timeOfDaySuggestions" 
-                        :key="'focus-' + product._id"
-                        @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
-                        class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
-                      >
-                        <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
-                          <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                          <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
-                            <Utensils class="w-5 h-5" />
-                          </div>
-                        </div>
-                        <div class="flex-1 text-left">
-                          <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-                          <p class="text-sm font-bold text-gray-400  ">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
-                        </div>
-                        <div class="text-right">
-                          <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Transition>
+      <!-- Search results -->
+      <div
+        v-for="product in heroSearchSuggestions"
+        :key="product._id"
+        @click="router.push(`/vendors/${product.vendor._id || product.vendor}`)"
+        class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
+      >
+        <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
+          <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+          <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
+            <Utensils class="w-5 h-5" />
+          </div>
+        </div>
+        <div class="flex-1 text-left">
+          <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
+          <p class="text-sm font-bold text-gray-400">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+        </div>
+        <div class="text-right">
+          <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+        </div>
+      </div>
+
+      <!-- NO SEARCH RESULTS EMPTY STATE -->
+      <div
+        v-if="!isSearching && hasSearched && heroSearchSuggestions.length === 0"
+        class="m-2"
+      >
+        <div class="flex items-center gap-4 px-5 py-5 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+          <!-- Wiggling bowl -->
+          <div class="relative flex-shrink-0 w-14 h-14 rounded-2xl bg-white border border-gray-100 flex items-center justify-center shadow-sm overflow-hidden">
+            <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_5px,rgba(0,0,0,0.02)_5px,rgba(0,0,0,0.02)_6px)]"></div>
+            <span class="relative z-10 text-2xl animate-[wiggle_3s_ease-in-out_infinite]">🍽️</span>
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-black text-gray-900 mb-0.5 truncate">
+              "{{ heroSearchQuery }}" no dey here sha
+            </p>
+            <p class="text-xs font-medium text-gray-400 leading-relaxed mb-3">
+              Try something close — maybe they get your vibe!
+            </p>
+            <!-- Suggestion tags -->
+            <div class="flex flex-wrap gap-1.5">
+              <button
+                v-for="tag in ['Rice & Stew', 'Sharwama', 'Pepper Soup', 'Amala', 'Fried Rice']"
+                :key="tag"
+                @click="heroSearchQuery = tag; fetchSuggestions()"
+                class="px-3 py-1 text-[11px] font-bold bg-white border border-gray-100 rounded-full text-gray-500 hover:border-parentPrimary/30 hover:text-parentPrimary hover:bg-parentPrimary/5 transition-all active:scale-95"
+              >
+                {{ tag }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Time-of-day fallback suggestions -->
+        <div v-if="timeOfDaySuggestions.length > 0" class="mt-3">
+          <p class="px-4 pb-2 text-[11px] font-black text-gray-300 tracking-widest uppercase">Popular for {{ suggestionTimeText }}</p>
+          <div
+            v-for="product in timeOfDaySuggestions.slice(0, 3)"
+            :key="'tod-' + product._id"
+            @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
+            class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-all group"
+          >
+            <div class="w-9 h-9 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100">
+              <img v-if="product.image" :src="product.image" class="w-full h-full object-cover" />
+              <Utensils v-else class="w-4 h-4 m-auto text-parentPrimary/30 mt-2.5" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-black text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
+              <p class="text-[11px] font-bold text-gray-400">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+            </div>
+            <span class="text-xs font-black text-gray-900 flex-shrink-0">₦{{ product.price?.toLocaleString() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Time-of-day suggestions (when no query) -->
+      <div v-if="!heroSearchQuery && timeOfDaySuggestions.length > 0">
+        <div
+          v-for="product in timeOfDaySuggestions"
+          :key="'focus-' + product._id"
+          @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
+          class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
+        >
+          <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
+            <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+            <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
+              <Utensils class="w-5 h-5" />
+            </div>
+          </div>
+          <div class="flex-1 text-left">
+            <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
+            <p class="text-sm font-bold text-gray-400">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+          </div>
+          <div class="text-right">
+            <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Transition>
           </div>
 
           <!-- Quick Tags -->
@@ -243,112 +269,41 @@
  </div>
  </section>
 
- <!-- Interactive Carousel: Featured Vendors -->
- <section id="featured" class="py-12 lg:py-16 bg-white overflow-hidden border-t border-gray-100">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
- <div class="flex items-end justify-between">
- <div>
- <div class="inline-flex items-center gap-2 text-parentPrimary font-bold text-sm mb-2 text-center">
- <Store class="w-4 h-4" /> Top Rated
- </div>
- <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 -tight">Campus Favorites</h2>
- </div>
- <div class="flex items-center gap-4">
- <NuxtLink to="/vendors" class="text-sm font-bold text-parentPrimary hover:underline underline-offset-4 hidden sm:block">View All Vendors &rarr;</NuxtLink>
- <div class="flex gap-2">
- <button @click="scrollCarousel('left', 'vendor-carousel')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-parentPrimary hover:border-parentPrimary transition-colors shadow-sm bg-white z-10">
- <ChevronLeft class="w-5 h-5" />
- </button>
- <button @click="scrollCarousel('right', 'vendor-carousel')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-parentPrimary hover:border-parentPrimary transition-colors shadow-sm bg-white z-10">
- <ChevronRight class="w-5 h-5" />
- </button>
- </div>
- </div>
- </div>
- <NuxtLink to="/vendors" class="text-sm font-bold text-parentPrimary hover:underline underline-offset-4 sm:hidden mt-4 inline-block">View All Vendors &rarr;</NuxtLink>
- </div>
+  <!-- Recommended Vendors -->
+  <VendorGroupCarousel
+    title="Campus Favorites"
+    subtitle="Top Rated"
+    :icon="Store"
+    :vendors="recommendedVendors"
+    :loading="loadingVendors"
+    carouselId="carousel-recommended"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+  />
 
- <!-- Carousel Container -->
- <div class="max-w-7xl mx-auto pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-0">
- <div id="vendor-carousel" class="flex overflow-x-auto gap-6 pb-8 hide-scrollbar snap-x snap-mandatory">
- <div v-if="loadingVendors" v-for="i in 4" :key="i" class="min-w-[280px] sm:min-w-[320px] h-[280px] bg-gray-50 rounded-3xl animate-pulse shadow-sm border border-gray-100 snap-start shrink-0" />
- 
-  <div v-else-if="vendors.length === 0" class="w-full py-20 px-10 bg-white rounded-[3.5rem] border-2 border-dashed border-gray-100 flex flex-col items-center text-center animate-fade-in snap-start">
-  <div class="relative mb-12 transform -rotate-3 hover:rotate-0 transition-transform duration-700">
-  <div class="absolute -inset-8 bg-parentPrimary/10 blur-3xl rounded-full animate-pulse-slow"></div>
-  <div class="w-32 h-32 bg-white rounded-[2.5rem] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1)] flex items-center justify-center text-6xl relative z-10 border border-gray-50">
-  🌙
-  </div>
-  </div>
-  <h3 class="text-3xl font-black text-gray-900 mb-4 -tighter">The Campus is Resting</h3>
-  <p class="text-gray-500 font-bold text-lg mb-10 max-w-md leading-relaxed">Our favorite vendors are currently offline or catching a break. Check back soon for the best meals on campus!</p>
-  <div class="inline-flex items-center gap-3 px-8 py-4 bg-gray-50 rounded-2xl text-[11px] font-black text-gray-400 border border-gray-100 -[0.2em]  shadow-sm">
-  <Clock class="w-4 h-4 text-parentPrimary" />
-  Most vendors open at 8:00 AM
-  </div>
-  </div>
- 
- <template v-else>
- <div v-for="vendor in vendors" :key="vendor._id" 
- @click="navigateToVendor(vendor)"
- class="min-w-[280px] sm:min-w-[320px] w-[280px] sm:w-[320px] snap-start shrink-0 group cursor-pointer relative flex flex-col bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-  <div class="relative h-[180px] w-full overflow-hidden">
-  <!-- Closed Overlay -->
-  <div v-if="!vendor.isOpen" class="absolute inset-0 z-20 bg-gray-900/60 backdrop-blur-[2px] flex items-center justify-center">
-  <div class="px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-  <span class="text-white text-sm font-black -[0.2em] ">Closed Now</span>
-  </div>
-  </div>
-  
-  <img :src="vendor.banner || vendor.image || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'" 
-  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" :class="{'grayscale opacity-60': !vendor.isOpen}" alt="Vendor Banner" />
-  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-  
-  <div class="absolute top-5 left-5">
-  <div :class="`w-14 h-14 rounded-2xl flex items-center justify-center text-md font-black text-white shadow-2xl border-2 border-white/20 ${getVendorColor(vendor.storeName)}`">
-  {{ getInitials(vendor.storeName) }}
-  </div>
-  </div>
+  <!-- Trending Vendors -->
+  <VendorGroupCarousel
+    title="Trending on Campus"
+    subtitle="Hot Right Now"
+    :icon="Flame"
+    :vendors="trendingVendors"
+    :loading="loadingVendors"
+    carouselId="carousel-trending"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+  />
 
-                <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 overflow-hidden">
-                  <span class="px-3 py-1.5 bg-gray-900/10 backdrop-blur-xl rounded-xl text-gray-900 text-sm font-black border border-gray-900/10 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary">
-                    {{ vendor.category }}
-                  </span>
-                  <span v-if="vendor.rating" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md rounded-xl px-2.5 py-1.5 text-sm font-black text-gray-900 shadow-xl border border-gray-50 group-hover:scale-105 transition-transform duration-500">
-                    <Star class="w-3 h-3 text-parentPrimary fill-current" /> {{ vendor.rating.toFixed(1) }}
-                  </span>
-                </div>
-              </div>
-              <div class="p-6 flex-1 flex flex-col justify-between">
-                <div>
-                  <div class="flex items-center justify-between gap-4 mb-3">
-                    <h3 class="text-xl font-black text-gray-900 group-hover:text-parentPrimary transition-colors -tight truncate">{{ vendor.storeName }}</h3>
-                    <div v-if="vendor.isOpen" class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100/50">
-                      <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span class="text-sm font-black  ">open</span>
-                    </div>
-                    <div v-else class="flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 text-gray-400 rounded-lg border border-gray-100">
-                      <div class="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                      <span class="text-sm font-black  ">{{ vendor.statusMessage || 'closed' }}</span>
-                    </div>
-                  </div>
-                  <p class="text-[13px] text-gray-500 line-clamp-2 mb-6 leading-relaxed font-medium group-hover:text-gray-600 transition-colors">{{ vendor.description }}</p>
-                </div>
-                <div class="flex items-center justify-between pt-5 border-t border-gray-50/80">
-                  <div class="flex items-center gap-4 text-sm font-black text-gray-400 -tight">
-                    <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors"><Clock class="w-3.5 h-3.5" /> {{ vendor.preparationTime || 20 }} min</span>
-                    <span class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors"><Bike class="w-3.5 h-3.5" /> From ₦{{ vendor.baseDeliveryFee || 600 }}</span>
-                  </div>
-                  <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-parentPrimary group-hover:text-white group-hover:rotate-45 transition-all duration-500">
-                    <ArrowUpRight class="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-            </div>
- </template>
- </div>
- </div>
- </section>
+  <!-- New to Erranders -->
+  <VendorGroupCarousel
+    title="Fresh Arrivals"
+    subtitle="New to Erranders"
+    :icon="Sparkles"
+    :vendors="newVendors"
+    :loading="loadingVendors"
+    carouselId="carousel-new"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+  />
 
  <!-- Vendor Closed Modal -->
  <VendorClosedModal 
@@ -464,7 +419,8 @@ import {
   Clock, Star, Store, Bike, ChevronLeft, ChevronRight,
   ShieldCheck, Rocket, Megaphone,
   Menu as MenuIcon, X, Search, ArrowUpRight,
-  Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown
+  Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown,
+  Sparkles, TrendingUp, Flame
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
@@ -492,7 +448,10 @@ const router = useRouter()
 const showMobileMenu = ref(false)
 const heroSearchQuery = ref('')
 const loadingVendors = ref(true)
-const vendors = ref<any[]>([])
+const recommendedVendors = ref<any[]>([])
+const trendingVendors = ref<any[]>([])
+const newVendors = ref<any[]>([])
+const vendors = ref<any[]>([]) // Combined list for active promotions
 const selectedVendorForModal = ref<any>(null)
 const isClosedModalOpen = ref(false)
 const cartStore = useCart()
@@ -579,13 +538,31 @@ const handleScroll = () => {
 }
 
 const fetchVendors = async () => {
- loadingVendors.value = true
- try {
- const res = await vendors_api.getAll({ limit: 12 })
- vendors.value = res.data?.vendors || res.data?.data?.vendors || res.data || []
- } finally {
- loadingVendors.value = false
- }
+  loadingVendors.value = true
+  try {
+    const [recRes, trendRes, newRes] = await Promise.all([
+      vendors_api.getAll({ sortBy: 'recommended', limit: 12 }),
+      vendors_api.getAll({ sortBy: 'trending', limit: 12 }),
+      vendors_api.getAll({ sortBy: 'newest', limit: 12 })
+    ])
+    
+    recommendedVendors.value = recRes.data?.vendors || recRes.data?.data?.vendors || recRes.data || []
+    trendingVendors.value = trendRes.data?.vendors || trendRes.data?.data?.vendors || trendRes.data || []
+    newVendors.value = newRes.data?.vendors || newRes.data?.data?.vendors || newRes.data || []
+    
+    // Combine for promotions fallback
+    vendors.value = [...recommendedVendors.value, ...trendingVendors.value, ...newVendors.value]
+  } catch (e) {
+    console.error('Failed to fetch vendors:', e)
+  } finally {
+    loadingVendors.value = false
+  }
+}
+
+const handleNotifyVendor = (vendor: any) => {
+  // Hook into your notification system here
+  // e.g. toast("We'll ping you when they're back online!")
+  console.log('Notify when open:', vendor._id)
 }
 
 const activePromotions = computed(() => {
@@ -856,4 +833,18 @@ const getInitials = (name: string) => {
   opacity: 0;
   transform: translateY(-40px);
 }
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-8deg); }
+  40% { transform: rotate(8deg); }
+  60% { transform: rotate(-4deg); }
+  80% { transform: rotate(4deg); }
+}
+
+@keyframes moonPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 8px rgba(30,30,46,0.08); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 16px rgba(30,30,46,0.04); }
+}
+
 </style>

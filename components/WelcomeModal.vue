@@ -73,6 +73,8 @@ import {
   DialogTitle,
 } from '@headlessui/vue'
 import { ArrowRight } from 'lucide-vue-next'
+import confetti from 'canvas-confetti'
+import { watch } from 'vue'
 
 const props = defineProps<{
   isOpen: boolean
@@ -84,6 +86,39 @@ const emit = defineEmits(['close'])
 const closeModal = () => {
   emit('close')
 }
+
+const triggerConfetti = () => {
+  const duration = 3500;
+  const end = Date.now() + duration;
+
+  const frame = () => {
+    confetti({
+      particleCount: 7,
+      angle: 60,
+      spread: 65,
+      origin: { x: 0, y: 0.6 },
+      colors: ['#FF5C1A', '#FFA785', '#FFF', '#FFD700', '#FF69B4']
+    });
+    confetti({
+      particleCount: 7,
+      angle: 120,
+      spread: 65,
+      origin: { x: 1, y: 0.6 },
+      colors: ['#FF5C1A', '#FFA785', '#FFF', '#FFD700', '#FF69B4']
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  };
+  frame();
+};
+
+watch(() => props.isOpen, (newVal) => {
+  if (newVal) {
+    triggerConfetti();
+  }
+})
 </script>
 
 <style scoped>

@@ -1026,12 +1026,20 @@ const handleScroll = () => {
 onMounted(async () => {
   cart.initCart();
   try {
-    const [vendorRes, productsRes] = await Promise.all([
-      vendors_api.getById(route.params.id as string),
-      products_api.getByVendor(route.params.id as string),
-    ]);
+    const paramId = route.params.id as string;
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(paramId);
+
+    let vendorRes;
+    if (isObjectId) {
+      vendorRes = await vendors_api.getById(paramId);
+    } else {
+      vendorRes = await vendors_api.getBySubdomain(paramId);
+    }
+
     if (vendorRes.data && !(vendorRes as any).type) {
       vendor.value = vendorRes.data;
+      
+      const productsRes = await products_api.getByVendor(vendor.value._id);
       products.value = productsRes.data || [];
     } else {
       throw new Error('Using mock data');

@@ -29,6 +29,10 @@ export const vendors_api = {
     return GATEWAY_ENDPOINT.get(`/vendors/${id}`);
   },
 
+  getBySubdomain: (subdomain: string) => {
+    return GATEWAY_ENDPOINT.get(`/vendors/subdomain/${subdomain}`);
+  },
+
   getPopular: () => {
     return GATEWAY_ENDPOINT.get('/vendors/popular');
   },
