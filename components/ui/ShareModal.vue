@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { X, Share2 } from 'lucide-vue-next'
-import { useCustomToast } from '@/composables/core/useCustomToast'
+import { useToast } from '@/composables/useToast'
 
 const props = defineProps<{
   isOpen: boolean
@@ -80,7 +80,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:isOpen'])
 
-const { showToast } = useCustomToast()
+const { showToast } = useToast()
 const copied = ref(false)
 const isNativeShareSupported = ref(false)
 
