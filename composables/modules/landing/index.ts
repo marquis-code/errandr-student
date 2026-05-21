@@ -7,9 +7,11 @@ export const useLandingPage = () => {
   const loading = ref(true);
   const onlineVendors = ref<any[]>([]);
   const popularItems = ref<any[]>([]);
+  const fetchError = ref<string | null>(null);
 
   const fetchHomeData = async () => {
     loading.value = true;
+    fetchError.value = null;
     try {
       // For now using the existing endpoint structure
       const [vRes, pRes] = await Promise.all([
@@ -23,13 +25,17 @@ export const useLandingPage = () => {
         // No vendors found online
         onlineVendors.value = [];
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Landing page data fetch failed:', e);
       onlineVendors.value = [];
+      fetchError.value = e?.message?.toLowerCase().includes('network')
+        ? 'network'
+        : 'unknown';
     } finally {
       loading.value = false;
     }
   };
 
-  return { loading, onlineVendors, popularItems, fetchHomeData };
+  return { loading, onlineVendors, popularItems, fetchError, fetchHomeData };
 };
+
