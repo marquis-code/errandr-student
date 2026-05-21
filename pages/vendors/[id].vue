@@ -1064,6 +1064,15 @@ onMounted(async () => {
     if (route.query.group) {
       handleJoinGroup(route.query.group as string);
     }
+
+    // Clean up the URL visually if loaded via subdomain
+    if (process.client && paramId) {
+      const host = window.location.hostname;
+      const parts = host.split('.');
+      if (parts.length >= 3 && parts[0] === paramId) {
+        window.history.replaceState(window.history.state, '', '/');
+      }
+    }
   } catch (e) {
     console.error('API Error in Detail page, using MOCK data', e);
     vendor.value = {
