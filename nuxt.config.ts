@@ -3,6 +3,9 @@ import { defineNuxtConfig } from "nuxt/config";
 export default defineNuxtConfig({
   ssr: false,
 
+  // Use 'vercel-static' preset so Vercel serves the SPA correctly
+  // (default 'node-server' produces a server build that won't work on Vercel static hosting)
+
   site: {
     url: 'https://erranders.org',
     name: 'Errander',
@@ -11,8 +14,9 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    preset: process.env.VERCEL ? 'vercel-static' : undefined,
     prerender: {
-      routes: ['/', '/404.html'],
+      routes: ['/', '/404.html', '/200.html'],
       ignore: ['/dynamic-routes', '/api'],
       failOnError: false
     }
