@@ -229,10 +229,8 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <div v-if="showMobileFilters" class="fixed inset-0 z-[110] flex items-end justify-center bg-black/50 backdrop-blur-sm" @click.self="showMobileFilters = false">
-          <div class="bg-white w-full max-w-md rounded-t-[2rem] overflow-hidden shadow-2xl animate-slide-up-mobile p-6 space-y-6">
-            <!-- Handle -->
-            <div class="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-2"></div>
+        <div v-if="showMobileFilters" class="fixed inset-0 z-[110] flex justify-end bg-black/50 backdrop-blur-sm" @click.self="showMobileFilters = false">
+          <div class="bg-white w-full max-w-sm h-full overflow-y-auto shadow-2xl animate-slide-in-right p-6 space-y-6 flex flex-col">
             
             <div class="flex items-center justify-between pb-2 border-b border-gray-100">
               <h3 class="text-lg font-black text-gray-900 tracking-tight">Refine Options</h3>
@@ -291,7 +289,7 @@
             </div>
 
             <!-- Actions -->
-            <div class="pt-4 border-t border-gray-100 flex gap-3">
+            <div class="pt-4 mt-auto border-t border-gray-100 flex gap-3">
               <button 
                 @click="resetAllFilters" 
                 class="flex-1 py-3.5 border border-gray-200 text-gray-700 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gray-50 active:scale-95"
@@ -518,6 +516,14 @@ const getInitials = (name: string) => {
 @keyframes slideUpMobile {
   from { opacity: 0; transform: translateY(100%); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes float {
