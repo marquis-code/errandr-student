@@ -47,7 +47,7 @@
               <!-- SINGLE VENDOR CLOSED STATE -->
               <template v-if="!vendor.isOpen">
                 <img
-                  :src="vendor.banner || vendor.image || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
+                  :src="vendor.banner || vendor.image || vendor.logo || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
                   class="w-full h-full object-cover grayscale opacity-50"
                   alt="Vendor Banner"
                 />
@@ -79,7 +79,7 @@
               <!-- NORMAL OPEN VENDOR -->
               <template v-else>
                 <img
-                  :src="vendor.banner || vendor.image || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
+                  :src="vendor.banner || vendor.image || vendor.logo || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                   alt="Vendor Banner"
                 />
