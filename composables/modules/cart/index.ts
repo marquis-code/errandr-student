@@ -1,4 +1,6 @@
 import { ref, computed } from 'vue';
+import { useVendors } from '@/composables/modules/vendors';
+import { useCustomToast } from '@/composables/core/useCustomToast';
 
 interface CartItem {
   productId: string;
@@ -68,6 +70,32 @@ export const useCart = () => {
   };
 
   const addItem = (item: Omit<CartItem, 'subtotal'>) => {
+    const { vendorsMetadata } = useVendors();
+    const { showToast } = useCustomToast();
+
+    // Check pre-order mixing
+    const currentVendorMeta = vendorsMetadata.value[item.vendorId];
+    const isCurrentPreOrder = currentVendorMeta?.preOrderOnly || false;
+
+    // Check if cart has other vendors
+    const otherVendorIds = allVendorIds.value.filter(id => id !== item.vendorId);
+    if (otherVendorIds.length > 0) {
+      for (const otherId of otherVendorIds) {
+        const otherMeta = vendorsMetadata.value[otherId];
+        // If otherMeta is undefined, we assume it's real-time for safety, or we skip
+        const isOtherPreOrder = otherMeta?.preOrderOnly || false;
+        
+        if (isCurrentPreOrder !== isOtherPreOrder) {
+          showToast({
+            title: 'Cart Conflict',
+            message: 'You cannot mix pre-order and real-time items. Please clear or checkout your current cart first.',
+            toastType: 'error'
+          });
+          return;
+        }
+      }
+    }
+
     const vCart = ensureVendorCart(item.vendorId);
     
     let activePack = vCart.packs.find(p => p.id === vCart.activePackId);

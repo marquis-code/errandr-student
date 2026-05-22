@@ -54,7 +54,10 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-gray-900/10"></div>
                 <div class="absolute top-0 inset-x-0 h-1 bg-[repeating-linear-gradient(135deg,#6366f1_0px,#6366f1_4px,#1e1e2e_4px,#1e1e2e_10px)]"></div>
                 <div class="absolute top-4 left-4">
-                  <div :class="`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black text-white border-2 border-white/10 ${getVendorColor(vendor.storeName)}`"
+                  <div v-if="vendor.logo" class="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white/10" style="filter: grayscale(0.5) brightness(0.7)">
+                    <img :src="vendor.logo" class="w-full h-full object-cover bg-white" alt="Store Logo" />
+                  </div>
+                  <div v-else :class="`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black text-white border-2 border-white/10 ${getVendorColor(vendor.storeName)}`"
                     style="filter: grayscale(0.5) brightness(0.7)">
                     {{ getInitials(vendor.storeName) }}
                   </div>
@@ -82,14 +85,22 @@
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                 <div class="absolute top-5 left-5">
-                  <div :class="`w-14 h-14 rounded-2xl flex items-center justify-center text-md font-black text-white shadow-2xl border-2 border-white/20 ${getVendorColor(vendor.storeName)}`">
+                  <div v-if="vendor.logo" class="w-14 h-14 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 bg-white">
+                    <img :src="vendor.logo" class="w-full h-full object-cover" alt="Store Logo" />
+                  </div>
+                  <div v-else :class="`w-14 h-14 rounded-2xl flex items-center justify-center text-md font-black text-white shadow-2xl border-2 border-white/20 ${getVendorColor(vendor.storeName)}`">
                     {{ getInitials(vendor.storeName) }}
                   </div>
                 </div>
                 <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 overflow-hidden">
-                  <span class="px-3 py-1.5 bg-gray-900/10 backdrop-blur-xl rounded-xl text-gray-900 text-sm font-black border border-gray-900/10 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary">
-                    {{ vendor.category }}
-                  </span>
+                  <div class="flex items-center gap-1.5">
+                    <span v-if="vendor.preOrderOnly" class="px-2 py-1 bg-purple-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-black tracking-wider border border-white/20 shadow-lg shrink-0">
+                      PRE-ORDER
+                    </span>
+                    <span class="px-3 py-1.5 bg-gray-900/10 backdrop-blur-xl rounded-xl text-gray-900 text-sm font-black border border-gray-900/10 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary">
+                      {{ vendor.category }}
+                    </span>
+                  </div>
                   <span v-if="vendor.rating" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md rounded-xl px-2.5 py-1.5 text-sm font-black text-gray-900 shadow-xl border border-gray-50 group-hover:scale-105 transition-transform duration-500">
                     <Star class="w-3 h-3 text-parentPrimary fill-current" /> {{ vendor.rating.toFixed(1) }}
                   </span>

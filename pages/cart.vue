@@ -122,6 +122,32 @@
               </div>
             </div>
 
+            <!-- Step 1.5: Pre-order Schedule -->
+            <div v-if="isPreOrderCart" class="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-fade-in">
+              <div class="flex items-center gap-3 px-5 py-4 bg-purple-50/50 border-b border-purple-100">
+                <div class="w-8 h-8 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                  <Calendar class="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 class="text-sm font-black text-gray-900 tracking-tight">Delivery Schedule</h3>
+                  <p class="text-[10px] font-bold text-gray-400">When do you want this pre-order?</p>
+                </div>
+              </div>
+              <div class="p-5">
+                <label class="text-[10px] font-black text-gray-400 tracking-wider block mb-2 pl-1">Select Delivery Date</label>
+                <input 
+                  v-model="scheduledDate"
+                  type="date"
+                  :min="minPreOrderDate"
+                  class="w-full bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none transition-all"
+                />
+                <div class="mt-3 text-[10px] font-bold text-gray-400 space-y-1">
+                  <p>• Requires a minimum of {{ maxLeadTime }} hours notice.</p>
+                  <p v-if="allowedDays && allowedDays.length > 0">• Deliveries available only on: {{ allowedDays.join(', ') }}</p>
+                </div>
+              </div>
+            </div>
+
             <!-- Add-ons -->
             <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
               <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100">
@@ -489,7 +515,7 @@
 import { 
   ShoppingBag, Trash2, X, ShoppingCart, ArrowLeft, MapPin,
   ChevronRight, ArrowRight, Users, Pencil, Loader2, Star,
-  CreditCard, Wallet, Heart, RefreshCw
+  CreditCard, Wallet, Heart, RefreshCw, Calendar
 } from 'lucide-vue-next';
 import AnimatedInput from '@/components/ui/AnimatedInput.vue';
 import SelectInput from '@/components/ui/SelectInput.vue';
@@ -534,6 +560,38 @@ const paymentError = ref('');
 const selectedPacks = ref<Record<string, any>>({});
 const isMysteryBox = ref(false);
 const isDormDelivery = ref(false);
+const scheduledDate = ref('');
+
+const isPreOrderCart = computed(() => {
+  return cartStore.allVendorIds.value.some(id => vendorsMetadata.value[id]?.preOrderOnly);
+});
+
+const maxLeadTime = computed(() => {
+  let max = 0;
+  cartStore.allVendorIds.value.forEach(id => {
+    const time = vendorsMetadata.value[id]?.preOrderLeadTime || 0;
+    if (time > max) max = time;
+  });
+  return max;
+});
+
+const minPreOrderDate = computed(() => {
+  const date = new Date();
+  date.setHours(date.getHours() + maxLeadTime.value);
+  return date.toISOString().split('T')[0];
+});
+
+const allowedDays = computed(() => {
+  let days: string[] | null = null;
+  cartStore.allVendorIds.value.forEach(id => {
+    const vDays = vendorsMetadata.value[id]?.preOrderDays || [];
+    if (vDays.length > 0) {
+      if (days === null) days = [...vDays];
+      else days = days.filter(d => vDays.includes(d));
+    }
+  });
+  return days;
+});
 
 const toTitleCase = (str: string) => {
   if (!str) return '';
@@ -656,14 +714,15 @@ onMounted(async () => {
     isMysteryBox.value = data.mystery || false;
     isDormDelivery.value = data.dorm || false;
     paymentMethod.value = data.paymentMethod || 'card';
+    scheduledDate.value = data.scheduledDate || '';
   } else if (user.value) {
     recipientName.value = `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim();
     recipientPhone.value = user.value.phone || '';
   }
 });
 
-watch([recipientName, recipientPhone, specificAddress, deliveryOption, isMysteryBox, isDormDelivery, paymentMethod], ([name, phone, address, delivery, mystery, dorm, method]) => {
-  localStorage.setItem('errandr_checkout_data', JSON.stringify({ name, phone, address, delivery, mystery, dorm, paymentMethod: method }));
+watch([recipientName, recipientPhone, specificAddress, deliveryOption, isMysteryBox, isDormDelivery, paymentMethod, scheduledDate], ([name, phone, address, delivery, mystery, dorm, method, date]) => {
+  localStorage.setItem('errandr_checkout_data', JSON.stringify({ name, phone, address, delivery, mystery, dorm, paymentMethod: method, scheduledDate: date }));
 });
 
 const startPayment = async () => {
@@ -671,6 +730,18 @@ const startPayment = async () => {
   if (!recipientName.value.trim() || !recipientPhone.value.trim()) return showToast({ title: 'Missing Info', message: 'Name and phone required', toastType: 'error' });
   if (deliveryOption.value === 'use_an_errander' && !specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Address required', toastType: 'error' });
   if (!user.value?.email) return (showAuthModal.value = true);
+
+  if (isPreOrderCart.value) {
+    if (!scheduledDate.value) {
+      return showToast({ title: 'Schedule Required', message: 'Please select a delivery date for your pre-order.', toastType: 'error' });
+    }
+    if (allowedDays.value && allowedDays.value.length > 0) {
+      const dayOfWeek = new Date(scheduledDate.value).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+      if (!allowedDays.value.includes(dayOfWeek)) {
+        return showToast({ title: 'Invalid Schedule', message: `Delivery is only available on: ${allowedDays.value.join(', ')}`, toastType: 'error' });
+      }
+    }
+  }
 
   if (paymentMethod.value === 'wallet' && balance.value < finalTotal.value) {
     showTopupModal.value = true;
@@ -701,7 +772,9 @@ const startPayment = async () => {
           recipientPhone: recipientPhone.value, 
           specificAddress: specificAddress.value, 
           isMysteryBox: isMysteryBox.value, 
-          isDormDelivery: isDormDelivery.value 
+          isDormDelivery: isDormDelivery.value,
+          isPreOrder: isPreOrderCart.value,
+          scheduledDate: scheduledDate.value 
         },
       });
       const authUrl = data?.data?.authorization_url || data?.authorization_url;
@@ -750,6 +823,7 @@ const preCreateOrders = async (): Promise<string[]> => {
         vendorId, customer: participant.user._id, items: participant.items.map((i: any) => ({ product: i.productId, name: i.name, price: i.price, image: i.image, quantity: i.quantity, subtotal: i.price * i.quantity })),
         subtotal, deliveryFee, serviceFee: Math.round(subtotal * 0.05), packagingFee: vendorMeta?.packagingFee ?? 300, total: subtotal + Math.round(subtotal * 0.05) + (vendorMeta?.packagingFee ?? 300) + deliveryFee,
         deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, isGroupOrder: true, groupId: activeCode.value, isGroupLeader: participant.user._id === groupOrder.value.host._id,
+        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value
       });
       if (res?._id || res?.data?._id) createdIds.push(res?._id || res?.data?._id);
     }
@@ -762,6 +836,7 @@ const preCreateOrders = async (): Promise<string[]> => {
         vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal })) })),
         subtotal: stats.subtotal, deliveryFee, serviceFee: stats.serviceFee, packagingFee: vendor?.packagingFee ?? 300, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: vendor?.packagingFee ?? 300 },
         isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, weight: 1.0,
+        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value
       });
       if (res?._id || res?.data?._id) { 
         createdIds.push(res?._id || res?.data?._id); 

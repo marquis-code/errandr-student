@@ -1,10 +1,11 @@
 import { ref } from 'vue';
 import { vendors_api } from "@/api_factory/modules/vendors";
 
+const loading = ref(false);
+const popularVendors = ref<any[]>([]);
+const vendorsMetadata = ref<Record<string, any>>({});
+
 export const useVendors = () => {
-  const loading = ref(false);
-  const popularVendors = ref<any[]>([]);
-  const vendorsMetadata = ref<Record<string, any>>({});
 
   const fetchPopularVendors = async () => {
     loading.value = true;
