@@ -50,7 +50,7 @@
       <section class="relative w-full h-[280px] md:h-[340px] overflow-hidden">
         <!-- Banner Image -->
         <img 
-          :src="vendor.banner || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&fit=crop'" 
+          :src="vendor.banner || '/placeholder-store.jpg'" 
           class="absolute inset-0 w-full h-full object-cover"
           alt="Store Banner"
         />
@@ -100,8 +100,11 @@
                   <span class="w-1.5 h-1.5 rounded-full" :class="vendor.isOpen !== false ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'"></span>
                   {{ vendor.isOpen !== false ? 'Open Now' : 'Closed' }}
                 </span>
-                <span v-if="vendor.isInsideCampus" class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10 text-white/70 text-[10px] font-black">
+                <span v-if="vendor.isInsideCampus" class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10 text-white/70 text-[10px] font-black shrink-0">
                   On Campus
+                </span>
+                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 rounded-lg bg-purple-500/20 border border-purple-400/30 text-purple-300 text-[10px] font-black shrink-0">
+                  📅 PRE-ORDER ONLY
                 </span>
               </div>
               <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight truncate">{{ toTitleCase(vendor.storeName) }}</h1>
