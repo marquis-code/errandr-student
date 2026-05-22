@@ -452,8 +452,18 @@ import { vendors_api } from '@/api_factory/modules/vendors';
 
 onMounted(async () => {
   try {
-    const res = await vendors_api.getAll();
-    const rawVendors = res.data?.vendors || res.data || [];
+    const [recRes, trendRes, newRes] = await Promise.all([
+      vendors_api.getAll({ sortBy: 'recommended', limit: 100 }),
+      vendors_api.getAll({ sortBy: 'trending', limit: 100 }),
+      vendors_api.getAll({ sortBy: 'newest', limit: 100 })
+    ]);
+    
+    const recommended = recRes.data?.vendors || recRes.data?.data?.vendors || recRes.data || [];
+    const trending = trendRes.data?.vendors || trendRes.data?.data?.vendors || trendRes.data || [];
+    const newest = newRes.data?.vendors || newRes.data?.data?.vendors || newRes.data || [];
+    
+    const combined = [...recommended, ...trending, ...newest];
+    const rawVendors = Array.from(new Map(combined.map(v => [v._id, v])).values());
     if (rawVendors.length === 0) {
       vendors.value = [
         { _id: 'mock1', storeName: 'Mavise Restaurant', category: 'restaurant', banner: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', logo: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&q=80', rating: 4.8, preparationTime: 25, deliveryFee: 200, isOpen: true, offers: ['20% OFF'] },

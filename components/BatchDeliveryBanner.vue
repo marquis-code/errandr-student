@@ -61,10 +61,7 @@ const dismiss = () => {
 };
 
 const scrollToVendors = () => {
-  const el = document.getElementById('categories') || document.getElementById('featured');
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' });
-  }
+  navigateTo('/vendors');
 };
 
 onMounted(() => {
