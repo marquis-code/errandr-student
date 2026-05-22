@@ -50,7 +50,7 @@
       <section class="relative w-full h-[280px] md:h-[340px] overflow-hidden">
         <!-- Banner Image -->
         <img 
-          :src="vendor.banner || '/placeholder-store.jpg'" 
+          :src="vendor.banner || vendor.image || vendor.logo || '/placeholder-store.jpg'" 
           class="absolute inset-0 w-full h-full object-cover"
           alt="Store Banner"
         />
