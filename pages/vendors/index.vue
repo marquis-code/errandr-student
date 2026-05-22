@@ -80,7 +80,7 @@
           <!-- Thumbnail/Banner -->
           <div class="relative aspect-[16/10] overflow-hidden bg-gray-50 shrink-0">
             <img 
-              :src="vendor.banner || '/placeholder-store.jpg'" 
+              :src="vendor.banner || vendor.image || vendor.logo || '/placeholder-store.jpg'" 
               :alt="vendor.storeName" 
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
             />
