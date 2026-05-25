@@ -643,10 +643,20 @@ const { balance, fetchWallet } = useWallet();
 const { initializePayment, verifyPayment, loading: loadingPayment, payWithWallet } = usePayments();
 
 const paymentMethod = ref<'card' | 'wallet'>('card');
-const { groupOrder, activeCode, fetchGroupOrder, isHost, isSponsor, getMyStatus, initiateCheckout, checkout: submitGroupCheckout } = useGroupOrder();
+const { groupOrder, activeCode, fetchGroupOrder, isHost, isSponsor, getMyStatus, initiateCheckout, checkout: submitGroupCheckout, syncWithCart } = useGroupOrder();
 const { showToast } = useCustomToast();
 const { popularVendors, vendorsMetadata, fetchPopularVendors, fetchBulkMetadata, loading: loadingVendors } = useVendors();
 const { createOrder } = useStudentOrders();
+
+watch(() => groupOrder.value?.status, (newStatus) => {
+  if (newStatus === 'completed') {
+    cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
+    if (typeof window !== 'undefined') localStorage.removeItem('errandr_active_group_code');
+    groupOrder.value = null;
+    activeCode.value = null;
+    navigateTo('/orders');
+  }
+});
 const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
@@ -870,6 +880,23 @@ watch([recipientName, recipientPhone, specificAddress, deliveryOption, isMystery
   localStorage.setItem('errandr_checkout_data', JSON.stringify({ name, phone, address, delivery, mystery, dorm, paymentMethod: method, scheduledDate: date }));
 });
 
+let syncTimeout: any;
+watch(
+  () => cartStore.cartState.value,
+  () => {
+    if (groupOrder.value && groupOrder.value.status === 'open') {
+      const vendorId = groupOrder.value.vendor?._id || groupOrder.value.vendor;
+      if (vendorId) {
+        clearTimeout(syncTimeout);
+        syncTimeout = setTimeout(() => {
+          syncWithCart(vendorId);
+        }, 800);
+      }
+    }
+  },
+  { deep: true }
+);
+
 const submitSplitMode = async () => {
   showSplitModeModal.value = false;
   try {
@@ -886,9 +913,6 @@ const submitSplitMode = async () => {
 
 const startPayment = async () => {
   paymentError.value = '';
-  if (!recipientName.value.trim() || !recipientPhone.value.trim()) return showToast({ title: 'Missing Info', message: 'Name and phone required', toastType: 'error' });
-  if (deliveryOption.value === 'use_an_errander' && !specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Address required', toastType: 'error' });
-  if (!user.value?.email) return (showAuthModal.value = true);
 
   if (isPreOrderCart.value) {
     if (!scheduledDate.value) {
@@ -917,6 +941,12 @@ const startPayment = async () => {
         }
      }
   }
+
+  // AT THIS POINT, THE USER IS ABOUT TO ACTUALLY PAY
+  // Require delivery details and authentication
+  if (!recipientName.value.trim() || !recipientPhone.value.trim()) return showToast({ title: 'Missing Info', message: 'Name and phone required', toastType: 'error' });
+  if (deliveryOption.value === 'use_an_errander' && !specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Address required', toastType: 'error' });
+  if (!user.value?.email) return (showAuthModal.value = true);
 
   if (paymentMethod.value === 'wallet' && balance.value < finalTotal.value) {
     showTopupModal.value = true;

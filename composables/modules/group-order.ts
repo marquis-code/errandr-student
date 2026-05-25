@@ -50,7 +50,13 @@ export const useGroupOrder = () => {
     return { guestId: getGuestId() }
   }
 
-  const isHost = computed(() => groupOrder.value?.host?._id === user.value?._id || groupOrder.value?.host === user.value?._id)
+  const isHost = computed(() => {
+    if (!groupOrder.value) return false
+    const uId = user.value?._id
+    const gId = typeof window !== 'undefined' ? localStorage.getItem('errandr_guest_id') : null
+    const hostId = groupOrder.value.host?._id || groupOrder.value.host
+    return Boolean((uId && hostId === uId) || (gId && hostId === gId))
+  })
   
   const getMyStatus = computed(() => {
     if (!groupOrder.value) return null
@@ -67,7 +73,7 @@ export const useGroupOrder = () => {
     const uId = user.value?._id
     const gId = typeof window !== 'undefined' ? localStorage.getItem('errandr_guest_id') : null
     const sId = groupOrder.value.sponsorId?._id || groupOrder.value.sponsorId
-    return (uId && sId === uId) || (gId && sId === gId)
+    return Boolean((uId && sId === uId) || (gId && sId === gId))
   })
   const createGroupOrder = async (vendorId: string, name?: string) => {
     isLoading.value = true
@@ -263,13 +269,14 @@ export const useGroupOrder = () => {
   }
 
   // Auto-connect socket if code is available and persist code
-  watch([socket, activeCode], ([newSocket, newCode]) => {
+  watch([socket, activeCode, isConnected], ([newSocket, newCode, newIsConnected]) => {
     if (typeof window !== 'undefined') {
       if (newCode) localStorage.setItem('errandr_active_group_code', newCode)
       else localStorage.removeItem('errandr_active_group_code')
     }
 
-    if (newSocket && newCode) {
+    if (newSocket && newCode && newIsConnected) {
+      cleanupEventListeners()
       newSocket.emit('join-room', newCode)
       setupEventListeners()
     }
