@@ -12,7 +12,7 @@
           <div v-for="(vendor, i) in vendors" :key="vendor" class="flex items-center gap-8 md:gap-16">
             <span 
               :class="[
-                'text-5xl md:text-8xl font-black tracking-tighter font-onest transition-colors duration-500',
+                'text-5xl md:text-8xl font-medium tracking-tighter font-onest transition-colors duration-500',
                 i % 2 === 0 ? 'text-white/10 hover:text-white/20' : 'text-transparent stroke-text hover:text-white/5'
               ]"
             >
@@ -29,7 +29,7 @@
           <div v-for="(vendor, i) in vendors" :key="vendor + '-dup'" class="flex items-center gap-8 md:gap-16">
             <span 
               :class="[
-                'text-5xl md:text-8xl font-black tracking-tighter font-onest transition-colors duration-500',
+                'text-5xl md:text-8xl font-medium tracking-tighter font-onest transition-colors duration-500',
                 i % 2 === 0 ? 'text-white/10 hover:text-white/20' : 'text-transparent stroke-text hover:text-white/5'
               ]"
             >
@@ -46,7 +46,7 @@
       <!-- Center Brand Label -->
       <div class="flex items-center justify-center gap-4 py-2">
         <div class="h-px w-8 md:w-16 bg-gradient-to-r from-transparent to-parentPrimary/30" />
-        <p class="text-sm md:text-sm font-black text-parentPrimary tracking-[0.4em] uppercase font-onest">
+        <p class="text-sm md:text-sm font-medium text-parentPrimary tracking-[0.4em] uppercase font-onest">
           Bringing Happiness to Students' Doorsteps
         </p>
         <div class="h-px w-8 md:w-16 bg-gradient-to-l from-transparent to-parentPrimary/30" />
@@ -58,7 +58,7 @@
           <div v-for="(vendor, i) in [...vendors].reverse()" :key="vendor + '-rev'" class="flex items-center gap-8 md:gap-16">
             <span 
               :class="[
-                'text-5xl md:text-8xl font-black tracking-tighter font-onest transition-colors duration-500',
+                'text-5xl md:text-8xl font-medium tracking-tighter font-onest transition-colors duration-500',
                 i % 2 !== 0 ? 'text-white/10 hover:text-white/20' : 'text-transparent stroke-text hover:text-white/5'
               ]"
             >
@@ -72,7 +72,7 @@
           <div v-for="(vendor, i) in [...vendors].reverse()" :key="vendor + '-rev-dup'" class="flex items-center gap-8 md:gap-16">
             <span 
               :class="[
-                'text-5xl md:text-8xl font-black tracking-tighter font-onest transition-colors duration-500',
+                'text-5xl md:text-8xl font-medium tracking-tighter font-onest transition-colors duration-500',
                 i % 2 !== 0 ? 'text-white/10 hover:text-white/20' : 'text-transparent stroke-text hover:text-white/5'
               ]"
             >

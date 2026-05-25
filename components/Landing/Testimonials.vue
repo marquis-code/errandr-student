@@ -3,17 +3,17 @@
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
       <!-- Left side: Content -->
       <div class="space-y-8 text-center lg:text-left">
-        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-sm font-black uppercase ">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-sm font-medium uppercase ">
            💬 Words on the Street
         </div>
-        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none ">
+        <h2 class="text-4xl md:text-6xl font-medium text-gray-900 tracking-tighter leading-none ">
           Trusted by <span class="text-parentPrimary">thousands</span> of <br/> students on campus.
         </h2>
         <p class="text-gray-500 text-lg font-bold leading-relaxed tracking-tight max-w-md mx-auto lg:mx-0">
           From late-night study sessions to lazy Sunday mornings in the hostel, we've got your back. Join the community of smart chop-ers.
         </p>
         <div class="pt-4">
-          <NuxtLink to="/auth/register" class="inline-flex items-center gap-2 text-parentPrimary font-black text-sm hover:gap-4 transition-all group">
+          <NuxtLink to="/auth/register" class="inline-flex items-center gap-2 text-parentPrimary font-medium text-sm hover:gap-4 transition-all group">
             Speak to an Errandr <ArrowUpRight class="w-5 h-5 group-hover:rotate-45 transition-transform" />
           </NuxtLink>
         </div>
@@ -47,9 +47,9 @@
               </div>
               <div class="space-y-3">
                 <div class="flex items-center gap-2">
-                  <h4 class="font-black text-gray-900 tracking-tight text-lg">{{ t.name }}</h4>
+                  <h4 class="font-medium text-gray-900 tracking-tight text-lg">{{ t.name }}</h4>
                   <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-                  <p class="text-sm font-black text-parentPrimary uppercase ">{{ t.tag }}</p>
+                  <p class="text-sm font-medium text-parentPrimary uppercase ">{{ t.tag }}</p>
                 </div>
                 <p class="text-gray-500 font-bold text-sm leading-relaxed ">
                   "{{ t.quote }}"

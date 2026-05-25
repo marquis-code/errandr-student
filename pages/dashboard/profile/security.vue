@@ -5,7 +5,7 @@
  <ArrowLeft class="w-5 h-5" />
  </NuxtLink>
  <div class="space-y-0.5">
- <h1 class="text-xl font-black text-gray-900 tracking-tight tracking-tighter">Security</h1>
+ <h1 class="text-xl font-medium text-gray-900 tracking-tight tracking-tighter">Security</h1>
  <p class="text-sm font-bold text-gray-400 ">Protect your account</p>
  </div>
  </div>
@@ -15,26 +15,26 @@
  <div class="space-y-4 relative z-10">
  <div class="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl border border-gray-100/50 hover:bg-white transition-all duration-300">
  <div>
- <p class="text-[11px] font-black text-gray-900 ">Password</p>
+ <p class="text-[11px] font-medium text-gray-900 ">Password</p>
  <p class="text-sm text-gray-400 font-bold tracking-[0.2em] mt-1.5">Last updated 2 months ago</p>
  </div>
- <button class="px-4 py-2 bg-white text-gray-900 border border-gray-100 rounded-lg text-sm font-black  hover:bg-gray-900 hover:text-white transition-all">Update</button>
+ <button class="px-4 py-2 bg-white text-gray-900 border border-gray-100 rounded-lg text-sm font-medium  hover:bg-gray-900 hover:text-white transition-all">Update</button>
  </div>
  
  <div class="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl border border-gray-100/50 hover:bg-white transition-all duration-300">
  <div>
- <p class="text-[11px] font-black text-gray-900 ">Two-Factor Auth</p>
+ <p class="text-[11px] font-medium text-gray-900 ">Two-Factor Auth</p>
  <p class="text-sm text-gray-400 font-bold tracking-[0.2em] mt-1.5">Enhance Security</p>
  </div>
- <button class="px-4 py-2 bg-white text-gray-900 border border-gray-100 rounded-lg text-sm font-black  hover:bg-gray-900 hover:text-white transition-all">Enable</button>
+ <button class="px-4 py-2 bg-white text-gray-900 border border-gray-100 rounded-lg text-sm font-medium  hover:bg-gray-900 hover:text-white transition-all">Enable</button>
  </div>
 
  <div class="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl border border-gray-100/50 hover:bg-white transition-all duration-300">
  <div>
- <p class="text-[11px] font-black text-gray-900 ">Authorized Devices</p>
+ <p class="text-[11px] font-medium text-gray-900 ">Authorized Devices</p>
  <p class="text-sm text-gray-400 font-bold tracking-[0.2em] mt-1.5">Active sessions</p>
  </div>
- <button class="px-4 py-2 bg-white text-gray-900 border border-gray-100 rounded-lg text-sm font-black  hover:bg-gray-900 hover:text-white transition-all">Review</button>
+ <button class="px-4 py-2 bg-white text-gray-900 border border-gray-100 rounded-lg text-sm font-medium  hover:bg-gray-900 hover:text-white transition-all">Review</button>
  </div>
  </div>
  </div>

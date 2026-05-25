@@ -57,19 +57,19 @@
                   <div v-if="vendor.logo" class="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white/10" style="filter: grayscale(0.5) brightness(0.7)">
                     <img :src="vendor.logo" class="w-full h-full object-cover bg-white" alt="Store Logo" />
                   </div>
-                  <div v-else :class="`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black text-white border-2 border-white/10 ${getVendorColor(vendor.storeName)}`"
+                  <div v-else :class="`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-medium text-white border-2 border-white/10 ${getVendorColor(vendor.storeName)}`"
                     style="filter: grayscale(0.5) brightness(0.7)">
                     {{ getInitials(vendor.storeName) }}
                   </div>
                 </div>
                 <div class="absolute bottom-0 inset-x-0 flex items-center justify-between px-4 py-3 bg-white/10 backdrop-blur-md border-t border-white/10">
                   <div>
-                    <p class="text-white text-xs font-black leading-none mb-0.5">Closed right now</p>
+                    <p class="text-white text-xs font-medium leading-none mb-0.5">Closed right now</p>
                     <p class="text-white/50 text-[11px] font-medium">Opens {{ vendor.openingTime || '8:00 AM' }}</p>
                   </div>
                   <button
                     @click.stop="$emit('notify', vendor)"
-                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 hover:bg-white active:scale-95 text-gray-900 rounded-xl text-[11px] font-black transition-all shadow-md"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 hover:bg-white active:scale-95 text-gray-900 rounded-xl text-[11px] font-medium transition-all shadow-md"
                   >
                     <Bell class="w-3 h-3" /> Notify me
                   </button>
@@ -88,20 +88,20 @@
                   <div v-if="vendor.logo" class="w-14 h-14 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 bg-white">
                     <img :src="vendor.logo" class="w-full h-full object-cover" alt="Store Logo" />
                   </div>
-                  <div v-else :class="`w-14 h-14 rounded-2xl flex items-center justify-center text-md font-black text-white shadow-2xl border-2 border-white/20 ${getVendorColor(vendor.storeName)}`">
+                  <div v-else :class="`w-14 h-14 rounded-2xl flex items-center justify-center text-md font-medium text-white shadow-2xl border-2 border-white/20 ${getVendorColor(vendor.storeName)}`">
                     {{ getInitials(vendor.storeName) }}
                   </div>
                 </div>
                 <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 overflow-hidden">
                   <div class="flex items-center gap-1.5">
-                    <span v-if="vendor.preOrderOnly" class="px-2 py-1 bg-purple-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-black tracking-wider border border-white/20 shadow-lg shrink-0">
+                    <span v-if="vendor.preOrderOnly" class="px-2 py-1 bg-purple-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-medium tracking-wider border border-white/20 shadow-lg shrink-0">
                       PRE-ORDER
                     </span>
-                    <span class="px-3 py-1.5 bg-gray-900/10 backdrop-blur-xl rounded-xl text-gray-900 text-sm font-black border border-gray-900/10 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary">
+                    <span class="px-3 py-1.5 bg-gray-900/10 backdrop-blur-xl rounded-xl text-gray-900 text-sm font-medium border border-gray-900/10 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary">
                       {{ vendor.category }}
                     </span>
                   </div>
-                  <span v-if="vendor.rating" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md rounded-xl px-2.5 py-1.5 text-sm font-black text-gray-900 shadow-xl border border-gray-50 group-hover:scale-105 transition-transform duration-500">
+                  <span v-if="vendor.rating" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md rounded-xl px-2.5 py-1.5 text-sm font-medium text-gray-900 shadow-xl border border-gray-50 group-hover:scale-105 transition-transform duration-500">
                     <Star class="w-3 h-3 text-parentPrimary fill-current" /> {{ vendor.rating.toFixed(1) }}
                   </span>
                 </div>
@@ -112,29 +112,29 @@
             <div class="p-6 flex-1 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between gap-4 mb-3">
-                  <h3 class="text-xl font-black text-gray-900 group-hover:text-parentPrimary transition-colors -tight truncate">{{ vendor.storeName }}</h3>
+                  <h3 class="text-xl font-medium text-gray-900 group-hover:text-parentPrimary transition-colors -tight truncate">{{ vendor.storeName }}</h3>
                   <div v-if="vendor.isOpen" class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100/50">
                     <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span class="text-sm font-black">open</span>
+                    <span class="text-sm font-medium">open</span>
                   </div>
                   <div v-else class="flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 text-gray-400 rounded-lg border border-gray-100">
                     <div class="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                    <span class="text-sm font-black">{{ vendor.statusMessage || 'closed' }}</span>
+                    <span class="text-sm font-medium">{{ vendor.statusMessage || 'closed' }}</span>
                   </div>
                 </div>
                 <p class="text-[13px] text-gray-500 line-clamp-2 mb-6 leading-relaxed font-medium group-hover:text-gray-600 transition-colors">{{ vendor.description }}</p>
               </div>
               <div class="flex items-center justify-between pt-5 border-t border-gray-50/80">
-                <div class="flex items-center gap-4 text-sm font-black text-gray-400 -tight">
-                  <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors"><Clock class="w-3.5 h-3.5" /> {{ vendor.preparationTime || 20 }} min</span>
-                  <span class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors"><Bike class="w-3.5 h-3.5" /> From ₦{{ vendor.baseDeliveryFee || 600 }}</span>
+                <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium text-gray-400 tracking-tight min-w-0">
+                  <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors whitespace-nowrap shrink-0"><Clock class="w-3.5 h-3.5 shrink-0" /> {{ vendor.preparationTime || 20 }} min</span>
+                  <span class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors whitespace-nowrap shrink-0"><Bike class="w-3.5 h-3.5 shrink-0" /> From ₦{{ vendor.baseDeliveryFee || 600 }}</span>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 shrink-0">
                   <button @click.stop="$emit('share-vendor', vendor)" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-parentPrimary hover:text-white transition-all duration-300">
-                    <Share2 class="w-4 h-4" />
+                    <Share2 class="w-4 h-4 shrink-0" />
                   </button>
                   <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-parentPrimary group-hover:text-white group-hover:rotate-45 transition-all duration-500">
-                    <ArrowUpRight class="w-4 h-4" />
+                    <ArrowUpRight class="w-4 h-4 shrink-0" />
                   </div>
                 </div>
               </div>

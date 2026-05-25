@@ -10,11 +10,11 @@
       </div>
 
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-sm font-black tracking-[0.2em] uppercase text-gray-400 mb-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-sm font-medium tracking-[0.2em] uppercase text-gray-400 mb-8">
           <span class="w-2 h-2 rounded-full bg-parentPrimary"></span>
           Direct Support
         </div>
-        <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-medium tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
           We're here for <br />
           <span class="text-parentPrimary  bg-parentPrimary/5 px-6 rounded-3xl">every student.</span>
         </h1>
@@ -33,9 +33,9 @@
             <div class="w-14 h-14 bg-parentPrimary/10 rounded-2xl flex items-center justify-center text-parentPrimary mb-8 group-hover:scale-110 transition-transform">
               <Mail class="w-7 h-7" />
             </div>
-            <h3 class="text-xl font-black text-gray-900 tracking-tight mb-3">Email Support</h3>
+            <h3 class="text-xl font-medium text-gray-900 tracking-tight mb-3">Email Support</h3>
             <p class="text-[13px] text-gray-500 font-bold leading-relaxed mb-6">General inquiries and order issues.</p>
-            <a href="mailto:support@erranders.org" class="text-sm font-black text-parentPrimary hover:underline">support@erranders.org</a>
+            <a href="mailto:support@erranders.org" class="text-sm font-medium text-parentPrimary hover:underline">support@erranders.org</a>
           </div>
 
           <!-- Expansion Card -->
@@ -43,9 +43,9 @@
             <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-8 group-hover:scale-110 transition-transform">
               <Building class="w-7 h-7" />
             </div>
-            <h3 class="text-xl font-black text-gray-900 tracking-tight mb-3">Campus Launch</h3>
+            <h3 class="text-xl font-medium text-gray-900 tracking-tight mb-3">Campus Launch</h3>
             <p class="text-[13px] text-gray-500 font-bold leading-relaxed mb-6">Bring Errandr to your school environment.</p>
-            <a href="mailto:expansion@erranders.org" class="text-sm font-black text-emerald-600 hover:underline">expansion@erranders.org</a>
+            <a href="mailto:expansion@erranders.org" class="text-sm font-medium text-emerald-600 hover:underline">expansion@erranders.org</a>
           </div>
 
           <!-- Phone Card -->
@@ -53,9 +53,9 @@
             <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-8 group-hover:scale-110 transition-transform">
               <Phone class="w-7 h-7" />
             </div>
-            <h3 class="text-xl font-black text-gray-900 tracking-tight mb-3">Instant Hotline</h3>
+            <h3 class="text-xl font-medium text-gray-900 tracking-tight mb-3">Instant Hotline</h3>
             <p class="text-[13px] text-gray-500 font-bold leading-relaxed mb-6">Mon–Sat, 8AM–9PM local time.</p>
-            <a href="tel:+23412345678" class="text-sm font-black text-indigo-600 hover:underline">+234 (0) 123 456 78</a>
+            <a href="tel:+23412345678" class="text-sm font-medium text-indigo-600 hover:underline">+234 (0) 123 456 78</a>
           </div>
 
           <!-- Social Card -->
@@ -63,11 +63,11 @@
             <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 mb-8 group-hover:scale-110 transition-transform">
               <Instagram class="w-7 h-7" />
             </div>
-            <h3 class="text-xl font-black text-gray-900 tracking-tight mb-3">Social Pulse</h3>
+            <h3 class="text-xl font-medium text-gray-900 tracking-tight mb-3">Social Pulse</h3>
             <p class="text-[13px] text-gray-500 font-bold leading-relaxed mb-6">Updates and campus giveaways.</p>
             <div class="flex gap-4">
-              <a href="#" class="text-sm font-black text-amber-600 hover:underline uppercase tracking-tight">IG</a>
-              <a href="#" class="text-sm font-black text-amber-600 hover:underline uppercase tracking-tight">TW</a>
+              <a href="#" class="text-sm font-medium text-amber-600 hover:underline uppercase tracking-tight">IG</a>
+              <a href="#" class="text-sm font-medium text-amber-600 hover:underline uppercase tracking-tight">TW</a>
             </div>
           </div>
         </div>
@@ -79,10 +79,10 @@
       <div class="max-w-7xl mx-auto px-6 sm:px-10">
         <div class="bg-white p-12 md:p-20 rounded-[4rem] border border-gray-100 flex flex-col md:flex-row items-center gap-16 shadow-sm">
           <div class="flex-1 space-y-8">
-            <h2 class="text-4xl font-black text-gray-900 tracking-tight leading-[0.95]">Our Base of <br/><span class="text-parentPrimary">Operations.</span></h2>
+            <h2 class="text-4xl font-medium text-gray-900 tracking-tight leading-[0.95]">Our Base of <br/><span class="text-parentPrimary">Operations.</span></h2>
             <p class="text-lg text-gray-500 font-bold leading-relaxed">Currently scaling from the CMUL campus to universities across Nigeria. Our core team is based in the heart of Lagos innovation.</p>
             <div class="space-y-4">
-              <div class="flex items-center gap-4 text-gray-900 font-black">
+              <div class="flex items-center gap-4 text-gray-900 font-medium">
                 <MapPin class="w-5 h-5 text-parentPrimary" />
                 42 Innovation Drive, Yaba, Lagos
               </div>

@@ -14,7 +14,7 @@
             <div class="w-8 h-8 rounded-lg overflow-hidden border border-gray-100 bg-white shrink-0">
               <img :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
             </div>
-            <h2 class="text-sm font-black text-gray-900 tracking-tight truncate max-w-[160px] md:max-w-none">{{ toTitleCase(vendor.storeName) }}</h2>
+            <h2 class="text-sm font-medium text-gray-900 tracking-tight truncate max-w-[160px] md:max-w-none">{{ toTitleCase(vendor.storeName) }}</h2>
           </div>
         </div>
         <div class="flex items-center gap-2">
@@ -28,7 +28,7 @@
           <button 
             v-if="cart.getVendorStats(vendor._id).itemCount > 0"
             @click="showMobileCartDrawer = true" 
-            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-black transition-all shadow-md"
+            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-medium transition-all shadow-md"
           >
             <ShoppingBag class="w-3.5 h-3.5" />
             <span class="bg-parentPrimary px-1.5 py-0.5 rounded-md text-[10px]">{{ cart.getVendorStats(vendor._id).itemCount }}</span>
@@ -94,25 +94,25 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1.5">
                 <span 
-                  class="px-2.5 py-1 rounded-lg text-[10px] font-black flex items-center gap-1.5"
+                  class="px-2.5 py-1 rounded-lg text-[10px] font-medium flex items-center gap-1.5"
                   :class="vendor.isOpen !== false ? 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/20' : 'bg-red-400/20 text-red-300 border border-red-400/20'"
                 >
                   <span class="w-1.5 h-1.5 rounded-full" :class="vendor.isOpen !== false ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'"></span>
                   {{ vendor.isOpen !== false ? 'Open Now' : 'Closed' }}
                 </span>
-                <span v-if="vendor.isInsideCampus" class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10 text-white/70 text-[10px] font-black shrink-0">
+                <span v-if="vendor.isInsideCampus" class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10 text-white/70 text-[10px] font-medium shrink-0">
                   On Campus
                 </span>
-                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 rounded-lg bg-purple-500/20 border border-purple-400/30 text-purple-300 text-[10px] font-black shrink-0">
+                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 rounded-lg bg-purple-500/20 border border-purple-400/30 text-purple-300 text-[10px] font-medium shrink-0">
                   📅 PRE-ORDER ONLY
                 </span>
               </div>
-              <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight truncate">{{ toTitleCase(vendor.storeName) }}</h1>
+              <h1 class="text-2xl md:text-3xl font-medium text-white tracking-tight leading-tight truncate">{{ toTitleCase(vendor.storeName) }}</h1>
               <!-- Stats Row -->
               <div class="flex items-center gap-3 mt-2 text-white/70 text-xs font-bold flex-wrap">
                 <span class="flex items-center gap-1">
                   <Star class="w-3 h-3 text-amber-400 fill-amber-400" />
-                  <span class="text-white font-black">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
+                  <span class="text-white font-medium">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
                   <span>({{ vendor.totalRatings || 0 }})</span>
                 </span>
                 <span class="w-1 h-1 rounded-full bg-white/30"></span>
@@ -138,7 +138,7 @@
         <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
           <button 
             @click="handleStartGroupOrder"
-            class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black transition-all whitespace-nowrap shrink-0 shadow-lg active:scale-95"
+            class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-medium transition-all whitespace-nowrap shrink-0 shadow-lg active:scale-95"
             :class="activeCode ? 'bg-emerald-500 text-white' : 'bg-white text-gray-900 border border-gray-100 shadow-md'"
           >
             <Users class="w-3.5 h-3.5" />
@@ -147,7 +147,7 @@
           
           <button 
             @click="showMobileCartDrawer = true" 
-            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white text-gray-900 rounded-2xl text-xs font-black transition-all whitespace-nowrap shadow-md border border-gray-100 shrink-0 active:scale-95"
+            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white text-gray-900 rounded-2xl text-xs font-medium transition-all whitespace-nowrap shadow-md border border-gray-100 shrink-0 active:scale-95"
           >
             <ShoppingBag class="w-3.5 h-3.5" />
             <span v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="bg-parentPrimary text-white px-1.5 py-0.5 rounded-md text-[10px]">{{ cart.getVendorStats(vendor._id).itemCount }}</span>
@@ -169,9 +169,14 @@
           >
             <img :src="banner.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent flex flex-col justify-end p-4">
-              <span class="absolute top-3 right-3 px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[9px] font-black shadow-sm">Offer</span>
-              <h3 class="text-sm font-black text-white tracking-tight leading-tight">{{ toTitleCase(banner.title) }}</h3>
+              <span class="absolute top-3 right-3 px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[9px] font-medium shadow-sm">Offer</span>
+              <h3 class="text-sm font-medium text-white tracking-tight leading-tight">{{ toTitleCase(banner.title) }}</h3>
               <p class="text-xs font-bold text-white/70 mt-0.5 truncate">{{ banner.description }}</p>
+              
+              <div v-if="banner.endAt" class="flex items-center gap-1 mt-1.5">
+                <Clock class="w-3 h-3 text-amber-400" />
+                <span class="text-[10px] font-bold text-amber-400">{{ formatCountdown(banner.endAt) }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -187,20 +192,20 @@
                 <div class="w-8 h-8 rounded-xl bg-parentPrimary text-white flex items-center justify-center shadow-lg">
                   <Calendar class="w-4 h-4" />
                 </div>
-                <h3 class="text-xs font-black text-white tracking-wider">{{ activeBatch.windowName }}</h3>
+                <h3 class="text-xs font-medium text-white tracking-wider">{{ activeBatch.windowName }}</h3>
               </div>
               <div class="flex flex-wrap gap-4 text-xs">
                 <div>
-                  <p class="text-white/40 font-black mb-0.5">Accepting until</p>
-                  <p class="font-black text-parentPrimary">{{ new Date(activeBatch.deadline).toLocaleString() }}</p>
+                  <p class="text-white/40 font-medium mb-0.5">Accepting until</p>
+                  <p class="font-medium text-parentPrimary">{{ new Date(activeBatch.deadline).toLocaleString() }}</p>
                 </div>
                 <div>
-                  <p class="text-white/40 font-black mb-0.5">Delivery on</p>
-                  <p class="font-black text-emerald-400">{{ new Date(activeBatch.deliveryDate).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }) }}</p>
+                  <p class="text-white/40 font-medium mb-0.5">Delivery on</p>
+                  <p class="font-medium text-emerald-400">{{ new Date(activeBatch.deliveryDate).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }) }}</p>
                 </div>
               </div>
             </div>
-            <span class="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-xl text-[10px] font-black border border-emerald-500/20 self-start md:self-center">Live &amp; Open</span>
+            <span class="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-xl text-[10px] font-medium border border-emerald-500/20 self-start md:self-center">Live &amp; Open</span>
           </div>
         </div>
       </div>
@@ -218,7 +223,7 @@
               v-for="cat in categories"
               :key="cat"
               @click="scrollToCategory(cat)"
-              class="whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black transition-all shrink-0 active:scale-95"
+              class="whitespace-nowrap px-4 py-2 rounded-xl text-xs font-medium transition-all shrink-0 active:scale-95"
               :class="activeCategory === cat 
                 ? 'bg-parentPrimary text-white shadow-md shadow-parentPrimary/20 scale-[1.02]' 
                 : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900'"
@@ -249,7 +254,7 @@
             >
               <!-- Category Header -->
               <div class="flex items-center gap-3 mb-5">
-                <h2 class="text-lg font-black text-gray-900 tracking-tight">{{ toTitleCase(cat) }}</h2>
+                <h2 class="text-lg font-medium text-gray-900 tracking-tight">{{ toTitleCase(cat) }}</h2>
                 <div class="h-px bg-gray-100 flex-1"></div>
                 <span class="text-xs font-bold text-gray-400">{{ groupedProducts[cat]?.length || 0 }} items</span>
               </div>
@@ -265,18 +270,18 @@
                   <!-- Square Image -->
                   <div class="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0 relative">
                     <img :src="product.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
-                    <div v-if="getProductCount(product._id) > 0" class="absolute top-1 right-1 bg-parentPrimary text-white w-5 h-5 rounded-md flex items-center justify-center text-[9px] font-black shadow-sm">
+                    <div v-if="getProductCount(product._id) > 0" class="absolute top-1 right-1 bg-parentPrimary text-white w-5 h-5 rounded-md flex items-center justify-center text-[9px] font-medium shadow-sm">
                       {{ getProductCount(product._id) }}
                     </div>
                   </div>
                   <!-- Info -->
                   <div class="flex-1 min-w-0 py-0.5">
-                    <h3 class="text-sm font-black text-gray-900 tracking-tight leading-tight truncate">{{ product.name }}</h3>
+                    <h3 class="text-sm font-medium text-gray-900 tracking-tight leading-tight truncate">{{ product.name }}</h3>
                     <p class="text-[11px] text-gray-400 font-medium line-clamp-1 mt-0.5 leading-relaxed">{{ product.description || 'Freshly prepared with care.' }}</p>
                     <div class="flex items-center justify-between mt-2">
                       <div>
                         <span v-if="product.discountPrice" class="text-[10px] text-gray-300 line-through mr-1">₦{{ product.price.toLocaleString() }}</span>
-                        <span class="text-sm font-black text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                        <span class="text-sm font-medium text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
                       </div>
                     </div>
                   </div>
@@ -304,7 +309,7 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-gray-900/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     
                     <!-- Item Count -->
-                    <div v-if="getProductCount(product._id) > 0" class="absolute top-3 right-3 flex items-center gap-1.5 bg-parentPrimary text-white px-2.5 py-1 rounded-lg text-xs font-black shadow-lg z-10">
+                    <div v-if="getProductCount(product._id) > 0" class="absolute top-3 right-3 flex items-center gap-1.5 bg-parentPrimary text-white px-2.5 py-1 rounded-lg text-xs font-medium shadow-lg z-10">
                       <ShoppingBag class="w-3 h-3" />
                       {{ getProductCount(product._id) }}
                     </div>
@@ -313,14 +318,14 @@
                   <!-- Content -->
                   <div class="p-4 flex-1 flex flex-col justify-between">
                     <div>
-                      <h3 class="text-sm font-black text-gray-900 tracking-tight leading-tight mb-1 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h3>
+                      <h3 class="text-sm font-medium text-gray-900 tracking-tight leading-tight mb-1 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h3>
                       <p class="text-[11px] font-medium text-gray-400 line-clamp-2 leading-relaxed">{{ product.description || 'Freshly prepared with premium ingredients.' }}</p>
                     </div>
                     
                     <div class="flex items-end justify-between mt-4 pt-3 border-t border-gray-50">
                       <div>
                         <span v-if="product.discountPrice" class="text-xs text-gray-300 line-through block mb-0.5">₦{{ product.price.toLocaleString() }}</span>
-                        <span class="text-base font-black text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                        <span class="text-base font-medium text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
                       </div>
                       <button 
                         @click.stop="addToCart(product)"
@@ -342,34 +347,34 @@
             <div class="sticky top-24 space-y-6">
               
               <!-- Group Participants -->
-              <div v-if="groupOrder" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div v-if="groupOrder && groupOrder.participants" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 bg-gray-50/50 border-b border-gray-100">
-                  <h3 class="text-xs font-black text-gray-400 tracking-widest">Participants ({{ groupOrder.participants.length }})</h3>
-                  <button v-if="isHost" @click="copyInviteLink" class="text-[10px] font-black text-parentPrimary hover:underline">Copy Link</button>
+                  <h3 class="text-xs font-medium text-gray-400 tracking-widest">Participants ({{ groupOrder.participants?.length || 0 }})</h3>
+                  <button v-if="isHost" @click="copyInviteLink" class="text-[10px] font-medium text-parentPrimary hover:underline">Copy Link</button>
                 </div>
                 <div class="p-3 space-y-2">
-                  <div v-for="p in groupOrder.participants" :key="p.user._id || p.user" class="p-3 bg-gray-50 rounded-xl flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-black text-xs text-gray-500 overflow-hidden shrink-0">
-                      <img v-if="p.user.avatar" :src="p.user.avatar" class="w-full h-full object-cover" />
-                      <span v-else>{{ p.user.firstName?.[0] }}</span>
+                  <div v-for="p in groupOrder.participants" :key="p.user?._id || p.user" class="p-3 bg-gray-50 rounded-xl flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-medium text-xs text-gray-500 overflow-hidden shrink-0">
+                      <img v-if="p.user?.avatar" :src="p.user.avatar" class="w-full h-full object-cover" />
+                      <span v-else>{{ p.user?.firstName?.[0] || 'G' }}</span>
                     </div>
                     <div class="flex-1 min-w-0">
                       <div class="flex items-center gap-2">
-                        <p class="text-xs font-black text-gray-900 truncate">{{ p.user.firstName }} {{ p.user.lastName }}</p>
-                        <span v-if="p.user._id === groupOrder.host._id || p.user === groupOrder.host" class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-[8px] font-black">Host</span>
+                        <p class="text-xs font-medium text-gray-900 truncate">{{ p.user?.firstName || 'Guest' }} {{ p.user?.lastName || '' }}</p>
+                        <span v-if="p.user?._id === groupOrder.host?._id || p.user === groupOrder.host" class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-[8px] font-medium">Host</span>
                       </div>
                       <p class="text-[10px] font-bold text-gray-400">{{ p.items?.length || 0 }} items · ₦{{ (p.total || 0).toLocaleString() }}</p>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <div :class="p.isReady ? 'bg-emerald-500' : 'bg-gray-200'" class="w-1.5 h-1.5 rounded-full"></div>
-                      <span class="text-[9px] font-black" :class="p.isReady ? 'text-emerald-600' : 'text-gray-400'">{{ p.isReady ? 'Ready' : 'Carting' }}</span>
+                      <span class="text-[9px] font-medium" :class="p.isReady ? 'text-emerald-600' : 'text-gray-400'">{{ p.isReady ? 'Ready' : 'Carting' }}</span>
                     </div>
                   </div>
                   <!-- Group Actions -->
                   <div class="pt-2 flex flex-col gap-2">
                     <button 
                       @click="toggleReady(!getMyStatus?.isReady)"
-                      class="w-full py-2.5 rounded-xl text-xs font-black transition-all border"
+                      class="w-full py-2.5 rounded-xl text-xs font-medium transition-all border"
                       :class="getMyStatus?.isReady ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-white text-gray-400 border-gray-100 hover:text-gray-900'"
                     >
                       {{ getMyStatus?.isReady ? 'You are Ready' : 'Mark as Ready' }}
@@ -378,11 +383,11 @@
                       v-if="isHost && groupOrder.status === 'open'"
                       @click="handleCheckoutGroupOrder"
                       :disabled="!canCheckout"
-                      class="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-black hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50"
+                      class="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50"
                     >
                       Checkout Everything
                     </button>
-                    <button @click="leaveGroupOrder" class="w-full py-2 text-[10px] font-black text-rose-400 hover:text-rose-600 transition-all">
+                    <button @click="showLeaveConfirmationModal = true" class="w-full py-2 text-[10px] font-medium text-rose-400 hover:text-rose-600 transition-all">
                       Leave Group
                     </button>
                   </div>
@@ -392,7 +397,7 @@
               <!-- Cart Summary Card -->
               <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 bg-gray-50/50 border-b border-gray-100">
-                  <h3 class="text-xs font-black text-gray-900 tracking-tight">Your Packs</h3>
+                  <h3 class="text-xs font-medium text-gray-900 tracking-tight">Your Packs</h3>
                   <ShoppingCart class="w-4 h-4 text-parentPrimary" />
                 </div>
 
@@ -400,7 +405,7 @@
                   <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-3">
                     <!-- Pack Header -->
                     <div class="flex items-center justify-between">
-                      <span class="text-[10px] font-black bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
+                      <span class="text-[10px] font-medium bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
                       <div class="flex items-center gap-1">
                         <button @click="duplicatePack(vendor._id, pack)" class="p-1.5 text-gray-400 hover:text-parentPrimary transition-all" title="Duplicate pack">
                           <Copy class="w-3.5 h-3.5" />
@@ -417,12 +422,12 @@
                           <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
                         </div>
                         <div class="flex-1 min-w-0">
-                          <p class="text-xs font-black text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
-                          <p class="text-xs font-black text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
+                          <p class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
+                          <p class="text-xs font-medium text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
                         </div>
                         <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100 shrink-0">
                           <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-6 h-6 rounded-md bg-white text-gray-500 flex items-center justify-center hover:text-rose-500 transition-all text-xs font-bold shadow-sm">−</button>
-                          <span class="text-xs font-black min-w-[16px] text-center">{{ item.quantity }}</span>
+                          <span class="text-xs font-medium min-w-[16px] text-center">{{ item.quantity }}</span>
                           <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-6 h-6 rounded-md bg-white text-gray-500 flex items-center justify-center hover:text-parentPrimary transition-all text-xs font-bold shadow-sm">+</button>
                         </div>
                       </div>
@@ -430,19 +435,19 @@
                   </div>
 
                   <!-- Add Pack -->
-                  <button @click="addNewPack(vendor._id)" class="w-full py-3 border border-dashed border-gray-200 rounded-xl text-xs font-black text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
+                  <button @click="addNewPack(vendor._id)" class="w-full py-3 border border-dashed border-gray-200 rounded-xl text-xs font-medium text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
                     <Plus class="w-3.5 h-3.5" /> New Pack
                   </button>
 
                   <!-- Checkout -->
                   <div class="pt-4 border-t border-gray-100 space-y-4">
                     <div class="flex justify-between items-center">
-                      <span class="text-xs font-black text-gray-400 tracking-wider">Subtotal</span>
-                      <span class="text-xl font-black text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
+                      <span class="text-xs font-medium text-gray-400 tracking-wider">Subtotal</span>
+                      <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
                     </div>
                     <NuxtLink 
                       :to="activeCode ? `/cart?group=${activeCode}` : '/cart'" 
-                      class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-black tracking-wider hover:bg-parentPrimary/90 transition-all shadow-xl shadow-parentPrimary/20 active:scale-[0.98]"
+                      class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-medium tracking-wider hover:bg-parentPrimary/90 transition-all shadow-xl shadow-parentPrimary/20 active:scale-[0.98]"
                     >
                       {{ activeCode ? 'Finalize Order' : 'Proceed to Checkout' }}
                     </NuxtLink>
@@ -452,7 +457,7 @@
                 <!-- Empty Cart -->
                 <div v-else class="p-8 text-center">
                   <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">🛒</div>
-                  <p class="text-sm font-black text-gray-900 mb-1">Your cart is empty</p>
+                  <p class="text-sm font-medium text-gray-900 mb-1">Your cart is empty</p>
                   <p class="text-xs font-medium text-gray-400">Tap + on any item to start your order</p>
                 </div>
               </div>
@@ -489,7 +494,7 @@
           <div class="sticky top-0 bg-white pt-3 pb-2 px-5 border-b border-gray-50 z-10 rounded-t-[2rem]">
             <div class="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3"></div>
             <div class="flex items-center justify-between">
-              <h2 class="text-lg font-black text-gray-900 tracking-tight">Your Order</h2>
+              <h2 class="text-lg font-medium text-gray-900 tracking-tight">Your Order</h2>
               <button @click="showMobileCartDrawer = false" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
                 <X class="w-4 h-4"/>
               </button>
@@ -499,14 +504,14 @@
           <div class="p-5 space-y-6 pb-10">
             <!-- Group Participants (if in group) -->
             <div v-if="groupOrder" class="space-y-3">
-              <h3 class="text-xs font-black text-gray-400 tracking-widest">Participants ({{ groupOrder.participants.length }})</h3>
-              <div v-for="p in groupOrder.participants" :key="p.user._id || p.user" class="p-3 bg-gray-50 rounded-xl flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-black text-xs text-gray-500 overflow-hidden shrink-0">
-                  <img v-if="p.user.avatar" :src="p.user.avatar" class="w-full h-full object-cover" />
-                  <span v-else>{{ p.user.firstName?.[0] }}</span>
+              <h3 class="text-xs font-medium text-gray-400 tracking-widest">Participants ({{ groupOrder.participants?.length || 0 }})</h3>
+              <div v-for="p in groupOrder.participants" :key="p.user?._id || p.user" class="p-3 bg-gray-50 rounded-xl flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-medium text-xs text-gray-500 overflow-hidden shrink-0">
+                  <img v-if="p.user?.avatar" :src="p.user?.avatar" class="w-full h-full object-cover" />
+                  <span v-else>{{ p.user?.firstName?.[0] || 'G' }}</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-xs font-black text-gray-900 truncate">{{ p.user.firstName }} {{ p.user.lastName }}</p>
+                  <p class="text-xs font-medium text-gray-900 truncate">{{ p.user?.firstName || 'Guest' }} {{ p.user?.lastName || '' }}</p>
                   <p class="text-[10px] font-bold text-gray-400">{{ p.items?.length || 0 }} items · ₦{{ (p.total || 0).toLocaleString() }}</p>
                 </div>
                 <div :class="p.isReady ? 'bg-emerald-500' : 'bg-gray-200'" class="w-2 h-2 rounded-full"></div>
@@ -514,15 +519,15 @@
               <div class="flex flex-col gap-2 pt-1">
                 <button 
                   @click="toggleReady(!getMyStatus?.isReady)"
-                  class="w-full py-2.5 rounded-xl text-xs font-black transition-all border"
+                  class="w-full py-2.5 rounded-xl text-xs font-medium transition-all border"
                   :class="getMyStatus?.isReady ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-white text-gray-400 border-gray-100'"
                 >
                   {{ getMyStatus?.isReady ? 'You are Ready' : 'Mark as Ready' }}
                 </button>
-                <button v-if="isHost && groupOrder.status === 'open'" @click="handleCheckoutGroupOrder" :disabled="!canCheckout" class="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-black hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50">
+                <button v-if="isHost && groupOrder.status === 'open'" @click="handleCheckoutGroupOrder" :disabled="!canCheckout" class="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50">
                   Checkout Everything
                 </button>
-                <button @click="leaveGroupOrder" class="w-full py-2 text-[10px] font-black text-rose-400">Leave Group</button>
+                <button @click="showLeaveConfirmationModal = true; showMobileCartDrawer = false" class="w-full py-2 text-[10px] font-medium text-rose-400">Leave Group</button>
               </div>
             </div>
 
@@ -530,7 +535,7 @@
             <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="space-y-5">
               <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-3">
                 <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-black bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
+                  <span class="text-[10px] font-medium bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
                   <div class="flex items-center gap-1">
                     <button @click="duplicatePack(vendor._id, pack)" class="p-1.5 text-gray-400 hover:text-parentPrimary"><Copy class="w-3.5 h-3.5" /></button>
                     <button @click="cart.removePack(vendor._id, pack.id)" class="p-1.5 text-gray-400 hover:text-rose-500"><Trash2 class="w-3.5 h-3.5" /></button>
@@ -542,12 +547,12 @@
                       <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
                     </div>
                     <div class="flex-1 min-w-0">
-                      <p class="text-xs font-black text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
-                      <p class="text-xs font-black text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
+                      <p class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
+                      <p class="text-xs font-medium text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
                     </div>
                     <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100 shrink-0">
                       <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-7 h-7 rounded-md bg-white text-gray-500 flex items-center justify-center text-sm font-bold shadow-sm">−</button>
-                      <span class="text-xs font-black min-w-[18px] text-center">{{ item.quantity }}</span>
+                      <span class="text-xs font-medium min-w-[18px] text-center">{{ item.quantity }}</span>
                       <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-7 h-7 rounded-md bg-white text-gray-500 flex items-center justify-center text-sm font-bold shadow-sm">+</button>
                     </div>
                   </div>
@@ -555,22 +560,22 @@
               </div>
 
               <div class="grid grid-cols-2 gap-3">
-                <button @click="addNewPack(vendor._id)" class="py-3 border border-dashed border-gray-200 rounded-xl text-xs font-black text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
+                <button @click="addNewPack(vendor._id)" class="py-3 border border-dashed border-gray-200 rounded-xl text-xs font-medium text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
                   <Plus class="w-3.5 h-3.5" /> New Pack
                 </button>
-                <button @click="showMobileCartDrawer = false" class="py-3 bg-gray-100 text-gray-600 rounded-xl text-xs font-black text-center">
+                <button @click="showMobileCartDrawer = false" class="py-3 bg-gray-100 text-gray-600 rounded-xl text-xs font-medium text-center">
                   Keep Shopping
                 </button>
               </div>
 
               <div class="pt-4 border-t border-gray-100 space-y-4">
                 <div class="flex justify-between items-center">
-                  <span class="text-xs font-black text-gray-400 tracking-wider">Subtotal</span>
-                  <span class="text-xl font-black text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
+                  <span class="text-xs font-medium text-gray-400 tracking-wider">Subtotal</span>
+                  <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
                 </div>
                 <NuxtLink 
                   :to="activeCode ? `/cart?group=${activeCode}` : '/cart'" 
-                  class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-black tracking-wider shadow-xl shadow-parentPrimary/20 active:scale-[0.98] transition-transform"
+                  class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-medium tracking-wider shadow-xl shadow-parentPrimary/20 active:scale-[0.98] transition-transform"
                 >
                   {{ activeCode ? 'Finalize Order' : 'Proceed to Checkout' }}
                 </NuxtLink>
@@ -579,7 +584,7 @@
             
             <div v-else class="text-center py-8">
               <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">🛒</div>
-              <p class="text-sm font-black text-gray-900 mb-1">Your cart is empty</p>
+              <p class="text-sm font-medium text-gray-900 mb-1">Your cart is empty</p>
               <p class="text-xs font-medium text-gray-400">Tap + on any item to start</p>
             </div>
           </div>
@@ -599,7 +604,7 @@
       leave-to-class="translate-y-full opacity-0"
     >
       <div 
-        v-if="cart.getVendorStats(vendor._id).itemCount > 0 && !showMobileCartDrawer"
+        v-if="(cart.getVendorStats(vendor._id).itemCount > 0 || groupOrder) && !showMobileCartDrawer"
         class="fixed bottom-6 left-4 right-4 z-[50] lg:hidden"
       >
         <button 
@@ -607,16 +612,27 @@
           class="w-full flex items-center justify-between bg-parentPrimary text-white rounded-2xl px-5 py-4 shadow-2xl shadow-parentPrimary/30 active:scale-[0.97] transition-all"
         >
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white text-sm font-black">
-              {{ cart.getVendorStats(vendor._id).itemCount }}
+            <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white text-sm font-medium">
+              {{ groupOrder ? totalGroupItems : cart.getVendorStats(vendor._id).itemCount }}
             </div>
             <div class="text-left">
-              <p class="text-sm font-black tracking-tight">View Cart</p>
+              <div class="flex items-center gap-2">
+                <p class="text-sm font-medium tracking-tight">View Cart</p>
+                <span v-if="groupOrder" class="px-1.5 py-0.5 bg-white/20 rounded text-[9px] font-bold text-white whitespace-nowrap">
+                  👥 Group Order
+                </span>
+              </div>
               <p class="text-[10px] font-bold text-white/70">{{ cart.getVendorStats(vendor._id).packs.length }} pack{{ cart.getVendorStats(vendor._id).packs.length > 1 ? 's' : '' }}</p>
             </div>
           </div>
           <div class="text-right">
-            <p class="text-lg font-black tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</p>
+            <p class="text-lg font-medium tracking-tighter">
+              ₦{{ 
+                groupOrder 
+                  ? (groupOrder.participants?.reduce((sum, p) => sum + (p.total || 0), 0) || 0).toLocaleString() 
+                  : cart.getVendorStats(vendor._id).subtotal.toLocaleString() 
+              }}
+            </p>
           </div>
         </button>
       </div>
@@ -644,19 +660,19 @@
                 <X class="w-5 h-5" />
               </button>
               <div class="absolute bottom-4 left-6 right-6">
-                <h2 class="text-xl font-black text-white tracking-tight">{{ toTitleCase(vendor.storeName) }}</h2>
+                <h2 class="text-xl font-medium text-white tracking-tight">{{ toTitleCase(vendor.storeName) }}</h2>
                 <p class="text-xs font-bold text-white/70 mt-1">{{ vendor.category || 'Restaurant' }}</p>
               </div>
             </div>
             <!-- Info -->
             <div class="p-6 md:p-8 space-y-6 max-h-[50vh] overflow-y-auto">
               <div>
-                <h3 class="text-[10px] font-black text-gray-400 tracking-widest mb-2">About</h3>
+                <h3 class="text-[10px] font-medium text-gray-400 tracking-widest mb-2">About</h3>
                 <p class="text-sm text-gray-600 leading-relaxed font-medium">{{ vendor.description || 'No description available.' }}</p>
               </div>
               <div class="grid grid-cols-2 gap-6">
                 <div>
-                  <div class="flex items-center gap-2 text-[10px] font-black text-gray-400 tracking-widest mb-2">
+                  <div class="flex items-center gap-2 text-[10px] font-medium text-gray-400 tracking-widest mb-2">
                     <Clock class="w-3 h-3" /> Hours
                   </div>
                   <div class="space-y-0.5">
@@ -667,13 +683,13 @@
                   </div>
                 </div>
                 <div>
-                  <div class="flex items-center gap-2 text-[10px] font-black text-gray-400 tracking-widest mb-2">
+                  <div class="flex items-center gap-2 text-[10px] font-medium text-gray-400 tracking-widest mb-2">
                     <MapPin class="w-3 h-3" /> Location
                   </div>
                   <p class="text-xs font-bold text-gray-900 leading-relaxed">{{ vendor.address || 'University Main Campus' }}</p>
                 </div>
               </div>
-              <button @click="showStoreInfo = false" class="w-full py-3.5 bg-gray-900 text-white rounded-2xl font-black text-xs hover:bg-parentPrimary transition-all shadow-lg active:scale-[0.98]">
+              <button @click="showStoreInfo = false" class="w-full py-3.5 bg-gray-900 text-white rounded-2xl font-medium text-xs hover:bg-parentPrimary transition-all shadow-lg active:scale-[0.98]">
                 Got it
               </button>
             </div>
@@ -683,50 +699,111 @@
     </Teleport>
 
     <!-- ============================================ -->
-    <!-- GROUP NAMING MODAL                           -->
+    <!-- GROUP ORDER NAMING MODAL                     -->
     <!-- ============================================ -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition-opacity duration-300"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition-opacity duration-200"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div v-if="showGroupNamingModal" class="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm" @click.self="showGroupNamingModal = false">
-          <div class="bg-white w-full max-w-xs rounded-[2rem] shadow-2xl p-8 flex flex-col items-center text-center animate-zoom-in">
-            <div class="w-14 h-14 bg-parentPrimary/10 rounded-2xl flex items-center justify-center mb-6 text-parentPrimary">
-              <Users class="w-6 h-6" />
-            </div>
-            <h3 class="text-lg font-black text-gray-900 tracking-tight mb-1">Name your group</h3>
-            <p class="text-xs font-bold text-gray-400 mb-6">e.g., "Sunday Brunch with the boys"</p>
-            
-            <div class="w-full space-y-4">
-              <input 
-                v-model="groupName" 
-                placeholder="Type group name here..."
-                @keyup.enter="confirmStartGroupOrder"
-                class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/30 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-300"
-              />
-              <div class="flex gap-2 pt-2">
-                <button @click="showGroupNamingModal = false" class="flex-1 py-3.5 bg-gray-50 text-gray-400 rounded-xl font-black text-xs hover:text-gray-900 transition-all">
-                  Cancel
-                </button>
-                <button 
-                  @click="confirmStartGroupOrder" 
-                  :disabled="!groupName.trim() || groupLoading"
-                  class="flex-1 py-3.5 bg-gray-900 text-white rounded-xl font-black text-xs hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50"
-                >
-                  <span v-if="groupLoading">Creating...</span>
-                  <span v-else>Let's Go!</span>
-                </button>
-              </div>
-            </div>
-          </div>
+    <UiModal :isOpen="showGroupNamingModal" @close="showGroupNamingModal = false" title="Start a Group Order">
+      <div class="space-y-4">
+        <p class="text-sm text-gray-500">Give your group order a name so friends know what they're joining.</p>
+        <UiAnimatedInput v-model="groupName" label="Group Name" placeholder="e.g. Room 201 Lunch" />
+        <button 
+          @click="confirmStartGroupOrder"
+          :disabled="!groupName.trim() || groupLoading"
+          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-parentPrimary hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          <Loader2 v-if="groupLoading" class="w-4 h-4 animate-spin" />
+          <span v-else>Create Group Order</span>
+        </button>
+      </div>
+    </UiModal>
+
+    <!-- HOST INSTRUCTIONS MODAL -->
+    <UiModal :isOpen="showHostInstructionsModal" @close="showHostInstructionsModal = false" title="Group Order Created! 🎉">
+      <div class="space-y-6 text-center pt-2">
+        <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto border border-emerald-100">
+          <Users class="w-8 h-8 text-emerald-500" />
         </div>
-      </Transition>
-    </Teleport>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">You're the Host!</h3>
+          <p class="text-sm text-gray-500 leading-relaxed max-w-sm mx-auto">
+            Your group order <span class="font-bold text-gray-900">"{{ groupOrder?.name }}"</span> is live. Share the invite link with your friends so they can add items to the cart. 
+            <br><br>
+            Once everyone is ready, you will pay for the combined order and checkout!
+          </p>
+        </div>
+        <div class="p-4 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-between gap-3">
+          <div class="flex flex-col items-start truncate">
+            <span class="text-[10px] font-bold text-gray-400 tracking-wider">Invite Code</span>
+            <span class="text-sm font-bold text-gray-900 tracking-widest">{{ activeCode }}</span>
+          </div>
+          <button @click="copyInviteLink" class="px-4 py-2 bg-white border border-gray-200 shadow-sm rounded-lg text-xs font-bold text-gray-700 hover:text-parentPrimary hover:border-parentPrimary transition-colors flex items-center gap-2 shrink-0">
+            <Copy class="w-3.5 h-3.5" /> Copy Link
+          </button>
+        </div>
+        <button 
+          @click="showHostInstructionsModal = false"
+          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-parentPrimary hover:shadow-lg transition-all"
+        >
+          Start Adding Items
+        </button>
+      </div>
+    </UiModal>
+
+    <!-- GUEST INSTRUCTIONS MODAL -->
+    <UiModal :isOpen="showGuestInstructionsModal" @close="showGuestInstructionsModal = false" title="You've Joined the Group! 🎊">
+      <div class="space-y-6 text-center pt-2">
+        <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto border border-blue-100">
+          <ShoppingBag class="w-8 h-8 text-blue-500" />
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Welcome to "{{ groupOrder?.name }}"</h3>
+          <p class="text-sm text-gray-500 leading-relaxed max-w-sm mx-auto">
+            You are now shopping together with your friends at <span class="font-bold text-gray-900">{{ vendor?.storeName }}</span>.
+            <br><br>
+            Add the food you want to the cart. Your items will automatically sync with the host's cart, and the host will handle the final checkout!
+          </p>
+        </div>
+        <button 
+          @click="showGuestInstructionsModal = false"
+          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-parentPrimary hover:shadow-lg transition-all"
+        >
+          START SHOPPING
+        </button>
+      </div>
+    </UiModal>
+
+    <!-- ============================================ -->
+    <!-- LEAVE CONFIRMATION MODAL                     -->
+    <!-- ============================================ -->
+    <UiModal :isOpen="showLeaveConfirmationModal" @close="!isLeaving && (showLeaveConfirmationModal = false)" title="Leave Group Order?">
+      <div class="space-y-6 pt-2">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto border border-rose-100 mb-4">
+            <LogOut class="w-8 h-8 text-rose-500" />
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Are you sure?</h3>
+          <p class="text-sm text-gray-500 leading-relaxed max-w-sm mx-auto">
+            You are about to leave this group order. All your cart items will be removed from the host's cart. This action cannot be undone.
+          </p>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button 
+            @click="showLeaveConfirmationModal = false"
+            :disabled="isLeaving"
+            class="flex-1 py-3.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button 
+            @click="confirmLeaveGroup"
+            :disabled="isLeaving"
+            class="flex-1 py-3.5 bg-rose-500 text-white rounded-xl text-sm font-bold shadow-md hover:bg-rose-600 hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            <span v-if="isLeaving" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+            {{ isLeaving ? 'Leaving...' : 'Leave Group' }}
+          </button>
+        </div>
+      </div>
+    </UiModal>
 
     <!-- ============================================ -->
     <!-- SHARE MODAL                                  -->
@@ -755,8 +832,8 @@
                 <X class="w-5 h-5" />
               </button>
               <div class="absolute bottom-4 left-5 right-5">
-                <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[9px] font-black mb-2 inline-block shadow-sm">{{ selectedProduct.category }}</span>
-                <h2 class="text-xl font-black text-white tracking-tight leading-tight">{{ selectedProduct.name }}</h2>
+                <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[9px] font-medium mb-2 inline-block shadow-sm">{{ selectedProduct.category }}</span>
+                <h2 class="text-xl font-medium text-white tracking-tight leading-tight">{{ selectedProduct.name }}</h2>
               </div>
             </div>
 
@@ -769,15 +846,15 @@
               <!-- Quantity & Add -->
               <div class="flex items-center justify-between pt-2">
                 <div>
-                  <p class="text-[10px] font-black text-gray-400 tracking-wider mb-1">Price</p>
+                  <p class="text-[10px] font-medium text-gray-400 tracking-wider mb-1">Price</p>
                   <div class="flex items-center gap-2">
                     <span v-if="selectedProduct.discountPrice" class="text-sm text-gray-300 line-through">₦{{ selectedProduct.price.toLocaleString() }}</span>
-                    <span class="text-2xl font-black text-gray-900 tracking-tighter">₦{{ (selectedProduct.discountPrice || selectedProduct.price).toLocaleString() }}</span>
+                    <span class="text-2xl font-medium text-gray-900 tracking-tighter">₦{{ (selectedProduct.discountPrice || selectedProduct.price).toLocaleString() }}</span>
                   </div>
                 </div>
                 <button 
                   @click="addToCart(selectedProduct); selectedProduct = null"
-                  class="bg-parentPrimary text-white px-7 py-4 rounded-2xl text-xs font-black hover:bg-parentPrimary/90 transition-all shadow-xl shadow-parentPrimary/20 active:scale-95 flex items-center gap-2"
+                  class="bg-parentPrimary text-white px-7 py-4 rounded-2xl text-xs font-medium hover:bg-parentPrimary/90 transition-all shadow-xl shadow-parentPrimary/20 active:scale-95 flex items-center gap-2"
                 >
                   <Plus class="w-4 h-4" />
                   Add to Cart
@@ -801,10 +878,11 @@
 
 <script setup lang="ts">
 import { 
-  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus
+  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useHead, navigateTo } from '#imports';
+import { useNow } from '@vueuse/core';
 import { useCart } from '@/composables/modules/cart';
 import { useUser } from '@/composables/modules/auth/user';
 import { useGroupOrder } from '@/composables/modules/group-order';
@@ -826,7 +904,7 @@ const { user } = useUser();
 const { 
   groupOrder, activeCode, isLoading: groupLoading, createGroupOrder, 
   joinGroupOrder, fetchGroupOrder, syncWithCart, leaveGroupOrder,
-  toggleReady, checkout, isHost, cleanupEventListeners
+  toggleReady, checkout, isHost, cleanupEventListeners, totalGroupItems
 } = useGroupOrder();
 const { showToast } = useToast();
 
@@ -843,17 +921,26 @@ const activeBatch = computed(() => {
 });
 const showStoreInfo = ref(false);
 const showGroupNamingModal = ref(false);
+const showHostInstructionsModal = ref(false);
+const showGuestInstructionsModal = ref(false);
+const showLeaveConfirmationModal = ref(false);
+const isLeaving = ref(false);
 const groupName = ref('');
 const selectedProduct = ref<any>(null);
 
 const getMyStatus = computed(() => {
-  if (!groupOrder.value || !user.value) return null;
-  return groupOrder.value.participants.find((p: any) => p.user._id === user.value?._id || p.user === user.value?._id);
+  if (!groupOrder.value) return null;
+  const userId = user.value?._id;
+  const guestId = typeof window !== 'undefined' ? localStorage.getItem('errandr_guest_id') : null;
+  return groupOrder.value.participants?.find((p: any) => {
+    const pId = p.user?._id || p.user;
+    return (userId && pId === userId) || (guestId && pId === guestId);
+  });
 });
 
 const canCheckout = computed(() => {
   if (!groupOrder.value) return false;
-  return groupOrder.value.participants.some((p: any) => p.items.length > 0);
+  return groupOrder.value.participants?.some((p: any) => (p.items?.length || 0) > 0) || false;
 });
 
 const getVendorColor = (name: string) => {
@@ -862,6 +949,24 @@ const getVendorColor = (name: string) => {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   return colors[Math.abs(hash) % colors.length];
+};
+
+const now = useNow();
+
+const formatCountdown = (endAt: Date | string) => {
+  if (!endAt) return '';
+  const end = new Date(endAt).getTime();
+  const diff = end - now.value.getTime();
+  if (diff <= 0) return 'Expired';
+  
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const mins = Math.floor((diff / 1000 / 60) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
+  
+  if (days > 0) return `Ends in ${days}d ${hours}h`;
+  if (hours > 0) return `Ends in ${hours}h ${mins}m`;
+  return `Ends in ${mins}m ${secs}s`;
 };
 
 const activeBanners = computed(() => {
@@ -968,11 +1073,29 @@ const checkIfFavorited = async () => {
 };
 
 const handleBannerClick = (banner: any) => {
-  if (banner.products && banner.products.length > 0) {
-    banner.products.forEach((p: any) => {
-      addToCart(p);
+  const productsToProcess = banner.products && banner.products.length > 0 
+    ? banner.products 
+    : (banner.productId ? [banner.productId] : []);
+
+  if (productsToProcess && productsToProcess.length > 0) {
+    let addedCount = 0;
+    productsToProcess.forEach((p: any) => {
+      const productObj = typeof p === 'string' || (p && !p.name) 
+        ? products.value.find(prod => prod._id === p || prod._id === p?.toString()) 
+        : p;
+        
+      if (productObj) {
+        addToCart(productObj);
+        addedCount++;
+      }
     });
-    navigateTo('/cart');
+    
+    if (addedCount > 0) {
+      showToast(`${addedCount} item${addedCount > 1 ? 's' : ''} from ${banner.title} added to cart!`, 'success');
+      showMobileCartDrawer.value = true;
+    } else {
+      showToast(`${banner.title} — ${banner.description}`, 'success');
+    }
   } else if (banner.link) {
     navigateTo(banner.link, { external: true });
   } else {
@@ -999,16 +1122,24 @@ const scrollToCategory = (cat: string) => {
 };
 
 const handleStartGroupOrder = () => {
-  groupName.value = '';
-  showGroupNamingModal.value = true;
+  if (activeCode.value) {
+    if (isHost.value) {
+      showHostInstructionsModal.value = true;
+    } else {
+      showGuestInstructionsModal.value = true;
+    }
+  } else {
+    groupName.value = '';
+    showGroupNamingModal.value = true;
+  }
 };
 
 const confirmStartGroupOrder = async () => {
   if (!groupName.value.trim() || groupLoading.value) return;
   try {
     await createGroupOrder(vendor.value._id, groupName.value);
-    showToast('Group order started! Share the code with friends.', 'success');
     showGroupNamingModal.value = false;
+    showHostInstructionsModal.value = true;
     syncWithCart(vendor.value._id);
   } catch (e) {
     console.error('Failed to start group order', e);
@@ -1017,9 +1148,23 @@ const confirmStartGroupOrder = async () => {
 };
 
 const copyInviteLink = () => {
-  const link = `${window.location.origin}${window.location.pathname}?group=${activeCode.value}`;
+  const link = `${window.location.origin}/vendors/${route.params.id}?group=${activeCode.value}`;
   navigator.clipboard.writeText(link);
   showToast('Invite link copied to clipboard!', 'success');
+};
+
+const confirmLeaveGroup = async () => {
+  if (isLeaving.value) return;
+  isLeaving.value = true;
+  try {
+    await leaveGroupOrder();
+    showToast('You have successfully left the group order', 'success');
+    showLeaveConfirmationModal.value = false;
+  } catch (e: any) {
+    showToast(e.response?.data?.message || 'Failed to leave the group order', 'error');
+  } finally {
+    isLeaving.value = false;
+  }
 };
 
 const handleScroll = () => {
@@ -1066,6 +1211,12 @@ onMounted(async () => {
     checkIfFavorited();
     if (route.query.group) {
       handleJoinGroup(route.query.group as string);
+    } else if (activeCode.value && !groupOrder.value) {
+      try {
+        await fetchGroupOrder(activeCode.value);
+      } catch (e) {
+        console.error('Failed to fetch active group order', e);
+      }
     }
 
     // Clean up the URL visually if loaded via subdomain
@@ -1089,8 +1240,8 @@ onMounted(async () => {
       logo: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&q=80',
       banner: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200',
       banners: [
-        { title: 'Fresh Summer Deal', description: 'Get 20% off on all salads and drinks.', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200', isActive: true },
-        { title: 'Student Night', description: 'Late night snacks for study sessions.', image: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=1200', isActive: true }
+        { title: 'Selling Hot Moi Moi', description: '5$ discount on sales', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200', isActive: true, products: ['p1', 'p2'], endAt: new Date(Date.now() + 1000 * 60 * 60 * 4) },
+        { title: 'Student Night', description: 'Late night snacks for study sessions.', image: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=1200', isActive: true, endAt: new Date(Date.now() + 1000 * 60 * 25) }
       ]
     };
     products.value = [
@@ -1106,6 +1257,7 @@ onMounted(async () => {
 const handleJoinGroup = async (code: string) => {
   try {
     await joinGroupOrder(code);
+    showGuestInstructionsModal.value = true;
     syncWithCart(vendor.value._id);
   } catch (e) {
     console.error('Failed to join group order', e);

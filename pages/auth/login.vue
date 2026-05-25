@@ -34,7 +34,7 @@
           <div class="flex-1 h-px bg-gray-100" />
         </div>
 
-        <button type="button" class="w-full py-3.5 border border-gray-100 rounded-2xl flex items-center justify-center gap-3 font-bold text-gray-700 hover:bg-gray-50 transition-all">
+        <button type="button" @click="firebaseLogin()" class="w-full py-3.5 border border-gray-100 rounded-2xl flex items-center justify-center gap-3 font-bold text-gray-700 hover:bg-gray-50 transition-all">
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -63,7 +63,7 @@ import { Loader2, ShoppingBag } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useAuth } from '@/composables/modules/auth'
 definePageMeta({ layout: false })
-const { login, loading } = useAuth()
+const { login, firebaseLogin, loading } = useAuth()
 const email = ref('')
 const password = ref('')
 const error = ref('')

@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+  <div class="bg-white rounded-none sm:rounded-2xl border-0 sm:border border-gray-100 p-4 sm:p-6 shadow-none sm:shadow-sm">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h3 class="text-lg font-black text-gray-900 tracking-tight">Active Quests</h3>
+        <h3 class="text-lg font-medium text-gray-900 tracking-tight">Active Quests</h3>
         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Complete missions to earn bonus points</p>
       </div>
       <div class="w-10 h-10 bg-parentPrimary/10 rounded-xl flex items-center justify-center text-parentPrimary">
@@ -36,17 +36,17 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-start justify-between gap-2 mb-1.5">
               <div>
-                <h4 class="font-black text-gray-900 text-xs tracking-tight truncate">{{ quest.title }}</h4>
+                <h4 class="font-medium text-gray-900 text-xs tracking-tight truncate">{{ quest.title }}</h4>
                 <p class="text-[10px] font-bold text-gray-400 line-clamp-2 mt-0.5">{{ quest.description }}</p>
               </div>
               <div class="text-right shrink-0">
-                <span class="text-xs font-black text-emerald-600">+{{ quest.rewardPoints }} pts</span>
+                <span class="text-xs font-medium text-emerald-600">+{{ quest.rewardPoints }} pts</span>
               </div>
             </div>
 
             <!-- Progress Bar -->
             <div class="mt-3">
-              <div class="flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-gray-400 mb-1">
+              <div class="flex items-center justify-between text-[9px] font-medium uppercase tracking-wider text-gray-400 mb-1">
                 <span>{{ quest.isCompleted ? 'Completed' : 'In Progress' }}</span>
                 <span>{{ quest.progress }} / {{ quest.targetValue }}</span>
               </div>
@@ -62,7 +62,7 @@
 
         <!-- Completion Overlay -->
         <div v-if="quest.isCompleted" class="absolute inset-0 bg-white/70 backdrop-blur-[1px] rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div class="px-4 py-1.5 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider rounded-lg shadow-md">
+          <div class="px-4 py-1.5 bg-emerald-500 text-white text-[10px] font-medium uppercase tracking-wider rounded-lg shadow-md">
             ✓ Accomplished
           </div>
         </div>
@@ -74,15 +74,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { Target } from 'lucide-vue-next';
+import { rewards_api } from '@/api_factory/modules/rewards';
 
 const loading = ref(true);
 const quests = ref<any[]>([]);
 
 const fetchQuests = async () => {
   try {
-    const { data } = await useFetch('/api/rewards/quests');
-    if (data.value) {
-      quests.value = data.value as any[];
+    const res = await rewards_api.getQuests();
+    if (res.data) {
+      quests.value = res.data as any[];
     }
   } catch (e) {
     console.error('Failed to fetch quests:', e);

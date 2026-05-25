@@ -11,7 +11,7 @@
       <div v-if="isOpen" class="fixed inset-0 z-[120] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="close">
         <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-[2rem] shadow-2xl p-6 md:p-8 animate-slide-up-mobile md:animate-zoom-in">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xl font-black text-gray-900 tracking-tight">Share {{ vendor?.storeName || 'Vendor' }}</h3>
+            <h3 class="text-xl font-medium text-gray-900 tracking-tight">Share {{ vendor?.storeName || 'Vendor' }}</h3>
             <button @click="close" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-all">
               <X class="w-4 h-4" />
             </button>
@@ -57,7 +57,7 @@
             </div>
             <button 
               @click="copyLink" 
-              class="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-black hover:bg-parentPrimary transition-all active:scale-95 shrink-0"
+              class="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-parentPrimary transition-all active:scale-95 shrink-0"
             >
               {{ copied ? 'Copied!' : 'Copy Link' }}
             </button>

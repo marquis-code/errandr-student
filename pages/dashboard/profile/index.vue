@@ -10,7 +10,7 @@
         <!-- Avatar + Info -->
         <div class="flex flex-col items-center text-center">
           <div class="relative mb-5">
-            <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-parentPrimary to-orange-400 flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-parentPrimary/20 ring-4 ring-white transform hover:rotate-3 transition-transform duration-500">
+            <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-parentPrimary to-orange-400 flex items-center justify-center text-white text-3xl font-medium shadow-lg shadow-parentPrimary/20 ring-4 ring-white transform hover:rotate-3 transition-transform duration-500">
               {{ user?.firstName?.[0] }}{{ user?.lastName?.[0] }}
             </div>
             <div class="absolute -bottom-1.5 -right-1.5 w-7 h-7 bg-emerald-400 rounded-xl border-[3px] border-white flex items-center justify-center">
@@ -18,7 +18,7 @@
             </div>
           </div>
 
-          <h1 class="text-2xl font-black text-gray-900 tracking-tight leading-none">{{ fullName }}</h1>
+          <h1 class="text-2xl font-medium text-gray-900 tracking-tight leading-none">{{ fullName }}</h1>
           <p class="text-sm text-gray-400 font-semibold mt-1.5">{{ user?.email }}</p>
 
           <div class="flex items-center gap-2.5 mt-4 flex-wrap justify-center">
@@ -42,7 +42,7 @@
           <div class="w-9 h-9 mx-auto mb-2.5 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
             <ShoppingBag class="w-4.5 h-4.5 text-blue-500" />
           </div>
-          <p class="text-xl font-black text-gray-900 leading-none">{{ user?.ordersCount || 0 }}</p>
+          <p class="text-xl font-medium text-gray-900 leading-none">{{ user?.ordersCount || 0 }}</p>
           <p class="text-[11px] text-gray-400 font-semibold mt-1">Orders</p>
         </div>
 
@@ -50,7 +50,7 @@
           <div class="w-9 h-9 mx-auto mb-2.5 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
             <Wallet class="w-4.5 h-4.5 text-emerald-500" />
           </div>
-          <p class="text-xl font-black text-gray-900 leading-none">₦{{ balance || 0 }}</p>
+          <p class="text-xl font-medium text-gray-900 leading-none">₦{{ balance || 0 }}</p>
           <p class="text-[11px] text-gray-400 font-semibold mt-1">Wallet</p>
         </div>
 
@@ -58,7 +58,7 @@
           <div class="w-9 h-9 mx-auto mb-2.5 rounded-xl bg-rose-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
             <Heart class="w-4.5 h-4.5 text-rose-500" />
           </div>
-          <p class="text-xl font-black text-gray-900 leading-none">{{ user?.favoritesCount || 0 }}</p>
+          <p class="text-xl font-medium text-gray-900 leading-none">{{ user?.favoritesCount || 0 }}</p>
           <p class="text-[11px] text-gray-400 font-semibold mt-1">Favorites</p>
         </div>
       </div>

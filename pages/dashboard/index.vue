@@ -3,18 +3,18 @@
     
     <!-- Clean Header & Search -->
     <header class="pt-6 pb-2">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
         <div>
           <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
             <ShieldCheck class="w-3.5 h-3.5 text-parentPrimary" />
             {{ user?.isPro ? 'Pro Member' : 'Campus Member' }}
           </p>
-          <h1 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-none">
+          <h1 class="text-2xl md:text-3xl font-medium text-gray-900 tracking-tight leading-none">
             Welcome back, <span class="text-parentPrimary">{{ user?.firstName || 'Student' }}.</span>
           </h1>
         </div>
         
-        <div class="flex items-center gap-2 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl">
+        <!-- <div class="flex items-center gap-2 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl">
           <div class="flex -space-x-1.5">
              <div v-for="i in Math.min(3, onlineVendors.length || 3)" :key="i" class="w-5 h-5 rounded-full border border-white bg-emerald-50 flex items-center justify-center">
                 <Check class="w-3 h-3 text-emerald-600" />
@@ -23,11 +23,11 @@
           <p class="text-[10px] font-bold text-emerald-600 tracking-wide leading-none pl-1">
              {{ onlineVendors.length || 'Loading' }} Active
           </p>
-        </div>
+        </div> -->
       </div>
 
       <!-- Search Bar -->
-      <div class="relative max-w-xl group">
+      <!-- <div class="relative max-w-xl group">
         <input 
           v-model="searchQuery"
           type="text" 
@@ -38,7 +38,7 @@
         <div class="absolute left-4 top-1/2 -translate-y-1/2">
           <Search class="w-4 h-4 text-gray-400 group-focus-within:text-parentPrimary transition-colors" />
         </div>
-      </div>
+      </div> -->
     </header>
 
     <!-- Quick Stats -->
@@ -53,7 +53,7 @@
         <div>
           <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">{{ stat.label }}</p>
           <div class="flex items-baseline gap-1">
-             <p class="text-sm font-black text-gray-900 tracking-tight">{{ stat.value }}</p>
+             <p class="text-sm font-medium text-gray-900 tracking-tight">{{ stat.value }}</p>
              <span v-if="stat.suffix" class="text-[9px] font-bold text-gray-400">{{ stat.suffix }}</span>
           </div>
         </div>
@@ -69,7 +69,7 @@
           <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mb-3">
             <PackageSearch class="w-5 h-5 text-white" />
           </div>
-          <h3 class="text-base font-black text-white tracking-tight mb-1">Send an Errander</h3>
+          <h3 class="text-base font-medium text-white tracking-tight mb-1">Send an Errander</h3>
           <p class="text-xs text-gray-400 font-medium">Need something picked up or dropped off?</p>
         </div>
         <div class="w-10 h-10 bg-white text-gray-900 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-parentPrimary group-hover:text-white transition-colors relative z-10 shadow-lg">
@@ -83,7 +83,7 @@
           <div class="w-10 h-10 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-3">
             <UtensilsCrossed class="w-5 h-5 text-gray-600 group-hover:text-parentPrimary transition-colors" />
           </div>
-          <h3 class="text-base font-black text-gray-900 tracking-tight mb-1">Meal Planner</h3>
+          <h3 class="text-base font-medium text-gray-900 tracking-tight mb-1">Meal Planner</h3>
           <p class="text-xs text-gray-500 font-medium">Plan your week and save up to 25%</p>
         </div>
         <div class="w-10 h-10 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center shrink-0 group-hover:text-parentPrimary transition-colors">
@@ -96,10 +96,10 @@
     <section class="space-y-4 pt-4">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-lg font-black text-gray-900 tracking-tight">Campus Favorites</h2>
+          <h2 class="text-lg font-medium text-gray-900 tracking-tight">Campus Favorites</h2>
           <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Top picks for you</p>
         </div>
-        <NuxtLink to="/vendors" class="text-xs font-black text-parentPrimary hover:underline px-3 py-1.5 bg-parentPrimary/5 rounded-lg">
+        <NuxtLink to="/vendors" class="text-xs font-medium text-parentPrimary hover:underline px-3 py-1.5 bg-parentPrimary/5 rounded-lg">
           View All
         </NuxtLink>
       </div>
@@ -120,7 +120,7 @@
 
         <!-- Typography -->
         <div class="relative z-10 space-y-3 mb-8 max-w-[280px] mx-auto">
-          <h3 class="text-2xl font-black text-gray-900 tracking-tight">Campus is Asleep</h3>
+          <h3 class="text-2xl font-medium text-gray-900 tracking-tight">Campus is Asleep</h3>
           <p class="text-[13px] text-gray-500 font-bold leading-relaxed">
             All our partner vendors are currently closed. Catch some rest and we'll be back serving hot meals soon!
           </p>
@@ -128,7 +128,7 @@
 
         <!-- Info Pill & Actions -->
         <div class="relative z-10 flex flex-col items-center gap-4">
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-200/60 rounded-xl text-[11px] font-black text-gray-500 uppercase tracking-widest">
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-200/60 rounded-xl text-[11px] font-medium text-gray-500 uppercase tracking-widest">
             <Clock class="w-3.5 h-3.5 text-gray-400" />
             Opens at 8:00 AM
           </div>
@@ -136,14 +136,14 @@
           <div class="flex items-center gap-3 w-full sm:w-auto justify-center mt-2">
             <button
               @click="fetchHomeData"
-              class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl text-[13px] font-black hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/10 active:scale-95"
+              class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl text-[13px] font-medium hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/10 active:scale-95"
             >
               <RefreshCw class="w-4 h-4" />
               Refresh
             </button>
             <NuxtLink
               to="/vendors"
-              class="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-3 bg-white border border-gray-200 text-gray-900 rounded-xl text-[13px] font-black hover:bg-gray-50 transition-colors shadow-sm active:scale-95"
+              class="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-3 bg-white border border-gray-200 text-gray-900 rounded-xl text-[13px] font-medium hover:bg-gray-50 transition-colors shadow-sm active:scale-95"
             >
               All Vendors
             </NuxtLink>
@@ -152,7 +152,7 @@
           <!-- Network error notice -->
           <div v-if="fetchError === 'network'" class="mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-rose-50 border border-rose-100 rounded-xl">
             <WifiOff class="w-3.5 h-3.5 text-rose-500 shrink-0" />
-            <p class="text-[11px] font-black text-rose-600 uppercase tracking-widest">No Connection</p>
+            <p class="text-[11px] font-medium text-rose-600 uppercase tracking-widest">No Connection</p>
           </div>
         </div>
       </div>
@@ -169,12 +169,12 @@
             <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white" title="Active" />
           </div>
           <div class="flex-1 min-w-0 py-1">
-            <h3 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary truncate tracking-tight mb-1 transition-colors">{{ vendor.storeName }}</h3>
+            <h3 class="text-sm font-medium text-gray-900 group-hover:text-parentPrimary truncate tracking-tight mb-1 transition-colors">{{ vendor.storeName }}</h3>
             <p class="text-xs text-gray-500 truncate mb-2">{{ vendor.category || 'Restaurant' }}</p>
             <div class="flex items-center gap-3">
               <div class="flex items-center gap-1">
                 <Star class="w-3.5 h-3.5 text-amber-500 fill-current" />
-                <span class="text-[10px] font-black text-gray-900">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
+                <span class="text-[10px] font-medium text-gray-900">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
               </div>
               <div class="flex items-center gap-1 text-gray-400">
                 <Timer class="w-3.5 h-3.5" />

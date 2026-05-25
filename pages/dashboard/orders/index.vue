@@ -2,7 +2,7 @@
   <div class="space-y-6 animate-fade-in pb-32 selection:bg-parentPrimary/10 selection:text-parentPrimary px-4 md:px-6">
     <!-- Header -->
     <header class="pt-6 pb-2">
-      <h1 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-none mb-1">
+      <h1 class="text-2xl md:text-3xl font-medium text-gray-900 tracking-tight leading-none mb-1">
         My Errands
       </h1>
       <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
@@ -17,7 +17,7 @@
           v-for="status in filters" 
           :key="status.key" 
           @click="activeFilter = status.key"
-          class="px-4 py-2 rounded-xl text-xs font-black transition-all whitespace-nowrap active:scale-95"
+          class="px-4 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap active:scale-95"
           :class="activeFilter === status.key ? 'bg-parentPrimary text-white shadow-md shadow-parentPrimary/20' : 'text-gray-500 bg-white border border-gray-100 hover:border-parentPrimary/30'"
         >
           {{ status.label }}
@@ -44,9 +44,9 @@
     <div v-else-if="filteredOrders.length === 0">
       <div class="bg-white rounded-[2rem] text-center py-20 px-6 border border-dashed border-gray-200">
         <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-gray-100">📋</div>
-        <h2 class="text-xl font-black text-gray-900 mb-1 tracking-tight">No orders found</h2>
+        <h2 class="text-xl font-medium text-gray-900 mb-1 tracking-tight">No orders found</h2>
         <p class="text-xs font-medium text-gray-500 mb-8 max-w-xs mx-auto">You haven't placed any orders matching this criteria yet.</p>
-        <NuxtLink to="/vendors" class="inline-flex px-8 py-3.5 bg-gray-900 text-white rounded-xl font-black text-xs uppercase tracking-wider hover:bg-parentPrimary transition-colors shadow-xl active:scale-95">
+        <NuxtLink to="/vendors" class="inline-flex px-8 py-3.5 bg-gray-900 text-white rounded-xl font-medium text-xs uppercase tracking-wider hover:bg-parentPrimary transition-colors shadow-xl active:scale-95">
           Start Shopping
         </NuxtLink>
       </div>
@@ -66,8 +66,8 @@
           </div>
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2 mb-0.5">
-              <h3 class="font-black text-gray-900 text-sm tracking-tight truncate">#{{ order.orderNumber }}</h3>
-              <span :class="getStatusBadge(order.status)" class="sm:hidden text-[9px] font-black uppercase px-2 py-0.5 rounded-md border shrink-0">
+              <h3 class="font-medium text-gray-900 text-sm tracking-tight truncate">#{{ order.orderNumber }}</h3>
+              <span :class="getStatusBadge(order.status)" class="sm:hidden text-[9px] font-medium uppercase px-2 py-0.5 rounded-md border shrink-0">
                 {{ formatStatus(order.status) }}
               </span>
             </div>
@@ -76,12 +76,12 @@
         </div>
 
         <div class="text-right px-2 shrink-0">
-          <p class="text-sm font-black text-gray-900 leading-none mb-1">₦{{ order.total?.toLocaleString() }}</p>
+          <p class="text-sm font-medium text-gray-900 leading-none mb-1">₦{{ order.total?.toLocaleString() }}</p>
           <p class="text-[10px] font-bold text-gray-400">{{ timeAgo(order.createdAt) }}</p>
         </div>
 
         <div class="shrink-0 flex items-center gap-2">
-          <span :class="getStatusBadge(order.status)" class="hidden sm:block text-[9px] font-black uppercase px-2.5 py-1 rounded-md border">
+          <span :class="getStatusBadge(order.status)" class="hidden sm:block text-[9px] font-medium uppercase px-2.5 py-1 rounded-md border">
             {{ formatStatus(order.status) }}
           </span>
           <ChevronRight class="w-4 h-4 text-gray-300 group-hover:text-parentPrimary transition-colors" />
@@ -119,8 +119,8 @@
                 <div class="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-3 border border-white/10 text-2xl">
                   {{ statusEmoji(selectedOrder.status) }}
                 </div>
-                <h3 class="text-xl font-black text-white tracking-tight mb-2">Order #{{ selectedOrder.orderNumber }}</h3>
-                <span :class="getStatusBadge(selectedOrder.status)" class="inline-block text-[10px] font-black uppercase px-3 py-1 rounded-lg border bg-gray-900/50 backdrop-blur-md">
+                <h3 class="text-xl font-medium text-white tracking-tight mb-2">Order #{{ selectedOrder.orderNumber }}</h3>
+                <span :class="getStatusBadge(selectedOrder.status)" class="inline-block text-[10px] font-medium uppercase px-3 py-1 rounded-lg border bg-gray-900/50 backdrop-blur-md">
                   {{ formatStatus(selectedOrder.status) }}
                 </span>
               </div>
@@ -133,14 +133,14 @@
                   <div class="w-8 h-8 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-sm shrink-0">🏪</div>
                   <div class="flex-1 min-w-0">
                     <p class="text-[9px] font-bold uppercase tracking-wider text-gray-400">Vendor</p>
-                    <p class="text-sm font-black text-gray-900 truncate">{{ selectedOrder.vendor?.storeName || 'Unknown Vendor' }}</p>
+                    <p class="text-sm font-medium text-gray-900 truncate">{{ selectedOrder.vendor?.storeName || 'Unknown Vendor' }}</p>
                   </div>
                 </div>
                 
                 <div class="pt-4 border-t border-gray-200 flex justify-between items-end">
                   <div>
                     <p class="text-[9px] font-bold uppercase tracking-wider text-gray-400">Total Amount</p>
-                    <p class="text-xl font-black text-gray-900 tracking-tight">₦{{ selectedOrder.total?.toLocaleString() }}</p>
+                    <p class="text-xl font-medium text-gray-900 tracking-tight">₦{{ selectedOrder.total?.toLocaleString() }}</p>
                   </div>
                   <div class="text-[10px] font-bold text-gray-300">NGN</div>
                 </div>
@@ -148,18 +148,18 @@
 
               <!-- Actions -->
               <div class="space-y-2.5">
-                <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 pl-1 mb-2">Actions</p>
+                <p class="text-[10px] font-medium uppercase tracking-widest text-gray-400 pl-1 mb-2">Actions</p>
                 
                 <button 
                   @click="navigateTo(`/dashboard/orders/${selectedOrder._id}`)" 
-                  class="w-full py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-parentPrimary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-parentPrimary/20 active:scale-95"
+                  class="w-full py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium uppercase tracking-wider hover:bg-parentPrimary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-parentPrimary/20 active:scale-95"
                 >
                   Track Errand <ArrowRight class="w-3.5 h-3.5" />
                 </button>
 
                 <button
                   @click="handleReorder(selectedOrder)"
-                  class="w-full py-3.5 bg-white text-gray-900 rounded-xl text-xs font-black uppercase tracking-wider border border-gray-200 hover:bg-gray-50 transition-all flex items-center justify-center gap-2 active:scale-95"
+                  class="w-full py-3.5 bg-white text-gray-900 rounded-xl text-xs font-medium uppercase tracking-wider border border-gray-200 hover:bg-gray-50 transition-all flex items-center justify-center gap-2 active:scale-95"
                 >
                   Order Again
                 </button>
@@ -167,7 +167,7 @@
                 <button
                   v-if="['pending', 'confirmed'].includes(selectedOrder.status)"
                   @click="cancelOrder(selectedOrder._id); selectedOrder = null;"
-                  class="w-full py-3.5 bg-rose-50 text-rose-500 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-rose-100 hover:text-rose-600 border border-rose-100 transition-all active:scale-95"
+                  class="w-full py-3.5 bg-rose-50 text-rose-500 rounded-xl text-xs font-medium uppercase tracking-wider hover:bg-rose-100 hover:text-rose-600 border border-rose-100 transition-all active:scale-95"
                 >
                   Cancel Errand
                 </button>
