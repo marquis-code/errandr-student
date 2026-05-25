@@ -8,11 +8,11 @@
       <!-- Big Bold CTA inside Footer -->
       <div class="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-10">
         <div>
-          <h2 class="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-[0.9]">
+          <h2 class="text-6xl md:text-8xl font-medium text-slate-900 tracking-tighter leading-[0.9]">
             Hungry? <br/> <span class="text-parentPrimary">Let's fix that.</span>
           </h2>
         </div>
-        <NuxtLink to="/auth/register" class="inline-flex flex justify-center items-center items-center gap-4 px-10 py-3 bg-parentPrimary text-white rounded-full font-black text-lg shadow-[0_20px_50px_rgba(255,92,26,0.3)] hover:scale-105 transition-transform group">
+        <NuxtLink to="/auth/register" class="inline-flex flex justify-center items-center items-center gap-4 px-10 py-3 bg-parentPrimary text-white rounded-full font-medium text-lg shadow-[0_20px_50px_rgba(255,92,26,0.3)] hover:scale-105 transition-transform group">
           Get Started
           <ArrowUpRight class="w-6 h-6 group-hover:rotate-45 transition-transform duration-300" />
         </NuxtLink>
@@ -45,7 +45,7 @@
         <!-- Right: Links Grid -->
         <div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
           <div class="space-y-6">
-            <h4 class="font-black text-slate-900 tracking-tight text-lg">Platform</h4>
+            <h4 class="font-medium text-slate-900 tracking-tight text-lg">Platform</h4>
             <ul class="space-y-4">
               <li><NuxtLink to="/" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">Home</NuxtLink></li>
               <li><NuxtLink to="/about" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">About Us</NuxtLink></li>
@@ -54,7 +54,7 @@
           </div>
 
           <div class="space-y-6">
-            <h4 class="font-black text-slate-900 tracking-tight text-lg">Legal</h4>
+            <h4 class="font-medium text-slate-900 tracking-tight text-lg">Legal</h4>
             <ul class="space-y-4">
               <li><NuxtLink to="/terms" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">Terms of Service</NuxtLink></li>
               <li><NuxtLink to="/terms" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">Privacy Policy</NuxtLink></li>
@@ -63,7 +63,7 @@
           </div>
 
           <div class="space-y-6">
-            <h4 class="font-black text-slate-900 tracking-tight text-lg">Partners</h4>
+            <h4 class="font-medium text-slate-900 tracking-tight text-lg">Partners</h4>
             <ul class="space-y-4">
               <li>
                 <a href="http://vendor.erranders.org" class="group flex items-center gap-2 text-slate-500 font-medium hover:text-parentPrimary transition-colors">

@@ -28,7 +28,7 @@
  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
  />
  <div v-if="!fav.product?.isAvailable" class="absolute inset-0 bg-gray-900/60 flex items-center justify-center backdrop-blur-[1px]">
- <span class="text-[8px] font-black text-white tracking-tighter bg-rose-500 px-2 py-0.5 rounded-md">Sold Out</span>
+ <span class="text-[8px] font-medium text-white tracking-tighter bg-rose-500 px-2 py-0.5 rounded-md">Sold Out</span>
  </div>
  </div>
  <div class="min-w-0">
@@ -88,10 +88,10 @@
  <div class="space-y-6">
  <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
  <div>
- <p class="text-[8px] font-black tracking-[0.2em] text-gray-400 mb-0.5">Price</p>
- <p class="text-xl font-black text-gray-900">₦{{ selectedFavorite.product?.price?.toLocaleString() }}</p>
+ <p class="text-[8px] font-medium tracking-[0.2em] text-gray-400 mb-0.5">Price</p>
+ <p class="text-xl font-medium text-gray-900">₦{{ selectedFavorite.product?.price?.toLocaleString() }}</p>
  </div>
- <div :class="selectedFavorite.product?.isAvailable ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'" class="px-3 py-1.5 rounded-lg border text-[8px] font-black ">
+ <div :class="selectedFavorite.product?.isAvailable ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'" class="px-3 py-1.5 rounded-lg border text-[8px] font-medium ">
  {{ selectedFavorite.product?.isAvailable ? 'Available' : 'Unavailable' }}
  </div>
  </div>
@@ -104,13 +104,13 @@
  <button
  v-if="selectedFavorite.product?.isAvailable"
  @click="quickAddToCart(selectedFavorite); selectedFavorite = null;"
- class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-black tracking-[0.2em]  hover:bg-parentPrimary transition-all active:scale-95"
+ class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-medium tracking-[0.2em]  hover:bg-parentPrimary transition-all active:scale-95"
  >
  Add to Cart
  </button>
  <button 
  @click="router.push(`/vendors/${selectedFavorite.vendor?._id}`)"
- class="w-full py-4 flex items-center justify-center bg-white text-gray-900 rounded-xl text-sm font-black tracking-[0.2em] border border-gray-100 hover:border-parentPrimary transition-all active:scale-95"
+ class="w-full py-4 flex items-center justify-center bg-white text-gray-900 rounded-xl text-sm font-medium tracking-[0.2em] border border-gray-100 hover:border-parentPrimary transition-all active:scale-95"
  >
  Visit Restaurant
  </button>

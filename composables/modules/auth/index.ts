@@ -1,8 +1,10 @@
 import { ref } from 'vue';
 import { auth_api } from '@/api_factory/modules/auth';
 import { useUser } from './user';
-import { navigateTo, useRoute } from '#imports';
+import { navigateTo, useRoute, useRuntimeConfig } from '#imports';
 import { useCustomToast } from '@/composables/core/useCustomToast';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 export const useAuth = () => {
   const { setUser, setToken, logOut } = useUser();
@@ -15,13 +17,11 @@ export const useAuth = () => {
     try {
       const res = await auth_api.login(payload);
       
-      // Handle potential response wrapping (res.data or res.data.data)
       const responseData = res.data?.data || res.data;
       const userData = responseData?.user;
       const tokenValue = responseData?.token;
       
       if (!userData || !tokenValue) {
-        console.error('Login response format error:', responseData);
         throw { data: { message: 'Login failed: unexpected response format' } };
       }
       
@@ -39,13 +39,73 @@ export const useAuth = () => {
           const redirectPath = (route.query.redirect as string) || '/dashboard';
           await navigateTo(redirectPath);
         } catch (navError) {
-          // Navigation aborts are expected in Nuxt — ignore them
+          // Ignore
         }
       }
       
       return responseData;
     } catch (e: any) {
       console.error('Login submission failed:', e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const firebaseLogin = async (options: { redirect?: boolean } = { redirect: true }) => {
+    loading.value = true;
+    try {
+      const config = useRuntimeConfig();
+      const firebaseConfig = {
+        apiKey: config.public.firebaseApiKey,
+        authDomain: config.public.firebaseAuthDomain,
+        projectId: config.public.firebaseProjectId,
+      };
+
+      const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
+
+      const res = await auth_api.firebaseLogin({ idToken });
+      
+      const responseData = res.data?.data || res.data;
+      const userData = responseData?.user;
+      const tokenValue = responseData?.token;
+      
+      if (!userData || !tokenValue) {
+        throw { data: { message: 'Firebase login failed: unexpected response format' } };
+      }
+      
+      setUser(userData);
+      setToken(tokenValue);
+      
+      showToast({
+        title: "Welcome Back!",
+        message: "You've successfully logged in with Google.",
+        toastType: "success",
+      });
+      
+      if (options.redirect) {
+        const route = useRoute();
+        try {
+          const redirectPath = (route.query.redirect as string) || '/dashboard';
+          await navigateTo(redirectPath);
+        } catch (navError) {
+          // Ignore
+        }
+      }
+      
+      return responseData;
+    } catch (e: any) {
+      console.error('Firebase login failed:', e);
+      showToast({
+        title: "Login Failed",
+        message: e.message || "Failed to login with Google.",
+        toastType: "error",
+      });
       throw e;
     } finally {
       loading.value = false;
@@ -166,6 +226,7 @@ export const useAuth = () => {
   return {
     loading,
     login,
+    firebaseLogin,
     register,
     fetchProfile,
     verifyOTP,

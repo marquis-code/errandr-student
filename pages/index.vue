@@ -32,7 +32,7 @@
       <div class="max-w-7xl mx-auto px-6 sm:px-10 relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
         <div class="max-w-3xl mx-auto space-y-6">
           <!-- Badge -->
-          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-black -[0.2em]  animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
+          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-medium -[0.2em]  animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
             <Zap class="w-3.5 h-3.5 fill-current" /> Campus Delivery, Redefined
           </NuxtLink>
           
@@ -46,7 +46,7 @@
                 <div class="max-w-max mx-auto text-center" v-html="heroHeadings[currentHeadingIndex].text"></div>
                 <!-- <div class="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500">
                   <span class="w-1.5 h-1.5 rounded-full bg-parentPrimary animate-pulse"></span>
-                  <span class="text-sm md:text-sm font-black -[0.2em]  text-gray-400">
+                  <span class="text-sm md:text-sm font-medium -[0.2em]  text-gray-400">
                     {{ heroHeadings[currentHeadingIndex].lang }}
                   </span>
                 </div> -->
@@ -81,7 +81,7 @@
               />
               <button 
                 @click="handleHeroSearch"
-                class="px-4 md:px-8 py-3 md:py-4 bg-gray-900 text-white rounded-[2rem] text-sm md:text-sm font-black   hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl whitespace-nowrap flex-shrink-0 flex items-center gap-2"
+                class="px-4 md:px-8 py-3 md:py-4 bg-gray-900 text-white rounded-[2rem] text-sm md:text-sm font-medium   hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl whitespace-nowrap flex-shrink-0 flex items-center gap-2"
               >
                  <span>Find Food</span>
                  <ArrowRight class="w-3 md:w-4 h-3 md:h-4" />
@@ -94,7 +94,7 @@
     class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-100 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] overflow-hidden z-[75] p-2"
   >
     <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
-      <span class="text-sm font-black text-gray-400 tracking-tight">
+      <span class="text-sm font-medium text-gray-400 tracking-tight">
         {{ heroSearchQuery ? 'Matching Meals' : `Suggested for ${suggestionTimeText}` }}
       </span>
       <div v-if="isSearching" class="w-4 h-4 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
@@ -116,11 +116,11 @@
           </div>
         </div>
         <div class="flex-1 text-left">
-          <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
+          <h4 class="text-sm font-medium text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
           <p class="text-sm font-bold text-gray-400">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
         </div>
         <div class="text-right">
-          <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+          <span class="text-sm font-medium text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
         </div>
       </div>
 
@@ -137,7 +137,7 @@
           </div>
 
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-black text-gray-900 mb-0.5 truncate">
+            <p class="text-sm font-medium text-gray-900 mb-0.5 truncate">
               "{{ heroSearchQuery }}" no dey here sha
             </p>
             <p class="text-xs font-medium text-gray-400 leading-relaxed mb-3">
@@ -159,7 +159,7 @@
 
         <!-- Time-of-day fallback suggestions -->
         <div v-if="timeOfDaySuggestions.length > 0" class="mt-3">
-          <p class="px-4 pb-2 text-[11px] font-black text-gray-300 tracking-widest uppercase">Popular for {{ suggestionTimeText }}</p>
+          <p class="px-4 pb-2 text-[11px] font-medium text-gray-300 tracking-widest uppercase">Popular for {{ suggestionTimeText }}</p>
           <div
             v-for="product in timeOfDaySuggestions.slice(0, 3)"
             :key="'tod-' + product._id"
@@ -171,10 +171,10 @@
               <Utensils v-else class="w-4 h-4 m-auto text-parentPrimary/30 mt-2.5" />
             </div>
             <div class="flex-1 min-w-0">
-              <h4 class="text-xs font-black text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
+              <h4 class="text-xs font-medium text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
               <p class="text-[11px] font-bold text-gray-400">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
             </div>
-            <span class="text-xs font-black text-gray-900 flex-shrink-0">₦{{ product.price?.toLocaleString() }}</span>
+            <span class="text-xs font-medium text-gray-900 flex-shrink-0">₦{{ product.price?.toLocaleString() }}</span>
           </div>
         </div>
       </div>
@@ -194,11 +194,11 @@
             </div>
           </div>
           <div class="flex-1 text-left">
-            <h4 class="text-sm font-black text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
+            <h4 class="text-sm font-medium text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
             <p class="text-sm font-bold text-gray-400">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
           </div>
           <div class="text-right">
-            <span class="text-sm font-black text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
+            <span class="text-sm font-medium text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
           </div>
         </div>
       </div>
@@ -210,9 +210,9 @@
 
           <!-- Quick Tags -->
           <!-- <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
-             <span class="text-sm font-black text-gray-300   mr-1">E choke:</span>
+             <span class="text-sm font-medium text-gray-300   mr-1">E choke:</span>
              <button v-for="tag in quickTags.slice(0,4)" :key="tag.label" 
-              class="px-4 py-2 bg-gray-50 hover:bg-white border border-gray-100 hover:border-parentPrimary/30 rounded-xl text-sm font-black text-gray-600 hover:text-parentPrimary transition-all shadow-sm hover:shadow-md"
+              class="px-4 py-2 bg-gray-50 hover:bg-white border border-gray-100 hover:border-parentPrimary/30 rounded-xl text-sm font-medium text-gray-600 hover:text-parentPrimary transition-all shadow-sm hover:shadow-md"
              >
                {{ tag.label }}
              </button>
@@ -248,7 +248,7 @@
  <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
  
  <div class="absolute top-4 left-4">
- <span class="px-3 py-1 bg-rose-500 text-white rounded-full text-sm font-black  shadow-sm">
+ <span class="px-3 py-1 bg-rose-500 text-white rounded-full text-sm font-medium  shadow-sm">
  PROMO
  </span>
  </div>
@@ -262,7 +262,7 @@
  <span class="text-sm font-bold text-gray-900 flex items-center gap-2">
  <Store class="w-3.5 h-3.5 text-gray-400" /> {{ promo.vendorName }}
  </span>
- <span class="text-sm font-black text-rose-500   bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-md">Claim Offer &rarr;</span>
+ <span class="text-sm font-medium text-rose-500   bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-md">Claim Offer &rarr;</span>
  </div>
  </div>
  </div>
@@ -325,8 +325,8 @@
   <section id="how-it-works" class="py-20 bg-white overflow-hidden border-t border-slate-100">
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
       <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-        <p class="text-sm font-black -[0.2em]  text-parentPrimary">How It Works</p>
-        <h2 class="text-3xl md:text-5xl font-black text-slate-900 -tighter leading-tight">
+        <p class="text-sm font-medium -[0.2em]  text-parentPrimary">How It Works</p>
+        <h2 class="text-3xl md:text-5xl font-medium text-slate-900 -tighter leading-tight">
           Three steps to <span class="text-parentPrimary">satisfaction.</span>
         </h2>
       </div>
@@ -341,7 +341,7 @@
           <div :class="`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm border border-slate-50 ${step.color} group-hover:scale-110 transition-transform`">
             {{ step.icon }}
           </div>
-          <h3 class="text-xl font-black text-slate-900 -tight">{{ i + 1 }}. {{ step.title }}</h3>
+          <h3 class="text-xl font-medium text-slate-900 -tight">{{ i + 1 }}. {{ step.title }}</h3>
           <p class="text-sm text-slate-500 font-bold leading-relaxed">{{ step.desc }}</p>
         </div>
       </div>
@@ -356,14 +356,14 @@
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-bold">
           <Rocket class="w-4 h-4" /> Anything, anywhere on campus
         </div>
-        <h2 class="text-3xl md:text-5xl font-black text-slate-900 -tighter leading-tight">
+        <h2 class="text-3xl md:text-5xl font-medium text-slate-900 -tighter leading-tight">
           Need more than <span class="text-parentPrimary">just food?</span>
         </h2>
         <p class="text-slate-500 text-lg font-medium leading-relaxed -tight">
           Send an Errander to your hostel to pick up items, deliver documents to class, or handle any request from Point A to Point B across campus.
         </p>
         <div class="pt-4">
-          <NuxtLink to="/errands/custom" class="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm  -wide hover:bg-parentPrimary transition-colors shadow-lg shadow-slate-900/10">
+          <NuxtLink to="/errands/custom" class="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-medium text-sm  -wide hover:bg-parentPrimary transition-colors shadow-lg shadow-slate-900/10">
             Request an Errand
           </NuxtLink>
         </div>
@@ -380,7 +380,7 @@
           <div class="w-10 h-10 mb-4 rounded-xl bg-parentPrimary/10 flex items-center justify-center text-parentPrimary">
             <component :is="feat.icon" class="w-5 h-5" />
           </div>
-          <h4 class="text-base font-black text-slate-900 -tight mb-2">{{ feat.title }}</h4>
+          <h4 class="text-base font-medium text-slate-900 -tight mb-2">{{ feat.title }}</h4>
           <p class="text-sm text-slate-500 font-medium leading-relaxed">{{ feat.desc }}</p>
         </div>
       </div>
@@ -391,17 +391,17 @@
   <section class="relative py-20 overflow-hidden bg-gradient-to-b from-slate-50/80 via-white to-white border-t border-slate-100">
     <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
     <div class="max-w-3xl mx-auto px-6 lg:px-10 relative z-10 text-center space-y-6">
-      <h2 class="text-4xl md:text-5xl font-black text-slate-900 -tighter leading-tight">
+      <h2 class="text-4xl md:text-5xl font-medium text-slate-900 -tighter leading-tight">
         Ready to <span class="text-parentPrimary">chop?</span>
       </h2>
       <p class="text-lg text-slate-500 font-medium max-w-xl mx-auto leading-relaxed">
         Join thousands of students who trust Errander for their daily meals and hostel runs. Zero stress, 100% vibes.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-        <NuxtLink to="/auth/register" class="px-8 py-4 bg-parentPrimary text-white rounded-2xl font-black text-sm  -wide shadow-lg shadow-parentPrimary/20 hover:scale-105 active:scale-95 transition-all">
+        <NuxtLink to="/auth/register" class="px-8 py-4 bg-parentPrimary text-white rounded-2xl font-medium text-sm  -wide shadow-lg shadow-parentPrimary/20 hover:scale-105 active:scale-95 transition-all">
           Join Errander Now
         </NuxtLink>
-        <NuxtLink to="/auth/login" class="px-8 py-4 bg-white text-slate-600 rounded-2xl font-black text-sm  -wide border border-slate-200 hover:border-parentPrimary hover:text-parentPrimary transition-all">
+        <NuxtLink to="/auth/login" class="px-8 py-4 bg-white text-slate-600 rounded-2xl font-medium text-sm  -wide border border-slate-200 hover:border-parentPrimary hover:text-parentPrimary transition-all">
           Login
         </NuxtLink>
       </div>

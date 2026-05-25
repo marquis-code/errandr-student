@@ -3,14 +3,14 @@
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
       <!-- Left side: content -->
       <div class="space-y-8 text-center lg:text-left">
-        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-sm font-black uppercase ">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-parentPrimary/10 border border-parentPrimary/20 rounded-lg text-parentPrimary text-sm font-medium uppercase ">
            🤔 Got Questions?
         </div>
-        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none ">
+        <h2 class="text-4xl md:text-6xl font-medium text-gray-900 tracking-tighter leading-none ">
           Clear answers to <br/> <span class="text-parentPrimary">common questions</span> <br/> about the Hub.
         </h2>
         <div class="pt-4">
-          <NuxtLink to="/contact" class="inline-flex items-center gap-2 text-parentPrimary font-black text-sm hover:gap-4 transition-all group">
+          <NuxtLink to="/contact" class="inline-flex items-center gap-2 text-parentPrimary font-medium text-sm hover:gap-4 transition-all group">
             Speak to an Errandr <ArrowUpRight class="w-5 h-5 group-hover:rotate-45 transition-transform" />
           </NuxtLink>
         </div>
@@ -29,7 +29,7 @@
             class="w-full flex items-center justify-between p-8 text-left"
           >
             <span 
-              class="text-lg font-black text-gray-900 tracking-tight transition-colors"
+              class="text-lg font-medium text-gray-900 tracking-tight transition-colors"
               :class="{ 'text-parentPrimary': openIndex === i }"
             >
               {{ faq.q }}

@@ -8,8 +8,8 @@
           <ArrowLeft class="w-4 h-4 text-gray-900" />
         </button>
         <div>
-          <h1 class="text-xl font-black text-gray-900 tracking-tight">My Wallet</h1>
-          <p class="text-[10px] font-bold text-gray-400">Manage your funds and transactions</p>
+          <h1 class="text-xl font-medium text-gray-900 tracking-tight">My Wallet</h1>
+          <p class="text-sm font-bold text-gray-400">Manage your funds and transactions</p>
         </div>
       </div>
 
@@ -20,9 +20,9 @@
         
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <p class="text-[10px] font-black text-white/40 tracking-widest mb-2">Available Balance</p>
+            <p class="text-sm font-medium text-white/40 tracking-widest mb-2">Available Balance</p>
             <div class="flex items-baseline gap-2">
-              <span class="text-4xl md:text-5xl font-black tracking-tighter">₦{{ (balance || 0).toLocaleString() }}</span>
+              <span class="text-4xl md:text-5xl font-medium tracking-tighter">₦{{ (balance || 0).toLocaleString() }}</span>
               <button @click="handleFetchWallet" class="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
                 <RefreshCw :class="loading ? 'animate-spin' : ''" class="w-3.5 h-3.5 text-white/40" />
               </button>
@@ -30,7 +30,7 @@
           </div>
           <button 
             @click="showTopup = true"
-            class="px-6 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-black tracking-wider hover:bg-parentPrimary/90 active:scale-95 transition-all shadow-lg shadow-parentPrimary/30 flex items-center gap-2 self-start md:self-center"
+            class="px-6 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 active:scale-95 transition-all shadow-lg shadow-parentPrimary/30 flex items-center gap-2 self-start md:self-center"
           >
             <Plus class="w-4 h-4" />
             Add Money
@@ -43,15 +43,15 @@
         <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Loader2 class="w-7 h-7 text-emerald-500 animate-spin" />
         </div>
-        <h3 class="text-base font-black text-gray-900 tracking-tight">Verifying Transaction...</h3>
+        <h3 class="text-base font-medium text-gray-900 tracking-tight">Verifying Transaction...</h3>
         <p class="text-xs text-gray-400 mt-1.5 font-medium">Please wait while we confirm your top-up.</p>
       </div>
 
       <!-- Recent Transactions -->
       <div class="space-y-4">
         <div class="flex items-center justify-between px-1">
-          <h2 class="text-sm font-black text-gray-900 tracking-tight">Recent Activity</h2>
-          <button class="text-[10px] font-black text-parentPrimary hover:underline">View All</button>
+          <h2 class="text-sm font-medium text-gray-900 tracking-tight">Recent Activity</h2>
+          <button class="text-sm font-medium text-parentPrimary hover:underline">View All</button>
         </div>
 
         <div v-if="loadingTransactions" class="space-y-3">
@@ -73,13 +73,13 @@
               <ArrowDownLeft v-else class="w-4 h-4" />
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-xs font-black text-gray-900 truncate leading-tight">{{ tx.description }}</p>
-              <p class="text-[10px] text-gray-400 font-medium mt-0.5">
+              <p class="text-xs font-medium text-gray-900 truncate leading-tight">{{ tx.description }}</p>
+              <p class="text-sm text-gray-400 font-medium mt-0.5">
                 {{ new Date(tx.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) }}
               </p>
             </div>
             <div class="text-right shrink-0">
-              <p :class="tx.type === 'credit' ? 'text-emerald-500' : 'text-gray-900'" class="font-black text-sm tracking-tight">
+              <p :class="tx.type === 'credit' ? 'text-emerald-500' : 'text-gray-900'" class="font-medium text-sm tracking-tight">
                 {{ tx.type === 'credit' ? '+' : '-' }}₦{{ tx.amount.toLocaleString() }}
               </p>
               <div class="flex items-center justify-end gap-1 text-[9px] font-bold mt-0.5" :class="tx.status === 'completed' ? 'text-emerald-400' : 'text-amber-400'">
@@ -94,8 +94,8 @@
           <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
             <WalletIcon class="w-7 h-7 text-gray-300" />
           </div>
-          <p class="text-xs font-black text-gray-900 mb-0.5">No transactions yet</p>
-          <p class="text-[10px] font-medium text-gray-400">Your activity will show up here</p>
+          <p class="text-xs font-medium text-gray-900 mb-0.5">No transactions yet</p>
+          <p class="text-sm font-medium text-gray-400">Your activity will show up here</p>
         </div>
       </div>
     </div>
@@ -140,8 +140,8 @@
                 <div class="w-14 h-14 bg-parentPrimary/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-parentPrimary/20">
                   <WalletIcon class="w-7 h-7 text-parentPrimary" />
                 </div>
-                <h3 class="text-lg font-black text-white tracking-tight mb-1">Add Funds</h3>
-                <p class="text-[10px] font-bold text-white/40">Top up your Errandr wallet</p>
+                <h3 class="text-lg font-medium text-white tracking-tight mb-1">Add Funds</h3>
+                <p class="text-sm font-bold text-white/40">Top up your Errandr wallet</p>
               </div>
             </div>
 
@@ -149,14 +149,14 @@
             <div class="p-6 space-y-5">
               <!-- Amount Input -->
               <div>
-                <label class="text-[10px] font-black text-gray-400 tracking-wider block mb-2 pl-1">Enter Amount</label>
+                <label class="text-sm font-medium text-gray-400 tracking-wider block mb-2 pl-1">Enter Amount</label>
                 <div class="relative">
-                  <span class="absolute left-5 top-1/2 -translate-y-1/2 text-xl font-black text-gray-300">₦</span>
+                  <span class="absolute left-5 top-1/2 -translate-y-1/2 text-xl font-medium text-gray-300">₦</span>
                   <input 
-                    v-model="amount"
-                    type="number"
+                    v-model="formattedAmount"
+                    type="text"
                     placeholder="0"
-                    class="w-full bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl py-5 pl-11 pr-5 text-2xl font-black text-gray-900 placeholder:text-gray-200 transition-all outline-none"
+                    class="w-full bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl py-5 pl-11 pr-5 text-2xl font-medium text-gray-900 placeholder:text-gray-200 transition-all outline-none"
                   />
                 </div>
               </div>
@@ -168,7 +168,7 @@
                   :key="a"
                   @click="amount = a"
                   :class="amount === a ? 'bg-parentPrimary text-white border-parentPrimary shadow-md shadow-parentPrimary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-parentPrimary/30'"
-                  class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all border active:scale-95"
+                  class="flex-1 py-2.5 rounded-xl text-xs font-medium transition-all border active:scale-95"
                 >
                   ₦{{ a >= 1000 ? (a / 1000) + 'k' : a }}
                 </button>
@@ -176,19 +176,19 @@
 
               <!-- Current Balance Indicator -->
               <div class="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
-                <span class="text-[10px] font-bold text-gray-400">Current balance</span>
-                <span class="text-xs font-black text-gray-900">₦{{ (balance || 0).toLocaleString() }}</span>
+                <span class="text-sm font-bold text-gray-400">Current balance</span>
+                <span class="text-xs font-medium text-gray-900">₦{{ (balance || 0).toLocaleString() }}</span>
               </div>
               <div v-if="amount > 0" class="flex items-center justify-between bg-emerald-50 rounded-xl px-4 py-3 border border-emerald-100">
-                <span class="text-[10px] font-bold text-emerald-600">New balance after funding</span>
-                <span class="text-xs font-black text-emerald-600">₦{{ ((balance || 0) + Number(amount)).toLocaleString() }}</span>
+                <span class="text-sm font-bold text-emerald-600">New balance after funding</span>
+                <span class="text-xs font-medium text-emerald-600">₦{{ ((balance || 0) + Number(amount)).toLocaleString() }}</span>
               </div>
 
               <!-- Continue Button -->
               <button 
                 @click="initiateTopup"
                 :disabled="loadingPayment || amount < 50"
-                class="w-full py-4 bg-parentPrimary text-white rounded-xl text-xs font-black tracking-wider hover:bg-parentPrimary/90 disabled:opacity-40 transition-all shadow-lg shadow-parentPrimary/20 flex items-center justify-center gap-2 active:scale-[0.98]"
+                class="w-full py-4 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 disabled:opacity-40 transition-all shadow-lg shadow-parentPrimary/20 flex items-center justify-center gap-2 active:scale-[0.98]"
               >
                 <Loader2 v-if="loadingPayment" class="w-4 h-4 animate-spin" />
                 <span v-else>Continue with Paystack</span>
@@ -238,8 +238,8 @@
                 <ShoppingBag v-else class="w-8 h-8" />
               </div>
               
-              <p class="text-[9px] font-black text-white/40 tracking-widest mb-1.5 relative z-10">Transaction Details</p>
-              <p class="text-3xl font-black text-white tracking-tighter relative z-10">
+              <p class="text-[9px] font-medium text-white/40 tracking-widest mb-1.5 relative z-10">Transaction Details</p>
+              <p class="text-3xl font-medium text-white tracking-tighter relative z-10">
                 {{ selectedTx.type === 'credit' ? '+' : '-' }}₦{{ selectedTx.amount.toLocaleString() }}
               </p>
             </div>
@@ -248,21 +248,21 @@
             <div class="p-5 md:p-6 space-y-5 max-h-[50vh] md:max-h-none overflow-y-auto">
               <div class="space-y-4 bg-gray-50 rounded-xl p-4 border border-gray-100">
                 <div class="flex justify-between items-center">
-                  <span class="text-[10px] font-bold text-gray-400 tracking-wider">Status</span>
-                  <span :class="selectedTx.status === 'completed' ? 'text-emerald-500 bg-emerald-50 border-emerald-100' : 'text-amber-500 bg-amber-50 border-amber-100'" class="text-[10px] font-black px-2.5 py-1 rounded-lg border">
+                  <span class="text-sm font-bold text-gray-400 tracking-wider">Status</span>
+                  <span :class="selectedTx.status === 'completed' ? 'text-emerald-500 bg-emerald-50 border-emerald-100' : 'text-amber-500 bg-amber-50 border-amber-100'" class="text-sm font-medium px-2.5 py-1 rounded-lg border">
                     {{ selectedTx.status }}
                   </span>
                 </div>
                 <div class="flex justify-between items-start">
-                  <span class="text-[10px] font-bold text-gray-400 tracking-wider">Description</span>
-                  <span class="text-xs font-black text-gray-900 text-right max-w-[180px]">{{ selectedTx.description }}</span>
+                  <span class="text-sm font-bold text-gray-400 tracking-wider">Description</span>
+                  <span class="text-xs font-medium text-gray-900 text-right max-w-[180px]">{{ selectedTx.description }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                  <span class="text-[10px] font-bold text-gray-400 tracking-wider">Reference</span>
-                  <span class="text-[10px] font-mono font-bold text-gray-900 bg-white px-2 py-1 rounded-md border border-gray-100">{{ selectedTx.reference || 'N/A' }}</span>
+                  <span class="text-sm font-bold text-gray-400 tracking-wider">Reference</span>
+                  <span class="text-sm font-mono font-bold text-gray-900 bg-white px-2 py-1 rounded-md border border-gray-100">{{ selectedTx.reference || 'N/A' }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                  <span class="text-[10px] font-bold text-gray-400 tracking-wider">Date</span>
+                  <span class="text-sm font-bold text-gray-400 tracking-wider">Date</span>
                   <span class="text-xs font-bold text-gray-600">{{ new Date(selectedTx.createdAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) }}</span>
                 </div>
               </div>
@@ -271,14 +271,14 @@
               <div class="flex gap-3 print:hidden">
                 <button 
                   @click="printReceipt"
-                  class="flex-1 py-3.5 bg-gray-900 text-white rounded-xl text-xs font-black hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                  class="flex-1 py-3.5 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-parentPrimary transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
                 >
                   <Printer class="w-3.5 h-3.5" />
                   Print Receipt
                 </button>
                 <button 
                   @click="selectedTx = null"
-                  class="flex-1 py-3.5 bg-gray-50 text-gray-500 rounded-xl text-xs font-black hover:bg-gray-100 transition-all active:scale-[0.98]"
+                  class="flex-1 py-3.5 bg-gray-50 text-gray-500 rounded-xl text-xs font-medium hover:bg-gray-100 transition-all active:scale-[0.98]"
                 >
                   Close
                 </button>
@@ -299,11 +299,12 @@ import {
   Wallet as WalletIcon, X, Loader2, ArrowRight, ChevronRight,
   Printer, ShoppingBag
 } from 'lucide-vue-next';
+import logoLight from '@/assets/img/logo-light.png';
 import { useWallet } from '@/composables/modules/wallets';
 import { usePayments } from '@/composables/modules/payments';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 import { useUser } from '@/composables/modules/auth/user';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from '#app';
 
 definePageMeta({
@@ -320,6 +321,16 @@ const { showToast } = useCustomToast();
 const loading = ref(false);
 const showTopup = ref(false);
 const amount = ref(0);
+const formattedAmount = computed({
+  get() {
+    if (amount.value === 0 || amount.value === null || amount.value === undefined) return '';
+    return amount.value.toLocaleString('en-US');
+  },
+  set(val) {
+    const clean = val.replace(/[^0-9.]/g, '');
+    amount.value = clean ? Number(clean) : 0;
+  }
+});
 const verifying = ref(false);
 const loadingTransactions = ref(false);
 const transactions = ref<any[]>([]);
@@ -347,8 +358,159 @@ const openDetails = (tx: any) => {
   selectedTx.value = tx;
 };
 
-const printReceipt = () => {
-  window.print();
+const printReceipt = async () => {
+  const tx = selectedTx.value;
+  if (!tx) return;
+
+  try {
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a6', // Compact receipt layout size: 105mm x 148mm
+    });
+
+    // Helper to load image in the browser context
+    const loadImage = (src: string): Promise<HTMLImageElement> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = (err) => reject(err);
+        img.src = src;
+      });
+    };
+
+    // Color Palette Definition
+    const primaryColor = [255, 92, 26]; // Erranders Orange: #FF5C1A
+    const darkGray = [17, 24, 39]; // Gray 900
+    const lightGray = [243, 244, 246]; // Gray 100
+    const textMuted = [156, 163, 175]; // Gray 400
+    const emeraldColor = [16, 185, 129]; // Emerald 500
+    const roseColor = [239, 68, 68]; // Rose 500
+
+    // 1. Draw Receipt Background Frame & Top Bar
+    doc.setFillColor(255, 255, 255);
+    doc.rect(0, 0, 105, 148, 'F');
+
+    // Branded Top Accent Bar
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.rect(0, 0, 105, 5, 'F');
+
+    // 2. Brand Identity Header
+    // Load and add the logo image
+    try {
+      const logoImg = await loadImage(logoLight);
+      // center the logo: width = 38mm, aspect ratio is 4.4, height = 38 / 4.4 = 8.64mm
+      doc.addImage(logoImg, 'PNG', 33.5, 12, 38, 8.64);
+    } catch (e) {
+      console.warn('Failed to load logo image, falling back to text:', e);
+      // Fallback in case of any loading failure
+      doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+      doc.setFont('Helvetica', 'bold');
+      doc.setFontSize(15);
+      doc.text('Erranders.', 52.5, 18, { align: 'center' });
+    }
+
+    // Subtitle / Hub
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(textMuted[0], textMuted[1], textMuted[2]);
+    doc.setFontSize(7.5);
+    doc.text('CAMPUS FINANCE HUB • OFFICIAL RECEIPT', 52.5, 26, { align: 'center' });
+
+    // Decorative Separator Line
+    doc.setDrawColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.setLineWidth(0.3);
+    doc.line(12, 31, 93, 31);
+
+    // 3. Main Transaction Value & Title
+    const isCredit = tx.type === 'credit';
+    const amountVal = Number(tx.amount || 0);
+    const amountStr = `${isCredit ? '+' : '-'} NGN ${amountVal.toLocaleString()}`;
+    
+    doc.setFont('Helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(isCredit ? emeraldColor[0] : darkGray[0], isCredit ? emeraldColor[1] : darkGray[1], isCredit ? emeraldColor[2] : darkGray[2]);
+    doc.text(amountStr, 52.5, 43, { align: 'center' });
+
+    // Transaction description (clean mixed-casing)
+    doc.setFont('Helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(107, 114, 128); // Gray 500
+    doc.text(tx.description, 52.5, 49, { align: 'center' });
+
+    // 4. Detailed Data Card Background
+    doc.setFillColor(249, 250, 251); // Gray 50
+    doc.roundedRect(12, 55, 81, 58, 3.5, 3.5, 'F');
+
+    // Helper function to draw key-value details rows
+    const drawRow = (label: string, value: string, y: number, isBoldValue = false) => {
+      doc.setFont('Helvetica', 'normal');
+      doc.setTextColor(textMuted[0], textMuted[1], textMuted[2]);
+      doc.setFontSize(8);
+      doc.text(label, 17, y);
+
+      doc.setFont('Helvetica', isBoldValue ? 'bold' : 'normal');
+      doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+      doc.setFontSize(8);
+      doc.text(value, 88, y, { align: 'right' });
+    };
+
+    // Draw detail rows
+    drawRow('Transaction Type', isCredit ? 'wallet credit / top-up' : 'wallet debit / errand payment', 62.5, true);
+    
+    // Status (Beautifully styled padded status pill badge)
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(textMuted[0], textMuted[1], textMuted[2]);
+    doc.setFontSize(8);
+    doc.text('Status', 17, 72);
+    
+    const isCompleted = tx.status === 'completed';
+    // Draw status capsule/badge background
+    doc.setFillColor(isCompleted ? 209 : 253, isCompleted ? 250 : 242, isCompleted ? 229 : 217); // bg-emerald-50 or bg-amber-50
+    doc.roundedRect(69, 68.5, 19, 5, 1, 1, 'F');
+    // Draw status badge label text
+    doc.setFont('Helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(isCompleted ? emeraldColor[0] : roseColor[0], isCompleted ? emeraldColor[1] : roseColor[1], isCompleted ? emeraldColor[2] : roseColor[2]);
+    doc.text(tx.status, 78.5, 72, { align: 'center' });
+
+    // Draw remaining details rows
+    doc.setFont('Helvetica', 'normal');
+    drawRow('Reference ID', tx.reference || 'N/A', 81.5, true);
+    
+    const timestampStr = new Date(tx.createdAt).toLocaleString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    drawRow('Transaction Date', timestampStr, 91);
+
+    const customerName = user.value ? `${user.value.firstName} ${user.value.lastName}` : 'Student Member';
+    drawRow('Account Holder', customerName, 100.5);
+
+    // 5. Receipt Footer & Security Seal
+    doc.setDrawColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.setLineWidth(0.3);
+    doc.line(12, 118, 93, 118);
+
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(156, 163, 175);
+    doc.setFontSize(7.5);
+    doc.text('secured transaction via Paystack gateway', 52.5, 124, { align: 'center' });
+    doc.text('thank you for using erranders!', 52.5, 129, { align: 'center' });
+
+    // Save the dynamically compiled branded vector PDF
+    doc.save(`erranders-receipt-${tx.reference || 'transaction'}.pdf`);
+  } catch (error) {
+    console.error('Failed to generate receipt PDF:', error);
+    showToast({
+      title: 'Print Failed',
+      message: 'Could not generate receipt PDF. Please try again.',
+      toastType: 'error'
+    });
+  }
 };
 
 const initiateTopup = async () => {

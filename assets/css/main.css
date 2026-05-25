@@ -133,5 +133,5 @@ input[type=number] {
 
 .custom-checkbox:checked::after {
   content: '✓';
-  @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-sm font-black shadow-sm;
+  @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-sm font-medium shadow-sm;
 }

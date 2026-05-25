@@ -6,7 +6,7 @@
     <div class="relative z-10 flex flex-col h-full">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h3 class="text-lg font-black tracking-tight text-gray-900 leading-none">Campus Leaderboard</h3>
+          <h3 class="text-lg font-medium tracking-tight text-gray-900 leading-none">Campus Leaderboard</h3>
           <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Top orderers and riders this month</p>
         </div>
         
@@ -16,7 +16,7 @@
             v-for="t in types" 
             :key="t.key"
             @click="activeType = t.key"
-            class="px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all"
+            class="px-3 py-1.5 rounded-lg text-xs font-medium uppercase transition-all"
             :class="activeType === t.key ? 'bg-parentPrimary text-white shadow-sm' : 'text-gray-400 hover:text-gray-700'"
           >
             {{ t.label }}
@@ -42,13 +42,13 @@
           :key="user._id"
           class="flex items-center gap-3 p-3 rounded-xl border border-transparent hover:border-gray-100 hover:bg-gray-50/50 transition-all group"
         >
-          <div class="w-7 h-7 flex items-center justify-center font-black text-xs shrink-0 rounded-lg" :class="getRankClass(index)">
+          <div class="w-7 h-7 flex items-center justify-center font-medium text-xs shrink-0 rounded-lg" :class="getRankClass(index)">
             #{{ index + 1 }}
           </div>
           
           <div class="w-9 h-9 rounded-xl bg-gray-50 flex-shrink-0 overflow-hidden border border-gray-100 relative">
             <img v-if="user.avatar" :src="user.avatar" class="w-full h-full object-cover" />
-            <div v-else class="w-full h-full flex items-center justify-center uppercase text-xs font-black text-parentPrimary bg-parentPrimary/10">
+            <div v-else class="w-full h-full flex items-center justify-center uppercase text-xs font-medium text-parentPrimary bg-parentPrimary/10">
               {{ user.firstName?.[0] }}{{ user.lastName?.[0] }}
             </div>
           </div>
@@ -59,14 +59,14 @@
           </div>
 
           <div class="text-right shrink-0">
-            <p class="text-xs font-black text-parentPrimary tracking-tight">{{ getScoreLabel(user) }}</p>
+            <p class="text-xs font-medium text-parentPrimary tracking-tight">{{ getScoreLabel(user) }}</p>
             <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Points: {{ user.points }}</p>
           </div>
         </div>
       </div>
 
       <!-- Footer action -->
-      <div class="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between text-[10px] font-black text-gray-400 uppercase tracking-wider">
+      <div class="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between text-[10px] font-medium text-gray-400 uppercase tracking-wider">
         <span>Updated real-time</span>
         <NuxtLink to="/dashboard/leaderboard" class="text-parentPrimary hover:underline flex items-center gap-1">
           View Podium →

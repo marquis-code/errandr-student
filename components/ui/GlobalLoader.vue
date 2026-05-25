@@ -16,7 +16,7 @@
       
       <!-- Text -->
       <div class="mt-8 flex flex-col items-center">
-        <h2 class="text-xl font-black text-gray-900 tracking-tighter animate-pulse">Errandr</h2>
+        <h2 class="text-xl font-medium text-gray-900 tracking-tighter animate-pulse">Errandr</h2>
         <div class="mt-2 flex gap-1">
           <div class="w-1.5 h-1.5 bg-[#FF5C1A] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
           <div class="w-1.5 h-1.5 bg-[#FF5C1A] rounded-full animate-bounce [animation-delay:-0.15s]"></div>

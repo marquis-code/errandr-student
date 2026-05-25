@@ -35,7 +35,7 @@
                 </div>
               </div>
 
-              <DialogTitle as="h3" class="text-3xl font-black text-gray-900 tracking-tighter leading-none mb-4">
+              <DialogTitle as="h3" class="text-3xl font-medium text-gray-900 tracking-tighter leading-none mb-4">
                 Welcome home,<br/>
                 <span class="text-parentPrimary ">{{ firstName }}!</span>
               </DialogTitle>
@@ -49,12 +49,12 @@
               <div class="mt-12 space-y-4">
                 <button
                   type="button"
-                  class="w-full inline-flex justify-center items-center gap-2 rounded-2xl bg-gray-900 px-8 py-5 text-sm font-black uppercase tracking-[0.2em] text-white hover:bg-parentPrimary transition-all duration-300 active:scale-95 transition-all"
+                  class="w-full inline-flex justify-center items-center gap-2 rounded-2xl bg-gray-900 px-8 py-5 text-sm font-medium uppercase tracking-[0.2em] text-white hover:bg-parentPrimary transition-all duration-300 active:scale-95 transition-all"
                   @click="closeModal"
                 >
                   Let's get started <ArrowRight class="w-4 h-4" />
                 </button>
-                <p class="text-sm font-black text-gray-300 uppercase ">Errandr — Campus Life, Elevated.</p>
+                <p class="text-sm font-medium text-gray-300 uppercase ">Errandr — Campus Life, Elevated.</p>
               </div>
             </DialogPanel>
           </TransitionChild>

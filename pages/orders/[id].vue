@@ -2,31 +2,31 @@
  <div class="min-h-screen bg-[#FDFDFD] pb-32 font-sans selection:bg-parentPrimary/10">
  <!-- Immersive Header -->
  <div class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
- <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
- <div class="flex items-center gap-4">
+ <div class="max-w-5xl mx-auto px-4 py-3 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+ <div class="flex items-center gap-3">
  <button 
  @click="router.back()" 
- class="w-9 h-9 bg-white rounded-xl flex items-center justify-center border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all group active:scale-95"
+ class="w-9 h-9 bg-white rounded-xl flex items-center justify-center border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all group active:scale-95 shrink-0"
  >
  <ArrowLeft class="w-4 h-4 text-gray-900 group-hover:-translate-x-1 transition-transform" />
  </button>
- <div class="flex flex-col">
- <h1 class="text-lg font-black text-gray-900 tracking-tight leading-none">Order Status</h1>
- <div v-if="order" class="flex items-center gap-2 mt-1.5">
- <span class="text-sm font-black text-gray-400 r ">ID: {{ order.orderNumber }}</span>
- <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
- <span class="text-sm font-bold text-gray-400 capitalize">{{ formatDate(order.createdAt) }}</span>
+ <div class="flex flex-col min-w-0">
+ <h1 class="text-base sm:text-lg font-medium text-gray-900 tracking-tight leading-none">Order Status</h1>
+ <div v-if="order" class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-1 sm:mt-1.5">
+ <span class="text-xs sm:text-sm font-medium text-gray-400 truncate">ID: {{ order.orderNumber }}</span>
+ <span class="w-1 h-1 bg-gray-300 rounded-full shrink-0"></span>
+ <span class="text-xs sm:text-sm font-bold text-gray-400 whitespace-nowrap">{{ formatDate(order.createdAt) }}</span>
  </div>
  </div>
  </div>
  
- <div class="flex items-center gap-2">
+ <div class="flex items-center justify-end sm:justify-start">
  <button 
  @click="reorder" 
  :disabled="reordering"
- class="px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-black r hover:bg-parentPrimary hover:shadow-lg hover:shadow-parentPrimary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+ class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-gray-900 text-white rounded-xl text-xs sm:text-sm font-medium hover:bg-parentPrimary hover:shadow-lg hover:shadow-parentPrimary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
  >
- <RefreshCw v-if="reordering" class="w-3 h-3 animate-spin" />
+ <RefreshCw v-if="reordering" class="w-3.5 h-3.5 animate-spin" />
  <span>{{ reordering ? 'Processing' : 'Reorder Items' }}</span>
  </button>
  </div>
@@ -54,7 +54,7 @@
  <!-- Timeline Card -->
  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
  <div class="flex items-center justify-between border-b border-gray-50 pb-4">
- <h3 class="text-sm font-black text-gray-900 r">Journey Progress</h3>
+ <h3 class="text-sm font-medium text-gray-900 r">Journey Progress</h3>
  <Clock class="w-4 h-4 text-gray-300" />
  </div>
 
@@ -71,7 +71,7 @@
  </div>
  <div class="flex-1">
  <div class="flex items-center justify-between group">
- <h4 class="text-[11px] font-black  transition-colors" :class="step.active ? 'text-gray-900' : 'text-gray-300'">
+ <h4 class="text-[11px] font-medium  transition-colors" :class="step.active ? 'text-gray-900' : 'text-gray-300'">
  {{ step.label }}
  </h4>
  <span v-if="step.timestamp" class="text-sm font-bold text-gray-400 ">{{ formatTime(step.timestamp) }}</span>
@@ -88,7 +88,7 @@
  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
  <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
  <div>
- <h3 class="text-sm font-black text-gray-900 r">Order Breakdown</h3>
+ <h3 class="text-sm font-medium text-gray-900 r">Order Breakdown</h3>
  <p class="text-sm font-bold text-gray-400 mt-0.5">{{ order.items?.length }} Items Ordered</p>
  </div>
  <div class="flex items-center gap-2">
@@ -102,10 +102,10 @@
  <div v-if="order.packs?.length > 0" class="space-y-8">
  <div v-for="(pack, pIdx) in order.packs" :key="pack._id || pIdx" class="space-y-4">
  <div class="flex items-center gap-3">
- <div class="w-6 h-6 rounded-lg bg-gray-900 text-white flex items-center justify-center text-sm font-black shadow-md">
+ <div class="w-6 h-6 rounded-lg bg-gray-900 text-white flex items-center justify-center text-sm font-medium shadow-md">
  {{ Number(pIdx) + 1 }}
  </div>
- <h4 class="text-sm font-black text-gray-900 tracking-tight">{{ pack.name || `Pack ${Number(pIdx) + 1}` }}</h4>
+ <h4 class="text-sm font-medium text-gray-900 tracking-tight">{{ pack.name || `Pack ${Number(pIdx) + 1}` }}</h4>
  <div class="flex-1 h-px bg-gray-100" />
  </div>
 
@@ -119,7 +119,7 @@
  <p class="text-sm font-bold text-gray-400 mt-0.5">Qty: {{ item.quantity }}</p>
  </div>
  <div class="text-right">
- <p class="text-sm font-black text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
+ <p class="text-sm font-medium text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
  <p class="text-[8px] font-medium text-gray-400 ">₦{{ item.price?.toLocaleString() }}/unit</p>
  </div>
  </div>
@@ -138,7 +138,7 @@
  <p class="text-sm font-bold text-gray-400 mt-0.5">Qty: {{ item.quantity }}</p>
  </div>
  <div class="text-right">
- <p class="text-sm font-black text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
+ <p class="text-sm font-medium text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
  <p class="text-[8px] font-medium text-gray-400 ">₦{{ item.price?.toLocaleString() }}/unit</p>
  </div>
  </div>
@@ -152,7 +152,7 @@
  
  <div class="relative z-10 space-y-5">
  <div class="flex items-center justify-between">
- <h3 class="text-sm font-black text-white/40 r">Shipping To</h3>
+ <h3 class="text-sm font-medium text-white/40 r">Shipping To</h3>
  <div class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center backdrop-blur-md border border-white/10 shadow-lg">
  <MapPin class="w-4 h-4 text-parentPrimary" />
  </div>
@@ -170,7 +170,7 @@
  <Truck class="w-5 h-5 text-gray-400" />
  </div>
  <div class="flex-1">
- <p class="text-sm font-black text-white/40 ">Method</p>
+ <p class="text-sm font-medium text-white/40 ">Method</p>
  <p class="text-[11px] font-bold text-white r">{{ order.deliveryOption?.replace(/_/g, ' ') || 'Use an Errandr' }}</p>
  </div>
  </div>
@@ -191,8 +191,8 @@
  <component :is="getStatusTheme(order.status).icon" class="w-6 h-6" />
  </div>
  <div>
- <p class="text-sm font-black text-gray-400 r mb-0.5">Live Status</p>
- <h2 class="text-xl font-black text-gray-900 tracking-tight transition-all ">{{ order.status.replace(/_/g, ' ') }}</h2>
+ <p class="text-sm font-medium text-gray-400 r mb-0.5">Live Status</p>
+ <h2 class="text-xl font-medium text-gray-900 tracking-tight transition-all ">{{ order.status.replace(/_/g, ' ') }}</h2>
  </div>
  </div>
  </div>
@@ -202,8 +202,8 @@
  <ShieldCheck class="w-4 h-4" />
  </div>
  <div class="flex-1 min-w-0">
- <p class="text-[8px] font-black text-emerald-600 r mb-0.5 truncate">Verification Code</p>
- <p class="text-lg font-black text-gray-900  truncate">{{ order.uniqueCode }}</p>
+ <p class="text-[8px] font-medium text-emerald-600 r mb-0.5 truncate">Verification Code</p>
+ <p class="text-lg font-medium text-gray-900  truncate">{{ order.uniqueCode }}</p>
  </div>
  <div class="text-[8px] font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded border border-emerald-100 shadow-sm flex-shrink-0">Give to Rider</div>
  </div>
@@ -213,7 +213,7 @@
  <!-- Service Provider Info -->
  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
  <div class="p-6">
- <h3 class="text-sm font-black text-gray-400 r mb-4">Service Provider</h3>
+ <h3 class="text-sm font-medium text-gray-400 r mb-4">Service Provider</h3>
  
  <div class="flex items-center gap-4 mb-8">
  <div class="w-16 h-16 rounded-2xl border border-gray-100 shadow-inner overflow-hidden flex items-center justify-center bg-gray-50 flex-shrink-0">
@@ -221,7 +221,7 @@
  <Store v-else class="w-8 h-8 text-gray-300" />
  </div>
  <div class="flex-1 min-w-0">
- <h4 class="text-lg font-black text-gray-900 tracking-tight truncate">{{ order.vendor?.storeName || 'Vendor' }}</h4>
+ <h4 class="text-lg font-medium text-gray-900 tracking-tight truncate">{{ order.vendor?.storeName || 'Vendor' }}</h4>
  <p class="text-sm font-bold text-parentPrimary flex items-center gap-1  truncate">
  <ShieldCheck class="w-3 h-3 flex-shrink-0" /> Verified Errandr Vendor
  </p>
@@ -254,7 +254,7 @@
 
  <!-- Payment Summary -->
  <div class="bg-gray-50/50 border border-gray-100 shadow-sm rounded-2xl p-6">
- <h3 class="text-sm font-black text-gray-900 r mb-4">Payment Summary</h3>
+ <h3 class="text-sm font-medium text-gray-900 r mb-4">Payment Summary</h3>
  <div class="space-y-2.5">
  <div class="flex justify-between items-center text-sm font-bold text-gray-500 r">
  <span>Cart Subtotal</span>
@@ -275,12 +275,12 @@
  <div class="h-px bg-gray-200 my-3" />
  <div class="flex justify-between items-center pt-1">
  <div>
- <span class="text-sm font-black text-gray-900 r">Grand Total</span>
+ <span class="text-sm font-medium text-gray-900 r">Grand Total</span>
  <p class="text-[8px] font-bold text-emerald-600 border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 inline-block r">
  <CreditCard class="w-2.5 h-2.5 inline-block -mt-0.5 mr-0.5" /> Paid via Card
  </p>
  </div>
- <span class="text-2xl font-black text-gray-900 tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
+ <span class="text-2xl font-medium text-gray-900 tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
  </div>
  </div>
  </div>
@@ -288,7 +288,7 @@
  <!-- Rating Section -->
  <div v-if="order.status === 'delivered' && !order.rating" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6 relative">
  <div class="text-center mb-4">
- <h3 class="text-base font-black text-gray-900 tracking-tight">How was your delivery?</h3>
+ <h3 class="text-base font-medium text-gray-900 tracking-tight">How was your delivery?</h3>
  <p class="text-sm font-bold text-gray-400 r mt-0.5">Rate your experience</p>
  </div>
  
@@ -319,7 +319,7 @@
  <button 
  @click="submitRating"
  :disabled="submittingRating"
- class="w-full py-4 bg-gray-900 text-white rounded-2xl text-[11px] font-black tracking-[0.2em] hover:bg-parentPrimary active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-50"
+ class="w-full py-4 bg-gray-900 text-white rounded-2xl text-[11px] font-medium tracking-[0.2em] hover:bg-parentPrimary active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-50"
  >
  <div v-if="submittingRating" class="w-4 h-4 border border-white/20 border-t-white rounded-full animate-spin" />
  <span v-else>Submit Review</span>
@@ -332,7 +332,7 @@
  <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
  <Star class="w-6 h-6 text-yellow-400 fill-yellow-400" />
  </div>
- <p class="text-[11px] font-black text-emerald-600 ">You rated this delivery {{ order.rating }} stars</p>
+ <p class="text-[11px] font-medium text-emerald-600 ">You rated this delivery {{ order.rating }} stars</p>
  <p v-if="order.review" class="text-sm font-bold text-gray-400  mt-2">"{{ order.review }}"</p>
  </div>
 
@@ -343,13 +343,13 @@
  <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg mb-1 transition-transform group-hover:rotate-12">
  <LifeBuoy class="w-5 h-5 text-parentPrimary" />
  </div>
- <h3 class="text-base font-black tracking-tight">Need Assistance?</h3>
+ <h3 class="text-base font-medium tracking-tight">Need Assistance?</h3>
  <p class="text-sm font-bold text-white/80 r">
  Our agents are online 24/7 to resolve issues.
  </p>
  <button 
  @click="showSupportModal = true"
- class="w-full mt-2 py-3 bg-white text-parentPrimary rounded-lg text-sm font-black r hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
+ class="w-full mt-2 py-3 bg-white text-parentPrimary rounded-lg text-sm font-medium r hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
  >
  Join Support Chat
  </button>
@@ -364,9 +364,9 @@
  <div class="w-24 h-24 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border border-gray-100 shadow-inner">
  <Inbox class="w-10 h-10 text-gray-300" />
  </div>
- <h2 class="text-4xl font-black text-gray-900 tracking-tighter mb-4">Order Lost in Space</h2>
+ <h2 class="text-4xl font-medium text-gray-900 tracking-tighter mb-4">Order Lost in Space</h2>
  <p class="text-sm font-bold text-gray-400  mb-10 ">We couldn't find the order details you're looking for.</p>
- <button @click="navigateTo('/orders')" class="px-10 py-5 bg-gray-900 text-white rounded-[2rem] text-sm font-black tracking-[0.2em] shadow-2xl shadow-black/20 hover:scale-105 active:scale-95 transition-all">
+ <button @click="navigateTo('/orders')" class="px-10 py-5 bg-gray-900 text-white rounded-[2rem] text-sm font-medium tracking-[0.2em] shadow-2xl shadow-black/20 hover:scale-105 active:scale-95 transition-all">
  Back to My Orders
  </button>
  </div>

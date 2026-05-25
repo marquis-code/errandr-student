@@ -48,4 +48,8 @@ export const orders_api = {
   getOrderChat: (orderId: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get(`/chat/order/${orderId}`);
   },
+
+  getCustomErrandSettings: () => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/settings/errands/custom');
+  },
 };

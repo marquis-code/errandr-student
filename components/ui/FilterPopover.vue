@@ -31,7 +31,7 @@
           }"
         >
           <div class="flex items-center justify-between mb-8">
-            <h3 class="text-2xl font-black text-gray-900 tracking-tight">{{ label }}</h3>
+            <h3 class="text-2xl font-medium text-gray-900 tracking-tight">{{ label }}</h3>
             <button @click="close" class="p-2 hover:bg-gray-50 rounded-full transition-colors order-2">
               <X class="w-5 h-5 text-gray-400" />
             </button>

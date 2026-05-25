@@ -1,15 +1,15 @@
 <template>
   <div class="space-y-6 md:space-y-8 pb-32 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary" v-if="order">
     <!-- Header -->
-    <div class="bg-gray-900 rounded-[2rem] p-6 lg:p-10 relative overflow-hidden group border border-white/5 mx-4 mt-4 shadow-xl">
+    <div class="bg-gray-900 rounded-none sm:rounded-[2rem] p-5 sm:p-6 lg:p-10 relative overflow-hidden group border-0 sm:border border-white/5 mx-0 sm:mx-4 mt-0 sm:mt-4 shadow-none sm:shadow-xl">
       <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
       <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 text-center md:text-left">
         <div class="space-y-3">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white text-[10px] font-bold mx-auto md:mx-0 uppercase tracking-widest">
-            Order ID: {{ order._id?.slice(-8).toUpperCase() }}
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white text-[10px] font-bold mx-auto md:mx-0 tracking-wider">
+            order id: {{ order._id?.slice(-8).toUpperCase() }}
           </div>
-          <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight uppercase">
-            Order <span class="text-parentPrimary">{{ order.status?.replace(/_/g, ' ') }}</span>
+          <h1 class="text-2xl md:text-3xl font-medium text-white tracking-tight leading-tight">
+            order <span class="text-parentPrimary capitalize">{{ order.status?.replace(/_/g, ' ')?.toLowerCase() }}</span>
           </h1>
           <p class="text-white/60 text-sm md:text-sm font-medium leading-relaxed max-w-sm mx-auto md:mx-0">We're making sure your delivery arrives safely and on time.</p>
         </div>
@@ -19,17 +19,17 @@
             <Clock class="w-6 h-6 md:w-7 md:h-7" />
           </div>
           <div class="text-left">
-            <p class="text-[10px] font-bold text-white/50 mb-0.5 uppercase tracking-widest">Estimated Time</p>
-            <p class="text-lg md:text-xl font-black text-white tracking-tight leading-none">12-15 Mins</p>
+            <p class="text-[10px] font-bold text-white/50 mb-0.5 tracking-wider">estimated time</p>
+            <p class="text-lg md:text-xl font-medium text-white tracking-tight leading-none">12-15 mins</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Tracking Stepper -->
-    <div class="px-4">
-      <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden group">
-        <h4 class="text-xs font-bold text-gray-400 mb-8 uppercase tracking-widest">Order Status</h4>
+    <div class="px-0 sm:px-4">
+      <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group">
+        <h4 class="text-xs font-bold text-gray-400 mb-8 tracking-wider">order status</h4>
         <div class="relative pl-2">
           <!-- Connecting Line -->
           <div class="absolute left-[19px] top-4 bottom-4 w-0.5 bg-gray-100"></div>
@@ -55,26 +55,26 @@
     </div>
 
     <!-- Live Map Placeholder -->
-    <div class="px-4">
-      <div class="bg-gray-50 h-48 md:h-64 rounded-[2rem] border-2 md:border-8 border-white relative overflow-hidden group shadow-sm">
+    <div class="px-0 sm:px-4">
+      <div class="bg-gray-50 h-48 md:h-64 rounded-none sm:rounded-[2rem] border-0 sm:border-8 border-white relative overflow-hidden group shadow-none sm:shadow-sm">
         <div class="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/0,0,1,0/1200x600?access_token=token')] bg-cover bg-center grayscale opacity-30" />
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="flex flex-col items-center gap-3 text-center p-4 md:p-6 bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 ">
             <Navigation class="w-6 h-6 md:w-8 md:h-8 text-parentPrimary animate-bounce" />
-            <p class="text-sm md:text-sm font-bold text-gray-900 uppercase">Map tracking active</p>
+            <p class="text-sm md:text-sm font-bold text-gray-900">map tracking active</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Verification, Delivery Errandr, ETA Card -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-0 sm:px-4">
       <!-- Verification -->
-      <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden group transition-all duration-300">
+      <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group transition-all duration-300">
         <div class="absolute -right-5 -top-5 w-24 h-24 bg-gray-50 rounded-full blur-2xl group-hover:bg-parentPrimary/10 transition-colors" />
-        <h4 class="text-xs font-bold text-gray-400 mb-6 uppercase tracking-widest">Verification Code</h4>
+        <h4 class="text-xs font-bold text-gray-400 mb-6 tracking-wider">verification code</h4>
         <div class="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-          <div v-for="(digit, idx) in (order.uniqueCode || '0000').split('')" :key="idx" class="w-10 h-10 md:w-12 md:h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-xl font-black text-gray-900 border border-gray-100 group-hover:bg-white group-hover:border-parentPrimary/30 transition-all">
+          <div v-for="(digit, idx) in (order.uniqueCode || '0000').split('')" :key="idx" class="w-10 h-10 md:w-12 md:h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-xl font-medium text-gray-900 border border-gray-100 group-hover:bg-white group-hover:border-parentPrimary/30 transition-all">
             {{ digit }}
           </div>
         </div>
@@ -82,23 +82,23 @@
       </div>
 
       <!-- Delivery Errandr -->
-      <div v-if="order.errander" class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col items-center text-center group transition-all duration-300">
-        <div class="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 text-white text-xl font-black group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 uppercase">
+      <div v-if="order.errander" class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm flex flex-col items-center text-center group transition-all duration-300">
+        <div class="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 text-white text-xl font-medium group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 uppercase">
           {{ order.errander.firstName?.[0] }}{{ order.errander.lastName?.[0] }}
         </div>
         <div class="space-y-1 mb-6 w-full">
-          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Your Errandr</p>
-          <h3 class="font-black text-gray-900 text-lg tracking-tight">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
+          <p class="text-xs font-bold text-gray-400 tracking-wider">your Errandr</p>
+          <h3 class="font-medium text-gray-900 text-lg tracking-tight">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
           <p class="text-xs text-parentPrimary font-bold mt-2 bg-parentPrimary/5 px-3 py-1.5 rounded-full inline-block">{{ order.errander.phone }}</p>
         </div>
         <div class="flex gap-2 w-full">
-          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-parentPrimary transition-all active:scale-95 text-center uppercase tracking-wider">Call</a>
-          <NuxtLink :to="`/chat/${order._id}`" class="flex-1 py-3 bg-white border border-gray-100 text-gray-900 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all active:scale-95 text-center uppercase tracking-wider">Chat</NuxtLink>
+          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-parentPrimary transition-all active:scale-95 text-center tracking-wider">call</a>
+          <NuxtLink :to="`/chat/${order._id}`" class="flex-1 py-3 bg-white border border-gray-100 text-gray-900 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all active:scale-95 text-center tracking-wider">chat</NuxtLink>
         </div>
       </div>
 
       <!-- ETA Card -->
-      <div class="bg-parentPrimary p-6 md:p-8 rounded-[2rem] text-white overflow-hidden relative group transition-all duration-300 shadow-sm">
+      <div class="bg-parentPrimary p-5 sm:p-8 rounded-none sm:rounded-[2rem] text-white overflow-hidden relative group transition-all duration-300 shadow-none sm:shadow-sm">
         <div class="absolute -top-4 -right-4 p-8 transform rotate-12 group-hover:rotate-0 transition-transform duration-700 opacity-20 hidden md:block">
           <Bike class="w-24 h-24" />
         </div>
@@ -107,13 +107,13 @@
             <MapPin class="w-4 h-4 text-white" />
           </div>
           <div>
-            <p class="text-xs font-bold mb-1 text-white/70 uppercase tracking-widest">Delivering to</p>
+            <p class="text-xs font-bold mb-1 text-white/70 tracking-wider">delivering to</p>
             <h3 class="text-lg font-bold tracking-tight leading-tight line-clamp-2">{{ order.deliveryAddress || 'Campus Residency' }}</h3>
           </div>
           <div class="pt-4 border-t border-white/10">
             <div class="flex items-center gap-2">
               <div class="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-              <span class="text-xs font-bold uppercase tracking-wider">Tracking Live</span>
+              <span class="text-xs font-bold tracking-wider">tracking live</span>
             </div>
           </div>
         </div>
@@ -121,15 +121,15 @@
     </div>
 
     <!-- Dual Rating Section -->
-    <section v-if="order && order.status === 'DELIVERED' && (!order.hasRatedVendor || !order.hasRatedErrander)" class="max-w-4xl mx-auto px-4 mt-8 slide-up">
-      <div class="bg-gray-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden group  border border-white/5 shadow-xl">
+    <section v-if="order && order.status === 'DELIVERED' && (!order.hasRatedVendor || !order.hasRatedErrander)" class="max-w-4xl mx-auto px-0 sm:px-4 mt-8 slide-up">
+      <div class="bg-gray-900 rounded-none sm:rounded-[2.5rem] p-5 sm:p-12 text-white relative overflow-hidden group border-0 sm:border border-white/5 shadow-none sm:shadow-xl">
         <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-50 transition-opacity duration-1000" />
         
         <div class="relative z-10 text-center mb-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-parentPrimary text-sm font-black uppercase mb-4 tracking-widest">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-parentPrimary text-sm font-medium tracking-wider mb-4">
             <Sparkles class="w-3.5 h-3.5" /> earn 20 points
           </div>
-          <h2 class="text-3xl md:text-4xl font-black tracking-tighter mb-2">How was your Errand?</h2>
+          <h2 class="text-3xl md:text-4xl font-medium tracking-tighter mb-2">how was your errand?</h2>
           <p class="text-white/50 text-sm font-medium">Rate the meal and your Errandr to help us improve.</p>
         </div>
 
@@ -138,8 +138,8 @@
           <div v-if="!order.hasRatedVendor" class="bg-white/5 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 space-y-6 flex flex-col items-center">
             <div class="text-center">
               <Utensils class="w-8 h-8 text-parentPrimary mx-auto mb-3" />
-              <h4 class="font-black text-lg tracking-tight uppercase">The Meal</h4>
-              <p class="text-xs font-bold text-white/40 uppercase tracking-widest">Rate the Vendor</p>
+              <h4 class="font-medium text-lg tracking-tight">the meal</h4>
+              <p class="text-xs font-bold text-white/40 tracking-wider">rate the vendor</p>
             </div>
             
             <div class="flex justify-center gap-2">
@@ -155,8 +155,8 @@
           <div v-if="!order.hasRatedErrander" class="bg-white/5 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 space-y-6 flex flex-col items-center">
             <div class="text-center">
               <Bike class="w-8 h-8 text-parentPrimary mx-auto mb-3" />
-              <h4 class="font-black text-lg tracking-tight uppercase">The Delivery</h4>
-              <p class="text-xs font-bold text-white/40 uppercase tracking-widest">Rate your Errandr</p>
+              <h4 class="font-medium text-lg tracking-tight">the delivery</h4>
+              <p class="text-xs font-bold text-white/40 tracking-wider">rate your Errandr</p>
             </div>
             
             <div class="flex justify-center gap-2">
@@ -173,10 +173,10 @@
           <button 
             @click="submitRatings"
             :disabled="isSubmittingRating || (!ratingForm.vendorRating && !ratingForm.erranderRating)"
-            class="w-full py-5 bg-parentPrimary text-white rounded-[2rem] font-black text-sm tracking-[0.1em] uppercase disabled:opacity-50 disabled:grayscale transition-all active:scale-95 group/btn shadow-lg shadow-parentPrimary/20"
+            class="w-full py-5 bg-parentPrimary text-white rounded-[2rem] font-medium text-sm tracking-wider disabled:opacity-50 disabled:grayscale transition-all active:scale-95 group/btn shadow-lg shadow-parentPrimary/20"
           >
             <span class="flex items-center justify-center gap-2">
-              {{ isSubmittingRating ? 'Saving Feedback...' : 'Submit Ratings' }}
+              {{ isSubmittingRating ? 'saving feedback...' : 'submit ratings' }}
               <Zap v-if="!isSubmittingRating" class="w-4 h-4 group-hover/btn:animate-pulse" />
             </span>
           </button>
@@ -185,9 +185,9 @@
     </section>
 
     <!-- Order Items -->
-    <section class="max-w-4xl mx-auto px-4 mt-8">
-      <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden">
-        <h4 class="text-xs font-bold text-gray-400 mb-8 uppercase tracking-widest">Order Summary</h4>
+    <section class="max-w-4xl mx-auto px-0 sm:px-4 mt-8">
+      <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden">
+        <h4 class="text-xs font-bold text-gray-400 mb-8 tracking-wider">order summary</h4>
 
         <div class="space-y-6">
           <div v-for="item in order.items" :key="item._id" class="flex items-center gap-4 group/item">
@@ -196,25 +196,25 @@
             </div>
             <div class="flex-1 min-w-0 pr-2">
               <h5 class="text-sm font-bold text-gray-900 tracking-tight mb-1 truncate">{{ item.name }}</h5>
-              <p class="text-xs font-bold text-gray-400">Qty: {{ item.quantity }} × ₦{{ item.price?.toLocaleString() }}</p>
+              <p class="text-xs font-bold text-gray-400">qty: {{ item.quantity }} × ₦{{ item.price?.toLocaleString() }}</p>
             </div>
             <div class="text-right shrink-0">
-              <p class="text-sm font-black text-gray-900 tracking-tight">₦{{ (item.price * item.quantity).toLocaleString() }}</p>
+              <p class="text-sm font-medium text-gray-900 tracking-tight">₦{{ (item.price * item.quantity).toLocaleString() }}</p>
             </div>
           </div>
 
           <div class="pt-6 border-t border-gray-50 space-y-4">
-            <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-wider">
-              <span>Subtotal</span>
-              <span class="text-gray-900 font-black">₦{{ order.subtotal?.toLocaleString() }}</span>
+            <div class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
+              <span>subtotal</span>
+              <span class="text-gray-900 font-medium">₦{{ order.subtotal?.toLocaleString() }}</span>
             </div>
-            <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-wider">
-              <span>Fees & Delivery</span>
-              <span class="text-gray-900 font-black">₦{{ (order.total - order.subtotal)?.toLocaleString() }}</span>
+            <div class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
+              <span>fees & delivery</span>
+              <span class="text-gray-900 font-medium">₦{{ (order.total - order.subtotal)?.toLocaleString() }}</span>
             </div>
             <div class="flex justify-between items-center pt-6 border-t border-gray-50 mt-2">
-              <span class="text-xs font-black text-gray-900 tracking-widest uppercase">Grand Total</span>
-              <span class="text-2xl font-black text-parentPrimary tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
+              <span class="text-xs font-medium text-gray-900 tracking-widest uppercase">grand total</span>
+              <span class="text-2xl font-medium text-parentPrimary tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
             </div>
           </div>
         </div>
@@ -222,13 +222,18 @@
     </section>
 
     <!-- Support -->
-    <div class="max-w-4xl mx-auto px-4 pb-12">
-      <button class="w-full py-5 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-row items-center justify-center gap-3 group hover:bg-gray-100 transition-all duration-300 active:scale-95 shadow-sm">
-        <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors">
-          <ShieldCheck class="w-5 h-5" />
+    <div class="max-w-4xl mx-auto px-0 sm:px-4 pb-12">
+      <NuxtLink 
+        to="/support"
+        class="w-full py-5 bg-gray-50 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 flex flex-row items-center justify-center gap-3 group hover:bg-gray-100 transition-all duration-300 active:scale-95 shadow-none sm:shadow-sm block text-center"
+      >
+        <div class="inline-flex items-center justify-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors">
+            <ShieldCheck class="w-5 h-5" />
+          </div>
+          <span class="text-xs font-medium text-gray-400 tracking-wider group-hover:text-gray-900 transition-colors">need help? support</span>
         </div>
-        <span class="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-gray-900 transition-colors">Need help? Support</span>
-      </button>
+      </NuxtLink>
     </div>
   </div>
 
@@ -239,8 +244,8 @@
       <Zap class="absolute inset-0 m-auto w-8 h-8 text-parentPrimary animate-pulse" />
     </div>
     <div class="text-center">
-      <h3 class="text-lg font-black text-gray-900 tracking-tighter uppercase mb-2">Fetching Order</h3>
-      <p class="text-xs font-black text-gray-300 uppercase tracking-widest animate-pulse">Syncing...</p>
+      <h3 class="text-lg font-medium text-gray-900 tracking-tighter uppercase mb-2">fetching order</h3>
+      <p class="text-xs font-medium text-gray-300 tracking-wider animate-pulse">syncing...</p>
     </div>
   </div>
 </template>

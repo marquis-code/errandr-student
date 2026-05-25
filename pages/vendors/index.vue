@@ -7,7 +7,7 @@
       <!-- Top Header Row -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-none">
+          <h2 class="text-2xl md:text-3xl font-medium text-gray-900 tracking-tight leading-none">
             {{ filteredVendors.length }} Campus Stores
           </h2>
           <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
@@ -29,7 +29,7 @@
           
           <button 
             @click="showMobileFilters = true" 
-            class="flex items-center gap-2 px-4 py-2.5 border border-gray-100 rounded-xl text-xs font-black text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm shrink-0 active:scale-95"
+            class="flex items-center gap-2 px-4 py-2.5 border border-gray-100 rounded-xl text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm shrink-0 active:scale-95"
           >
             <Filter class="w-3.5 h-3.5" /> Filters
           </button>
@@ -37,7 +37,7 @@
           <button 
             v-if="hasActiveFilters"
             @click="resetAllFilters" 
-            class="text-xs font-black text-parentPrimary hover:underline px-3 py-2.5 bg-parentPrimary/10 rounded-xl shrink-0 active:scale-95"
+            class="text-xs font-medium text-parentPrimary hover:underline px-3 py-2.5 bg-parentPrimary/10 rounded-xl shrink-0 active:scale-95"
           >
             Reset
           </button>
@@ -50,7 +50,7 @@
           v-for="cat in allCategories"
           :key="cat.key"
           @click="selectedCategory = cat.key"
-          class="flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-black transition-all whitespace-nowrap active:scale-95 shrink-0"
+          class="flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-medium transition-all whitespace-nowrap active:scale-95 shrink-0"
           :class="selectedCategory === cat.key ? 'bg-parentPrimary text-white border-parentPrimary shadow-md shadow-parentPrimary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-gray-200'"
         >
           <span class="text-sm shrink-0">{{ cat.icon }}</span>
@@ -87,10 +87,10 @@
             
             <!-- Badges -->
             <div class="absolute top-3 left-3 z-10 flex gap-2">
-              <span v-if="!vendor.isOpen" class="px-2.5 py-1 bg-gray-900/90 backdrop-blur-md rounded-lg text-[9px] font-black text-white uppercase tracking-wider">
+              <span v-if="!vendor.isOpen" class="px-2.5 py-1 bg-gray-900/90 backdrop-blur-md rounded-lg text-[9px] font-medium text-white uppercase tracking-wider">
                 Closed
               </span>
-              <span v-else-if="vendor.offers?.length" class="px-2.5 py-1 bg-rose-500 rounded-lg text-[9px] font-black text-white uppercase tracking-wider">
+              <span v-else-if="vendor.offers?.length" class="px-2.5 py-1 bg-rose-500 rounded-lg text-[9px] font-medium text-white uppercase tracking-wider">
                 Promo
               </span>
             </div>
@@ -116,7 +116,7 @@
               <div v-if="vendor.logo" class="w-10 h-10 rounded-xl border-2 border-white bg-white overflow-hidden shadow-md">
                 <img :src="vendor.logo" class="w-full h-full object-cover" />
               </div>
-              <div v-else :class="`w-10 h-10 rounded-xl border-2 border-white shadow-md flex items-center justify-center text-white text-xs font-black tracking-tighter ${getVendorColor(vendor.storeName)}`">
+              <div v-else :class="`w-10 h-10 rounded-xl border-2 border-white shadow-md flex items-center justify-center text-white text-xs font-medium tracking-tighter ${getVendorColor(vendor.storeName)}`">
                 {{ getInitials(vendor.storeName) }}
               </div>
             </div>
@@ -126,22 +126,22 @@
           <div class="p-4 flex-1 flex flex-col justify-between">
             <div class="space-y-1">
               <div class="flex items-start justify-between gap-2">
-                <h3 class="font-black text-gray-900 text-xs tracking-tight line-clamp-1 group-hover:text-parentPrimary transition-colors">{{ vendor.storeName }}</h3>
+                <h3 class="font-medium text-gray-900 text-xs tracking-tight line-clamp-1 group-hover:text-parentPrimary transition-colors">{{ vendor.storeName }}</h3>
                 <div class="flex items-center gap-1 shrink-0 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100/50">
                   <Star class="w-3 h-3 fill-amber-500 text-amber-500" />
-                  <span class="text-[9px] font-black text-amber-700">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
+                  <span class="text-[9px] font-medium text-amber-700">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
                 </div>
               </div>
               <p class="text-[10px] font-bold text-gray-400 capitalize">{{ vendor.category }}</p>
             </div>
 
             <!-- Metadata row -->
-            <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-50 text-[10px] font-black text-gray-500">
-              <div class="flex items-center gap-1">
-                <Clock class="w-3.5 h-3.5 text-gray-400" />
+            <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-50 text-[10px] font-medium text-gray-500">
+              <div class="flex items-center gap-1 whitespace-nowrap shrink-0">
+                <Clock class="w-3.5 h-3.5 text-gray-400 shrink-0" />
                 <span>{{ vendor.preparationTime || 20 }} min</span>
               </div>
-              <div class="flex items-center gap-1">
+              <div class="flex items-center gap-1 whitespace-nowrap shrink-0">
                 <span class="text-gray-400 font-medium">Delivery:</span>
                 <span class="text-gray-900">₦{{ vendor.deliveryFee || 0 }}</span>
               </div>
@@ -163,7 +163,7 @@
 
         <!-- Copy -->
         <div class="relative z-10 space-y-2 mb-6">
-          <h3 class="text-xl font-black text-gray-900 tracking-tight">Nothing Matches</h3>
+          <h3 class="text-xl font-medium text-gray-900 tracking-tight">Nothing Matches</h3>
           <p class="text-sm text-gray-400 font-medium max-w-xs mx-auto leading-relaxed">
             We couldn't find stores for your current filters. Try broadening your search!
           </p>
@@ -189,13 +189,13 @@
         <div class="relative z-10 flex items-center justify-center gap-3">
           <button
             @click="resetAllFilters"
-            class="inline-flex items-center gap-2 px-6 py-2.5 bg-parentPrimary text-white rounded-xl text-xs font-black hover:scale-105 transition-transform shadow-md shadow-parentPrimary/20 active:scale-95"
+            class="inline-flex items-center gap-2 px-6 py-2.5 bg-parentPrimary text-white rounded-xl text-xs font-medium hover:scale-105 transition-transform shadow-md shadow-parentPrimary/20 active:scale-95"
           >
             Reset Filters
           </button>
           <NuxtLink
             to="/dashboard"
-            class="inline-flex items-center px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-xs font-black hover:bg-gray-200 transition-colors active:scale-95"
+            class="inline-flex items-center px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-xs font-medium hover:bg-gray-200 transition-colors active:scale-95"
           >
             Go Home
           </NuxtLink>
@@ -233,7 +233,7 @@
           <div class="bg-white w-full max-w-sm h-full overflow-y-auto shadow-2xl animate-slide-in-right p-6 space-y-6 flex flex-col">
             
             <div class="flex items-center justify-between pb-2 border-b border-gray-100">
-              <h3 class="text-lg font-black text-gray-900 tracking-tight">Refine Options</h3>
+              <h3 class="text-lg font-medium text-gray-900 tracking-tight">Refine Options</h3>
               <button @click="showMobileFilters = false" class="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X class="w-4 h-4 text-gray-500" />
               </button>
@@ -241,11 +241,11 @@
 
             <!-- Offers & Quick Delivery toggles -->
             <div class="space-y-3">
-              <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Quick Filters</p>
+              <p class="text-[10px] font-medium uppercase tracking-widest text-gray-400">Quick Filters</p>
               <div class="grid grid-cols-2 gap-3">
                 <button
                   @click="showOnlyOffers = !showOnlyOffers"
-                  class="flex items-center justify-center gap-2 px-3 py-3 rounded-xl border transition-all text-xs font-black"
+                  class="flex items-center justify-center gap-2 px-3 py-3 rounded-xl border transition-all text-xs font-medium"
                   :class="showOnlyOffers ? 'bg-parentPrimary text-white border-parentPrimary shadow-md' : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'"
                 >
                   <Tag class="w-3.5 h-3.5" />
@@ -254,7 +254,7 @@
 
                 <button
                   @click="showQuickDelivery = !showQuickDelivery"
-                  class="flex items-center justify-center gap-2 px-3 py-3 rounded-xl border transition-all text-xs font-black"
+                  class="flex items-center justify-center gap-2 px-3 py-3 rounded-xl border transition-all text-xs font-medium"
                   :class="showQuickDelivery ? 'bg-parentPrimary text-white border-parentPrimary shadow-md' : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'"
                 >
                   <Clock class="w-3.5 h-3.5" />
@@ -265,7 +265,7 @@
 
             <!-- Rating Selector -->
             <div class="space-y-2">
-              <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Minimum Rating</p>
+              <p class="text-[10px] font-medium uppercase tracking-widest text-gray-400">Minimum Rating</p>
               <UiSelectInput 
                 v-model="minRating" 
                 :options="ratingOptions"
@@ -274,7 +274,7 @@
 
             <!-- Delivery Fee slider -->
             <div class="space-y-3">
-              <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-400">
+              <div class="flex justify-between text-[10px] font-medium uppercase tracking-widest text-gray-400">
                 <span>Max Delivery Fee</span>
                 <span class="text-parentPrimary">₦{{ maxDeliveryFee }}</span>
               </div>
@@ -292,13 +292,13 @@
             <div class="pt-4 mt-auto border-t border-gray-100 flex gap-3">
               <button 
                 @click="resetAllFilters" 
-                class="flex-1 py-3.5 border border-gray-200 text-gray-700 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gray-50 active:scale-95"
+                class="flex-1 py-3.5 border border-gray-200 text-gray-700 rounded-xl text-xs font-medium uppercase tracking-wider hover:bg-gray-50 active:scale-95"
               >
                 Reset All
               </button>
               <button 
                 @click="showMobileFilters = false" 
-                class="flex-1 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-parentPrimary/90 active:scale-95 shadow-md shadow-parentPrimary/10"
+                class="flex-1 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium uppercase tracking-wider hover:bg-parentPrimary/90 active:scale-95 shadow-md shadow-parentPrimary/10"
               >
                 Apply
               </button>

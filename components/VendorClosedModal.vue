@@ -39,7 +39,7 @@
  🌙
  </div>
 
- <DialogTitle as="h3" class="text-2xl font-black text-center text-gray-900 leading-tight mb-2 tracking-tight">
+ <DialogTitle as="h3" class="text-2xl font-medium text-center text-gray-900 leading-tight mb-2 tracking-tight">
  {{ vendor?.storeName || 'Vendor' }} is Resting
  </DialogTitle>
  

@@ -2,7 +2,7 @@
   <section class="py-16 lg:py-24 bg-white overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
       <div class="mb-12 text-center lg:text-left">
-        <h2 class="text-2xl lg:text-4xl font-black text-gray-900 tracking-tighter mb-3">
+        <h2 class="text-2xl lg:text-4xl font-medium text-gray-900 tracking-tighter mb-3">
           Campus delivery, <span class="text-parentPrimary ">redefined.</span>
         </h2>
         <p class="text-gray-500 font-bold text-sm lg:text-base max-w-xl">
@@ -47,7 +47,7 @@
                 <span class="text-xl lg:text-2xl">{{ card.icon }}</span>
               </div>
               <span 
-                class="text-white font-black text-sm lg:text-base  uppercase"
+                class="text-white font-medium text-sm lg:text-base  uppercase"
                 style="writing-mode: vertical-lr; text-orientation: mixed;"
               >
                 {{ card.label }}
@@ -63,10 +63,10 @@
             <div class="w-12 h-12 lg:w-14 lg:h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 mb-4">
               <span class="text-2xl lg:text-3xl">{{ card.icon }}</span>
             </div>
-            <h3 class="text-2xl lg:text-3xl font-black text-white tracking-tight mb-2">{{ card.label }}</h3>
+            <h3 class="text-2xl lg:text-3xl font-medium text-white tracking-tight mb-2">{{ card.label }}</h3>
             <p class="text-white/70 text-sm lg:text-sm font-bold leading-relaxed max-w-sm">{{ card.description }}</p>
             <NuxtLink to="/vendors" class="mt-4 flex items-center gap-3">
-              <div class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 text-white text-sm font-black  uppercase hover:bg-white/20 transition-colors">
+              <div class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 text-white text-sm font-medium  uppercase hover:bg-white/20 transition-colors">
                 Chop Now →
               </div>
             </NuxtLink>

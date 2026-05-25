@@ -179,11 +179,27 @@ onMounted(async () => {
   } catch (e) { console.error(e); }
   finally { loadingMessages.value = false; }
 
-  // Connect WebSocket
+  // Connect WebSocket and get the unwrapped socket instance
   connect();
-  emit('joinOrder', { orderId: orderId.value, userId: user.value?._id });
+  const sock = useSocket('chat').getSocket();
+  
+  const joinRoom = () => {
+    emit('joinOrder', { orderId: orderId.value, userId: user.value?._id });
+    console.log('[Student Chat] Joined order room:', orderId.value);
+  };
+
+  if (sock) {
+    if (sock.connected) joinRoom();
+    sock.off('connect.orderChat'); // Remove any existing
+    sock.on('connect', joinRoom);
+    sock.on('connect.orderChat', joinRoom); // Alias for safety
+  }
 
   on('newMessage', (msg: any) => {
+    console.log('[Student Chat] Received newMessage:', msg);
+    const msgOrderId = String(msg.orderId || msg.order?._id || msg.order || '');
+    if (msgOrderId !== String(orderId.value)) return;
+    
     // Avoid duplicate from optimistic update
     if (!messages.value.find((m: any) => m._id === msg._id)) {
       messages.value.push(msg);

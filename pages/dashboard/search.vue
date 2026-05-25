@@ -2,7 +2,7 @@
   <div class="space-y-6 animate-fade-in pb-32 selection:bg-parentPrimary/10 selection:text-parentPrimary px-4 md:px-6">
     <!-- Header -->
     <header class="pt-6 pb-2">
-      <h1 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-none mb-1">
+      <h1 class="text-2xl md:text-3xl font-medium text-gray-900 tracking-tight leading-none mb-1">
         Search Catalog
       </h1>
       <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
@@ -35,7 +35,7 @@
     <!-- Results Section -->
     <div v-if="query && results.length > 0" class="space-y-6">
       <div class="flex items-center gap-4">
-        <h2 class="text-xs font-black uppercase tracking-wider text-gray-400 shrink-0">Results for "{{ query }}"</h2>
+        <h2 class="text-xs font-medium uppercase tracking-wider text-gray-400 shrink-0">Results for "{{ query }}"</h2>
         <div class="flex-1 h-px bg-gray-50" />
       </div>
 
@@ -52,20 +52,20 @@
               
               <!-- Price Badge -->
               <div class="absolute bottom-2.5 left-2.5">
-                <span class="px-2 py-1 bg-white/95 backdrop-blur-md rounded-lg text-xs font-black text-gray-900 border border-gray-100 shadow-sm">
+                <span class="px-2 py-1 bg-white/95 backdrop-blur-md rounded-lg text-xs font-medium text-gray-900 border border-gray-100 shadow-sm">
                   ₦{{ item.price?.toLocaleString() }}
                 </span>
               </div>
             </div>
             
             <div class="space-y-1">
-              <h4 class="font-black text-gray-900 text-xs tracking-tight leading-tight line-clamp-2">{{ item.name }}</h4>
+              <h4 class="font-medium text-gray-900 text-xs tracking-tight leading-tight line-clamp-2">{{ item.name }}</h4>
             </div>
           </div>
 
           <div class="flex items-center gap-1.5 pt-3 mt-3 border-t border-gray-50">
             <div :class="item.vendor?.isOnline ? 'bg-emerald-500' : 'bg-gray-300'" class="w-1.5 h-1.5 rounded-full shrink-0" />
-            <p class="text-[10px] font-black text-gray-400 truncate">
+            <p class="text-[10px] font-medium text-gray-400 truncate">
               {{ item.vendor?.storeName }}
             </p>
           </div>
@@ -78,7 +78,7 @@
       <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-50 rounded-full mb-4 border border-gray-100">
         <span class="text-3xl">🔭</span>
       </div>
-      <h3 class="text-lg font-black text-gray-900 mb-1 tracking-tight">No results found</h3>
+      <h3 class="text-lg font-medium text-gray-900 mb-1 tracking-tight">No results found</h3>
       <p class="text-xs font-medium text-gray-500 max-w-xs mx-auto">We couldn't find anything matching your keywords. Try again with a different term.</p>
     </div>
 
@@ -86,7 +86,7 @@
       <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-50 rounded-full mb-4 border border-gray-100">
         <span class="text-3xl">🔍</span>
       </div>
-      <h3 class="text-lg font-black text-gray-900 mb-1 tracking-tight">Start searching</h3>
+      <h3 class="text-lg font-medium text-gray-900 mb-1 tracking-tight">Start searching</h3>
       <p class="text-xs font-medium text-gray-500 max-w-xs mx-auto">Type above to find meals, grocery items, snacks, or stationery instantenously.</p>
     </div>
   </div>
