@@ -4,22 +4,13 @@
     <!-- Navbar -->
     <LandingNavbar />
 
-    <!-- Search Overlay — Premium Glassmorphism -->
+    <!-- Search Overlay (Invisible, just for catching clicks to close) -->
     <Teleport to="body">
-      <Transition
-        enter-active-class="transition-opacity duration-300 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition-opacity duration-200 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div 
-          v-if="showSuggestions"
-          class="fixed inset-0 bg-gray-900/10 backdrop-blur-xl z-[9998]"
-          @click="showSuggestions = false"
-        ></div>
-      </Transition>
+      <div 
+        v-if="showSuggestions"
+        class="fixed inset-0 bg-transparent z-[9998]"
+        @click="showSuggestions = false"
+      ></div>
     </Teleport>
 
     <!-- Hero Section -->
@@ -33,7 +24,7 @@
         <div class="max-w-3xl mx-auto space-y-6">
           <!-- Badge -->
           <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-medium -[0.2em]  animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
-            <Zap class="w-3.5 h-3.5 fill-current" /> Campus Delivery, Redefined
+            <Zap class="w-3.5 h-3.5 fill-current" /> Campus Services & Delivery, Redefined
           </NuxtLink>
           
           <!-- Rotating Hero Heading (Optimized Size) -->
@@ -61,14 +52,14 @@
 
           <!-- Search Bar -->
           <div 
-            class="mt-8 max-w-xl mx-auto group relative transition-all duration-700"
+            class="mt-8 max-w-4xl mx-auto group relative transition-all duration-700 w-[95%] sm:w-full"
             style="isolation: isolate;"
-            :class="showSuggestions ? 'z-[200] scale-[1.03]' : 'z-20 scale-100'"
+            :class="showSuggestions ? 'z-[200]' : 'z-20'"
           >
-            <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-20 blur-2xl transition-opacity duration-500"></div>
-            <div class="relative flex items-center bg-white border-2 border-gray-100 focus-within:border-parentPrimary p-1.5 md:p-2 rounded-[2.5rem] shadow-2xl transition-all duration-500 ring-0 focus-within:ring-8 focus-within:ring-parentPrimary/5">
-              <div class="w-10 md:w-12 h-10 md:h-12 flex items-center justify-center text-gray-400 flex-shrink-0">
-                <Search class="w-4 md:w-5 h-4 md:h-5" />
+            <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-10 blur-xl transition-opacity duration-500 rounded-[3rem]"></div>
+            <div class="relative flex items-center bg-white border border-gray-200 focus-within:border-parentPrimary/50 p-1.5 md:p-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:shadow-[0_20px_50px_rgb(0,0,0,0.08)] transition-all duration-500">
+              <div class="w-10 md:w-14 h-10 md:h-14 flex items-center justify-center text-gray-500 flex-shrink-0">
+                <Search class="w-5 h-5 md:w-6 md:h-6" />
               </div>
               <input 
                 type="text" 
@@ -76,22 +67,22 @@
                 @keyup.enter="handleHeroSearch"
                 @focus="showSuggestions = true"
                 @blur="handleSearchBlur"
-                placeholder="What are you craving?" 
-                class="flex-1 bg-transparent border-none outline-none text-sm md:text-sm font-bold text-gray-900 placeholder:text-gray-300 px-1 md:px-2 min-w-0"
+                placeholder="What do you need?" 
+                class="flex-1 bg-transparent border-none outline-none text-base md:text-lg font-medium text-gray-900 placeholder:text-gray-400 px-2 min-w-0"
               />
               <button 
                 @click="handleHeroSearch"
-                class="px-4 md:px-8 py-3 md:py-4 bg-gray-900 text-white rounded-[2rem] text-sm md:text-sm font-medium   hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all shadow-xl whitespace-nowrap flex-shrink-0 flex items-center gap-2"
+                class="h-10 md:h-14 px-5 md:px-8 bg-gray-900 text-white rounded-full text-sm md:text-base font-medium hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all flex-shrink-0 flex items-center justify-center gap-2"
               >
-                 <span>Find Food</span>
-                 <ArrowRight class="w-3 md:w-4 h-3 md:h-4" />
+                 <span class="hidden sm:inline">Search</span>
+                 <Search class="w-4 h-4 sm:hidden" />
               </button>
             </div>
 
            <Transition name="fade-up">
   <div
     v-if="showSuggestions && (heroSearchSuggestions.length > 0 || isSearching || hasSearched || timeOfDaySuggestions.length > 0)"
-    class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-100 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] overflow-hidden z-[75] p-2"
+    class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-200 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden z-[75] p-2"
   >
     <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
       <span class="text-sm font-medium text-gray-400 tracking-tight">
@@ -124,24 +115,22 @@
         </div>
       </div>
 
-      <!-- NO SEARCH RESULTS EMPTY STATE -->
       <div
         v-if="!isSearching && hasSearched && heroSearchSuggestions.length === 0"
         class="m-2"
       >
         <div class="flex items-center gap-4 px-5 py-5 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-          <!-- Wiggling bowl -->
-          <div class="relative flex-shrink-0 w-14 h-14 rounded-2xl bg-white border border-gray-100 flex items-center justify-center shadow-sm overflow-hidden">
-            <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_5px,rgba(0,0,0,0.02)_5px,rgba(0,0,0,0.02)_6px)]"></div>
-            <span class="relative z-10 text-2xl animate-[wiggle_3s_ease-in-out_infinite]">🍽️</span>
+          <!-- Empty State Icon -->
+          <div class="relative flex-shrink-0 w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center shadow-sm text-gray-400">
+            <SearchX class="w-5 h-5" />
           </div>
 
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-gray-900 mb-0.5 truncate">
-              "{{ heroSearchQuery }}" no dey here sha
+              No results for "{{ heroSearchQuery }}"
             </p>
-            <p class="text-xs font-medium text-gray-400 leading-relaxed mb-3">
-              Try something close — maybe they get your vibe!
+            <p class="text-xs font-medium text-gray-500 leading-relaxed mb-3">
+              We couldn't find what you were looking for. Try a different search!
             </p>
             <!-- Suggestion tags -->
             <div class="flex flex-wrap gap-1.5">
@@ -269,10 +258,50 @@
  </div>
  </section>
 
+  <!-- Book Again -->
+  <VendorGroupCarousel
+    v-if="user && bookAgainVendors.length > 0"
+    title="Book again"
+    subtitle="Past Bookings & Orders"
+    :icon="Clock"
+    :vendors="bookAgainVendors"
+    carouselId="carousel-book-again"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
+  />
+
+  <!-- Favourites -->
+  <VendorGroupCarousel
+    v-if="user && favoriteVendors.length > 0"
+    title="Favourites"
+    subtitle="Your Saved Spots"
+    :icon="Star"
+    :vendors="favoriteVendors"
+    :loading="loadingFavorites"
+    carouselId="carousel-favourites"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
+  />
+
+  <!-- Recently Viewed -->
+  <VendorGroupCarousel
+    v-if="recentlyViewedVendors.length > 0"
+    title="Recently viewed"
+    subtitle="Jump Back In"
+    :icon="Search"
+    :vendors="recentlyViewedVendors"
+    carouselId="carousel-recently-viewed"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
+  />
+
   <!-- Recommended Vendors -->
   <VendorGroupCarousel
-    title="Campus Favorites"
-    subtitle="Top Rated"
+    title="Recommended"
+    subtitle="Campus Favorites"
     :icon="Store"
     :vendors="recommendedVendors"
     :loading="loadingVendors"
@@ -297,8 +326,8 @@
 
   <!-- New to Erranders -->
   <VendorGroupCarousel
-    title="Fresh Arrivals"
-    subtitle="New to Erranders"
+    title="New to Erranders"
+    subtitle="Fresh Arrivals"
     :icon="Sparkles"
     :vendors="newVendors"
     :loading="loadingVendors"
@@ -353,18 +382,18 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <!-- Left: Errands Pitch -->
       <div class="space-y-6 max-w-xl">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-bold">
-          <Rocket class="w-4 h-4" /> Anything, anywhere on campus
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-sm font-bold shadow-sm">
+          <Rocket class="w-4 h-4 animate-bounce" /> Now with Negotiable Fees!
         </div>
         <h2 class="text-3xl md:text-5xl font-medium text-slate-900 -tighter leading-tight">
-          Need more than <span class="text-parentPrimary">just food?</span>
+          Set your price. <br/> <span class="text-parentPrimary">Get it done.</span>
         </h2>
         <p class="text-slate-500 text-lg font-medium leading-relaxed -tight">
-          Send an Errander to your hostel to pick up items, deliver documents to class, or handle any request from Point A to Point B across campus.
+          Don't just order food. Send an Errander to pick up your laundry, deliver documents to class, or buy groceries. Set the fee you want to pay, let riders accept, and chat with them instantly!
         </p>
-        <div class="pt-4">
-          <NuxtLink to="/errands/custom" class="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-medium text-sm  -wide hover:bg-parentPrimary transition-colors shadow-lg shadow-slate-900/10">
-            Request an Errand
+        <div class="pt-4 flex flex-col sm:flex-row gap-4">
+          <NuxtLink to="/errands/custom" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm -wide hover:bg-parentPrimary transition-colors shadow-lg shadow-slate-900/10 active:scale-95">
+            Request an Errand <ArrowRight class="w-4 h-4" />
           </NuxtLink>
         </div>
       </div>
@@ -372,13 +401,13 @@
       <!-- Right: Advantages Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div v-for="feat in [
-          { title: 'Student Riders', desc: 'Dispatchers who know every corner of your campus.', icon: Target },
-          { title: 'Local Expertise', desc: 'Partnered with the best and cleanest vendors.', icon: Layers },
-          { title: 'Sapa Friendly', desc: 'Minimal fees for every student pocket.', icon: ShieldCheck },
-          { title: 'Real-time Bants', desc: 'Track live and chat with your dispatcher instantly.', icon: MessageCircle }
-        ]" :key="feat.title" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:border-parentPrimary/20 transition-all">
-          <div class="w-10 h-10 mb-4 rounded-xl bg-parentPrimary/10 flex items-center justify-center text-parentPrimary">
-            <component :is="feat.icon" class="w-5 h-5" />
+          { title: 'Set Your Price', desc: 'You decide how much you want to pay the rider for the trip.', icon: 'CircleDollarSign', color: 'text-emerald-500 bg-emerald-50' },
+          { title: 'Student Riders', desc: 'Dispatchers who know every corner of your campus.', icon: 'Target', color: 'text-parentPrimary bg-parentPrimary/10' },
+          { title: 'Escrow Protected', desc: 'We hold the fee safely until a rider accepts your errand.', icon: 'ShieldCheck', color: 'text-blue-500 bg-blue-50' },
+          { title: 'Real-time Chat', desc: 'Directly chat with your dispatcher to arrange details.', icon: 'MessageCircle', color: 'text-purple-500 bg-purple-50' }
+        ]" :key="feat.title" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group">
+          <div :class="`w-10 h-10 mb-4 rounded-xl flex items-center justify-center ${feat.color}`">
+            <component :is="feat.icon === 'CircleDollarSign' ? CircleDollarSign : feat.icon === 'Target' ? Target : feat.icon === 'ShieldCheck' ? ShieldCheck : MessageCircle" class="w-5 h-5 group-hover:scale-110 transition-transform" />
           </div>
           <h4 class="text-base font-medium text-slate-900 -tight mb-2">{{ feat.title }}</h4>
           <p class="text-sm text-slate-500 font-medium leading-relaxed">{{ feat.desc }}</p>
@@ -429,10 +458,13 @@ import {
   ShieldCheck, Rocket, Megaphone,
   Menu as MenuIcon, X, Search, ArrowUpRight,
   Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown,
-  Sparkles, TrendingUp, Flame
+  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
+import { orders_api } from '@/api_factory/modules/orders';
+import { useFavorites } from '@/composables/modules/favorites';
+import { useRecentlyViewed } from '@/composables/modules/vendors/useRecentlyViewed';
 
 import hero1 from '@/assets/img/hero1.webp'
 import hero2 from '@/assets/img/hero2.webp'
@@ -468,7 +500,38 @@ const selectedVendorForShare = ref(null);
 const cartStore = useCart()
 const { user, logOut } = useUser()
 const { unreadCount } = useNotifications()
+const { favorites, fetchFavorites, loading: loadingFavorites } = useFavorites()
+const { recentlyViewedVendors, addRecent } = useRecentlyViewed()
 useRealtimeNotifications() // Listen for real-time updates
+
+const bookAgainVendors = ref<any[]>([])
+
+const favoriteVendors = computed(() => {
+  const map = new Map()
+  favorites.value.forEach((f: any) => {
+    if (f.vendor && !map.has(f.vendor._id || f.vendor)) {
+      map.set(f.vendor._id || f.vendor, f.vendor)
+    }
+  })
+  return Array.from(map.values())
+})
+
+const fetchBookAgain = async () => {
+  if (!user.value) return;
+  try {
+    const res = await orders_api.getOrders();
+    const orders = res.data?.data || res.data || [];
+    const map = new Map();
+    orders.forEach((o: any) => {
+      if (o.vendor && !map.has(o.vendor._id)) {
+        map.set(o.vendor._id, o.vendor);
+      }
+    });
+    bookAgainVendors.value = Array.from(map.values()).slice(0, 10);
+  } catch (e) {
+    console.error('Failed to fetch book again vendors:', e);
+  }
+}
 
 const handleLogout = async () => {
   await logOut()
@@ -604,6 +667,7 @@ const heroHeadings = [
   { text: 'Ebi ń pa mí.<br/><span class="text-parentPrimary ">Jẹun</span> ti tó!', lang: '🟢 Yoruba' },
   { text: '<span class="text-parentPrimary ">Agụụ</span> na-agụ m.<br/>Kedu ihe ị ga-eri?', lang: '🔴 Igbo' },
   { text: 'Yunwa ta kashe ni.<br/><span class="text-parentPrimary ">Abinci</span> ya zo!', lang: '🟡 Hausa' },
+  { text: 'Hair dey rough?<br/>Book a <span class="text-parentPrimary ">stylist</span> sharp!', lang: '🇳🇬 Pidgin' },
   { text: 'Don\'t <span class="text-parentPrimary ">do over!</span><br/>Order sharp sharp.', lang: '🇳🇬 Pidgin' },
   { text: 'Oúnjẹ campus...<br/><span class="text-parentPrimary ">zero stress</span> delivery.', lang: '🇳🇬 Pidgin' },
   { text: 'Body go tell you<br/>if you <span class="text-parentPrimary ">no chop.</span>', lang: '🇳🇬 Pidgin' },
@@ -619,12 +683,13 @@ const slangSlogans = [
   "No leave, no transfer—just chop. 🍽️",
   "Awoof dey run belle, but Errandr dey save life. 🏃‍♂️",
   "Body go tell you if you no chop. 💪",
-  "E choke! Best meals on campus. 🔥",
+  "E choke! Best meals and services on campus. 🔥",
   "Who no chop, no fit read. 📚",
+  "Fresh cut? Beautiful nails? Errandr got you. 💅",
   "Ẹ̀wà mà jẹ́ kó dùn. Errandr got you. 🫡",
   "Nwanne, order nri gị ugbu a! 🍛",
   "Abinci mai kyau — cikin dakika! ⚡",
-  "Level up your food game. No capping. 🧢"
+  "Level up your food and lifestyle game. No capping. 🧢"
 ]
 
 const floatingSlang = [
@@ -687,6 +752,8 @@ const handlePromoClick = async (promo: any) => {
   }
   
   // Default: Go to vendor
+  const mockVendor = { _id: promo.vendorId, storeName: promo.vendorName, image: promo.image };
+  addRecent(mockVendor);
   navigateTo(`/vendors/${promo.vendorId}`);
 }
 
@@ -696,6 +763,7 @@ const navigateToVendor = (vendor: any) => {
     isClosedModalOpen.value = true;
     return;
   }
+  addRecent(vendor);
   router.push(`/vendors/${vendor._id}`);
 };
 
@@ -709,6 +777,10 @@ onMounted(() => {
  fetchVendors()
  fetchSuggestions()
  startSlangRotation()
+ if (user.value) {
+   fetchFavorites()
+   fetchBookAgain()
+ }
 })
 
 onUnmounted(() => {

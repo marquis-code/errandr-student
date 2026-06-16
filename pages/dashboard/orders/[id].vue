@@ -26,6 +26,71 @@
       </div>
     </div>
 
+    <!-- PENDING IN-DRIVE NEGOTIATION BLOCK -->
+    <div v-if="order.type === 'custom_errand' && order.status === 'pending'" class="px-0 sm:px-4">
+      <div class="bg-orange-50 border border-orange-100 rounded-none sm:rounded-[2rem] p-6 text-center shadow-none sm:shadow-sm">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-orange-100">
+           <Bike class="w-8 h-8 text-parentPrimary animate-bounce" />
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Waiting for a Rider...</h3>
+        <p class="text-sm text-gray-600 mb-6">Your errand has been broadcasted. If it takes too long, you can increase the runner fee to attract more riders.</p>
+        
+        <div class="max-w-xs mx-auto flex gap-3">
+          <input v-model.number="newFee" type="number" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-parentPrimary font-bold text-gray-900" placeholder="New fee" />
+          <button @click="increaseFee" :disabled="isIncreasingFee || newFee <= order.deliveryFee" class="bg-parentPrimary text-white font-bold px-6 py-3 rounded-xl hover:bg-orange-600 transition-colors disabled:opacity-50">
+            {{ isIncreasingFee ? 'Updating...' : 'Update' }}
+          </button>
+        </div>
+
+        <div v-if="viewersCount > 0" class="mt-6 flex items-center justify-center gap-2 text-sm font-bold text-orange-600 animate-pulse bg-orange-100/50 py-2 rounded-xl">
+          <Eye class="w-4 h-4" />
+          {{ viewersCount }} rider{{ viewersCount > 1 ? 's are' : ' is' }} currently viewing this request
+        </div>
+
+        <!-- INCOMING BIDS (IN-DRIVE) -->
+        <div v-if="pendingBids.length > 0" class="mt-8 text-left">
+          <h4 class="text-xs font-bold text-gray-400 mb-4 tracking-wider uppercase">Incoming Offers</h4>
+          <div class="space-y-3">
+            <div v-for="bid in pendingBids" :key="bid._id" class="bg-white border border-orange-100 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gray-100 overflow-hidden">
+                  <img v-if="bid.errander?.avatar" :src="bid.errander.avatar" class="w-full h-full object-cover" />
+                  <User v-else class="w-full h-full p-2 text-gray-400" />
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-gray-900">{{ bid.errander?.firstName || 'Rider' }} {{ bid.errander?.lastName || '' }}</p>
+                  <p class="text-xs font-medium text-gray-500">Proposes: <span class="font-bold text-parentPrimary">₦{{ bid.amount?.toLocaleString() }}</span></p>
+                </div>
+              </div>
+              <button 
+                @click="acceptBid(bid._id)" 
+                :disabled="isAcceptingBid === bid._id"
+                class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-parentPrimary transition-colors disabled:opacity-50"
+              >
+                {{ isAcceptingBid === bid._id ? 'Accepting...' : 'Accept Offer' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AWAITING PAYMENT BLOCK -->
+    <div v-if="order.type === 'custom_errand' && order.status === 'awaiting_payment'" class="px-0 sm:px-4">
+      <div class="bg-blue-50 border border-blue-100 rounded-none sm:rounded-[2rem] p-6 text-center shadow-none sm:shadow-sm">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-blue-100">
+           <Check class="w-8 h-8 text-blue-500" />
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">A Rider Accepted!</h3>
+        <p class="text-sm text-gray-600 mb-6">Pay the Escrow Fee (Labor ₦{{order.deliveryFee}} + Convenience ₦50) to lock them in.</p>
+        
+        <button @click="payForErrand" :disabled="isInitializingPayment" class="bg-gray-900 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-black transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mx-auto">
+          {{ isInitializingPayment ? 'Redirecting to Payment...' : 'Pay Escrow & Open Chat' }}
+        </button>
+      </div>
+    </div>
+
     <!-- Tracking Stepper -->
     <div class="px-0 sm:px-4">
       <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group">
@@ -55,7 +120,7 @@
     </div>
 
     <!-- Live Map Placeholder -->
-    <div class="px-0 sm:px-4">
+    <div v-if="order.status !== 'pending'" class="px-0 sm:px-4">
       <div class="bg-gray-50 h-48 md:h-64 rounded-none sm:rounded-[2rem] border-0 sm:border-8 border-white relative overflow-hidden group shadow-none sm:shadow-sm">
         <div class="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/0,0,1,0/1200x600?access_token=token')] bg-cover bg-center grayscale opacity-30" />
         <div class="absolute inset-0 flex items-center justify-center">
@@ -70,7 +135,7 @@
     <!-- Verification, Delivery Errandr, ETA Card -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-0 sm:px-4">
       <!-- Verification -->
-      <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group transition-all duration-300">
+      <div v-if="order.status !== 'pending'" class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group transition-all duration-300">
         <div class="absolute -right-5 -top-5 w-24 h-24 bg-gray-50 rounded-full blur-2xl group-hover:bg-parentPrimary/10 transition-colors" />
         <h4 class="text-xs font-bold text-gray-400 mb-6 tracking-wider">verification code</h4>
         <div class="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
@@ -91,9 +156,14 @@
           <h3 class="font-medium text-gray-900 text-lg tracking-tight">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
           <p class="text-xs text-parentPrimary font-bold mt-2 bg-parentPrimary/5 px-3 py-1.5 rounded-full inline-block">{{ order.errander.phone }}</p>
         </div>
-        <div class="flex gap-2 w-full">
-          <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-parentPrimary transition-all active:scale-95 text-center tracking-wider">call</a>
-          <NuxtLink :to="`/chat/${order._id}`" class="flex-1 py-3 bg-white border border-gray-100 text-gray-900 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all active:scale-95 text-center tracking-wider">chat</NuxtLink>
+        <div class="flex flex-col gap-2 w-full">
+          <NuxtLink v-if="order.type === 'custom_errand'" :to="`/chat/${order._id}`" class="w-full py-4 bg-parentPrimary text-white rounded-xl text-sm font-bold hover:bg-orange-600 transition-all active:scale-95 text-center tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-parentPrimary/20">
+            <MessageSquare class="w-5 h-5" /> Open Live Chat with Rider
+          </NuxtLink>
+          <div class="flex gap-2 w-full">
+            <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-parentPrimary transition-all active:scale-95 text-center tracking-wider">call</a>
+            <NuxtLink v-if="order.type !== 'custom_errand'" :to="`/chat/${order._id}`" class="flex-1 py-3 bg-white border border-gray-100 text-gray-900 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all active:scale-95 text-center tracking-wider">chat</NuxtLink>
+          </div>
         </div>
       </div>
 
@@ -130,12 +200,12 @@
             <Sparkles class="w-3.5 h-3.5" /> earn 20 points
           </div>
           <h2 class="text-3xl md:text-4xl font-medium tracking-tighter mb-2">how was your errand?</h2>
-          <p class="text-white/50 text-sm font-medium">Rate the meal and your Errandr to help us improve.</p>
+          <p class="text-white/50 text-sm font-medium">{{ order.type === 'custom_errand' ? 'Rate your Errandr to help us improve.' : 'Rate the meal and your Errandr to help us improve.' }}</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
           <!-- Vendor Rating -->
-          <div v-if="!order.hasRatedVendor" class="bg-white/5 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 space-y-6 flex flex-col items-center">
+          <div v-if="order.type !== 'custom_errand' && !order.hasRatedVendor" class="bg-white/5 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 space-y-6 flex flex-col items-center">
             <div class="text-center">
               <Utensils class="w-8 h-8 text-parentPrimary mx-auto mb-3" />
               <h4 class="font-medium text-lg tracking-tight">the meal</h4>
@@ -184,8 +254,8 @@
       </div>
     </section>
 
-    <!-- Order Items -->
-    <section class="max-w-4xl mx-auto px-0 sm:px-4 mt-8">
+    <!-- Order Items (Marketplace only) -->
+    <section v-if="order.type !== 'custom_errand'" class="max-w-4xl mx-auto px-0 sm:px-4 mt-8">
       <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden">
         <h4 class="text-xs font-bold text-gray-400 mb-8 tracking-wider">order summary</h4>
 
@@ -214,6 +284,39 @@
             </div>
             <div class="flex justify-between items-center pt-6 border-t border-gray-50 mt-2">
               <span class="text-xs font-medium text-gray-900 tracking-widest uppercase">grand total</span>
+              <span class="text-2xl font-medium text-parentPrimary tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Errand Details (Custom Errand only) -->
+    <section v-if="order.type === 'custom_errand'" class="max-w-4xl mx-auto px-0 sm:px-4 mt-8">
+      <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden">
+        <h4 class="text-xs font-bold text-gray-400 mb-8 tracking-wider">errand instructions</h4>
+
+        <div class="space-y-6">
+          <div class="p-6 bg-orange-50 rounded-2xl border border-orange-100">
+            <h5 class="text-sm font-bold text-gray-900 tracking-tight mb-2">What you requested:</h5>
+            <p class="text-sm font-medium text-gray-700 leading-relaxed">{{ order.description || 'No description provided.' }}</p>
+          </div>
+
+          <div class="pt-6 border-t border-gray-50 space-y-4">
+            <div class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
+              <span>urgency</span>
+              <span class="text-gray-900 font-medium capitalize">{{ order.urgency || 'standard' }}</span>
+            </div>
+            <div v-if="order.estimatedItemCost" class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
+              <span>estimated item cost</span>
+              <span class="text-gray-900 font-medium">₦{{ order.estimatedItemCost?.toLocaleString() }}</span>
+            </div>
+            <div class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
+              <span>agreed rider fee</span>
+              <span class="text-gray-900 font-medium">₦{{ order.deliveryFee?.toLocaleString() }}</span>
+            </div>
+            <div class="flex justify-between items-center pt-6 border-t border-gray-50 mt-2">
+              <span class="text-xs font-medium text-gray-900 tracking-widest uppercase">total escrow paid</span>
               <span class="text-2xl font-medium text-parentPrimary tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
             </div>
           </div>
@@ -261,12 +364,19 @@ import {
   Bike, 
   Navigation, 
   Check,
-  Zap
+  Zap,
+  Eye,
+  User,
+  MessageSquare
 } from 'lucide-vue-next';
-import { ref, onMounted, reactive, computed } from 'vue';
+import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
 import { useRoute, useHead } from '#imports';
 import { orders_api } from '@/api_factory/modules/orders';
 import { useCustomToast } from '@/composables/core/useCustomToast';
+import { usePayments } from '@/composables/modules/payments';
+import { useUser } from '@/composables/modules/auth/user';
+import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket';
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 
 definePageMeta({
   layout: 'student'
@@ -275,7 +385,20 @@ definePageMeta({
 const route = useRoute();
 const order = ref<any>(null);
 const { showToast } = useCustomToast();
+const { initializePayment } = usePayments();
+const { user } = useUser();
 const isSubmittingRating = ref(false);
+const newFee = ref(0);
+const isIncreasingFee = ref(false);
+const isInitializingPayment = ref(false);
+const viewersCount = ref(0);
+const isAcceptingBid = ref<string | null>(null);
+
+const pendingBids = computed(() => {
+  if (!order.value?.bids) return [];
+  return order.value.bids.filter((b: any) => b.status === 'pending');
+});
+const { socket } = useRealtimeSocket();
 
 const ratingForm = reactive({
   vendorRating: 0,
@@ -288,10 +411,95 @@ onMounted(async () => {
   try {
     const res = await orders_api.getOrder(route.params.id as string);
     order.value = res.data;
+    if (order.value.deliveryFee) newFee.value = order.value.deliveryFee + 100;
+
+    if (route.query.reference && order.value.type === 'custom_errand' && order.value.status === 'awaiting_payment') {
+       await api.post(`/orders/${order.value._id}/custom/pay`, { paymentReference: route.query.reference });
+       showToast({ title: 'Payment Successful', message: 'Chat is now open!', toastType: 'success' });
+       // reload
+       const res2 = await orders_api.getOrder(route.params.id as string);
+       order.value = res2.data;
+       const url = new URL(window.location.href);
+       url.searchParams.delete('reference');
+       window.history.replaceState({}, '', url.toString());
+    }
+
+    if (socket.value) {
+      socket.value.on('errand:viewers_update', (data: any) => {
+        if (data.orderId === route.params.id) {
+          viewersCount.value = data.viewersCount;
+        }
+      });
+      socket.value.on('notification:new', async (payload: any) => {
+        const { type, data } = payload;
+        if (type === 'ORDER_BIDS_UPDATE' || type === 'ORDER_ACCEPTED' || type === 'ORDER_STATUS_UPDATE') {
+          if (data?.orderId === route.params.id || data?.order?._id === route.params.id) {
+             const res = await orders_api.getOrder(route.params.id as string);
+             order.value = res.data;
+          }
+        }
+      });
+    }
   } catch (e) {
     console.error(e);
   }
 });
+
+onUnmounted(() => {
+  if (socket.value) {
+    socket.value.off('errand:viewers_update');
+    socket.value.off('notification:new');
+  }
+});
+
+const increaseFee = async () => {
+  if (newFee.value <= order.value.deliveryFee) return;
+  isIncreasingFee.value = true;
+  try {
+     await api.put(`/orders/${order.value._id}/custom/fee`, { newFee: newFee.value });
+     showToast({ title: 'Success', message: 'Fee updated successfully', toastType: 'success' });
+     const res = await orders_api.getOrder(route.params.id as string);
+     order.value = res.data;
+  } catch (e: any) {
+     showToast({ title: 'Error', message: e.response?.data?.message || 'Could not update fee', toastType: 'error' });
+  } finally {
+     isIncreasingFee.value = false;
+  }
+};
+
+const acceptBid = async (bidId: string) => {
+  isAcceptingBid.value = bidId;
+  try {
+    const res = await api.put(`/orders/${order.value._id}/custom/bid/${bidId}/accept`);
+    showToast({ title: 'Success', message: 'Counter-offer accepted! Please complete payment.', toastType: 'success' });
+    const freshOrder = await orders_api.getOrder(route.params.id as string);
+    order.value = freshOrder.data;
+  } catch (e: any) {
+    showToast({ title: 'Error', message: e.response?.data?.message || 'Could not accept bid', toastType: 'error' });
+  } finally {
+    isAcceptingBid.value = null;
+  }
+};
+
+const payForErrand = async () => {
+  isInitializingPayment.value = true;
+  try {
+     const amount = order.value.deliveryFee + 50;
+     const data = await initializePayment({
+        amount,
+        customer: { name: user.value?.firstName || 'Student', email: user.value?.email || 'student@erranders.com' },
+        callback_url: `${window.location.origin}/dashboard/orders/${order.value._id}`,
+        metadata: { isCustomErrand: true, orderId: order.value._id }
+     });
+     const authUrl = data?.data?.authorization_url || data?.authorization_url;
+     if (authUrl) window.location.href = authUrl;
+     else showToast({ title: 'Error', message: 'Payment gateway unavailable', toastType: 'error' });
+  } catch(e) {
+     showToast({ title: 'Error', message: 'Could not initialize payment', toastType: 'error' });
+  } finally {
+     isInitializingPayment.value = false;
+  }
+};
 
 const submitRatings = async () => {
   isSubmittingRating.value = true;
@@ -327,9 +535,22 @@ const ALL_STEPS = [
   { status: 'delivered', label: 'Delivered', description: 'Order completed successfully' }
 ];
 
-const orderSteps = computed(() => ALL_STEPS);
+const CUSTOM_ERRAND_STEPS = [
+  { status: 'pending', label: 'Errand Broadcasted', description: 'Waiting for riders to respond' },
+  { status: 'awaiting_payment', label: 'Rider Negotiated', description: 'Waiting for escrow payment' },
+  { status: 'confirmed', label: 'In Progress', description: 'Rider is currently running your errand' },
+  { status: 'in_transit', label: 'Heading to you', description: 'Rider is on their way with the items' },
+  { status: 'delivered', label: 'Delivered', description: 'Errand completed successfully' }
+];
 
-const getStatusIndex = (status: string) => ALL_STEPS.findIndex(s => s.status === status);
+const orderSteps = computed(() => {
+  if (order.value?.type === 'custom_errand') {
+    return CUSTOM_ERRAND_STEPS;
+  }
+  return ALL_STEPS;
+});
+
+const getStatusIndex = (status: string) => orderSteps.value.findIndex(s => s.status === status);
 
 const isStepCompleted = (stepStatus: string) => {
   if (!order.value?.status) return false;

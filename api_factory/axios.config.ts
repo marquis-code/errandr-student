@@ -109,7 +109,7 @@ instanceArray.forEach((instance) => {
       if (err.response.status === 401) {
         console.log(err.response.data.error)
         
-        const publicPaths = ['/dashboard', '/vendors', '/search', '/', '/auth/login', '/auth/register', '/cart'];
+        const publicPaths = ['/dashboard', '/vendors', '/search', '/', '/auth/login', '/auth/register', '/cart', '/errands/custom'];
         const isPublicPath = typeof window !== 'undefined' && 
           (publicPaths.includes(window.location.pathname) || window.location.pathname.startsWith('/vendors/'));
         

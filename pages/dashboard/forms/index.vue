@@ -1,0 +1,38 @@
+<template>
+  <div class="space-y-6 animate-fade-in pb-32">
+    <div class="mb-8 px-2 md:px-0">
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Forms</h1>
+      <p class="text-sm text-gray-500">Consultation forms and waivers from your venues.</p>
+    </div>
+
+    <div class="px-2 md:px-0">
+      <div class="bg-white rounded-3xl text-center p-16 border border-gray-100 shadow-sm animate-fade-in">
+        <div class="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+          <ClipboardList class="w-8 h-8 text-gray-300" />
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">No pending forms</h2>
+        <p class="text-sm text-gray-500 max-w-sm mx-auto">You're all caught up! Any required consultation forms or waivers for your upcoming appointments will appear here.</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ClipboardList } from 'lucide-vue-next';
+
+definePageMeta({
+  layout: 'student'
+});
+
+useHead({ title: 'Forms - Errandr' });
+</script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>

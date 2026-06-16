@@ -4,53 +4,83 @@
     <Toast ref="toastRef"></Toast>
     
     <!-- Premium Desktop Navigation (Floating Sidebar) -->
-    <aside class="hidden lg:flex flex-col w-60 h-[calc(100vh-2rem)] fixed left-4 top-4 bottom-4 transition-all duration-700 z-50">
-      <div class="h-full bg-white rounded-3xl flex flex-col p-6 overflow-hidden relative group border border-gray-100 shadow-sm">
-        <!-- Logo -->
-        <NuxtLink to="/" class="mb-10 px-4 pt-4 relative z-10 flex items-center gap-4 group cursor-pointer block hover:opacity-80 transition-opacity">
-          <img src="@/assets/img/Erranders-brand.png" alt="Errander Logo" class="h-8 w-auto object-contain" />
-        </NuxtLink>
+    <aside class="hidden lg:flex flex-col w-64 h-[calc(100vh-2rem)] fixed left-4 top-4 bottom-4 transition-all duration-700 z-50">
+      <div class="h-full bg-white rounded-3xl flex flex-col overflow-hidden relative group border border-gray-100 shadow-sm">
+        
+        <!-- User Profile Header -->
+        <div class="p-6 pb-4 border-b border-gray-50 flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold text-lg shadow-md uppercase">
+            {{ userInitials }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-base font-bold text-gray-900 truncate">{{ userDisplayName }}</p>
+            <p class="text-xs font-bold text-gray-400 truncate">Student Member</p>
+          </div>
+        </div>
+
+        <!-- Mode Switcher -->
+        <div class="p-4 border-b border-gray-50">
+          <div class="bg-gray-50/80 p-1.5 rounded-2xl flex relative overflow-hidden">
+             <!-- Animated active background -->
+             <div 
+                class="absolute inset-y-1.5 bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 ease-out z-0"
+                :class="mode === 'errands' ? 'left-1.5 right-[50%]' : 'left-[50%] right-1.5'"
+             ></div>
+             
+             <!-- Buttons -->
+             <button 
+               @click="setMode('errands')"
+               class="flex-1 relative z-10 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-bold transition-colors"
+               :class="mode === 'errands' ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'"
+             >
+               <Package class="w-4 h-4" />
+               Errands
+             </button>
+             <button 
+               @click="setMode('services')"
+               class="flex-1 relative z-10 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-bold transition-colors"
+               :class="mode === 'services' ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'"
+             >
+               <Scissors class="w-4 h-4" />
+               Services
+             </button>
+          </div>
+        </div>
         
         <!-- Desktop Navigation -->
-        <nav class="flex-1 space-y-8 relative z-10 overflow-y-auto hide-scrollbar pb-10">
-          <div v-for="group in navGroups" :key="group.label" class="space-y-1">
-            <p class="px-5 text-sm font-medium text-gray-400 mb-3 opacity-50">{{ group.label }}</p>
-            
+        <nav class="flex-1 relative z-10 overflow-y-auto hide-scrollbar px-3 py-4 space-y-1">
+          <TransitionGroup name="nav-list" tag="div" class="space-y-1 relative">
             <NuxtLink
-              v-for="item in group.items"
+              v-for="item in activeNavItems"
               :key="item.path"
               :to="item.path"
-              class="flex items-center px-5 py-3 text-sm font-medium rounded-2xl transition-all group/nav relative overflow-hidden"
+              class="flex items-center px-4 py-3.5 text-[14px] font-medium rounded-2xl transition-all group/nav relative overflow-hidden"
               :class="isActive(item.path) 
-                ? 'bg-gray-900 text-white' 
-                : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'"
+                ? 'bg-gray-900 text-white shadow-md' 
+                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
             >
-              <component :is="item.icon" class="w-4 h-4 mr-4 transition-transform group-hover/nav:scale-110" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
+              <component :is="item.icon" class="w-5 h-5 mr-4 transition-transform group-hover/nav:scale-110" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
               {{ item.label }}
               <div v-if="isActive(item.path)" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-parentPrimary"></div>
             </NuxtLink>
-          </div>
+          </TransitionGroup>
         </nav>
 
-        <!-- Profile Section -->
-        <div class="mt-auto pt-6 border-t border-gray-100 relative z-10">
-          <div @click="router.push('/dashboard/profile')" class="flex items-center gap-3 p-3 rounded-[1.5rem] hover:bg-gray-50 transition-all cursor-pointer group/profile">
-            <div class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold text-sm shadow-md group-hover/profile:scale-105 transition-transform text-center uppercase">
-              {{ userInitials }}
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-bold text-gray-900 truncate">{{ userDisplayName }}</p>
-              <p class="text-sm font-bold text-gray-400 truncate">Student member</p>
-            </div>
-          </div>
-          
-          <button
-            @click="handleLogoutClick"
-            class="mt-4 flex items-center w-full px-6 py-4 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-2xl transition-all"
+        <!-- Shared Bottom Navigation (Profile, Wallet, Settings) -->
+        <div class="mt-auto p-3 border-t border-gray-50 space-y-1 bg-gray-50/30">
+          <NuxtLink
+            v-for="item in sharedNavItems"
+            :key="item.path"
+            :to="item.path"
+            class="flex items-center px-4 py-3.5 text-[14px] font-medium rounded-2xl transition-all group/nav relative overflow-hidden"
+            :class="isActive(item.path) 
+              ? 'bg-gray-900 text-white shadow-md' 
+              : 'text-gray-500 hover:text-gray-900 hover:bg-white'"
           >
-            <LogOut class="w-4 h-4 mr-4"></LogOut>
-            Log out
-          </button>
+            <component :is="item.icon" class="w-5 h-5 mr-4 transition-transform group-hover/nav:scale-110" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
+            {{ item.label }}
+            <div v-if="isActive(item.path)" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-parentPrimary"></div>
+          </NuxtLink>
         </div>
       </div>
     </aside>
@@ -102,53 +132,91 @@
         leave-from-class="translate-x-0"
         leave-to-class="-translate-x-full"
       >
-        <div v-if="isMobileSidebarOpen" class="lg:hidden fixed inset-y-0 left-0 w-72 z-[101] bg-white shadow-2xl flex flex-col p-6 overflow-hidden rounded-r-[2rem]">
-          <!-- Logo & Close -->
-          <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-50">
-            <NuxtLink to="/" @click="isMobileSidebarOpen = false" class="flex items-center gap-3">
-              <img src="@/assets/img/Erranders-brand.png" alt="Errander Logo" class="h-8 w-auto object-contain" />
-            </NuxtLink>
+        <div v-if="isMobileSidebarOpen" class="lg:hidden fixed inset-y-0 left-0 w-80 z-[101] bg-white shadow-2xl flex flex-col overflow-hidden rounded-r-[2rem]">
+          
+          <!-- User Profile & Close -->
+          <div class="p-6 pb-4 border-b border-gray-50 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold text-sm uppercase">
+                {{ userInitials }}
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-bold text-gray-900 truncate leading-none mb-1">{{ userDisplayName }}</p>
+                <p class="text-xs font-bold text-gray-400 tracking-wider">Student Member</p>
+              </div>
+            </div>
             <button @click="isMobileSidebarOpen = false" class="p-2 hover:bg-gray-50 rounded-xl transition-colors">
               <X class="w-5 h-5 text-gray-500" />
             </button>
           </div>
 
+          <!-- Mobile Mode Switcher -->
+          <div class="p-4 border-b border-gray-50">
+            <div class="bg-gray-50/80 p-1.5 rounded-2xl flex relative overflow-hidden">
+               <div 
+                  class="absolute inset-y-1.5 bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 ease-out z-0"
+                  :class="mode === 'errands' ? 'left-1.5 right-[50%]' : 'left-[50%] right-1.5'"
+               ></div>
+               
+               <button 
+                 @click="setMode('errands')"
+                 class="flex-1 relative z-10 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-bold transition-colors"
+                 :class="mode === 'errands' ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'"
+               >
+                 <Package class="w-4 h-4" />
+                 Errands
+               </button>
+               <button 
+                 @click="setMode('services')"
+                 class="flex-1 relative z-10 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-bold transition-colors"
+                 :class="mode === 'services' ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'"
+               >
+                 <Scissors class="w-4 h-4" />
+                 Services
+               </button>
+            </div>
+          </div>
+
           <!-- Mobile Sidebar Nav links -->
-          <nav class="flex-1 space-y-6 overflow-y-auto hide-scrollbar pb-6">
-            <div v-for="group in navGroups" :key="group.label" class="space-y-1">
-              <p class="px-4 text-xs font-bold text-gray-900 mb-2 tracking-wider">{{ group.label }}</p>
-              
+          <nav class="flex-1 space-y-1 overflow-y-auto hide-scrollbar px-3 py-4">
+            <TransitionGroup name="nav-list" tag="div" class="space-y-1 relative">
               <NuxtLink
-                v-for="item in group.items"
+                v-for="item in activeNavItems"
                 :key="item.path"
                 :to="item.path"
                 @click="isMobileSidebarOpen = false"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all group/nav relative overflow-hidden"
+                class="flex items-center px-4 py-3.5 text-[14px] font-medium rounded-2xl transition-all group/nav relative overflow-hidden"
                 :class="isActive(item.path) 
-                  ? 'bg-gray-900 text-white' 
-                  : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'"
+                  ? 'bg-gray-900 text-white shadow-md' 
+                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
               >
-                <component :is="item.icon" class="w-4 h-4 mr-4 transition-transform group-hover/nav:scale-110" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
+                <component :is="item.icon" class="w-5 h-5 mr-4 transition-transform group-hover/nav:scale-110" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
                 {{ item.label }}
                 <div v-if="isActive(item.path)" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-parentPrimary"></div>
               </NuxtLink>
-            </div>
+            </TransitionGroup>
           </nav>
 
-          <!-- User profile & Sign Out -->
-          <div class="pt-6 border-t border-gray-100 space-y-4">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold text-sm uppercase text-center">
-                {{ userInitials }}
-              </div>
-              <div class="min-w-0 flex-1">
-                <p class="text-sm font-medium text-gray-900 truncate leading-none mb-1">{{ userDisplayName }}</p>
-                <p class="text-xs font-bold text-gray-400 tracking-wider">Student Member</p>
-              </div>
-            </div>
+          <!-- Shared Mobile Bottom Nav -->
+          <div class="mt-auto p-3 border-t border-gray-50 space-y-1 bg-gray-50/30">
+            <NuxtLink
+              v-for="item in sharedNavItems"
+              :key="item.path"
+              :to="item.path"
+              @click="isMobileSidebarOpen = false"
+              class="flex items-center px-4 py-3.5 text-[14px] font-medium rounded-2xl transition-all group/nav relative overflow-hidden"
+              :class="isActive(item.path) 
+                ? 'bg-gray-900 text-white shadow-md' 
+                : 'text-gray-500 hover:text-gray-900 hover:bg-white'"
+            >
+              <component :is="item.icon" class="w-5 h-5 mr-4 transition-transform group-hover/nav:scale-110" :class="isActive(item.path) ? 'text-parentPrimary' : ''"></component>
+              {{ item.label }}
+              <div v-if="isActive(item.path)" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-parentPrimary"></div>
+            </NuxtLink>
+            
             <button 
               @click="handleLogoutClick(); isMobileSidebarOpen = false" 
-              class="w-full py-3 border border-rose-100 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-xl text-sm font-medium tracking-wider transition-all flex items-center justify-center gap-2"
+              class="w-full py-3.5 mt-2 border border-rose-100 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-xl text-[14px] font-bold transition-all flex items-center justify-center gap-2"
             >
               <LogOut class="w-4 h-4" />
               <span>Sign Out</span>
@@ -159,7 +227,7 @@
     </Teleport>
 
     <!-- Main Content -->
-    <main class="flex-1 w-full lg:w-auto lg:ml-60 transition-all duration-700 p-2.5 sm:p-4 lg:p-10 pb-16 lg:pb-32 overflow-x-hidden">
+    <main class="flex-1 w-full lg:w-auto lg:ml-64 transition-all duration-700 p-2.5 sm:p-4 lg:p-10 pb-16 lg:pb-32 overflow-x-hidden">
       <!-- Adaptive Header (Desktop Only) -->
       <div v-if="!route.path.startsWith('/vendors')" class="hidden lg:block mb-8 animate-fade-in">
         <div class="flex items-center justify-between bg-white rounded-3xl px-8 py-6 border border-gray-100">
@@ -180,13 +248,10 @@
             
             <div class="w-px h-8 bg-gray-100 mx-2"></div>
             
-            <div class="flex flex-col items-end">
-              <span class="text-sm font-bold text-gray-300 mb-1 leading-none uppercase tracking-wider">Status</span>
-              <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-lg">
-                <div class="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span class="text-sm font-bold text-emerald-600">All systems go</span>
-              </div>
-            </div>
+            <button @click="handleLogoutClick" class="flex items-center gap-2 text-rose-500 bg-rose-50 hover:bg-rose-100 px-4 py-2.5 rounded-xl text-sm font-bold transition-all">
+              <LogOut class="w-4 h-4"></LogOut>
+              Sign out
+            </button>
           </div>
         </div>
       </div>
@@ -240,13 +305,18 @@ import {
   Bell,
   ArrowLeft,
   Target,
-  Trophy,
-  HelpCircle,
   Wallet,
-  Users
+  Users,
+  Calendar,
+  MessageSquare,
+  ClipboardList,
+  Settings,
+  Package,
+  Scissors
 } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
+import { useDashboardMode } from '@/composables/useDashboardMode'
 
 const { unreadCount } = useNotifications()
 useRealtimeNotifications() // Initialize listener
@@ -257,38 +327,32 @@ const { user, logOut } = useUser()
 const isMobileSidebarOpen = ref(false)
 const logoutModalOpen = ref(false)
 
-const navGroups = [
-  {
-    label: 'Menu',
-    items: [
-      { path: '/dashboard', label: 'Home', icon: Home },
-      { path: '/dashboard/search', label: 'Search', icon: Search },
-      { path: '/dashboard/orders', label: 'Orders', icon: ShoppingBag },
-      { path: '/dashboard/group-orders', label: 'Group Orders', icon: Users },
-      { path: '/dashboard/favorites', label: 'Favorites', icon: Heart }
-    ]
-  },
-  {
-    label: 'Rewards & Social',
-    items: [
-      { path: '/dashboard/quests', label: 'Campus Quests', icon: Target },
-      { path: '/dashboard/leaderboard', label: 'Hall of Fame', icon: Trophy }
-    ]
-  },
-  {
-    label: 'Finances',
-    items: [
-      { path: '/dashboard/wallet', label: 'My Wallet', icon: Wallet }
-    ]
-  },
-  {
-    label: 'Support',
-    items: [
-      { path: '/dashboard/how-it-works', label: 'How it Works', icon: HelpCircle },
-      { path: '/dashboard/profile', label: 'My Profile', icon: User }
-    ]
-  }
+const { mode, setMode } = useDashboardMode()
+
+const errandsNavItems = [
+  { path: '/dashboard', label: 'Home', icon: Home },
+  { path: '/dashboard/search', label: 'Search', icon: Search },
+  { path: '/dashboard/orders', label: 'Orders', icon: ShoppingBag },
+  { path: '/dashboard/group-orders', label: 'Group Orders', icon: Users },
+  { path: '/dashboard/quests', label: 'Campus Quests', icon: Target },
 ]
+
+const servicesNavItems = [
+  { path: '/dashboard/activity', label: 'Activity', icon: Calendar },
+  { path: '/dashboard/chat', label: 'Messages', icon: MessageSquare },
+  { path: '/dashboard/favorites', label: 'Favorites', icon: Heart },
+  { path: '/dashboard/forms', label: 'Forms', icon: ClipboardList },
+]
+
+const sharedNavItems = [
+  { path: '/dashboard/profile', label: 'Profile', icon: User },
+  { path: '/dashboard/wallet', label: 'Wallet', icon: Wallet },
+  { path: '/dashboard/settings', label: 'Settings', icon: Settings },
+]
+
+const activeNavItems = computed(() => {
+  return mode.value === 'errands' ? errandsNavItems : servicesNavItems
+})
 
 const isDashboard = computed(() => route.path === '/dashboard' || route.path === '/')
 
@@ -298,14 +362,23 @@ const pageTitles: Record<string, { title: string; description: string }> = {
   '/dashboard/search': { title: 'Search', description: 'Find anything on campus' },
   '/dashboard/orders': { title: 'My Errands', description: 'Track your active and past orders' },
   '/dashboard/group-orders': { title: 'Group Orders', description: 'Manage your multiplayer carts and order history' },
-  '/dashboard/favorites': { title: 'My Favorites', description: 'Your most loved items and vendors' },
+  '/dashboard/favorites': { title: 'My Favorites', description: 'Your most loved items and venues' },
   '/dashboard/profile': { title: 'My Profile', description: 'Manage your Errandr account' },
-  '/errands/custom': { title: 'Request Errand', description: 'Anything you need, delivered on campus' },
-  '/meal-planner': { title: 'Meal Planner', description: 'Budget and track your meals' }
+  '/dashboard/activity': { title: 'My Activity', description: 'Manage your appointments and bookings' },
+  '/dashboard/chat': { title: 'Messages', description: 'Your conversations with venues' },
+  '/dashboard/forms': { title: 'Forms', description: 'Consultation forms and waivers' },
+  '/dashboard/settings': { title: 'Settings', description: 'App preferences and security' },
+  '/dashboard/wallet': { title: 'My Wallet', description: 'Manage payment methods and gift cards' },
 }
 
-const pageTitle = computed(() => pageTitles[route.path]?.title || 'Store')
-const pageDescription = computed(() => pageTitles[route.path]?.description || 'Errandr Companion')
+const pageTitle = computed(() => {
+  if (route.path.startsWith('/dashboard/orders/')) return 'Order Tracker'
+  return pageTitles[route.path]?.title || 'Store'
+})
+const pageDescription = computed(() => {
+  if (route.path.startsWith('/dashboard/orders/')) return 'Live tracking & updates'
+  return pageTitles[route.path]?.description || 'Errandr Companion'
+})
 
 const userDisplayName = computed(() => {
   if (!user.value) return 'Student'
@@ -337,6 +410,16 @@ const confirmLogout = async () => {
 watch(() => route.path, () => {
   isMobileSidebarOpen.value = false
 })
+
+// Add redirection logic
+watch(mode, (newMode) => {
+  // When switching modes, if on a mode-specific page, redirect to the root of that mode
+  if (newMode === 'errands' && route.path.startsWith('/dashboard/activity')) {
+    router.push('/dashboard')
+  } else if (newMode === 'services' && (route.path === '/dashboard' || route.path.startsWith('/dashboard/orders'))) {
+    router.push('/dashboard/activity')
+  }
+})
 </script>
 
 <style scoped>
@@ -363,15 +446,21 @@ watch(() => route.path, () => {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-slide-up-mobile {
-  animation: slideUpMobile 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* Nav list transitions */
+.nav-list-enter-active,
+.nav-list-leave-active {
+  transition: all 0.3s ease;
 }
-@keyframes slideUpMobile {
-  from { opacity: 0; transform: translateY(100%); }
-  to { opacity: 1; transform: translateY(0); }
+.nav-list-enter-from {
+  opacity: 0;
+  transform: translateX(-20px);
 }
-
-.pb-safe-bottom {
-  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+.nav-list-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.nav-list-leave-active {
+  position: absolute;
+  width: 100%;
 }
 </style>

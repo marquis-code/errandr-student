@@ -20,14 +20,15 @@
             <div class="w-16 h-16 bg-parentPrimary/10 text-parentPrimary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-parentPrimary/5">
               <UserCheck v-if="view === 'login'" class="w-8 h-8" />
               <UserPlus v-else-if="view === 'register'" class="w-8 h-8" />
+              <User v-else-if="view === 'guest'" class="w-8 h-8" />
               <ShieldCheck v-else-if="['verify', 'verify_reset'].includes(view)" class="w-8 h-8" />
               <KeyRound v-else class="w-8 h-8" />
             </div>
             <h2 class="text-3xl font-medium text-gray-900 tracking-tight leading-none mb-3">
-              {{ view === 'login' ? 'Welcome Back!' : view === 'register' ? 'Join Errandr' : view === 'forgot' ? 'Reset Password' : view === 'verify_reset' ? 'Enter Code' : view === 'reset' ? 'New Password' : 'Verify Email' }}
+              {{ view === 'login' ? 'Welcome Back!' : view === 'register' ? 'Join Errandr' : view === 'guest' ? 'Guest Checkout' : view === 'forgot' ? 'Reset Password' : view === 'verify_reset' ? 'Enter Code' : view === 'reset' ? 'New Password' : 'Verify Email' }}
             </h2>
             <p class="text-sm font-medium text-gray-400 leading-relaxed px-4">
-              {{ view === 'login' ? 'Sign in to continue your checkout and track your order.' : view === 'register' ? 'Create an account to start your campus food journey!' : view === 'forgot' ? 'Enter your email address to receive a password reset code.' : view === 'verify_reset' ? `We've sent a password reset code to ${forgotEmail}.` : view === 'reset' ? 'Choose a strong password to secure your account.' : 'We\'ve sent a code to your email. Please enter it below.' }}
+              {{ view === 'login' ? 'Sign in to continue your checkout and track your order.' : view === 'register' ? 'Create an account to start your campus food journey!' : view === 'guest' ? 'Enter your details to continue. (Signup anytime later to track orders!)' : view === 'forgot' ? 'Enter your email address to receive a password reset code.' : view === 'verify_reset' ? `We've sent a password reset code to ${forgotEmail}.` : view === 'reset' ? 'Choose a strong password to secure your account.' : 'We\'ve sent a code to your email. Please enter it below.' }}
             </p>
           </div>
 
@@ -44,7 +45,7 @@
           </div>
 
           <!-- Tabs -->
-          <div v-if="!['verify', 'forgot', 'verify_reset', 'reset'].includes(view)" class="flex p-1.5 bg-gray-50 rounded-2xl mb-10">
+          <div v-if="!['verify', 'forgot', 'verify_reset', 'reset', 'guest'].includes(view)" class="flex p-1.5 bg-gray-50 rounded-2xl mb-10">
             <button 
               @click="view = 'login'" 
               :class="[
@@ -105,6 +106,67 @@
                     </button>
                   </div>
                 </div>
+              </div>
+              
+              <!-- Guest Checkout Option -->
+              <div class="pt-6 relative flex items-center justify-center">
+                <div class="absolute inset-0 flex items-center">
+                  <div class="w-full border-t border-gray-100"></div>
+                </div>
+                <span class="relative bg-white px-4 text-xs font-medium text-gray-400">or</span>
+              </div>
+              <button 
+                type="button"
+                @click="view = 'guest'"
+                class="w-full py-3.5 bg-gray-50 text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-100 rounded-2xl text-sm font-medium transition-all"
+              >
+                Continue as Guest
+              </button>
+            </template>
+
+            <!-- Guest View -->
+            <template v-else-if="view === 'guest'">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="group">
+                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">First Name</p>
+                  <input 
+                    v-model="guestForm.firstName" 
+                    type="text" 
+                    placeholder="Ebuka"
+                    required
+                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
+                  />
+                </div>
+                <div class="group">
+                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Last Name</p>
+                  <input 
+                    v-model="guestForm.lastName" 
+                    type="text" 
+                    placeholder="Chima"
+                    required
+                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
+                  />
+                </div>
+              </div>
+              <div class="group">
+                <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Email Address</p>
+                <input 
+                  v-model="guestForm.email" 
+                  type="email" 
+                  placeholder="student@campus.edu"
+                  required
+                  class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
+                />
+              </div>
+              <div class="group">
+                <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Phone Number</p>
+                <input 
+                  v-model="guestForm.phone" 
+                  type="tel" 
+                  placeholder="08012345678"
+                  required
+                  class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
+                />
               </div>
             </template>
 
@@ -300,14 +362,14 @@
                   <span>Processing...</span>
                 </template>
                 <template v-else>
-                  <span>{{ view === 'login' ? 'Sign in now' : view === 'register' ? 'Create Account' : view === 'forgot' ? 'Send Code' : view === 'verify_reset' ? 'Verify Code' : view === 'reset' ? 'Update Password' : 'Verify & Continue' }}</span>
+                  <span>{{ view === 'login' ? 'Sign in now' : view === 'register' ? 'Create Account' : view === 'guest' ? 'Continue Checkout' : view === 'forgot' ? 'Send Code' : view === 'verify_reset' ? 'Verify Code' : view === 'reset' ? 'Update Password' : 'Verify & Continue' }}</span>
                   <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </template>
               </button>
             </div>
           </form>
 
-          <p v-if="!['verify', 'verify_reset', 'reset'].includes(view)" class="mt-8 text-center text-sm font-bold text-gray-400 leading-relaxed">
+          <p v-if="!['verify', 'verify_reset', 'reset', 'guest'].includes(view)" class="mt-8 text-center text-sm font-bold text-gray-400 leading-relaxed">
             By continuing, you agree to Errandr's <br/>
             <span class="text-gray-900 hover:underline cursor-pointer">Terms of Service</span> & <span class="text-gray-900 hover:underline cursor-pointer">Privacy Policy</span>
           </p>
@@ -319,7 +381,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
-import { X, UserCheck, UserPlus, ShieldCheck, ArrowRight, Loader2, AlertCircle, KeyRound, ArrowLeft, Eye, EyeOff } from 'lucide-vue-next';
+import { X, UserCheck, UserPlus, ShieldCheck, ArrowRight, Loader2, AlertCircle, KeyRound, ArrowLeft, Eye, EyeOff, User } from 'lucide-vue-next';
 import { useAuth } from '@/composables/modules/auth';
 import { auth_api } from '@/api_factory/modules/auth';
 import { useCustomToast } from '@/composables/core/useCustomToast';
@@ -328,12 +390,12 @@ const props = defineProps<{
   modelValue: boolean;
 }>();
 
-const emit = defineEmits(['update:modelValue', 'authenticated']);
+const emit = defineEmits(['update:modelValue', 'authenticated', 'guest-checkout']);
 
 const { login, register, verifyOTP } = useAuth();
 const { showToast } = useCustomToast();
 
-const view = ref<'login' | 'register' | 'verify' | 'forgot' | 'verify_reset' | 'reset'>('login');
+const view = ref<'login' | 'register' | 'verify' | 'forgot' | 'verify_reset' | 'reset' | 'guest'>('login');
 const loading = ref(false);
 const error = ref('');
 
@@ -347,6 +409,13 @@ const registerForm = reactive({
   lastName: '',
   email: '',
   password: ''
+});
+
+const guestForm = reactive({
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: ''
 });
 
 // Forgot / Reset Password state variables
@@ -452,6 +521,9 @@ const handleSubmit = async () => {
       await login(loginForm, { redirect: false });
       emit('authenticated');
       emit('update:modelValue', false);
+    } else if (view.value === 'guest') {
+      emit('guest-checkout', { ...guestForm });
+      // We don't close the modal here because processGuestBooking in BookingFlow will handle loading and closing
     } else if (view.value === 'register') {
       await register(registerForm, { redirect: false });
       view.value = 'verify';
@@ -541,6 +613,10 @@ watch(() => props.modelValue, (newVal) => {
     resetOtpDigits.value = ['', '', '', '', '', ''];
     resetForm.password = '';
     resetForm.confirmPassword = '';
+    guestForm.firstName = '';
+    guestForm.lastName = '';
+    guestForm.email = '';
+    guestForm.phone = '';
     // Reset eye visibility toggles
     showLoginPassword.value = false;
     showRegisterPassword.value = false;

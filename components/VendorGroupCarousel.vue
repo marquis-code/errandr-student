@@ -93,11 +93,21 @@
                   </div>
                 </div>
                 <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 overflow-hidden">
-                  <div class="flex items-center gap-1.5">
-                    <span v-if="vendor.preOrderOnly" class="px-2 py-1 bg-purple-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-medium tracking-wider border border-white/20 shadow-lg shrink-0">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span v-if="vendor.businessType === 'service_provider'" class="px-2.5 py-1 bg-purple-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-extrabold tracking-wider border border-white/20 shadow-lg shrink-0">
+                      SERVICE
+                    </span>
+                    <span v-else-if="vendor.businessType === 'hybrid'" class="px-2.5 py-1 bg-indigo-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-extrabold tracking-wider border border-white/20 shadow-lg shrink-0">
+                      HYBRID
+                    </span>
+                    <span v-else class="px-2.5 py-1 bg-blue-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-extrabold tracking-wider border border-white/20 shadow-lg shrink-0">
+                      STORE
+                    </span>
+
+                    <span v-if="vendor.preOrderOnly" class="px-2 py-1 bg-rose-500/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-bold tracking-wider border border-white/20 shadow-lg shrink-0">
                       PRE-ORDER
                     </span>
-                    <span class="px-3 py-1.5 bg-gray-900/10 backdrop-blur-xl rounded-xl text-gray-900 text-sm font-medium border border-gray-900/10 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:text-white group-hover:border-parentPrimary">
+                    <span class="px-2.5 py-1 bg-gray-900/40 backdrop-blur-xl rounded-lg text-white text-[9px] font-bold tracking-wider border border-white/20 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:border-parentPrimary">
                       {{ vendor.category }}
                     </span>
                   </div>
@@ -126,8 +136,15 @@
               </div>
               <div class="flex items-center justify-between pt-5 border-t border-gray-50/80">
                 <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium text-gray-400 tracking-tight min-w-0">
-                  <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors whitespace-nowrap shrink-0"><Clock class="w-3.5 h-3.5 shrink-0" /> {{ vendor.preparationTime || 20 }} min</span>
-                  <span class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors whitespace-nowrap shrink-0"><Bike class="w-3.5 h-3.5 shrink-0" /> From ₦{{ vendor.baseDeliveryFee || 600 }}</span>
+                  <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors whitespace-nowrap shrink-0">
+                    <Clock class="w-3.5 h-3.5 shrink-0" /> {{ vendor.preparationTime || 20 }} min
+                  </span>
+                  <span v-if="vendor.businessType !== 'service_provider'" class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors whitespace-nowrap shrink-0">
+                    <Bike class="w-3.5 h-3.5 shrink-0" /> From ₦{{ vendor.baseDeliveryFee || 600 }}
+                  </span>
+                  <span v-else class="flex items-center gap-1.5 text-purple-600/80 group-hover:text-purple-600 transition-colors whitespace-nowrap shrink-0">
+                    <Sparkles class="w-3.5 h-3.5 shrink-0" /> Service
+                  </span>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                   <button @click.stop="$emit('share-vendor', vendor)" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-parentPrimary hover:text-white transition-all duration-300">

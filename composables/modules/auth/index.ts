@@ -112,6 +112,42 @@ export const useAuth = () => {
     }
   };
 
+  const guestCheckout = async (payload: { firstName: string; lastName: string; email: string; phone: string }) => {
+    loading.value = true;
+    try {
+      const res = await auth_api.guestCheckout(payload);
+      
+      const responseData = res.data?.data || res.data;
+      const userData = responseData?.user;
+      const tokenValue = responseData?.token;
+      
+      if (!userData || !tokenValue) {
+        throw { data: { message: 'Guest checkout failed: unexpected response format' } };
+      }
+      
+      setUser(userData);
+      setToken(tokenValue);
+      
+      showToast({
+        title: "Guest Session Created",
+        message: "You can now complete your checkout.",
+        toastType: "success",
+      });
+      
+      return responseData;
+    } catch (e: any) {
+      console.error('Guest checkout failed:', e);
+      showToast({
+        title: "Guest Checkout Failed",
+        message: e.data?.message || e.message || "Failed to continue as guest.",
+        toastType: "error",
+      });
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const register = async (payload: any, options: { redirect?: boolean } = { redirect: true }) => {
     loading.value = true;
     try {
@@ -227,6 +263,7 @@ export const useAuth = () => {
     loading,
     login,
     firebaseLogin,
+    guestCheckout,
     register,
     fetchProfile,
     verifyOTP,

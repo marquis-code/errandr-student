@@ -13,6 +13,10 @@ export const auth_api = {
     return GATEWAY_ENDPOINT.post('/auth/firebase', payload);
   },
 
+  guestCheckout: (payload: { firstName: string; lastName: string; email: string; phone: string }) => {
+    return GATEWAY_ENDPOINT.post('/auth/guest', payload);
+  },
+
   verifyOtp: (payload: { email: string; otp: string }) => {
     return GATEWAY_ENDPOINT.post('/auth/verify-otp', payload);
   },

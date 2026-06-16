@@ -60,25 +60,38 @@
       </div>
     </section>
 
+    <!-- Custom Errands Promo Banner -->
+    <section class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 md:p-8 flex items-center justify-between group shadow-xl">
+      <div class="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03]"></div>
+      <div class="absolute right-0 top-0 w-64 h-64 bg-parentPrimary/20 rounded-full blur-[80px] -mr-20 -mt-20 group-hover:bg-parentPrimary/30 transition-colors duration-700"></div>
+      
+      <div class="relative z-10 flex-1 max-w-xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-white text-xs font-bold mb-4 shadow-sm">
+          <Rocket class="w-3.5 h-3.5 text-parentPrimary animate-bounce" /> Now with Negotiable Fees!
+        </div>
+        <h2 class="text-2xl md:text-3xl font-medium text-white tracking-tight mb-2">
+          Need an <span class="text-parentPrimary">Errand</span> Run?
+        </h2>
+        <p class="text-sm md:text-base text-gray-300 font-medium mb-6 leading-relaxed">
+          Don't just order food. Send an Errander to pick up your laundry, deliver documents, or buy groceries. Set your own price and get it done fast!
+        </p>
+        <NuxtLink to="/errands/custom" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-parentPrimary text-white rounded-xl text-sm font-bold hover:bg-orange-600 transition-colors shadow-lg shadow-parentPrimary/20 active:scale-95">
+          Request an Errand <ArrowRight class="w-4 h-4" />
+        </NuxtLink>
+      </div>
+
+      <div class="hidden md:flex relative z-10 w-48 h-48 shrink-0 items-center justify-center">
+        <div class="absolute inset-0 bg-parentPrimary/20 rounded-full blur-[30px] animate-pulse"></div>
+        <div class="relative w-32 h-32 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl rotate-12 flex items-center justify-center shadow-2xl group-hover:rotate-6 transition-transform duration-500">
+           <PackageSearch class="w-16 h-16 text-white drop-shadow-md" stroke-width="1.5" />
+        </div>
+      </div>
+    </section>
+
     <!-- Quick Actions / Services -->
     <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Custom Errand -->
-      <NuxtLink to="/errands/custom" class="bg-gray-900 rounded-2xl p-6 flex items-center justify-between group overflow-hidden relative">
-        <div class="absolute right-0 top-0 w-32 h-32 bg-parentPrimary/10 rounded-full blur-[40px] -mr-10 -mt-10"></div>
-        <div class="relative z-10">
-          <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mb-3">
-            <PackageSearch class="w-5 h-5 text-white" />
-          </div>
-          <h3 class="text-base font-medium text-white tracking-tight mb-1">Send an Errander</h3>
-          <p class="text-xs text-gray-400 font-medium">Need something picked up or dropped off?</p>
-        </div>
-        <div class="w-10 h-10 bg-white text-gray-900 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-parentPrimary group-hover:text-white transition-colors relative z-10 shadow-lg">
-          <ArrowRight class="w-4 h-4" />
-        </div>
-      </NuxtLink>
-
       <!-- Meal Planner -->
-      <NuxtLink to="/meal-planner" class="bg-white border border-gray-100 rounded-2xl p-6 flex items-center justify-between group hover:border-parentPrimary/30 transition-all">
+      <NuxtLink to="/meal-planner" class="bg-white border border-gray-100 rounded-2xl p-6 flex items-center justify-between group hover:border-parentPrimary/30 transition-all shadow-sm hover:shadow-md">
         <div>
           <div class="w-10 h-10 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-3">
             <UtensilsCrossed class="w-5 h-5 text-gray-600 group-hover:text-parentPrimary transition-colors" />
@@ -86,7 +99,21 @@
           <h3 class="text-base font-medium text-gray-900 tracking-tight mb-1">Meal Planner</h3>
           <p class="text-xs text-gray-500 font-medium">Plan your week and save up to 25%</p>
         </div>
-        <div class="w-10 h-10 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center shrink-0 group-hover:text-parentPrimary transition-colors">
+        <div class="w-10 h-10 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center shrink-0 group-hover:text-parentPrimary transition-colors group-hover:bg-parentPrimary/10">
+          <ArrowRight class="w-4 h-4" />
+        </div>
+      </NuxtLink>
+      
+      <!-- Wallet Topup or Group Orders (Quick Action slot 2) -->
+      <NuxtLink to="/dashboard/group-orders" class="bg-white border border-gray-100 rounded-2xl p-6 flex items-center justify-between group hover:border-parentPrimary/30 transition-all shadow-sm hover:shadow-md">
+        <div>
+          <div class="w-10 h-10 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-3">
+            <Users class="w-5 h-5 text-gray-600 group-hover:text-parentPrimary transition-colors" />
+          </div>
+          <h3 class="text-base font-medium text-gray-900 tracking-tight mb-1">Group Orders</h3>
+          <p class="text-xs text-gray-500 font-medium">Order with friends and split the bill</p>
+        </div>
+        <div class="w-10 h-10 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center shrink-0 group-hover:text-parentPrimary transition-colors group-hover:bg-parentPrimary/10">
           <ArrowRight class="w-4 h-4" />
         </div>
       </NuxtLink>
@@ -195,7 +222,8 @@ import { useUser } from '@/composables/modules/auth/user';
 import { 
   Search, Star, Timer, MapPin, ArrowRight, ShieldCheck, 
   Check, Trophy, Flame, BarChart3, UtensilsCrossed, 
-  PackageSearch, Clock, RefreshCw, WifiOff, MoonStar
+  PackageSearch, Clock, RefreshCw, WifiOff, MoonStar,
+  Rocket, Users
 } from 'lucide-vue-next';
 import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';

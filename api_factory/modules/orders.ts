@@ -25,6 +25,14 @@ export const orders_api = {
     return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${id}/cancel`, { reason });
   },
 
+  trackOrder: (orderNumber: string, email: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/track/guest', { params: { orderNumber, email } });
+  },
+
+  cancelTrackedOrder: (orderNumber: string, email: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put('/orders/track/cancel', { orderNumber, email });
+  },
+
   getErrandrOrders: () => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/available');
   },
