@@ -38,8 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useHead } from '#imports';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import ProductVendorProfile from '@/components/vendors/ProductVendorProfile.vue';
 import ServiceVendorProfile from '@/components/vendors/ServiceVendorProfile.vue';
@@ -77,4 +78,20 @@ const fetchVendorData = async () => {
 onMounted(() => {
   fetchVendorData();
 });
+
+watch(vendor, (val) => {
+  if (val) {
+    useHead({
+      title: `${val.storeName} | Errander`,
+      meta: [
+        { name: 'description', content: val.description || `Order from ${val.storeName} on Errander!` }
+      ],
+      link: [
+        { rel: 'icon', href: val.logo || '/favicon.ico', type: 'image/png' },
+        { rel: 'shortcut icon', href: val.logo || '/favicon.ico', type: 'image/png' },
+        { rel: 'apple-touch-icon', href: val.logo || '/apple-touch-icon.png' }
+      ]
+    });
+  }
+}, { immediate: true });
 </script>
