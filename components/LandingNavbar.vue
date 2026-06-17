@@ -12,7 +12,7 @@
       <div class="flex justify-between items-center">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-3 group">
-          <img src="@/assets/img/erranders.png" alt="Errander Logo" class="h-12 lg:h-14 w-auto object-contain transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
+          <img src="@/assets/img/logo-light.png" alt="Errander Logo" class="h-12 lg:h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
         </NuxtLink>
         
         <!-- Actions & Menu -->

@@ -882,7 +882,7 @@ watch([recipientName, recipientPhone, specificAddress, deliveryOption, isMystery
 
 let syncTimeout: any;
 watch(
-  () => cartStore.cartState.value,
+  () => cartStore.carts.value,
   () => {
     if (groupOrder.value && groupOrder.value.status === 'open') {
       const vendorId = groupOrder.value.vendor?._id || groupOrder.value.vendor;
