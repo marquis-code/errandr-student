@@ -110,11 +110,12 @@
               <h1 class="text-2xl md:text-3xl font-medium text-white tracking-tight leading-tight truncate">{{ toTitleCase(vendor.storeName) }}</h1>
               <!-- Stats Row -->
               <div class="flex items-center gap-3 mt-2 text-white/70 text-xs font-bold flex-wrap">
-                <span class="flex items-center gap-1">
-                  <Star class="w-3 h-3 text-amber-400 fill-amber-400" />
+                <button @click="showReviewsModal = true" class="flex items-center gap-1 hover:text-white transition-colors cursor-pointer active:scale-95 bg-white/10 px-2 py-1 rounded-lg border border-white/10">
+                  <Star class="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                   <span class="text-white font-medium">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
-                  <span>({{ vendor.totalRatings || 0 }})</span>
-                </span>
+                  <span>({{ vendor.totalRatings || 0 }} reviews)</span>
+                  <ChevronRight class="w-3 h-3 ml-1 opacity-50" />
+                </button>
                 <span class="w-1 h-1 rounded-full bg-white/30"></span>
                 <span class="flex items-center gap-1">
                   <Clock class="w-3 h-3" />
@@ -123,7 +124,7 @@
                 <span class="w-1 h-1 rounded-full bg-white/30"></span>
                 <span class="flex items-center gap-1">
                   <Bike class="w-3 h-3" />
-                  From ₦{{ vendor.baseDeliveryFee || 600 }}
+                  From ₦{{ vendor.deliveryFee ?? 0 }}
                 </span>
               </div>
             </div>
@@ -269,7 +270,7 @@
                 >
                   <!-- Square Image -->
                   <div class="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0 relative">
-                    <img :src="product.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
+                    <img :src="product.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
                     <div v-if="getProductCount(product._id) > 0" class="absolute top-1 right-1 bg-parentPrimary text-white w-5 h-5 rounded-md flex items-center justify-center text-[9px] font-medium shadow-sm">
                       {{ getProductCount(product._id) }}
                     </div>
@@ -277,7 +278,7 @@
                   <!-- Info -->
                   <div class="flex-1 min-w-0 py-0.5">
                     <h3 class="text-sm font-medium text-gray-900 tracking-tight leading-tight truncate">{{ product.name }}</h3>
-                    <p class="text-[11px] text-gray-400 font-medium line-clamp-1 mt-0.5 leading-relaxed">{{ product.description || 'Freshly prepared with care.' }}</p>
+                    <p class="text-[11px] text-gray-400 font-medium line-clamp-1 mt-0.5 leading-relaxed">{{ product.description || defaultProductDescription }}</p>
                     <div class="flex items-center justify-between mt-2">
                       <div>
                         <span v-if="product.discountPrice" class="text-[10px] text-gray-300 line-through mr-1">₦{{ product.price.toLocaleString() }}</span>
@@ -305,7 +306,7 @@
                 >
                   <!-- Image -->
                   <div class="w-full aspect-[4/3] overflow-hidden bg-gray-50 relative">
-                    <img :src="product.image || '/placeholder-food.jpg'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <img :src="product.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                     <div class="absolute inset-0 bg-gradient-to-t from-gray-900/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     
                     <!-- Item Count -->
@@ -319,7 +320,7 @@
                   <div class="p-4 flex-1 flex flex-col justify-between">
                     <div>
                       <h3 class="text-sm font-medium text-gray-900 tracking-tight leading-tight mb-1 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h3>
-                      <p class="text-[11px] font-medium text-gray-400 line-clamp-2 leading-relaxed">{{ product.description || 'Freshly prepared with premium ingredients.' }}</p>
+                      <p class="text-[11px] font-medium text-gray-400 line-clamp-2 leading-relaxed">{{ product.description || defaultProductDescription }}</p>
                     </div>
                     
                     <div class="flex items-end justify-between mt-4 pt-3 border-t border-gray-50">
@@ -439,7 +440,7 @@
               <!-- Cart Summary Card -->
               <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 bg-gray-50/50 border-b border-gray-100">
-                  <h3 class="text-xs font-medium text-gray-900 tracking-tight">Your Packs</h3>
+                  <h3 class="text-xs font-medium text-gray-900 tracking-tight">Your {{ packsTerm }}</h3>
                   <ShoppingCart class="w-4 h-4 text-parentPrimary" />
                 </div>
 
@@ -447,12 +448,12 @@
                   <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-3">
                     <!-- Pack Header -->
                     <div class="flex items-center justify-between">
-                      <span class="text-[10px] font-medium bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
+                      <span class="text-[10px] font-medium bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `${packTerm} ${pIndex + 1}` }}</span>
                       <div class="flex items-center gap-1">
-                        <button @click="duplicatePack(vendor._id, pack)" class="p-1.5 text-gray-400 hover:text-parentPrimary transition-all" title="Duplicate pack">
+                        <button @click="duplicatePack(vendor._id, pack)" class="p-1.5 text-gray-400 hover:text-parentPrimary transition-all" :title="`Duplicate ${packTerm.toLowerCase()}`">
                           <Copy class="w-3.5 h-3.5" />
                         </button>
-                        <button @click="cart.removePack(vendor._id, pack.id)" class="p-1.5 text-gray-400 hover:text-rose-500 transition-all" title="Remove pack">
+                        <button @click="cart.removePack(vendor._id, pack.id)" class="p-1.5 text-gray-400 hover:text-rose-500 transition-all" :title="`Remove ${packTerm.toLowerCase()}`">
                           <Trash2 class="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -461,7 +462,7 @@
                     <div class="space-y-2">
                       <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3">
                         <div class="w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-gray-100">
-                          <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
+                          <img :src="item.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
                         </div>
                         <div class="flex-1 min-w-0">
                           <p class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
@@ -478,7 +479,7 @@
 
                   <!-- Add Pack -->
                   <button @click="addNewPack(vendor._id)" class="w-full py-3 border border-dashed border-gray-200 rounded-xl text-xs font-medium text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
-                    <Plus class="w-3.5 h-3.5" /> New Pack
+                    <Plus class="w-3.5 h-3.5" /> New {{ packTerm }}
                   </button>
 
                   <!-- Checkout -->
@@ -577,7 +578,7 @@
             <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="space-y-5">
               <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-3">
                 <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-medium bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
+                  <span class="text-[10px] font-medium bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `${packTerm} ${pIndex + 1}` }}</span>
                   <div class="flex items-center gap-1">
                     <button @click="duplicatePack(vendor._id, pack)" class="p-1.5 text-gray-400 hover:text-parentPrimary"><Copy class="w-3.5 h-3.5" /></button>
                     <button @click="cart.removePack(vendor._id, pack.id)" class="p-1.5 text-gray-400 hover:text-rose-500"><Trash2 class="w-3.5 h-3.5" /></button>
@@ -586,7 +587,7 @@
                 <div class="space-y-2">
                   <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                      <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
+                      <img :src="item.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
                     </div>
                     <div class="flex-1 min-w-0">
                       <p class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
@@ -603,7 +604,7 @@
 
               <div class="grid grid-cols-2 gap-3">
                 <button @click="addNewPack(vendor._id)" class="py-3 border border-dashed border-gray-200 rounded-xl text-xs font-medium text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
-                  <Plus class="w-3.5 h-3.5" /> New Pack
+                  <Plus class="w-3.5 h-3.5" /> New {{ packTerm }}
                 </button>
                 <button @click="showMobileCartDrawer = false" class="py-3 bg-gray-100 text-gray-600 rounded-xl text-xs font-medium text-center">
                   Keep Shopping
@@ -664,7 +665,7 @@
                   👥 Group Order
                 </span>
               </div>
-              <p class="text-[10px] font-bold text-white/70">{{ cart.getVendorStats(vendor._id).packs.length }} pack{{ cart.getVendorStats(vendor._id).packs.length > 1 ? 's' : '' }}</p>
+              <p class="text-[10px] font-bold text-white/70">{{ cart.getVendorStats(vendor._id).packs.length }} {{ cart.getVendorStats(vendor._id).packs.length > 1 ? packsTerm.toLowerCase() : packTerm.toLowerCase() }}</p>
             </div>
           </div>
           <div class="text-right">
@@ -861,7 +862,15 @@
     <!-- ============================================ -->
     <!-- SHARE MODAL                                  -->
     <!-- ============================================ -->
-    <UiShareModal v-model:isOpen="isShareModalOpen" :vendor="vendor" />
+    <ShareModal v-model:isOpen="isShareModalOpen" :vendor="vendor" />
+
+    <!-- REVIEWS MODAL                                -->
+    <VendorReviewsModal 
+      :isOpen="showReviewsModal" 
+      :vendor="vendor" 
+      @close="showReviewsModal = false" 
+      @review-added="fetchVendorDetails"
+    />
 
     <!-- ============================================ -->
     <!-- PRODUCT DETAIL MODAL                         -->
@@ -877,14 +886,36 @@
       >
         <div v-if="selectedProduct" class="fixed inset-0 z-[110] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="selectedProduct = null">
           <div class="bg-white rounded-t-[2rem] md:rounded-[2rem] w-full md:max-w-sm overflow-hidden shadow-2xl animate-slide-up-mobile md:animate-zoom-in">
-            <!-- Product Image -->
-            <div class="h-56 md:h-64 relative">
-              <img :src="selectedProduct.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-              <button @click="selectedProduct = null" class="absolute top-4 right-4 w-9 h-9 bg-black/30 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-black/50 transition-all border border-white/10 shadow-lg">
+            <!-- Product Media Carousel -->
+            <div class="h-56 md:h-64 relative group">
+              <div 
+                class="w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+                v-if="hasMultipleMedia(selectedProduct)"
+              >
+                <div 
+                  v-for="(img, idx) in (selectedProduct.images?.length ? selectedProduct.images : [selectedProduct.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')])" 
+                  :key="'img-'+idx" 
+                  class="w-full h-full flex-shrink-0 snap-center relative"
+                >
+                  <img :src="img" class="w-full h-full object-cover" />
+                </div>
+                <div 
+                  v-for="(vid, idx) in (selectedProduct.videos || [])" 
+                  :key="'vid-'+idx" 
+                  class="w-full h-full flex-shrink-0 snap-center relative bg-black flex items-center justify-center"
+                >
+                  <video :src="vid" class="w-full h-full object-cover" controls playsinline></video>
+                </div>
+              </div>
+              <div v-else class="w-full h-full relative">
+                <img :src="selectedProduct.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
+              </div>
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+              <button @click="selectedProduct = null" class="absolute top-4 right-4 w-9 h-9 bg-black/30 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-black/50 transition-all border border-white/10 shadow-lg z-10">
                 <X class="w-5 h-5" />
               </button>
-              <div class="absolute bottom-4 left-5 right-5">
+              <div class="absolute bottom-4 left-5 right-5 pointer-events-none z-10">
                 <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[9px] font-medium mb-2 inline-block shadow-sm">{{ selectedProduct.category }}</span>
                 <h2 class="text-xl font-medium text-white tracking-tight leading-tight">{{ selectedProduct.name }}</h2>
               </div>
@@ -893,7 +924,7 @@
             <!-- Content -->
             <div class="p-6 space-y-5 pb-8">
               <p class="text-gray-500 font-medium text-sm leading-relaxed">
-                {{ selectedProduct.description || 'Freshly prepared with premium ingredients. Perfect for any time of day.' }}
+                {{ selectedProduct.description || defaultProductDescription }}
               </p>
 
               <!-- Quantity & Add -->
@@ -943,7 +974,9 @@ import { useFavorites } from '@/composables/modules/favorites';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
 import { services_api } from '@/api_factory/modules/services';
+import ShareModal from "@/components/ui/ShareModal.vue";
 import AppointmentBookingModal from '@/components/vendors/AppointmentBookingModal.vue';
+import VendorReviewsModal from '@/components/vendors/VendorReviewsModal.vue';
 
 const isShareModalOpen = ref(false);
 import { useToast } from '@/composables/useToast';
@@ -970,6 +1003,7 @@ const vendor = computed(() => props.vendor);
 const products = ref<any[]>([]);
 const vendorServices = ref<any[]>([]);
 const showBookingModal = ref(false);
+const showReviewsModal = ref(false);
 const selectedServiceToBook = ref<any>(null);
 
 const openBookingModal = (service: any) => {
@@ -991,6 +1025,20 @@ const showLeaveConfirmationModal = ref(false);
 const isLeaving = ref(false);
 const groupName = ref('');
 const selectedProduct = ref<any>(null);
+
+const hasMultipleMedia = (product: any) => {
+  if (!product) return false;
+  const imageCount = product.images?.length || 1;
+  const videoCount = product.videos?.length || 0;
+  return (imageCount + videoCount) > 1;
+};
+
+const getAllMedia = (product: any) => {
+  if (!product) return [];
+  const imgs = product.images?.length ? product.images : [product.image || (isFoodVendor.value ? '/placeholder-food.jpg' : '/placeholder-store.jpg')];
+  const vids = product.videos || [];
+  return [...imgs, ...vids];
+};
 
 const getMyStatus = computed(() => {
   if (!groupOrder.value) return null;
@@ -1169,12 +1217,12 @@ const handleBannerClick = (banner: any) => {
 
 const addNewPack = (vendorId: string) => {
   cart.addPack(vendorId);
-  showToast('New pack added', 'success');
+  showToast(`New ${packTerm.value.toLowerCase()} added`, 'success');
 };
 
 const duplicatePack = (vendorId: string, pack: any) => {
   cart.duplicatePack(vendorId, pack.id);
-  showToast('Pack duplicated', 'success');
+  showToast(`${packTerm.value} duplicated`, 'success');
 };
 
 const scrollToCategory = (cat: string) => {

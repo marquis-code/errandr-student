@@ -15,7 +15,7 @@
 
     <!-- Hero Section -->
     <section 
-      class="relative pt-36 pb-16 lg:pt-40 lg:pb-24 overflow-visible bg-gradient-to-b from-slate-50/80 via-white to-white border-b border-slate-100"
+      class="relative pt-44 pb-16 md:pt-40 lg:pt-48 lg:pb-24 overflow-visible bg-gradient-to-b from-slate-50/80 via-white to-white border-b border-slate-100"
     >
       <!-- Soft Minimalist Grid Dot Overlay -->
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
@@ -56,27 +56,121 @@
             style="isolation: isolate;"
             :class="showSuggestions ? 'z-[200]' : 'z-20'"
           >
-            <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-10 blur-xl transition-opacity duration-500 rounded-[3rem]"></div>
-            <div class="relative flex items-center bg-white border border-gray-200 focus-within:border-parentPrimary/50 p-1.5 md:p-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:shadow-[0_20px_50px_rgb(0,0,0,0.08)] transition-all duration-500">
-              <div class="w-10 md:w-14 h-10 md:h-14 flex items-center justify-center text-gray-500 flex-shrink-0">
-                <Search class="w-5 h-5 md:w-6 md:h-6" />
+            <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-10 blur-xl transition-opacity duration-500 rounded-[2rem] md:rounded-full"></div>
+            <div class="relative flex flex-col md:flex-row items-center bg-white border border-gray-200 focus-within:border-parentPrimary/50 p-2 md:p-2 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:shadow-[0_20px_50px_rgb(0,0,0,0.08)] transition-all duration-500 gap-2 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+              
+              <!-- What do you need? -->
+              <div class="flex-1 flex items-center w-full px-2 py-1 md:py-0">
+                <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
+                  <Search class="w-5 h-5" />
+                </div>
+                <input 
+                  type="text" 
+                  v-model="heroSearchQuery"
+                  @keyup.enter="handleHeroSearch"
+                  @focus="showSuggestions = true"
+                  @blur="handleSearchBlur"
+                  placeholder="Meals, groceries, services..." 
+                  class="w-full bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 placeholder:text-gray-400 px-2 min-w-0"
+                />
               </div>
-              <input 
-                type="text" 
-                v-model="heroSearchQuery"
-                @keyup.enter="handleHeroSearch"
-                @focus="showSuggestions = true"
-                @blur="handleSearchBlur"
-                placeholder="What do you need?" 
-                class="flex-1 bg-transparent border-none outline-none text-base md:text-lg font-medium text-gray-900 placeholder:text-gray-400 px-2 min-w-0"
-              />
-              <button 
-                @click="handleHeroSearch"
-                class="h-10 md:h-14 px-5 md:px-8 bg-gray-900 text-white rounded-full text-sm md:text-base font-medium hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all flex-shrink-0 flex items-center justify-center gap-2"
-              >
-                 <span class="hidden sm:inline">Search</span>
-                 <Search class="w-4 h-4 sm:hidden" />
-              </button>
+
+              <!-- Location -->
+              <div class="flex-1 flex items-center w-full px-2 py-1 md:py-0 relative" ref="locationDropdownRef">
+                <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
+                  <MapPin class="w-5 h-5" />
+                </div>
+                <input 
+                  type="text" 
+                  v-model="searchLocation"
+                  @keyup.enter="handleHeroSearch"
+                  @focus="showLocationDropdown = true; showSuggestions = true"
+                  @input="showLocationDropdown = true"
+                  placeholder="Current location" 
+                  class="w-full bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 placeholder:text-gray-400 px-2 min-w-0"
+                />
+                
+                <!-- Location Dropdown -->
+                <Transition name="fade-up">
+                  <div v-if="showLocationDropdown" class="absolute top-full left-0 right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden py-2">
+                    <div class="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Popular Locations</div>
+                    <button 
+                      @click="searchLocation = 'UNILAG'; showLocationDropdown = false; fetchSuggestions()"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
+                    >
+                      <MapPin class="w-4 h-4 text-gray-400" />
+                      UNILAG
+                    </button>
+                    <button 
+                      @click="searchLocation = 'YABATECH'; showLocationDropdown = false; fetchSuggestions()"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
+                    >
+                      <MapPin class="w-4 h-4 text-gray-400" />
+                      YABATECH
+                    </button>
+                    <button 
+                      @click="searchLocation = 'LUTH'; showLocationDropdown = false; fetchSuggestions()"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
+                    >
+                      <MapPin class="w-4 h-4 text-gray-400" />
+                      LUTH
+                    </button>
+                  </div>
+                </Transition>
+              </div>
+
+              <!-- Time -->
+              <div class="flex-[0.8] flex items-center w-full px-2 py-1 md:py-0 relative" ref="timeDropdownRef">
+                <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
+                  <Calendar class="w-5 h-5" />
+                </div>
+                <div 
+                  @click="showTimeDropdown = !showTimeDropdown"
+                  class="w-full bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 px-2 min-w-0 cursor-pointer select-none text-left"
+                >
+                  {{ searchTime === 'any' ? 'Any time' : searchTime === 'now' ? 'Now' : 'Scheduled' }}
+                </div>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                  <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showTimeDropdown }" />
+                </div>
+                
+                <!-- Custom Dropdown -->
+                <Transition name="fade-up">
+                  <div v-if="showTimeDropdown" class="absolute top-full left-0 right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden">
+                    <button 
+                      @click="searchTime = 'any'; showTimeDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
+                      :class="searchTime === 'any' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      Any time
+                    </button>
+                    <button 
+                      @click="searchTime = 'now'; showTimeDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
+                      :class="searchTime === 'now' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      Now
+                    </button>
+                    <button 
+                      @click="searchTime = 'scheduled'; showTimeDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
+                      :class="searchTime === 'scheduled' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      Scheduled
+                    </button>
+                  </div>
+                </Transition>
+              </div>
+
+              <!-- Search Button -->
+              <div class="w-full md:w-auto p-1 md:p-0">
+                <button 
+                  @click="handleHeroSearch"
+                  class="w-full md:w-auto h-12 md:h-12 px-6 md:px-8 bg-gray-900 text-white rounded-2xl md:rounded-full text-sm md:text-base font-medium hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <span class="inline">Search</span>
+                </button>
+              </div>
             </div>
 
            <Transition name="fade-up">
@@ -86,7 +180,7 @@
   >
     <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
       <span class="text-sm font-medium text-gray-400 tracking-tight">
-        {{ heroSearchQuery ? 'Matching Meals' : `Suggested for ${suggestionTimeText}` }}
+        {{ heroSearchQuery ? 'Matching Results' : `Suggested for ${suggestionTimeText}` }}
       </span>
       <div v-if="isSearching" class="w-4 h-4 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
     </div>
@@ -103,7 +197,7 @@
         <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
           <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
           <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
-            <Utensils class="w-5 h-5" />
+            <Store class="w-5 h-5" />
           </div>
         </div>
         <div class="flex-1 text-left">
@@ -155,9 +249,9 @@
             @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
             class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-all group"
           >
-            <div class="w-9 h-9 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100">
+            <div class="w-9 h-9 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100 flex items-center justify-center">
               <img v-if="product.image" :src="product.image" class="w-full h-full object-cover" />
-              <Utensils v-else class="w-4 h-4 m-auto text-parentPrimary/30 mt-2.5" />
+              <Store v-else class="w-4 h-4 text-parentPrimary/30" />
             </div>
             <div class="flex-1 min-w-0">
               <h4 class="text-xs font-medium text-gray-900 truncate group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
@@ -179,7 +273,7 @@
           <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
             <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
             <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
-              <Utensils class="w-5 h-5" />
+              <Store class="w-5 h-5" />
             </div>
           </div>
           <div class="flex-1 text-left">
@@ -197,15 +291,7 @@
 </Transition>
           </div>
 
-          <!-- Quick Tags -->
-          <!-- <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
-             <span class="text-sm font-medium text-gray-300   mr-1">E choke:</span>
-             <button v-for="tag in quickTags.slice(0,4)" :key="tag.label" 
-              class="px-4 py-2 bg-gray-50 hover:bg-white border border-gray-100 hover:border-parentPrimary/30 rounded-xl text-sm font-medium text-gray-600 hover:text-parentPrimary transition-all shadow-sm hover:shadow-md"
-             >
-               {{ tag.label }}
-             </button>
-          </div> -->
+          <!-- Removed Global Filters Bar (Moved to LandingNavbar.vue) -->
         </div>
       </div>
     </section>
@@ -285,6 +371,33 @@
     @share-vendor="handleShareVendor"
   />
 
+  <!-- Top Rated Vendors -->
+  <VendorGroupCarousel
+    v-if="topRatedVendors.length > 0"
+    title="Top Rated"
+    subtitle="Best Reviews"
+    :icon="Star"
+    :vendors="topRatedVendors"
+    :loading="loadingVendors"
+    carouselId="carousel-top-rated"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
+  />
+
+  <!-- Your Favorites -->
+  <VendorGroupCarousel
+    v-if="favoriteVendors.length > 0"
+    title="Your Favorites"
+    subtitle="Loved by You"
+    :icon="Heart"
+    :vendors="favoriteVendors"
+    :loading="loadingFavorites"
+    carouselId="carousel-favorites"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
+  />
   <!-- Recently Viewed -->
   <VendorGroupCarousel
     v-if="recentlyViewedVendors.length > 0"
@@ -441,12 +554,20 @@
 
   <!-- Footer -->
   <LandingFooter />
+    <!-- NOTIFY MODAL -->
+    <VendorNotifyModal
+      :is-open="isNotifyModalOpen"
+      :vendor="selectedVendorForNotify"
+      @close="isNotifyModalOpen = false"
+    />
  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue'
+import VendorNotifyModal from '@/components/vendors/VendorNotifyModal.vue'
+import { useRouter } from 'vue-router'
+import { onClickOutside } from '@vueuse/core'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import BatchDeliveryBanner from '@/components/BatchDeliveryBanner.vue'
@@ -458,13 +579,15 @@ import {
   ShieldCheck, Rocket, Megaphone,
   Menu as MenuIcon, X, Search, ArrowUpRight,
   Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown,
-  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX
+  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
+import { search_api } from '@/api_factory/modules/search';
 import { orders_api } from '@/api_factory/modules/orders';
 import { useFavorites } from '@/composables/modules/favorites';
 import { useRecentlyViewed } from '@/composables/modules/vendors/useRecentlyViewed';
+import { useGlobalFilter } from '@/composables/core/useGlobalFilter';
 
 import hero1 from '@/assets/img/hero1.webp'
 import hero2 from '@/assets/img/hero2.webp'
@@ -488,10 +611,13 @@ const scrolled = ref(false)
 const router = useRouter()
 const showMobileMenu = ref(false)
 const heroSearchQuery = ref('')
+const searchLocation = ref('')
+const searchTime = ref('any')
 const loadingVendors = ref(true)
 const recommendedVendors = ref<any[]>([])
 const trendingVendors = ref<any[]>([])
 const newVendors = ref<any[]>([])
+const topRatedVendors = ref<any[]>([])
 const vendors = ref<any[]>([]) // Combined list for active promotions
 const selectedVendorForModal = ref(null);
 const isClosedModalOpen = ref(false);
@@ -501,6 +627,12 @@ const cartStore = useCart()
 const { user, logOut } = useUser()
 const { unreadCount } = useNotifications()
 const { favorites, fetchFavorites, loading: loadingFavorites } = useFavorites()
+const { globalFilter, setFilter, globalFiltersList } = useGlobalFilter();
+
+watch(globalFilter, () => {
+  fetchVendors();
+});
+
 const { recentlyViewedVendors, addRecent } = useRecentlyViewed()
 useRealtimeNotifications() // Listen for real-time updates
 
@@ -545,6 +677,22 @@ const showSuggestions = ref(false)
 const isSearching = ref(false)
 const hasSearched = ref(false)
 
+const showTimeDropdown = ref(false)
+const timeDropdownRef = ref(null)
+
+const showLocationDropdown = ref(false)
+const locationDropdownRef = ref(null)
+
+onClickOutside(timeDropdownRef, () => {
+  showTimeDropdown.value = false
+})
+
+onClickOutside(locationDropdownRef, () => {
+  showLocationDropdown.value = false
+})
+
+
+
 const suggestionTimeText = computed(() => {
   const hour = new Date().getHours()
   if (hour >= 5 && hour < 12) return 'Breakfast'
@@ -554,7 +702,11 @@ const suggestionTimeText = computed(() => {
 })
 
 const fetchSuggestions = async () => {
-  if (!heroSearchQuery.value.trim()) {
+  const hasQuery = heroSearchQuery.value.trim().length > 0;
+  const hasLocation = searchLocation.value.trim().length > 0;
+  const hasTimeFilter = searchTime.value !== 'any';
+
+  if (!hasQuery && !hasLocation && !hasTimeFilter) {
     hasSearched.value = false
     // Fetch popular/recommended if empty
     try {
@@ -570,8 +722,21 @@ const fetchSuggestions = async () => {
 
   isSearching.value = true
   try {
-    const res = await products_api.getProducts({ q: heroSearchQuery.value, limit: 6 })
-    heroSearchSuggestions.value = res.data?.products || res.data?.data?.products || []
+    const res = await search_api.globalSearch({ 
+      q: heroSearchQuery.value, 
+      location: searchLocation.value, 
+      time: searchTime.value 
+    })
+    
+    // Combine products and services from the new search endpoint
+    const searchData = res.data?.data || res.data || {}
+    const combined = [
+      ...(searchData.products || []),
+      ...(searchData.services || [])
+    ]
+    
+    // Limit to 6 items for the dropdown
+    heroSearchSuggestions.value = combined.slice(0, 6)
   } catch (e) {
     heroSearchSuggestions.value = []
   } finally {
@@ -588,7 +753,7 @@ const handleSearchBlur = () => {
 
 // Debounce search
 let searchTimeout: any
-watch(heroSearchQuery, () => {
+watch([heroSearchQuery, searchLocation, searchTime], () => {
   if (searchTimeout) clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
     fetchSuggestions()
@@ -603,8 +768,18 @@ const navLinks = [
 ]
 
 const handleHeroSearch = () => {
-  if (!heroSearchQuery.value.trim()) return
-  navigateTo(`/vendors?search=${encodeURIComponent(heroSearchQuery.value.trim())}`)
+  if (!heroSearchQuery.value.trim() && !searchLocation.value.trim()) return
+  
+  let queryUrl = `/vendors?`
+  if (heroSearchQuery.value.trim()) queryUrl += `search=${encodeURIComponent(heroSearchQuery.value.trim())}&`
+  if (searchLocation.value.trim()) queryUrl += `location=${encodeURIComponent(searchLocation.value.trim())}&`
+  if (searchTime.value !== 'any') queryUrl += `time=${encodeURIComponent(searchTime.value)}`
+  
+  if (queryUrl.endsWith('&') || queryUrl.endsWith('?')) {
+    queryUrl = queryUrl.slice(0, -1)
+  }
+  
+  navigateTo(queryUrl)
 }
 
 const handleScroll = () => {
@@ -614,18 +789,25 @@ const handleScroll = () => {
 const fetchVendors = async () => {
   loadingVendors.value = true
   try {
-    const [recRes, trendRes, newRes] = await Promise.all([
-      vendors_api.getAll({ sortBy: 'recommended', limit: 12 }),
-      vendors_api.getAll({ sortBy: 'trending', limit: 12 }),
-      vendors_api.getAll({ sortBy: 'newest', limit: 12 })
+    const queryParams: any = { limit: 12 };
+    if (globalFilter.value) {
+      queryParams.search = globalFilter.value;
+    }
+
+    const [recRes, trendRes, newRes, topRes] = await Promise.all([
+      vendors_api.getAll({ ...queryParams, sortBy: 'recommended' }),
+      vendors_api.getAll({ ...queryParams, sortBy: 'trending' }),
+      vendors_api.getAll({ ...queryParams, sortBy: 'newest' }),
+      vendors_api.getAll({ ...queryParams, sortBy: 'rating' })
     ])
     
     recommendedVendors.value = recRes.data?.vendors || recRes.data?.data?.vendors || recRes.data || []
     trendingVendors.value = trendRes.data?.vendors || trendRes.data?.data?.vendors || trendRes.data || []
     newVendors.value = newRes.data?.vendors || newRes.data?.data?.vendors || newRes.data || []
+    topRatedVendors.value = topRes.data?.vendors || topRes.data?.data?.vendors || topRes.data || []
     
     // Combine for promotions fallback
-    vendors.value = [...recommendedVendors.value, ...trendingVendors.value, ...newVendors.value]
+    vendors.value = [...recommendedVendors.value, ...trendingVendors.value, ...newVendors.value, ...topRatedVendors.value]
   } catch (e) {
     console.error('Failed to fetch vendors:', e)
   } finally {
@@ -633,10 +815,12 @@ const fetchVendors = async () => {
   }
 }
 
+const isNotifyModalOpen = ref(false)
+const selectedVendorForNotify = ref<any>(null)
+
 const handleNotifyVendor = (vendor: any) => {
-  // Hook into your notification system here
-  // e.g. toast("We'll ping you when they're back online!")
-  console.log('Notify when open:', vendor._id)
+  selectedVendorForNotify.value = vendor
+  isNotifyModalOpen.value = true
 }
 
 const activePromotions = computed(() => {
@@ -671,11 +855,11 @@ const heroHeadings = [
   { text: 'Don\'t <span class="text-parentPrimary ">do over!</span><br/>Order sharp sharp.', lang: '🇳🇬 Pidgin' },
   { text: 'Oúnjẹ campus...<br/><span class="text-parentPrimary ">zero stress</span> delivery.', lang: '🇳🇬 Pidgin' },
   { text: 'Body go tell you<br/>if you <span class="text-parentPrimary ">no chop.</span>', lang: '🇳🇬 Pidgin' },
-  { text: 'Who no chop,<br/><span class="text-parentPrimary ">no fit read.</span>', lang: '🇳🇬 Pidgin' },
+  { text: 'Need groceries?<br/><span class="text-parentPrimary ">We deliver</span> to your hostel.', lang: '🇬🇧 English' },
   { text: 'Ẹ̀wà mà jẹ́ <br/>kó <span class="text-parentPrimary ">dùn.</span> Chop now!', lang: '🟢 Yoruba' },
-  { text: 'Nwanne, <span class="text-parentPrimary ">agụụ</span> <br/>adịghị mma.', lang: '🔴 Igbo' },
+  { text: 'Need a fresh <span class="text-parentPrimary ">haircut?</span><br/>Book a barber now.', lang: '🇬🇧 English' },
   { text: 'Ciwon <span class="text-parentPrimary ">ciki</span> <br/>ba wasa bane.', lang: '🟡 Hausa' },
-  { text: 'Food is ready.<br/><span class="text-parentPrimary ">Level up</span> your day!', lang: '🇳🇬 Pidgin' },
+  { text: 'Laundry piling up?<br/>Get a <span class="text-parentPrimary ">washer</span> sharp!', lang: '🇳🇬 Pidgin' },
 ]
 
 const slangSlogans = [

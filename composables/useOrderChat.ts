@@ -2,7 +2,7 @@ import { ref, onUnmounted, computed } from 'vue';
 import { useSocket } from '@/composables/useSocket';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 
-export interface Message {
+interface Message {
   _id: string;
   orderId: string;
   senderId: string;

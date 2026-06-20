@@ -155,6 +155,25 @@
           <p class="text-xs font-bold text-gray-400 tracking-wider">your Errandr</p>
           <h3 class="font-medium text-gray-900 text-lg tracking-tight">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
           <p class="text-xs text-parentPrimary font-bold mt-2 bg-parentPrimary/5 px-3 py-1.5 rounded-full inline-block">{{ order.errander.phone }}</p>
+
+          <!-- Account Details for Custom Errands -->
+          <div v-if="order.type === 'custom_errand' && order.erranderDetails?.accountNumber" class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-100 text-left">
+            <p class="text-[10px] font-bold text-gray-400 tracking-wider mb-2">RIDER ACCOUNT DETAILS</p>
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="text-sm font-bold text-gray-900">{{ order.erranderDetails.bankName }}</p>
+                <p class="text-lg font-bold text-parentPrimary tracking-tight">{{ order.erranderDetails.accountNumber }}</p>
+                <p class="text-xs font-medium text-gray-500 uppercase">{{ order.erranderDetails.accountName }}</p>
+              </div>
+              <button 
+                @click="copyAccountDetails" 
+                class="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-parentPrimary hover:border-parentPrimary/30 transition-all active:scale-95 shrink-0"
+              >
+                <Copy class="w-4 h-4" />
+              </button>
+            </div>
+            <p class="text-[10px] font-medium text-gray-400 mt-3 leading-tight">Transfer funds to your rider to purchase your requested items. The rider fee has already been escrowed.</p>
+          </div>
         </div>
         <div class="flex flex-col gap-2 w-full">
           <NuxtLink v-if="order.type === 'custom_errand'" :to="`/chat/${order._id}`" class="w-full py-4 bg-parentPrimary text-white rounded-xl text-sm font-bold hover:bg-orange-600 transition-all active:scale-95 text-center tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-parentPrimary/20">
@@ -367,7 +386,8 @@ import {
   Zap,
   Eye,
   User,
-  MessageSquare
+  MessageSquare,
+  Copy
 } from 'lucide-vue-next';
 import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
 import { useRoute, useHead } from '#imports';
@@ -522,6 +542,14 @@ const submitRatings = async () => {
   } finally {
     isSubmittingRating.value = false;
   }
+};
+
+const copyAccountDetails = () => {
+  if (!order.value?.erranderDetails) return;
+  const { bankName, accountNumber, accountName } = order.value.erranderDetails;
+  const text = `${bankName}\n${accountNumber}\n${accountName}`;
+  navigator.clipboard.writeText(text);
+  showToast({ title: 'Copied!', message: 'Account details copied to clipboard.', toastType: 'success' });
 };
 
 // Order Tracking Stepper Logic

@@ -31,7 +31,7 @@ export const useRecentlyViewed = () => {
       businessType: vendor.businessType,
       isOpen: vendor.isOpen,
       preparationTime: vendor.preparationTime,
-      baseDeliveryFee: vendor.baseDeliveryFee,
+      deliveryFee: vendor.deliveryFee,
       description: vendor.description,
       preOrderOnly: vendor.preOrderOnly
     };

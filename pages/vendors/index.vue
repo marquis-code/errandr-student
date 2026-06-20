@@ -44,27 +44,27 @@
         </div>
       </div>
 
-      <!-- Horizontal Categories Bar (Sticky scrolling) -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-4 no-scrollbar scroll-smooth mb-8 border-b border-gray-50">
-        <button
-          v-for="cat in allCategories"
-          :key="cat.key"
-          @click="selectedCategory = cat.key"
-          class="flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-medium transition-all whitespace-nowrap active:scale-95 shrink-0"
-          :class="selectedCategory === cat.key ? 'bg-parentPrimary text-white border-parentPrimary shadow-md shadow-parentPrimary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-gray-200'"
+      <!-- Global Filters Bar -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 no-scrollbar scroll-smooth mb-8 border-b border-gray-50 snap-x">
+        <button 
+          v-for="filter in globalFiltersList" 
+          :key="filter.keyword" 
+          @click="setFilter(filter.keyword); selectedCategory = 'all'"
+          class="snap-start shrink-0 px-4 py-2.5 rounded-xl border text-xs font-medium transition-all flex items-center gap-2 active:scale-95"
+          :class="globalFilter === filter.keyword ? 'bg-parentPrimary text-white border-parentPrimary shadow-md shadow-parentPrimary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-parentPrimary/30 hover:bg-gray-50'"
         >
-          <span class="text-sm shrink-0">{{ cat.icon }}</span>
-          <span>{{ cat.label }}</span>
+          <span class="text-sm shrink-0">{{ filter.icon }}</span>
+          <span>{{ filter.label }}</span>
         </button>
       </div>
 
       <!-- Loading State -->
       <div v-if="loading" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         <div v-for="i in 8" :key="i" class="space-y-4 animate-pulse">
-          <div class="bg-gray-100 aspect-[16/10] rounded-2xl" />
+          <div class="bg-gray-100 aspect-[16/10] rounded-2xl"></div>
           <div class="space-y-2">
-            <div class="h-4 bg-gray-100 rounded-full w-3/4" />
-            <div class="h-3 bg-gray-100 rounded-full w-1/2" />
+            <div class="h-4 bg-gray-100 rounded-full w-3/4"></div>
+            <div class="h-3 bg-gray-100 rounded-full w-1/2"></div>
           </div>
         </div>
       </div>
@@ -75,86 +75,97 @@
           v-for="vendor in filteredVendors"
           :key="vendor._id"
           @click="handleVendorClick(vendor)"
-          class="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-parentPrimary/30 hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col h-full"
+          class="group cursor-pointer relative flex flex-col bg-white rounded-3xl hover:-translate-y-1 transition-all duration-300"
         >
-          <!-- Thumbnail/Banner -->
-          <div class="relative aspect-[16/10] overflow-hidden bg-gray-50 shrink-0">
-            <img 
-              :src="vendor.banner || vendor.image || vendor.logo || '/placeholder-store.jpg'" 
-              :alt="vendor.storeName" 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-            />
-            
-            <!-- Badges -->
-            <div class="absolute top-3 left-3 z-10 flex gap-2">
-              <span v-if="!vendor.isOpen" class="px-2.5 py-1 bg-gray-900/90 backdrop-blur-md rounded-lg text-[9px] font-medium text-white uppercase tracking-wider">
-                Closed
-              </span>
-              <span v-else-if="vendor.offers?.length" class="px-2.5 py-1 bg-rose-500 rounded-lg text-[9px] font-medium text-white uppercase tracking-wider">
-                Promo
-              </span>
-            </div>
+            <!-- TOP IMAGE AREA -->
+            <div class="relative h-[200px] w-full overflow-hidden rounded-3xl border border-gray-100 shadow-sm">
+              <template v-if="!vendor.isOpen">
+                <img
+                  :src="vendor.banner || vendor.image || vendor.logo || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
+                  class="w-full h-full object-cover grayscale opacity-50"
+                  alt="Vendor Banner"
+                />
+                <div class="absolute inset-0 bg-gray-900/40"></div>
+                <div class="absolute bottom-0 inset-x-0 flex items-center justify-between px-4 py-3 bg-white/10 backdrop-blur-md border-t border-white/10">
+                  <div>
+                    <p class="text-white text-xs font-medium leading-none mb-0.5">Closed right now</p>
+                    <p class="text-white/50 text-[11px] font-medium">Opens {{ vendor.openingTime || '8:00 AM' }}</p>
+                  </div>
+                  <button
+                    @click.stop="handleNotifyVendor(vendor)"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-[11px] font-bold transition-all shadow-md"
+                  >
+                    <Bell class="w-3 h-3" /> Notify me
+                  </button>
+                </div>
+              </template>
+              <template v-else>
+                <img
+                  :src="vendor.banner || vendor.image || vendor.logo || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                  alt="Vendor Banner"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </template>
 
-            <!-- Actions (Favorite & Share) -->
-            <div class="absolute top-3 right-3 z-10 flex flex-col gap-2">
-              <button 
+              <!-- TOP LEFT BADGES -->
+              <div class="absolute top-3 left-3 flex flex-col gap-2">
+                <span v-if="vendor.isFeatured" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-gray-900 text-[10px] font-extrabold tracking-wide uppercase">
+                  Featured
+                </span>
+                <span v-else-if="vendor.businessType === 'service_provider'" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-purple-700 text-[10px] font-extrabold tracking-wide uppercase">
+                  Service
+                </span>
+                <span v-else-if="vendor.businessType === 'hybrid'" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-indigo-700 text-[10px] font-extrabold tracking-wide uppercase">
+                  Hybrid
+                </span>
+                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-rose-600 text-[10px] font-extrabold tracking-wide uppercase">
+                  Pre-order
+                </span>
+              </div>
+
+              <!-- HEART ICON -->
+              <button
                 @click.stop="toggleFavoriteVendor(vendor)"
-                class="w-8 h-8 rounded-xl bg-white/80 backdrop-blur-md flex items-center justify-center text-gray-600 hover:text-rose-500 hover:bg-white transition-all shadow-sm"
+                class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-gray-400 hover:text-rose-500 hover:bg-white transition-all hover:scale-110"
+                :class="isVendorFavorited(vendor._id) ? 'text-rose-500' : ''"
               >
-                <Heart class="w-4 h-4" :class="{ 'fill-rose-500 text-rose-500': isVendorFavorited(vendor._id) }" />
-              </button>
-              <button 
-                @click.stop="handleShareVendor(vendor)"
-                class="w-8 h-8 rounded-xl bg-white/80 backdrop-blur-md flex items-center justify-center text-gray-600 hover:text-parentPrimary hover:bg-white transition-all shadow-sm"
-              >
-                <Share2 class="w-4 h-4" />
+                <Heart :class="['w-4 h-4', isVendorFavorited(vendor._id) ? 'fill-current' : '']" />
               </button>
             </div>
 
-            <!-- Logo overlay overlapping bottom-left edge -->
-            <div class="absolute bottom-3 left-3 z-10">
-              <div v-if="vendor.logo" class="w-10 h-10 rounded-xl border-2 border-white bg-white overflow-hidden shadow-md">
-                <img :src="vendor.logo" class="w-full h-full object-cover" />
-              </div>
-              <div v-else :class="`w-10 h-10 rounded-xl border-2 border-white shadow-md flex items-center justify-center text-white text-xs font-medium tracking-tighter ${getVendorColor(vendor.storeName)}`">
-                {{ getInitials(vendor.storeName) }}
-              </div>
-            </div>
-          </div>
-
-          <!-- Content -->
-          <div class="p-4 flex-1 flex flex-col justify-between">
-            <div class="space-y-1">
-              <div class="flex items-start justify-between gap-2">
-                <h3 class="font-medium text-gray-900 text-xs tracking-tight line-clamp-1 group-hover:text-parentPrimary transition-colors">{{ vendor.storeName }}</h3>
-                <div class="flex items-center gap-1 shrink-0 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100/50">
-                  <Star class="w-3 h-3 fill-amber-500 text-amber-500" />
-                  <span class="text-[9px] font-medium text-amber-700">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
+            <!-- BOTTOM DETAILS AREA -->
+            <div class="pt-3 pb-1 px-1 flex-1 flex flex-col">
+              <div class="flex items-start justify-between gap-3 mb-1">
+                <h3 class="text-[17px] font-bold text-gray-900 group-hover:text-parentPrimary transition-colors truncate">
+                  {{ vendor.storeName }}
+                </h3>
+                <div class="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg shrink-0">
+                  <Star class="w-3.5 h-3.5 text-amber-500 fill-current" />
+                  <span class="text-[13px] font-bold text-gray-900">{{ vendor.rating ? vendor.rating.toFixed(1) : '5.0' }}</span>
                 </div>
               </div>
-              <p class="text-[10px] font-bold text-gray-400 capitalize">{{ vendor.category }}</p>
-            </div>
 
-            <!-- Metadata row -->
-            <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-50 text-[10px] font-medium text-gray-500">
-              <div class="flex items-center gap-1 whitespace-nowrap shrink-0">
-                <Clock class="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                <span>{{ vendor.preparationTime || 20 }} min</span>
-              </div>
-              <div class="flex items-center gap-1 whitespace-nowrap shrink-0">
-                <span class="text-gray-400 font-medium">Delivery:</span>
-                <span class="text-gray-900">₦{{ vendor.deliveryFee || 0 }}</span>
+              <p class="text-[13px] text-gray-500 font-medium line-clamp-1 mb-2">
+                {{ vendor.address || vendor.location?.address || 'Campus Location' }}
+              </p>
+
+              <div class="flex items-center gap-2 text-[12px] font-medium text-gray-400 mt-auto">
+                <span class="px-2 py-0.5 bg-gray-100 rounded-md text-gray-600 truncate max-w-[120px]">
+                  {{ vendor.category || 'Vendor' }}
+                </span>
+                <span>•</span>
+                <span>{{ vendor.totalRatings || 0 }} reviews</span>
               </div>
             </div>
           </div>
-        </div>
       </div>
 
       <!-- Empty State: No filter results -->
       <div v-else class="relative w-full overflow-hidden rounded-2xl border border-dashed border-gray-200 py-20 px-6 text-center">
         <!-- Background layers -->
-        <div class="absolute inset-0 bg-gradient-to-b from-slate-50/80 to-white pointer-events-none" />
-        <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-64 h-64 bg-parentPrimary/5 rounded-full blur-[80px] pointer-events-none" />
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-50/80 to-white pointer-events-none"></div>
+        <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-64 h-64 bg-parentPrimary/5 rounded-full blur-[80px] pointer-events-none"></div>
 
         <!-- Emoji icon -->
         <div class="relative z-10 w-16 h-16 bg-white rounded-2xl shadow-md border border-gray-100 flex items-center justify-center text-3xl mx-auto mb-5" style="animation: float 3s ease-in-out infinite;">
@@ -309,25 +320,38 @@
       </Transition>
     </Teleport>
 
+    <!-- NOTIFY MODAL -->
+    <VendorNotifyModal
+      :is-open="isNotifyModalOpen"
+      :vendor="selectedVendorForNotify"
+      @close="isNotifyModalOpen = false"
+    />
+
   </div>
 </template>
 
 <script setup lang="ts">
+
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useHead } from '#imports';
-import { Search, Tag, Clock, Star, Heart, Filter, X, Share2 } from 'lucide-vue-next';
+import { Search, Tag, Clock, Star, Heart, Filter, X, Share2, Bell } from 'lucide-vue-next';
+import VendorNotifyModal from '@/components/vendors/VendorNotifyModal.vue';
 import { useFavorites } from '@/composables/modules/favorites';
 import UiSelectInput from '@/components/ui/SelectInput.vue';
 import VendorClosedModal from '@/components/VendorClosedModal.vue';
+
+import { useGlobalFilter } from '@/composables/core/useGlobalFilter';
 
 definePageMeta({
   layout: false
 })
 
 const route = useRoute();
+const { globalFilter, setFilter, globalFiltersList } = useGlobalFilter();
+
 const loading = ref(true);
 const vendors = ref<any[]>([]);
-const searchQuery = ref('');
+const searchQuery = ref(globalFilter.value || '');
 const selectedCategory = ref(route.query.category as string || 'all');
 const showOnlyOffers = ref(false);
 const showQuickDelivery = ref(false);
@@ -336,6 +360,10 @@ const maxDeliveryFee = ref(1000);
 const minRating = ref('0');
 const sortBy = ref('popularity');
 const { favoriteVendorIds, fetchFavorites, toggleFavorite, isVendorFavorited } = useFavorites();
+
+watch(globalFilter, (newVal) => {
+  searchQuery.value = newVal;
+});
 
 const ratingOptions = [
   { label: 'All ratings', value: '0' },
@@ -348,6 +376,15 @@ const ratingOptions = [
 
 const isClosedModalOpen = ref(false);
 const selectedVendorForModal = ref<any>(null);
+
+// Add logic to handle notify click
+const isNotifyModalOpen = ref(false)
+const selectedVendorForNotify = ref<any>(null)
+
+const handleNotifyVendor = (vendor: any) => {
+  selectedVendorForNotify.value = vendor
+  isNotifyModalOpen.value = true
+}
 
 const handleVendorClick = (vendor: any) => {
   if (!vendor.isOpen) {
@@ -368,6 +405,7 @@ const handleShareVendor = (vendor: any) => {
 
 const allCategories = [
   { key: 'all', label: 'All', icon: '🏪' },
+  { key: 'favorites', label: 'Favorites', icon: '❤️' },
   { key: 'restaurant', label: 'Restaurants', icon: '🍽️' },
   { key: 'eatery', label: 'Local Food', icon: '🍛' },
   { key: 'snacks', label: 'Snacks', icon: '🍿' },
@@ -394,17 +432,12 @@ const hasActiveFilters = computed(() => {
 const filteredVendors = computed(() => {
   let filtered = vendors.value;
 
-  // Search
-  if (searchQuery.value.trim()) {
-    const q = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(v => 
-      v.storeName.toLowerCase().includes(q) || 
-      v.category.toLowerCase().includes(q)
-    );
-  }
+  // We no longer do text search here because the backend handles it via searchQuery watcher
 
   // Category
-  if (selectedCategory.value !== 'all') {
+  if (selectedCategory.value === 'favorites') {
+    filtered = filtered.filter((v) => isVendorFavorited(v._id));
+  } else if (selectedCategory.value !== 'all') {
     filtered = filtered.filter((v) => v.category === selectedCategory.value);
   }
 
@@ -450,12 +483,18 @@ const resetAllFilters = () => {
 
 import { vendors_api } from '@/api_factory/modules/vendors';
 
-onMounted(async () => {
+const fetchVendorsData = async () => {
+  loading.value = true;
   try {
+    const queryParams: any = { limit: 100 };
+    if (searchQuery.value) {
+      queryParams.search = searchQuery.value;
+    }
+
     const [recRes, trendRes, newRes] = await Promise.all([
-      vendors_api.getAll({ sortBy: 'recommended', limit: 100 }),
-      vendors_api.getAll({ sortBy: 'trending', limit: 100 }),
-      vendors_api.getAll({ sortBy: 'newest', limit: 100 })
+      vendors_api.getAll({ ...queryParams, sortBy: 'recommended' }),
+      vendors_api.getAll({ ...queryParams, sortBy: 'trending' }),
+      vendors_api.getAll({ ...queryParams, sortBy: 'newest' })
     ]);
     
     const recommended = recRes.data?.vendors || recRes.data?.data?.vendors || recRes.data || [];
@@ -463,27 +502,29 @@ onMounted(async () => {
     const newest = newRes.data?.vendors || newRes.data?.data?.vendors || newRes.data || [];
     
     const combined = [...recommended, ...trending, ...newest];
-    const rawVendors = Array.from(new Map(combined.map(v => [v._id, v])).values());
-    if (rawVendors.length === 0) {
-      vendors.value = [
-        { _id: 'mock1', storeName: 'Mavise Restaurant', category: 'restaurant', banner: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', logo: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&q=80', rating: 4.8, preparationTime: 25, deliveryFee: 200, isOpen: true, offers: ['20% OFF'] },
-        { _id: 'mock2', storeName: 'Quick Bites', category: 'snacks', banner: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=800&q=80', rating: 4.5, preparationTime: 15, deliveryFee: 100, isOpen: true, offers: ['Free Drink'] },
-        { _id: 'mock3', storeName: 'Mama Put Central', category: 'eatery', banner: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80', rating: 4.9, preparationTime: 30, deliveryFee: 150, isOpen: true }
-      ];
-    } else {
-      vendors.value = rawVendors.map((v: any) => ({ 
-        ...v, 
-        offers: v.offers?.length > 0 ? v.offers : (Math.random() > 0.7 ? ['Special Discount'] : []) 
-      }));
-    }
+    const rawVendors = Array.from(new Map(combined.map((v: any) => [v._id, v])).values());
+    
+    vendors.value = rawVendors.map((v: any) => ({ 
+      ...v, 
+      offers: v.offers?.length > 0 ? v.offers : (Math.random() > 0.7 ? ['Special Discount'] : []) 
+    }));
   } catch (e) {
-    console.error('API failed, using mock data for demo', e);
-    vendors.value = [
-      { _id: 'mock1', storeName: 'Mavise Restaurant (Demo)', category: 'restaurant', banner: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', logo: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200&q=80', rating: 4.8, preparationTime: 25, deliveryFee: 200, isOpen: true }
-    ];
+    console.error('API failed', e);
   } finally {
     loading.value = false;
   }
+};
+
+let searchTimeout: any;
+watch(searchQuery, () => {
+  if (searchTimeout) clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    fetchVendorsData();
+  }, 400);
+});
+
+onMounted(() => {
+  fetchVendorsData();
   fetchFavorites();
 });
 

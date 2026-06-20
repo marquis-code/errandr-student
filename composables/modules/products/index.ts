@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { products_api } from '@/api_factory/modules/products';
+import { search_api } from '@/api_factory/modules/search';
 
 export const useProducts = () => {
   const loading = ref(false);
@@ -23,8 +24,12 @@ export const useProducts = () => {
   const search = async (query: string) => {
     loading.value = true;
     try {
-      const res = await products_api.search(query);
-      searchResults.value = (res.data as any)?.products || res.data || [];
+      const res = await search_api.globalSearch({ q: query });
+      const searchData = (res.data as any)?.data || res.data || {};
+      searchResults.value = [
+        ...(searchData.products || []),
+        ...(searchData.services || [])
+      ];
       return searchResults.value;
     } catch (e) {
       console.error('Search failed', e);

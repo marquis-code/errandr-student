@@ -158,6 +158,43 @@
 
         </div>
       </div>
+
+      <!-- Global Filters Dropdown (Only on Home Page) -->
+      <div v-if="$route.path === '/'" class="mt-4 w-full border-t border-gray-200/40 pt-3 pb-1 flex justify-center md:justify-start">
+        <Menu as="div" class="relative inline-block text-left w-full md:w-auto">
+          <div>
+            <MenuButton class="inline-flex w-full md:w-auto justify-between md:justify-center items-center gap-x-3 rounded-full bg-white/90 px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all">
+              <div class="flex items-center gap-2">
+                <span v-if="!globalFilter" class="text-gray-500">
+                  <Filter class="w-4 h-4" />
+                </span>
+                <span v-else class="text-base leading-none">{{ activeFilterIcon }}</span>
+                <span>{{ globalFilter ? activeFilterLabel : 'Filter Categories' }}</span>
+              </div>
+              <ChevronDown class="h-4 w-4 text-gray-400" aria-hidden="true" />
+            </MenuButton>
+          </div>
+
+          <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
+            <MenuItems class="absolute left-0 md:left-0 z-[100] mt-2 w-full md:w-64 origin-top-left rounded-3xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 focus:outline-none overflow-hidden max-h-[60vh] overflow-y-auto custom-scrollbar">
+              <div class="p-2 space-y-0.5">
+                <MenuItem v-slot="{ active }">
+                  <button @click="setFilter('')" :class="[!globalFilter ? 'bg-parentPrimary/10 text-parentPrimary font-bold' : active ? 'bg-gray-50 text-gray-900 font-medium' : 'text-gray-700 font-medium', 'flex w-full items-center px-3 py-3 rounded-2xl text-sm transition-colors']">
+                    <span class="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center mr-3"><Filter class="w-4 h-4" /></span> All Categories
+                  </button>
+                </MenuItem>
+                <div class="h-px bg-gray-100 my-1 mx-2"></div>
+                <MenuItem v-for="catFilter in globalFiltersList" :key="catFilter.keyword" v-slot="{ active }">
+                  <button @click="setFilter(catFilter.keyword)" :class="[globalFilter === catFilter.keyword ? 'bg-parentPrimary/10 text-parentPrimary font-bold' : active ? 'bg-gray-50 text-gray-900 font-medium' : 'text-gray-700 font-medium', 'flex w-full items-center px-3 py-3 rounded-2xl text-sm transition-colors']">
+                    <span class="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center mr-3 text-base shadow-sm border border-gray-100/50">{{ catFilter.icon }}</span> {{ catFilter.label }}
+                  </button>
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </transition>
+        </Menu>
+      </div>
+
     </div>
     <CoreManageBookingModal :isOpen="isBookingModalOpen" @close="isBookingModalOpen = false" />
     <CoreManageOrderModal :isOpen="isOrderModalOpen" @close="isOrderModalOpen = false" />
@@ -165,16 +202,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { useUser } from "@/composables/modules/auth/user"
-import { Home, User, LogOut, Menu as MenuIcon } from 'lucide-vue-next'
+import { Home, User, LogOut, Menu as MenuIcon, Filter, ChevronDown } from 'lucide-vue-next'
+import { useRoute } from 'vue-router'
+import { useGlobalFilter } from '@/composables/core/useGlobalFilter'
 
 const isBookingModalOpen = ref(false)
 const isOrderModalOpen = ref(false)
 const scrolled = ref(false)
 
+const $route = useRoute()
 const { user, logOut } = useUser()
+const { globalFilter, setFilter, globalFiltersList, fetchCategories } = useGlobalFilter()
+
+const activeFilterLabel = computed(() => {
+  const list = globalFiltersList.value || globalFiltersList
+  const f = list.find((f: any) => f.keyword === globalFilter.value)
+  return f ? f.label : ''
+})
+
+const activeFilterIcon = computed(() => {
+  const list = globalFiltersList.value || globalFiltersList
+  const f = list.find((f: any) => f.keyword === globalFilter.value)
+  return f ? f.icon : ''
+})
 
 const handleLogout = async () => {
   await logOut()
@@ -187,6 +240,7 @@ const handleScroll = () => {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  fetchCategories()
 })
 
 onUnmounted(() => {

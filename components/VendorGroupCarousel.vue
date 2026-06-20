@@ -41,27 +41,18 @@
             v-for="vendor in vendors"
             :key="vendor._id"
             @click="$emit('select-vendor', vendor)"
-            class="min-w-[280px] sm:min-w-[320px] w-[280px] sm:w-[320px] snap-start shrink-0 group cursor-pointer relative flex flex-col bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+            class="min-w-[280px] sm:min-w-[320px] w-[280px] sm:w-[320px] snap-start shrink-0 group cursor-pointer relative flex flex-col bg-white rounded-3xl hover:-translate-y-1 transition-all duration-300"
           >
-            <div class="relative h-[180px] w-full overflow-hidden">
-              <!-- SINGLE VENDOR CLOSED STATE -->
+            <!-- TOP IMAGE AREA -->
+            <div class="relative h-[200px] w-full overflow-hidden rounded-3xl border border-gray-100 shadow-sm">
+              <!-- Closed State Overlay -->
               <template v-if="!vendor.isOpen">
                 <img
                   :src="vendor.banner || vendor.image || vendor.logo || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
                   class="w-full h-full object-cover grayscale opacity-50"
                   alt="Vendor Banner"
                 />
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-gray-900/10"></div>
-                <div class="absolute top-0 inset-x-0 h-1 bg-[repeating-linear-gradient(135deg,#6366f1_0px,#6366f1_4px,#1e1e2e_4px,#1e1e2e_10px)]"></div>
-                <div class="absolute top-4 left-4">
-                  <div v-if="vendor.logo" class="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white/10" style="filter: grayscale(0.5) brightness(0.7)">
-                    <img :src="vendor.logo" class="w-full h-full object-cover bg-white" alt="Store Logo" />
-                  </div>
-                  <div v-else :class="`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-medium text-white border-2 border-white/10 ${getVendorColor(vendor.storeName)}`"
-                    style="filter: grayscale(0.5) brightness(0.7)">
-                    {{ getInitials(vendor.storeName) }}
-                  </div>
-                </div>
+                <div class="absolute inset-0 bg-gray-900/40"></div>
                 <div class="absolute bottom-0 inset-x-0 flex items-center justify-between px-4 py-3 bg-white/10 backdrop-blur-md border-t border-white/10">
                   <div>
                     <p class="text-white text-xs font-medium leading-none mb-0.5">Closed right now</p>
@@ -69,91 +60,73 @@
                   </div>
                   <button
                     @click.stop="$emit('notify', vendor)"
-                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 hover:bg-white active:scale-95 text-gray-900 rounded-xl text-[11px] font-medium transition-all shadow-md"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-[11px] font-bold transition-all shadow-md"
                   >
                     <Bell class="w-3 h-3" /> Notify me
                   </button>
                 </div>
               </template>
-
-              <!-- NORMAL OPEN VENDOR -->
+              
+              <!-- Open State -->
               <template v-else>
                 <img
                   :src="vendor.banner || vendor.image || vendor.logo || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                   alt="Vendor Banner"
                 />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                <div class="absolute top-5 left-5">
-                  <div v-if="vendor.logo" class="w-14 h-14 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 bg-white">
-                    <img :src="vendor.logo" class="w-full h-full object-cover" alt="Store Logo" />
-                  </div>
-                  <div v-else :class="`w-14 h-14 rounded-2xl flex items-center justify-center text-md font-medium text-white shadow-2xl border-2 border-white/20 ${getVendorColor(vendor.storeName)}`">
-                    {{ getInitials(vendor.storeName) }}
-                  </div>
-                </div>
-                <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 overflow-hidden">
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <span v-if="vendor.businessType === 'service_provider'" class="px-2.5 py-1 bg-purple-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-extrabold tracking-wider border border-white/20 shadow-lg shrink-0">
-                      SERVICE
-                    </span>
-                    <span v-else-if="vendor.businessType === 'hybrid'" class="px-2.5 py-1 bg-indigo-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-extrabold tracking-wider border border-white/20 shadow-lg shrink-0">
-                      HYBRID
-                    </span>
-                    <span v-else class="px-2.5 py-1 bg-blue-600/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-extrabold tracking-wider border border-white/20 shadow-lg shrink-0">
-                      STORE
-                    </span>
-
-                    <span v-if="vendor.preOrderOnly" class="px-2 py-1 bg-rose-500/90 backdrop-blur-xl rounded-lg text-white text-[9px] font-bold tracking-wider border border-white/20 shadow-lg shrink-0">
-                      PRE-ORDER
-                    </span>
-                    <span class="px-2.5 py-1 bg-gray-900/40 backdrop-blur-xl rounded-lg text-white text-[9px] font-bold tracking-wider border border-white/20 truncate transition-all duration-500 group-hover:bg-parentPrimary group-hover:border-parentPrimary">
-                      {{ vendor.category }}
-                    </span>
-                  </div>
-                  <span v-if="vendor.rating" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md rounded-xl px-2.5 py-1.5 text-sm font-medium text-gray-900 shadow-xl border border-gray-50 group-hover:scale-105 transition-transform duration-500">
-                    <Star class="w-3 h-3 text-parentPrimary fill-current" /> {{ vendor.rating.toFixed(1) }}
-                  </span>
-                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </template>
+
+              <!-- TOP LEFT BADGES -->
+              <div class="absolute top-3 left-3 flex flex-col gap-2">
+                <span v-if="vendor.isFeatured" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-gray-900 text-[10px] font-extrabold tracking-wide uppercase">
+                  Featured
+                </span>
+                <span v-else-if="vendor.businessType === 'service_provider'" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-purple-700 text-[10px] font-extrabold tracking-wide uppercase">
+                  Service
+                </span>
+                <span v-else-if="vendor.businessType === 'hybrid'" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-indigo-700 text-[10px] font-extrabold tracking-wide uppercase">
+                  Hybrid
+                </span>
+                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-rose-600 text-[10px] font-extrabold tracking-wide uppercase">
+                  Pre-order
+                </span>
+              </div>
+
+              <!-- HEART ICON (TOP RIGHT) -->
+              <button
+                @click.stop="handleToggleFavorite(vendor._id)"
+                class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-gray-400 hover:text-rose-500 hover:bg-white transition-all hover:scale-110"
+                :class="isVendorFavorited(vendor._id) ? 'text-rose-500' : ''"
+              >
+                <Heart :class="['w-4 h-4', isVendorFavorited(vendor._id) ? 'fill-current' : '']" />
+              </button>
             </div>
 
-            <!-- Card body -->
-            <div class="p-6 flex-1 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between gap-4 mb-3">
-                  <h3 class="text-xl font-medium text-gray-900 group-hover:text-parentPrimary transition-colors -tight truncate">{{ vendor.storeName }}</h3>
-                  <div v-if="vendor.isOpen" class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100/50">
-                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span class="text-sm font-medium">open</span>
-                  </div>
-                  <div v-else class="flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 text-gray-400 rounded-lg border border-gray-100">
-                    <div class="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                    <span class="text-sm font-medium">{{ vendor.statusMessage || 'closed' }}</span>
-                  </div>
+            <!-- BOTTOM DETAILS AREA -->
+            <div class="pt-3 pb-1 px-1 flex-1 flex flex-col">
+              <div class="flex items-start justify-between gap-3 mb-1">
+                <h3 class="text-[17px] font-bold text-gray-900 group-hover:text-parentPrimary transition-colors truncate">
+                  {{ vendor.storeName }}
+                </h3>
+                <div class="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg shrink-0">
+                  <Star class="w-3.5 h-3.5 text-amber-500 fill-current" />
+                  <span class="text-[13px] font-bold text-gray-900">{{ vendor.rating ? vendor.rating.toFixed(1) : '5.0' }}</span>
                 </div>
-                <p class="text-[13px] text-gray-500 line-clamp-2 mb-6 leading-relaxed font-medium group-hover:text-gray-600 transition-colors">{{ vendor.description }}</p>
               </div>
-              <div class="flex items-center justify-between pt-5 border-t border-gray-50/80">
-                <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium text-gray-400 tracking-tight min-w-0">
-                  <span class="flex items-center gap-1.5 group-hover:text-gray-900 transition-colors whitespace-nowrap shrink-0">
-                    <Clock class="w-3.5 h-3.5 shrink-0" /> {{ vendor.preparationTime || 20 }} min
-                  </span>
-                  <span v-if="vendor.businessType !== 'service_provider'" class="flex items-center gap-1.5 text-parentPrimary/80 group-hover:text-parentPrimary transition-colors whitespace-nowrap shrink-0">
-                    <Bike class="w-3.5 h-3.5 shrink-0" /> From ₦{{ vendor.baseDeliveryFee || 600 }}
-                  </span>
-                  <span v-else class="flex items-center gap-1.5 text-purple-600/80 group-hover:text-purple-600 transition-colors whitespace-nowrap shrink-0">
-                    <Sparkles class="w-3.5 h-3.5 shrink-0" /> Service
-                  </span>
-                </div>
-                <div class="flex items-center gap-2 shrink-0">
-                  <button @click.stop="$emit('share-vendor', vendor)" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-parentPrimary hover:text-white transition-all duration-300">
-                    <Share2 class="w-4 h-4 shrink-0" />
-                  </button>
-                  <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-parentPrimary group-hover:text-white group-hover:rotate-45 transition-all duration-500">
-                    <ArrowUpRight class="w-4 h-4 shrink-0" />
-                  </div>
-                </div>
+
+              <!-- Address/Location -->
+              <p class="text-[13px] text-gray-500 font-medium line-clamp-1 mb-2">
+                {{ vendor.address || vendor.location?.address || 'Campus Location' }}
+              </p>
+
+              <!-- Category and Review Count -->
+              <div class="flex items-center gap-2 text-[12px] font-medium text-gray-400 mt-auto">
+                <span class="px-2 py-0.5 bg-gray-100 rounded-md text-gray-600 truncate max-w-[120px]">
+                  {{ vendor.category || 'Vendor' }}
+                </span>
+                <span>•</span>
+                <span>{{ vendor.totalRatings || 0 }} reviews</span>
               </div>
             </div>
           </div>
@@ -164,7 +137,11 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight, Store, Star, Clock, Bike, ArrowUpRight, Bell, Sparkles, TrendingUp, Flame, Share2 } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, Store, Star, Clock, Bike, ArrowUpRight, Bell, Sparkles, TrendingUp, Flame, Share2, Heart } from 'lucide-vue-next'
+import { useFavorites } from '@/composables/modules/favorites'
+
+const { isVendorFavorited, toggleFavorite } = useFavorites()
+
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -183,6 +160,10 @@ const scrollCarousel = (direction: 'left' | 'right') => {
     const scrollAmount = direction === 'left' ? -340 : 340
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
   }
+}
+
+const handleToggleFavorite = async (vendorId: string) => {
+  await toggleFavorite({ vendorId })
 }
 
 const getVendorColor = (name: string) => {

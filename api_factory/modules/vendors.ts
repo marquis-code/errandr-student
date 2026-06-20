@@ -13,6 +13,10 @@ export const vendors_api = {
     return GATEWAY_ENDPOINT_WITH_AUTH.get('/vendors/statistics');
   },
 
+  getCategories: () => {
+    return GATEWAY_ENDPOINT.get('/vendors/categories');
+  },
+
   getProfile: () => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get('/vendors/mine');
   },
@@ -35,5 +39,9 @@ export const vendors_api = {
 
   getPopular: () => {
     return GATEWAY_ENDPOINT.get('/vendors/popular');
+  },
+
+  notifyWhenOnline: (id: string, email: string, pushSubscription?: any) => {
+    return GATEWAY_ENDPOINT.post(`/vendors/${id}/notify`, { email, pushSubscription });
   },
 };

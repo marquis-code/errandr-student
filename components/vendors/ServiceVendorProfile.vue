@@ -32,11 +32,12 @@
           </span>
           <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight">{{ vendor.storeName }}</h1>
           <div class="flex flex-wrap items-center gap-3 mt-1 text-white/90 text-sm font-medium">
-            <div v-if="vendor.rating" class="flex items-center gap-1 bg-white/20 px-2.5 py-1 rounded-full backdrop-blur-sm">
+            <button v-if="vendor.rating" @click="showReviewsModal = true" class="flex items-center gap-1 bg-white/20 px-2.5 py-1 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors active:scale-95">
               <Star class="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
               <span class="font-bold">{{ vendor.rating?.toFixed(1) }}</span>
-              <span class="text-white/70">({{ vendor.totalRatings || 0 }})</span>
-            </div>
+              <span class="text-white/70">({{ vendor.totalRatings || 0 }} reviews)</span>
+              <ChevronRight class="w-3 h-3 ml-0.5 opacity-60" />
+            </button>
             <div v-if="vendor.category" class="flex items-center gap-1 text-xs bg-white/20 px-2.5 py-1 rounded-full backdrop-blur-sm capitalize">
               <Sparkles class="w-3.5 h-3.5" />
               {{ vendor.category.replace(/_/g, ' ') }}
@@ -229,15 +230,25 @@
       :initialService="selectedServiceForBooking"
       @close="isBookingFlowOpen = false"
     />
+
+    <!-- Reviews Modal -->
+    <VendorReviewsModal 
+      :isOpen="showReviewsModal" 
+      :vendor="vendor" 
+      @close="showReviewsModal = false" 
+      @review-added="fetchVendorDetails"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { ArrowLeft, Share2, Heart, Star, Clock, MapPin, Sparkles, Navigation, Link as LinkIcon, Check } from 'lucide-vue-next';
+import { ArrowLeft, Share2, Heart, Star, Clock, MapPin, Sparkles, Navigation, Link as LinkIcon, Check, ChevronRight } from 'lucide-vue-next';
 import { services_api } from '@/api_factory/modules/services';
+import { vendors_api } from '@/api_factory/modules/vendors';
 import { useFavorites } from '@/composables/modules/favorites';
 import BookingFlow from '@/components/vendors/booking/BookingFlow.vue';
+import VendorReviewsModal from '@/components/vendors/VendorReviewsModal.vue';
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
@@ -250,11 +261,23 @@ const { toggleFavorite, isVendorFavorited, fetchFavorites, favoriteVendorIds } =
 const vendorServices = ref<any[]>([]);
 const activeCategory = ref('Featured');
 const isBookingFlowOpen = ref(false);
+const showReviewsModal = ref(false);
 const selectedServiceForBooking = ref<any>(null);
 const togglingFavorite = ref(false);
 const linkCopied = ref(false);
 
 const isFavorited = computed(() => isVendorFavorited(props.vendor._id));
+
+const fetchVendorDetails = async () => {
+  try {
+    const res = await vendors_api.getVendorById(props.vendor._id);
+    if (res.data) {
+      Object.assign(props.vendor, res.data);
+    }
+  } catch (err) {
+    console.error('Failed to fetch updated vendor details', err);
+  }
+};
 
 // --- Share URLs ---
 const shareUrl = computed(() => {

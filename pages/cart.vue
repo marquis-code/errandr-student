@@ -187,7 +187,7 @@
             </div>
 
             <!-- Add-ons -->
-            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div v-if="hasFoodVendor" class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
               <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100">
                 <div class="w-8 h-8 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
                   <span class="text-base">✨</span>
@@ -209,8 +209,8 @@
                   <div class="flex items-center gap-3">
                     <span class="text-lg">🏢</span>
                     <div>
-                      <p class="text-xs font-medium text-gray-900 leading-none mb-0.5">Dorm Delivery</p>
-                      <p class="text-[10px] font-bold text-gray-400">Split fee with neighbors</p>
+                      <p class="text-xs font-medium text-gray-900 leading-none mb-0.5">Priority Dorm Delivery</p>
+                      <p class="text-[10px] font-bold text-gray-400">Fast-tracked delivery to your room</p>
                     </div>
                   </div>
                   <input type="checkbox" v-model="isDormDelivery" class="w-5 h-5 accent-emerald-500 cursor-pointer rounded">
@@ -320,7 +320,7 @@
                     <span class="text-[9px] font-medium bg-gray-900 text-white px-2.5 py-1 rounded-md">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
                     <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3">
                       <div class="w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-gray-100 bg-gray-50">
-                        <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
+                        <img :src="item.image || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                       </div>
                       <div class="flex-1 min-w-0">
                         <h5 class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
@@ -461,7 +461,7 @@
                 </div>
                 <div v-for="(item, iIndex) in pack.items" :key="'mb-item-'+iIndex" class="flex items-center gap-3">
                   <div class="w-11 h-11 bg-gray-50 rounded-lg overflow-hidden border border-gray-100 shrink-0">
-                    <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
+                    <img :src="item.image || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                   </div>
                   <div class="flex-1 min-w-0">
                     <h5 class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
@@ -680,6 +680,14 @@ const scheduledDate = ref('');
 
 const isPreOrderCart = computed(() => {
   return cartStore.allVendorIds.value.some(id => vendorsMetadata.value[id]?.preOrderOnly);
+});
+
+const hasFoodVendor = computed(() => {
+  return cartStore.allVendorIds.value.some(id => {
+    const cat = vendorsMetadata.value[id]?.category?.toLowerCase() || '';
+    const foodCats = ['restaurant', 'eatery', 'snacks', 'drinks', 'bakery', 'chinese', 'indian', 'pizza', 'sushi', 'food'];
+    return foodCats.includes(cat);
+  });
 });
 
 const maxLeadTime = computed(() => {

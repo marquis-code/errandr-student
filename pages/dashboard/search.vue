@@ -96,7 +96,7 @@
 import { Search } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { products_api } from '@/api_factory/modules/products';
+import { search_api } from '@/api_factory/modules/search';
 
 definePageMeta({
   layout: 'student'
@@ -115,8 +115,12 @@ const performSearch = async () => {
   }
   searching.value = true;
   try {
-    const res = await products_api.search(query.value);
-    results.value = (res.data as any)?.products || res.data || [];
+    const res = await search_api.globalSearch({ q: query.value });
+    const searchData = (res.data as any)?.data || res.data || {};
+    results.value = [
+      ...(searchData.products || []),
+      ...(searchData.services || [])
+    ];
   } catch (e) { 
     console.error(e); 
   } finally { 
