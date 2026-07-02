@@ -1,55 +1,52 @@
 import { ref, onMounted } from 'vue';
-
-const VIEWED_KEY = 'errander_recently_viewed';
+import { users_api } from '@/api_factory/modules/users';
 
 export const useRecentlyViewed = () => {
   const recentlyViewedVendors = ref<any[]>([]);
+  const loading = ref(false);
 
-  const getRecent = () => {
+  const getRecent = async () => {
     try {
-      const stored = localStorage.getItem(VIEWED_KEY);
-      if (stored) {
-        recentlyViewedVendors.value = JSON.parse(stored);
+      loading.value = true;
+      const res = await users_api.getRecentlyViewed();
+      if (res.data) {
+        recentlyViewedVendors.value = res.data;
       }
-    } catch (e) {
-      console.error('Failed to parse recently viewed vendors', e);
+    } catch (e: any) {
+      if (e.response && e.response.status === 401) {
+        // User is not authenticated, ignore
+      } else {
+        console.error('Failed to fetch recently viewed vendors', e);
+      }
+    } finally {
+      loading.value = false;
     }
   };
 
-  const addRecent = (vendor: any) => {
+  const addRecent = async (vendor: any) => {
     if (!vendor || !vendor._id) return;
     
-    // Keep lightweight to not bloat localStorage
-    const lightweight = {
-      _id: vendor._id,
-      storeName: vendor.storeName,
-      image: vendor.image,
-      banner: vendor.banner,
-      logo: vendor.logo,
-      rating: vendor.rating,
-      category: vendor.category,
-      businessType: vendor.businessType,
-      isOpen: vendor.isOpen,
-      preparationTime: vendor.preparationTime,
-      deliveryFee: vendor.deliveryFee,
-      description: vendor.description,
-      preOrderOnly: vendor.preOrderOnly
-    };
-
-    getRecent();
+    // Optimistically update the UI if the vendor is not already at the front
     let list = [...recentlyViewedVendors.value];
     list = list.filter(v => v._id !== vendor._id);
-    list.unshift(lightweight);
-    
+    list.unshift(vendor);
     if (list.length > 10) list = list.slice(0, 10);
-    
     recentlyViewedVendors.value = list;
-    localStorage.setItem(VIEWED_KEY, JSON.stringify(list));
+
+    try {
+      await users_api.addRecentlyViewed(vendor._id);
+    } catch (e: any) {
+      if (e.response && e.response.status === 401) {
+        // Ignore for unauthenticated users
+      } else {
+        console.error('Failed to add recently viewed vendor', e);
+      }
+    }
   };
 
   onMounted(() => {
     getRecent();
   });
 
-  return { recentlyViewedVendors, addRecent, getRecent };
+  return { recentlyViewedVendors, addRecent, getRecent, loading };
 };

@@ -348,11 +348,19 @@
                   </div>
                   <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
                     <span>Delivery</span>
-                    <span class="text-gray-900 font-medium">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
+                    <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-medium'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
                   </div>
                   <div class="flex justify-between items-center text-xs font-bold text-gray-500">
                     <span>Fees & Packaging</span>
                     <span class="text-gray-900 font-medium">₦{{ (computedTotalPackagingFee + computedTotalServiceFee).toLocaleString() }}</span>
+                  </div>
+                  <div v-if="isBirthday" class="flex justify-between items-center text-xs font-bold text-[#008950]">
+                    <span class="flex items-center gap-1">🎂 Birthday Treat</span>
+                    <span class="font-bold">-₦{{ computedBirthdayDiscount.toLocaleString() }}</span>
+                  </div>
+                  <div v-if="computedTokenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-orange-500">
+                    <span class="flex items-center gap-1">🎟 Streak Free Delivery</span>
+                    <span class="font-bold">-₦{{ computedTokenDiscount.toLocaleString() }}</span>
                   </div>
                   <div v-if="computedPaystackFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
                     <span>Processing Fee</span>
@@ -360,6 +368,16 @@
                   </div>
                 </div>
                 <div class="px-5 pb-5 pt-3 border-t border-dashed border-gray-100 space-y-5">
+                  <div v-if="user && user.freeDeliveryTokens > 0 && !isBirthday" class="flex items-center justify-between p-3 bg-orange-50 border border-orange-100 rounded-xl cursor-pointer hover:bg-orange-100/50 transition-colors" @click="useFreeDeliveryToken = !useFreeDeliveryToken">
+                    <div class="flex flex-col">
+                      <span class="text-xs font-bold text-orange-600 flex items-center gap-1">🎟 Use Free Delivery</span>
+                      <span class="text-[9px] text-orange-500 font-medium">You have {{ user.freeDeliveryTokens }} left</span>
+                    </div>
+                    <div class="w-8 h-4 rounded-full transition-colors relative" :class="useFreeDeliveryToken ? 'bg-orange-500' : 'bg-orange-200'">
+                      <div class="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all shadow-sm" :class="useFreeDeliveryToken ? 'left-[18px]' : 'left-0.5'"></div>
+                    </div>
+                  </div>
+                  
                   <div class="flex justify-between items-end">
                     <div>
                       <p class="text-[10px] font-medium text-gray-400 tracking-wider mb-1">Total</p>
@@ -634,6 +652,7 @@ import { useStudentOrders } from '@/composables/modules/orders';
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from '#app';
 import { useWallet } from '@/composables/modules/wallets';
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 
 definePageMeta({ layout: false });
 
@@ -677,6 +696,7 @@ const selectedPacks = ref<Record<string, any>>({});
 const isMysteryBox = ref(false);
 const isDormDelivery = ref(false);
 const scheduledDate = ref('');
+const useFreeDeliveryToken = ref(false);
 
 const isPreOrderCart = computed(() => {
   return cartStore.allVendorIds.value.some(id => vendorsMetadata.value[id]?.preOrderOnly);
@@ -731,6 +751,13 @@ const currentSubtotal = computed(() => {
   return isMysteryBox.value ? base + 800 : base;
 });
 
+const isBirthday = computed(() => {
+  if (!user.value || !user.value.dateOfBirth) return false;
+  const today = new Date();
+  const dob = new Date(user.value.dateOfBirth);
+  return today.getMonth() === dob.getMonth() && today.getDate() === dob.getDate();
+});
+
 const canCheckout = computed(() => {
   if (!groupOrder.value) return true;
   if (groupOrder.value.status === 'open') return isHost.value;
@@ -745,12 +772,52 @@ const canCheckout = computed(() => {
   return false;
 });
 
+const dynamicDeliveryFees = ref<Record<string, number>>({});
+const isFetchingFees = ref(false);
 
+const fetchDeliveryFees = async () => {
+  if (deliveryOption.value === 'pickup') return;
+  const address = isDormDelivery.value ? (specificAddress.value || user.value?.deliveryAddress) : user.value?.deliveryAddress;
+  
+  if (!address) return; // Wait until address is known
+
+  isFetchingFees.value = true;
+  try {
+    for (const vId of cartStore.allVendorIds.value) {
+      const { data } = await api.get('/orders/calculate-fee', {
+        params: {
+          vendorId: vId,
+          deliveryAddress: address,
+          weight: 1, // Add weight logic if tracking weight in the future
+          customerId: user.value?._id
+        }
+      });
+      if (data && data.success) {
+        dynamicDeliveryFees.value[vId] = data.deliveryFee;
+      }
+    }
+  } catch(e) {
+    console.error('Failed to calculate dynamic delivery fee', e);
+  } finally {
+    isFetchingFees.value = false;
+  }
+};
+
+watch(
+  [() => cartStore.allVendorIds.value, specificAddress, isDormDelivery, deliveryOption], 
+  () => { fetchDeliveryFees(); }, 
+  { deep: true }
+);
+
+onMounted(() => {
+  fetchDeliveryFees();
+});
 const computedTotalDeliveryFee = computed(() => {
   if (deliveryOption.value === 'pickup') return 0;
   let total = 0;
   cartStore.allVendorIds.value.forEach(vId => {
-    total += vendorsMetadata.value[vId]?.deliveryFee ?? 150;
+    // Fallback to static if dynamic fee isn't fetched yet
+    total += dynamicDeliveryFees.value[vId] ?? vendorsMetadata.value[vId]?.deliveryFee ?? 150;
   });
   if (groupOrder.value && groupOrder.value.status === 'locked' && groupOrder.value.splitType === 'split_bill') {
      const activeParticipants = groupOrder.value.participants.filter((p: any) => p.items.length > 0).length || 1;
@@ -774,6 +841,19 @@ const computedTotalPackagingFee = computed(() => {
 
 const computedTotalServiceFee = computed(() => Math.round(currentSubtotal.value * 0.05));
 
+const computedBirthdayDiscount = computed(() => {
+  if (!isBirthday.value) return 0;
+  // 100% free delivery + 10% off subtotal
+  return computedTotalDeliveryFee.value + Math.round(currentSubtotal.value * 0.10);
+});
+
+const computedTokenDiscount = computed(() => {
+  if (useFreeDeliveryToken.value && user.value && user.value.freeDeliveryTokens > 0 && !isBirthday.value) {
+    return computedTotalDeliveryFee.value;
+  }
+  return 0;
+});
+
 const groupSubtotal = computed(() => {
   if (!groupOrder.value) return 0;
   return groupOrder.value.participants.reduce((acc: number, p: any) =>
@@ -781,7 +861,7 @@ const groupSubtotal = computed(() => {
 });
 
 const subtotalBeforeFee = computed(() =>
-  currentSubtotal.value + computedTotalDeliveryFee.value + computedTotalPackagingFee.value + computedTotalServiceFee.value
+  currentSubtotal.value + computedTotalDeliveryFee.value + computedTotalPackagingFee.value + computedTotalServiceFee.value - computedBirthdayDiscount.value - computedTokenDiscount.value
 );
 
 const computedPaystackFee = computed(() => {
@@ -1051,7 +1131,7 @@ const preCreateOrders = async (): Promise<string[]> => {
         vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal })) })),
         subtotal: stats.subtotal, deliveryFee, serviceFee: stats.serviceFee, packagingFee: vendor?.packagingFee ?? 300, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: vendor?.packagingFee ?? 300 },
         isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, weight: 1.0,
-        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value
+        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value
       });
       if (res?._id || res?.data?._id) { 
         createdIds.push(res?._id || res?.data?._id); 

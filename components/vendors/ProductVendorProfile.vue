@@ -140,10 +140,10 @@
           <button 
             @click="handleStartGroupOrder"
             class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-medium transition-all whitespace-nowrap shrink-0 shadow-lg active:scale-95"
-            :class="activeCode ? 'bg-emerald-500 text-white' : 'bg-white text-gray-900 border border-gray-100 shadow-md'"
+            :class="isGroupOrderActiveForThisVendor ? 'bg-emerald-500 text-white' : 'bg-white text-gray-900 border border-gray-100 shadow-md'"
           >
             <Users class="w-3.5 h-3.5" />
-            {{ activeCode ? `Group: ${activeCode}` : 'Group Order' }}
+            {{ isGroupOrderActiveForThisVendor ? `Group: ${activeCode}` : 'Group Order' }}
           </button>
           
           <button 
@@ -489,10 +489,11 @@
                       <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
                     </div>
                     <NuxtLink 
-                      :to="activeCode ? `/cart?group=${activeCode}` : '/cart'" 
+                      v-if="!isVendorClosed"
+                      :to="isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart'" 
                       class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-medium tracking-wider hover:bg-parentPrimary/90 transition-all shadow-xl shadow-parentPrimary/20 active:scale-[0.98]"
                     >
-                      {{ activeCode ? 'Finalize Order' : 'Proceed to Checkout' }}
+                      {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Proceed to Checkout' }}
                     </NuxtLink>
                   </div>
                 </div>
@@ -617,10 +618,12 @@
                   <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
                 </div>
                 <NuxtLink 
-                  :to="activeCode ? `/cart?group=${activeCode}` : '/cart'" 
-                  class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-medium tracking-wider shadow-xl shadow-parentPrimary/20 active:scale-[0.98] transition-transform"
+                  v-if="!isVendorClosed"
+                  :to="isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart'" 
+                  class="flex-1 py-3.5 bg-gray-900 text-white rounded-xl font-bold text-[15px] shadow-lg shadow-gray-900/20 hover:bg-parentPrimary hover:shadow-parentPrimary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
-                  {{ activeCode ? 'Finalize Order' : 'Proceed to Checkout' }}
+                  {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Proceed to Checkout' }}
+                  <ArrowRight class="w-4 h-4" />
                 </NuxtLink>
               </div>
             </div>
@@ -1000,6 +1003,14 @@ const scrolled = ref(false);
 const showMobileCartDrawer = ref(false);
 const props = defineProps<{ vendor: any }>();
 const vendor = computed(() => props.vendor);
+
+const isGroupOrderActiveForThisVendor = computed(() => {
+  if (!activeCode.value || !groupOrder.value || !vendor.value) return false;
+  const vendorId = vendor.value._id;
+  const goVendorId = groupOrder.value.vendor?._id || groupOrder.value.vendor;
+  return vendorId === goVendorId;
+});
+
 const products = ref<any[]>([]);
 const vendorServices = ref<any[]>([]);
 const showBookingModal = ref(false);
@@ -1142,7 +1153,7 @@ const removeFromCart = (product: any) => {
       cart.removeItemFromPack(vendorId, packId, itemIndex);
     }
   }
-  if (activeCode.value) {
+  if (isGroupOrderActiveForThisVendor.value) {
     setTimeout(() => syncWithCart(vendorId), 100);
   }
 };
@@ -1157,7 +1168,7 @@ const addToCart = (product: any) => {
     quantity: 1,
     customizations: [],
   });
-  if (activeCode.value) {
+  if (isGroupOrderActiveForThisVendor.value) {
     setTimeout(() => syncWithCart(vendor.value._id), 100);
   }
 };
@@ -1234,7 +1245,7 @@ const scrollToCategory = (cat: string) => {
 };
 
 const handleStartGroupOrder = () => {
-  if (activeCode.value) {
+  if (isGroupOrderActiveForThisVendor.value) {
     if (isHost.value) {
       showHostInstructionsModal.value = true;
     } else {

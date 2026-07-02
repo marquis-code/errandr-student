@@ -21,14 +21,15 @@
         <UiAnimatedInput v-model="form.phone" type="tel" label="phone number" placeholder="" />
         <UiAnimatedInput v-model="form.matricNumber" type="text" label="matric number" placeholder="" />
         <UiAnimatedInput v-model="form.password" type="password" label="password" required minlength="6" placeholder="" />
-        <UiAnimatedInput v-model="form.referredBy" type="text" label="referral code (optional)" placeholder="Who referred you?" />
+        <BirthdayPicker v-model="form.dateOfBirth" />
+        <UiAnimatedInput v-model="form.referredBy" type="text" label="referral code (optional)" placeholder="Who referred you?" @input="formatReferralCode" />
 
         <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
 
-        <button type="submit" :disabled="loading"
+        <button type="submit" :disabled="loading || validatingReferral"
           class="w-full py-3 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#FF5C1A]/20 mt-4">
-          <Loader2 v-if="loading" class="animate-spin w-6 h-6" />
-          {{ loading ? 'creating account...' : 'create account' }}
+          <Loader2 v-if="loading || validatingReferral" class="animate-spin w-6 h-6" />
+          {{ loading || validatingReferral ? 'validating...' : 'create account' }}
         </button>
 
         <p class="text-center text-gray-600 font-medium">
@@ -47,14 +48,56 @@
 
 <script setup lang="ts">
 import { Loader2, ShoppingBag } from 'lucide-vue-next'
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
+import BirthdayPicker from '@/components/BirthdayPicker.vue'
+import { GATEWAY_ENDPOINT } from '@/api_factory/axios.config'
 import { useAuth } from '@/composables/modules/auth'
 definePageMeta({ layout: false })
 const { register, loading } = useAuth()
 const error = ref('')
-const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', matricNumber: '', referredBy: '' })
+const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', matricNumber: '', referredBy: '', dateOfBirth: '' })
+
+const validatingReferral = ref(false)
+
+const formatReferralCode = () => {
+  if (!form.referredBy) return;
+  let val = form.referredBy;
+  let formatted = val.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+  if (formatted.startsWith('ERR-')) {
+    formatted = formatted.substring(4);
+  } else if (formatted.startsWith('ERR')) {
+    formatted = formatted.substring(3);
+  } else if (formatted.startsWith('ER')) {
+    formatted = formatted.substring(2);
+  } else if (formatted.startsWith('E')) {
+    formatted = formatted.substring(1);
+  }
+  
+  if (formatted.length > 0) {
+    form.referredBy = 'ERR-' + formatted.replace(/-/g, '');
+  } else if (val.length > 0 && !['ERR', 'ER', 'E'].includes(val.toUpperCase())) {
+     form.referredBy = 'ERR-';
+  } else {
+    form.referredBy = val.toUpperCase();
+  }
+}
+
 const handleRegister = async () => {
   error.value = ''
+  
+  if (form.referredBy) {
+    validatingReferral.value = true
+    try {
+      const res = await GATEWAY_ENDPOINT.get(`/referrals/validate-code/${form.referredBy}`)
+      if (res?.data?.type === 'ERROR' || res?.type === 'ERROR') throw res;
+    } catch (e: any) {
+      error.value = e?.response?.data?.message || e?.data?.message || 'Invalid referral code.'
+      return
+    } finally {
+      validatingReferral.value = false
+    }
+  }
+
   try { await register(form) }
   catch (e: any) { error.value = e.data?.message || 'Registration failed' }
 }

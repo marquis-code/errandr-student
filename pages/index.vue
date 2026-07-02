@@ -1,6 +1,18 @@
 <template>
  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
  <BatchDeliveryBanner />
+ 
+ <!-- Birthday Banner -->
+ <div v-if="isBirthday" class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] text-white py-3 px-4 text-center shadow-lg relative z-[51]">
+   <div class="max-w-7xl mx-auto flex items-center justify-center gap-2 animate-bounce">
+     <span class="text-xl">🎂</span>
+     <p class="text-sm md:text-base font-bold tracking-wide">
+       Happy Birthday, {{ user?.firstName }}! Enjoy <span class="text-[#008950] bg-white px-2 py-0.5 rounded-md mx-1 shadow-sm">100% Free Delivery</span> and 10% off your orders today!
+     </p>
+     <span class="text-xl">🎉</span>
+   </div>
+ </div>
+
     <!-- Navbar -->
     <LandingNavbar />
 
@@ -20,7 +32,7 @@
       <!-- Soft Minimalist Grid Dot Overlay -->
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
 
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
+      <div class="max-w-7xl mx-auto sm:px-6  relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
         <div class="max-w-3xl mx-auto space-y-6">
           <!-- Badge -->
           <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-medium -[0.2em]  animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
@@ -52,7 +64,7 @@
 
           <!-- Search Bar -->
           <div 
-            class="mt-8 max-w-4xl mx-auto group relative transition-all duration-700 w-[95%] sm:w-full"
+            class="mt-8 max-w-4xl mx-auto group relative transition-all duration-700 w-full px-2 sm:px-0 sm:w-full"
             style="isolation: isolate;"
             :class="showSuggestions ? 'z-[200]' : 'z-20'"
           >
@@ -295,6 +307,32 @@
         </div>
       </div>
     </section>
+
+    <!-- Horizontal Scrollable Categories Filter (Sticky Navigation) -->
+    <div class="sticky top-16 md:top-20 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
+      <section class="max-w-7xl mx-auto pl-2 sm:px-6 lg:px-8 py-3">
+        <div class="flex overflow-x-auto hide-scrollbar gap-2 snap-x pr-2 sm:pr-0 items-center">
+          <button 
+            @click="setFilter('')" 
+            class="flex items-center gap-2 px-4 py-2 min-w-max bg-white rounded-full border snap-start transition-all"
+            :class="[!globalFilter ? 'border-parentPrimary shadow-[0_4px_10px_-2px_rgba(239,68,68,0.3)] bg-parentPrimary text-white' : 'border-gray-200 hover:border-gray-300 text-gray-600']"
+          >
+            <Filter class="w-3.5 h-3.5" />
+            <span class="text-xs font-bold tracking-tight">All</span>
+          </button>
+          <button 
+            v-for="catFilter in globalFiltersList" 
+            :key="catFilter.keyword"
+            @click="setFilter(catFilter.keyword)" 
+            class="flex items-center gap-2 px-4 py-2 min-w-max bg-white rounded-full border snap-start transition-all"
+            :class="[globalFilter === catFilter.keyword ? 'border-parentPrimary shadow-[0_4px_10px_-2px_rgba(239,68,68,0.3)] bg-parentPrimary text-white' : 'border-gray-200 hover:border-gray-300 text-gray-600']"
+          >
+            <span class="text-sm leading-none">{{ catFilter.icon }}</span>
+            <span class="text-xs font-bold tracking-tight">{{ catFilter.label }}</span>
+          </button>
+        </div>
+      </section>
+    </div>
 
 
 
@@ -579,7 +617,7 @@ import {
   ShieldCheck, Rocket, Megaphone,
   Menu as MenuIcon, X, Search, ArrowUpRight,
   Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown,
-  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart
+  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart, Filter
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
@@ -610,6 +648,16 @@ import { useCart } from '@/composables/modules/cart';
 const scrolled = ref(false)
 const router = useRouter()
 const showMobileMenu = ref(false)
+
+const { user, isLoggedIn, logOut } = useUser();
+
+const isBirthday = computed(() => {
+  if (!user.value || !user.value.dateOfBirth) return false;
+  const today = new Date();
+  const dob = new Date(user.value.dateOfBirth);
+  return today.getMonth() === dob.getMonth() && today.getDate() === dob.getDate();
+});
+
 const heroSearchQuery = ref('')
 const searchLocation = ref('')
 const searchTime = ref('any')
@@ -624,7 +672,6 @@ const isClosedModalOpen = ref(false);
 const isShareModalOpen = ref(false);
 const selectedVendorForShare = ref(null);
 const cartStore = useCart()
-const { user, logOut } = useUser()
 const { unreadCount } = useNotifications()
 const { favorites, fetchFavorites, loading: loadingFavorites } = useFavorites()
 const { globalFilter, setFilter, globalFiltersList } = useGlobalFilter();

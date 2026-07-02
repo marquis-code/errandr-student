@@ -107,7 +107,10 @@ export const useGroupOrder = () => {
 
   const fetchGroupOrder = async (code: string) => {
     try {
-      const { data } = await api.get(`/group-orders/${code}`)
+      const res = await api.get(`/group-orders/${code}`) as any
+      if (res?.type === 'ERROR') throw res
+      
+      const { data } = res
       groupOrder.value = data
       activeCode.value = code
       if (socket.value) {

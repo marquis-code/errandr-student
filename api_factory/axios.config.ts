@@ -129,7 +129,8 @@ instanceArray.forEach((instance) => {
           ...err.response,
         };
       } else if (statusCodeStartsWith(err.response.status, 4)) {
-        if (err.response.data.message) {
+        const isGroupOrderCheck = err.response.status === 404 && err.config?.url?.includes('/group-orders/');
+        if (err.response.data.message && !isGroupOrderCheck) {
           getToast()({
             title: "Error",
             message: err?.response?.data?.message || err?.response?.data?.error || "An error occured",
