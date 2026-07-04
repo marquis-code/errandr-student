@@ -268,9 +268,18 @@
                   @click="selectedProduct = product"
                   class="group flex items-center gap-3 p-2.5 bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-md transition-all cursor-pointer active:scale-[0.98]"
                 >
-                  <!-- Square Image -->
-                  <div class="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0 relative">
-                    <img :src="product.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
+                  <!-- Square Image / Mini Carousel -->
+                  <div class="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0 relative" @click.stop="getMediaItems(product).length ? openLightbox(getMediaItems(product), 0) : null">
+                    <img :src="getMediaItems(product)[0]?.url || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
+                    <!-- Play icon if it's a video -->
+                    <div v-if="getMediaItems(product)[0]?.type === 'video'" class="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <Play class="w-6 h-6 text-white" fill="currentColor" />
+                    </div>
+                    <!-- Indicator for multiple media -->
+                    <div v-if="getMediaItems(product).length > 1" class="absolute bottom-1 right-1 bg-black/50 text-white rounded px-1 flex items-center justify-center text-[8px] font-bold">
+                      +{{ getMediaItems(product).length - 1 }}
+                    </div>
+                    
                     <div v-if="getProductCount(product._id) > 0" class="absolute top-1 right-1 bg-parentPrimary text-white w-5 h-5 rounded-md flex items-center justify-center text-[9px] font-medium shadow-sm">
                       {{ getProductCount(product._id) }}
                     </div>
@@ -304,17 +313,24 @@
                   @click="selectedProduct = product"
                   class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
                 >
-                  <!-- Image -->
-                  <div class="w-full aspect-[4/3] overflow-hidden bg-gray-50 relative">
-                    <img :src="product.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    
-                    <!-- Item Count -->
-                    <div v-if="getProductCount(product._id) > 0" class="absolute top-3 right-3 flex items-center gap-1.5 bg-parentPrimary text-white px-2.5 py-1 rounded-lg text-xs font-medium shadow-lg z-10">
-                      <ShoppingBag class="w-3 h-3" />
-                      {{ getProductCount(product._id) }}
-                    </div>
-                  </div>
+                  <!-- Media Carousel -->
+                  <MediaCarousel 
+                    :media-items="getMediaItems(product)" 
+                    :default-placeholder="isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg'"
+                    aspect-ratio="aspect-[4/3]"
+                    :show-arrows="true"
+                    :hover-scale="true"
+                    @click-media="(idx) => openLightbox(getMediaItems(product), idx)"
+                  >
+                    <template #overlay="{ item }">
+                      <!-- Item Count overlay -->
+                      <div v-if="getProductCount(product._id) > 0" class="absolute top-3 right-3 flex items-center gap-1.5 bg-parentPrimary text-white px-2.5 py-1 rounded-lg text-xs font-medium shadow-lg z-20">
+                        <ShoppingBag class="w-3 h-3" />
+                        {{ getProductCount(product._id) }}
+                      </div>
+                    </template>
+                  </MediaCarousel>
+                  
                   
                   <!-- Content -->
                   <div class="p-4 flex-1 flex flex-col justify-between">
@@ -510,6 +526,14 @@
         </div>
       </div>
     </div>
+
+    <!-- Media Lightbox Modal -->
+    <MediaLightbox 
+      :is-open="isLightboxOpen" 
+      :media-items="lightboxMediaItems" 
+      :initial-index="lightboxInitialIndex" 
+      @close="isLightboxOpen = false" 
+    />
 
     <!-- ============================================ -->
     <!-- MOBILE CART DRAWER (Bottom Sheet)            -->
@@ -977,7 +1001,11 @@ import { useFavorites } from '@/composables/modules/favorites';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
 import { services_api } from '@/api_factory/modules/services';
+import AnimatedInput from '@/components/ui/AnimatedInput.vue';
 import ShareModal from "@/components/ui/ShareModal.vue";
+import UiModal from '@/components/ui/UiModal.vue';
+import MediaCarousel from '@/components/ui/MediaCarousel.vue';
+import MediaLightbox from '@/components/ui/MediaLightbox.vue';
 import AppointmentBookingModal from '@/components/vendors/AppointmentBookingModal.vue';
 import VendorReviewsModal from '@/components/vendors/VendorReviewsModal.vue';
 
@@ -1015,6 +1043,28 @@ const products = ref<any[]>([]);
 const vendorServices = ref<any[]>([]);
 const showBookingModal = ref(false);
 const showReviewsModal = ref(false);
+const isLightboxOpen = ref(false);
+const lightboxMediaItems = ref<any[]>([]);
+const lightboxInitialIndex = ref(0);
+
+const getMediaItems = (product: any) => {
+  const items = [];
+  if (product.videos && product.videos.length > 0) {
+    items.push(...product.videos.map((url: string) => ({ type: 'video', url })));
+  }
+  if (product.images && product.images.length > 0) {
+    items.push(...product.images.map((url: string) => ({ type: 'image', url })));
+  } else if (product.image) {
+    items.push({ type: 'image', url: product.image });
+  }
+  return items;
+};
+
+const openLightbox = (mediaItems: any[], index: number = 0) => {
+  lightboxMediaItems.value = mediaItems;
+  lightboxInitialIndex.value = index;
+  isLightboxOpen.value = true;
+};
 const selectedServiceToBook = ref<any>(null);
 
 const openBookingModal = (service: any) => {
