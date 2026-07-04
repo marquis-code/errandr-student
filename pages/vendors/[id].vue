@@ -28,26 +28,25 @@
     <ServiceVendorProfile v-else-if="vendor.businessType === 'service_provider' || vendor.businessType === 'service'" :vendor="vendor" :is-hybrid="false" />
     <ProductVendorProfile v-else :vendor="vendor" />
   </template>
-  <div v-else class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-    <div class="text-center max-w-lg bg-white p-10 rounded-3xl shadow-xl border border-gray-100 transform transition-all hover:-translate-y-1 hover:shadow-2xl">
-      <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner relative">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-orange-500 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div v-else class="min-h-screen flex items-center justify-center bg-white p-4">
+    <div class="text-center max-w-md">
+      <div class="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4 relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-orange-500 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
-        <div class="absolute inset-0 bg-orange-200 rounded-full animate-ping opacity-20"></div>
       </div>
-      <h2 class="text-3xl font-extrabold text-gray-900 mb-3 tracking-tight">Store Not Found! 🏬✨</h2>
-      <p class="text-gray-500 mb-8 leading-relaxed text-lg">
+      <h2 class="text-xl font-bold text-gray-900 mb-2">Store Not Found</h2>
+      <p class="text-gray-500 text-sm mb-6 leading-relaxed px-4">
         Oops! Looks like this spot is empty. Want to claim it and start selling to thousands of students on campus today?
       </p>
-      <div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
-        <a href="https://vendor.erranders.org/auth/register" target="_blank" rel="noopener noreferrer" class="px-8 py-4 bg-parentPrimary hover:bg-orange-600 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-orange-500/40 flex items-center justify-center gap-2 text-lg">
+      <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
+        <a href="https://vendor.erranders.org/auth/register" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 bg-parentPrimary hover:bg-orange-600 text-white rounded-lg font-medium transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 text-sm">
           <span>Sign Up as Vendor</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-bounce" viewBox="0 0 20 20" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
         </a>
-        <button @click="$router.push('/')" class="px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-colors text-lg">
+        <button @click="$router.push('/')" class="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg font-medium transition-colors text-sm border border-gray-200">
           Go Home
         </button>
       </div>
