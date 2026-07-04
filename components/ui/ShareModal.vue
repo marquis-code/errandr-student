@@ -103,6 +103,11 @@ const shareUrl = computed(() => {
   
   if (!vendorIdOrSlug) return window.location.href
   
+  // If we're already on the vendor's subdomain, just use the current origin
+  if (host.startsWith(vendorIdOrSlug + '.')) {
+    return `${protocol}//${host}/`
+  }
+
   // Vercel app or localhost, default to path-based sharing to avoid broken subdomains locally
   if (host.includes('vercel.app') || host.includes('localhost')) {
     return `${protocol}//${host}/vendors/${vendorIdOrSlug}`

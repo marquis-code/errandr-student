@@ -284,11 +284,15 @@ const shareUrl = computed(() => {
   const protocol = window.location.protocol;
   const host = window.location.host;
   if (props.vendor.subdomain) {
+    // If we're already on the vendor's subdomain, just use the current origin
+    if (host.startsWith(props.vendor.subdomain + '.')) {
+      return `${protocol}//${host}`;
+    }
     // Build subdomain-based URL
     const parts = host.split('.');
     let baseHost = host;
     if (parts.length >= 2) {
-      // Remove any existing subdomain prefix (student., vendor., etc.)
+      // Remove any existing subdomain prefix (student., vendor., admin., etc.)
       const knownPrefixes = ['student', 'vendor', 'admin', 'www'];
       if (knownPrefixes.includes(parts[0])) {
         baseHost = parts.slice(1).join('.');

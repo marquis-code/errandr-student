@@ -51,7 +51,7 @@
           :key="filter.keyword" 
           @click="setFilter(filter.keyword); selectedCategory = 'all'"
           class="snap-start shrink-0 px-4 py-2.5 rounded-xl border text-xs font-medium transition-all flex items-center gap-2 active:scale-95"
-          :class="globalFilter === filter.keyword ? 'bg-parentPrimary text-white border-parentPrimary shadow-md shadow-parentPrimary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-parentPrimary/30 hover:bg-gray-50'"
+          :class="globalFilter === filter.keyword ? 'border-parentPrimary bg-parentPrimary/10 text-parentPrimary shadow-sm shadow-parentPrimary/10' : 'bg-white border-gray-100 hover:border-parentPrimary/30 text-gray-600 hover:bg-gray-50'"
         >
           <span class="text-sm shrink-0">{{ filter.icon }}</span>
           <span>{{ filter.label }}</span>

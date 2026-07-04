@@ -314,8 +314,8 @@
         <div class="flex overflow-x-auto hide-scrollbar gap-2 snap-x pr-2 sm:pr-0 items-center">
           <button 
             @click="setFilter('')" 
-            class="flex items-center gap-2 px-4 py-2 min-w-max bg-white rounded-full border snap-start transition-all"
-            :class="[!globalFilter ? 'border-parentPrimary shadow-[0_4px_10px_-2px_rgba(239,68,68,0.3)] bg-parentPrimary text-white' : 'border-gray-200 hover:border-gray-300 text-gray-600']"
+            class="flex items-center gap-2 px-4 py-2 min-w-max rounded-full border snap-start transition-all"
+            :class="[!globalFilter ? 'border-parentPrimary bg-parentPrimary/10 text-parentPrimary shadow-sm shadow-parentPrimary/10' : 'bg-white border-gray-200 hover:border-gray-300 text-gray-600 hover:bg-gray-50']"
           >
             <Filter class="w-3.5 h-3.5" />
             <span class="text-xs font-bold tracking-tight">All</span>
@@ -324,8 +324,8 @@
             v-for="catFilter in globalFiltersList" 
             :key="catFilter.keyword"
             @click="setFilter(catFilter.keyword)" 
-            class="flex items-center gap-2 px-4 py-2 min-w-max bg-white rounded-full border snap-start transition-all"
-            :class="[globalFilter === catFilter.keyword ? 'border-parentPrimary shadow-[0_4px_10px_-2px_rgba(239,68,68,0.3)] bg-parentPrimary text-white' : 'border-gray-200 hover:border-gray-300 text-gray-600']"
+            class="flex items-center gap-2 px-4 py-2 min-w-max rounded-full border snap-start transition-all"
+            :class="[globalFilter === catFilter.keyword ? 'border-parentPrimary bg-parentPrimary/10 text-parentPrimary shadow-sm shadow-parentPrimary/10' : 'bg-white border-gray-200 hover:border-gray-300 text-gray-600 hover:bg-gray-50']"
           >
             <span class="text-sm leading-none">{{ catFilter.icon }}</span>
             <span class="text-xs font-bold tracking-tight">{{ catFilter.label }}</span>
