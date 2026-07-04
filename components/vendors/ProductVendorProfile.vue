@@ -1032,6 +1032,14 @@ const showMobileCartDrawer = ref(false);
 const props = defineProps<{ vendor: any }>();
 const vendor = computed(() => props.vendor);
 
+const isFoodVendor = computed(() => {
+  const type = vendor.value?.businessType || vendor.value?.storeType || '';
+  return type.toLowerCase() === 'food' || type.toLowerCase() === 'restaurant';
+});
+
+const packTerm = computed(() => isFoodVendor.value ? 'Pack' : 'Cart');
+const packsTerm = computed(() => isFoodVendor.value ? 'Packs' : 'Carts');
+
 const isGroupOrderActiveForThisVendor = computed(() => {
   if (!activeCode.value || !groupOrder.value || !vendor.value) return false;
   const vendorId = vendor.value._id;
