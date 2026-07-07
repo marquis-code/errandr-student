@@ -35,7 +35,8 @@
           <div class="flex justify-between items-start mb-4">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
-                <img v-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
+                <video v-if="order.vendor?.logo && order.vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="order.vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                <img v-else-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
                 <span v-else class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-400">{{ order.vendor?.storeName?.[0] }}</span>
               </div>
               <div>

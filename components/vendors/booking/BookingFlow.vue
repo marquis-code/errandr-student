@@ -180,7 +180,8 @@
               <div class="lg:hidden bg-white rounded-xl border-[0.5px] border-gray-100 overflow-hidden">
                 <div class="px-4 py-3 border-b border-gray-50 flex items-center gap-3">
                   <div class="w-9 h-9 rounded-lg bg-gray-100 overflow-hidden shrink-0">
-                    <img :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+                    <video v-if="vendor.logo && vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                    <img v-else :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                   </div>
                   <div class="flex-1">
                     <h3 class="font-bold text-gray-900 text-xs">{{ vendor.storeName }}</h3>
@@ -241,7 +242,8 @@
               <!-- Vendor Info -->
               <div class="p-6 border-b border-gray-50 flex gap-4 items-center shrink-0">
                 <div class="w-14 h-14 rounded-xl bg-gray-100 overflow-hidden shrink-0">
-                  <img :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+                  <video v-if="vendor.logo && vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                  <img v-else :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h3 class="font-bold text-gray-900 truncate">{{ vendor.storeName }}</h3>

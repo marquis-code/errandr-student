@@ -12,7 +12,8 @@
           </button>
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg overflow-hidden border border-gray-100 bg-white shrink-0">
-              <img :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+              <video v-if="vendor.logo && vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+              <img v-else :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
             </div>
             <h2 class="text-sm font-medium text-gray-900 tracking-tight truncate max-w-[160px] md:max-w-none">{{ toTitleCase(vendor.storeName) }}</h2>
           </div>
@@ -49,7 +50,14 @@
       <!-- ============================================ -->
       <section class="relative w-full h-[280px] md:h-[340px] overflow-hidden">
         <!-- Banner Image -->
+        <video 
+          v-if="vendor.coverVideo || vendor.video || (vendor.banner && vendor.banner.match(/\\.(mp4|webm|ogg|mov)$/i)) || (vendor.logo && vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i))"
+          :src="vendor.coverVideo || vendor.video || vendor.banner || vendor.logo" 
+          class="absolute inset-0 w-full h-full object-cover"
+          autoplay loop muted playsinline>
+        </video>
         <img 
+          v-else
           :src="vendor.banner || vendor.image || vendor.logo || '/placeholder-store.jpg'" 
           class="absolute inset-0 w-full h-full object-cover"
           alt="Store Banner"
@@ -88,7 +96,8 @@
           <div class="max-w-[1400px] mx-auto flex items-end gap-4">
             <!-- Vendor Logo -->
             <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-2 border-white/30 shadow-2xl overflow-hidden bg-white shrink-0">
-              <img :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+              <video v-if="vendor.logo && vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+              <img v-else :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
             </div>
             <!-- Vendor Info -->
             <div class="flex-1 min-w-0">
@@ -116,16 +125,20 @@
                   <span>({{ vendor.totalRatings || 0 }} reviews)</span>
                   <ChevronRight class="w-3 h-3 ml-1 opacity-50" />
                 </button>
-                <span class="w-1 h-1 rounded-full bg-white/30"></span>
-                <span class="flex items-center gap-1">
-                  <Clock class="w-3 h-3" />
-                  {{ vendor.preparationTime || 20 }} min
-                </span>
-                <span class="w-1 h-1 rounded-full bg-white/30"></span>
-                <span class="flex items-center gap-1">
-                  <Bike class="w-3 h-3" />
-                  From ₦{{ vendor.deliveryFee ?? 0 }}
-                </span>
+                <template v-if="vendor.preparationTime > 0">
+                  <span class="w-1 h-1 rounded-full bg-white/30"></span>
+                  <span class="flex items-center gap-1">
+                    <Clock class="w-3 h-3" />
+                    {{ vendor.preparationTime }} min
+                  </span>
+                </template>
+                <template v-if="vendor.deliveryFee > 0 || vendor.baseDeliveryFee > 0">
+                  <span class="w-1 h-1 rounded-full bg-white/30"></span>
+                  <span class="flex items-center gap-1">
+                    <Bike class="w-3 h-3" />
+                    From ₦{{ vendor.deliveryFee || vendor.baseDeliveryFee || 0 }}
+                  </span>
+                </template>
               </div>
             </div>
           </div>
@@ -724,7 +737,8 @@
           <div class="bg-white w-full md:max-w-lg rounded-t-[2rem] md:rounded-[2rem] shadow-2xl overflow-hidden animate-slide-up-mobile md:animate-zoom-in">
             <!-- Banner -->
             <div class="relative h-44">
-              <img :src="vendor.banner || vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+              <video v-if="(vendor.banner || vendor.logo) && (vendor.banner || vendor.logo).match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.banner || vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+              <img v-else :src="vendor.banner || vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
               <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
               <button @click="showStoreInfo = false" class="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/40 transition-all">
                 <X class="w-5 h-5" />

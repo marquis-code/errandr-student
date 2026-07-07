@@ -143,7 +143,8 @@
                 <div class="flex items-center justify-between mb-6 pb-6 border-b border-gray-100">
                   <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 overflow-hidden flex items-center justify-center shrink-0">
-                      <img v-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
+                      <video v-if="order.vendor?.logo && order.vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="order.vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                      <img v-else-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
                       <PackageIcon v-else class="w-6 h-6 text-gray-400" />
                     </div>
                     <div>

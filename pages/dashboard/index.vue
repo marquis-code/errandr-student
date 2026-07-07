@@ -192,7 +192,8 @@
           class="bg-white border border-gray-100 rounded-2xl p-3 flex items-center gap-4 hover:border-parentPrimary/30 transition-all group hover:shadow-sm"
         >
           <div class="relative w-20 h-20 shrink-0">
-            <img :src="vendor.logo || vendor.banner || '/placeholder-store.jpg'" class="w-full h-full rounded-xl object-cover bg-gray-50" />
+            <video v-if="(vendor.logo || vendor.banner) && (vendor.logo || vendor.banner).match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo || vendor.banner" class="w-full h-full rounded-xl object-cover bg-gray-50" autoplay loop muted playsinline></video>
+            <img v-else :src="vendor.logo || vendor.banner || '/placeholder-store.jpg'" class="w-full h-full rounded-xl object-cover bg-gray-50" />
             <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white" title="Active" />
           </div>
           <div class="flex-1 min-w-0 py-1">

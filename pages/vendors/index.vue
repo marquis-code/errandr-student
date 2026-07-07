@@ -80,7 +80,14 @@
             <!-- TOP IMAGE AREA -->
             <div class="relative h-[200px] w-full overflow-hidden rounded-3xl border border-gray-100 shadow-sm">
               <template v-if="!vendor.isOpen">
+                <video
+                  v-if="(vendor.banner || vendor.image || vendor.logo) && (vendor.banner || vendor.image || vendor.logo).match(/\\.(mp4|webm|ogg|mov)$/i)"
+                  :src="vendor.banner || vendor.image || vendor.logo"
+                  class="w-full h-full object-cover grayscale opacity-50"
+                  autoplay loop muted playsinline
+                ></video>
                 <img
+                  v-else
                   :src="vendor.banner || vendor.image || vendor.logo || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
                   class="w-full h-full object-cover grayscale opacity-50"
                   alt="Vendor Banner"
@@ -100,7 +107,14 @@
                 </div>
               </template>
               <template v-else>
+                <video
+                  v-if="(vendor.banner || vendor.image || vendor.logo) && (vendor.banner || vendor.image || vendor.logo).match(/\\.(mp4|webm|ogg|mov)$/i)"
+                  :src="vendor.banner || vendor.image || vendor.logo"
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                  autoplay loop muted playsinline
+                ></video>
                 <img
+                  v-else
                   :src="vendor.banner || vendor.image || vendor.logo || 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=400&fit=crop'"
                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                   alt="Vendor Banner"

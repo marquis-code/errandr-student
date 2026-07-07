@@ -2,7 +2,13 @@
   <div class="min-h-screen bg-white text-gray-900 font-sans pb-12">
     <!-- Hero Banner (Full Edge-to-Edge, No White Bar) -->
     <div class="relative w-full h-[300px] md:h-[420px] overflow-hidden bg-gray-900">
-      <img v-if="vendor.banner || vendor.logo" :src="vendor.banner || vendor.logo" class="absolute inset-0 w-full h-full object-cover opacity-80" />
+      <video 
+        v-if="vendor.coverVideo || vendor.video || (vendor.banner && vendor.banner.match(/\\.(mp4|webm|ogg|mov)$/i)) || (vendor.logo && vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i))"
+        :src="vendor.coverVideo || vendor.video || vendor.banner || vendor.logo" 
+        class="absolute inset-0 w-full h-full object-cover opacity-80"
+        autoplay loop muted playsinline>
+      </video>
+      <img v-else-if="vendor.banner || vendor.logo" :src="vendor.banner || vendor.logo" class="absolute inset-0 w-full h-full object-cover opacity-80" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10"></div>
 
       <!-- Floating Navigation (Overlaid on Banner) -->

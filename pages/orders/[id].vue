@@ -217,7 +217,8 @@
  
  <div class="flex items-center gap-4 mb-8">
  <div class="w-16 h-16 rounded-2xl border border-gray-100 shadow-inner overflow-hidden flex items-center justify-center bg-gray-50 flex-shrink-0">
- <img v-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
+ <video v-if="order.vendor?.logo && order.vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="order.vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+ <img v-else-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
  <Store v-else class="w-8 h-8 text-gray-300" />
  </div>
  <div class="flex-1 min-w-0">
@@ -397,7 +398,8 @@
           class="w-full p-4 rounded-xl border border-gray-100 hover:border-parentPrimary hover:bg-parentPrimary/5 flex items-center gap-4 transition-all bg-white"
         >
           <div class="w-10 h-10 rounded-full border border-gray-100 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
-            <img v-if="order.vendor.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
+            <video v-if="order.vendor.logo && order.vendor.logo.match(/\.(mp4|webm|ogg|mov)$/i)" :src="order.vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+            <img v-else-if="order.vendor.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
             <Store v-else class="w-5 h-5 text-gray-400" />
           </div>
           <div class="text-left flex-1 min-w-0">
