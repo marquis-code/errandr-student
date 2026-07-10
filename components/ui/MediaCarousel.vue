@@ -17,17 +17,12 @@
           <video 
             :src="item.url" 
             class="w-full h-full object-cover" 
+            autoplay
             muted 
             loop 
             playsinline 
-            preload="metadata"
+            preload="auto"
           ></video>
-          <!-- Play Icon Overlay -->
-          <div class="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-colors">
-            <div class="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center border border-white/40 shadow-lg">
-              <Play class="w-5 h-5 text-white ml-0.5" fill="currentColor" />
-            </div>
-          </div>
         </template>
         <template v-else>
           <img :src="item.url || defaultPlaceholder" class="w-full h-full object-cover transition-transform duration-700" :class="hoverScale ? 'group-hover:scale-105' : ''" />

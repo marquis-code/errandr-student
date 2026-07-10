@@ -23,7 +23,7 @@ export const useSocket = (namespace: string) => {
       query: {
         userId: connectionId,
       },
-      transports: ['websocket', 'polling'],
+      transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,

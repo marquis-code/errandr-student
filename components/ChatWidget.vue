@@ -179,11 +179,11 @@
       <!-- Floating Button -->
       <button
         @click="toggleChat"
-        class="group relative w-16 h-16 rounded-full bg-gradient-to-tr from-[#FF6B35] to-[#FF5C1A] text-white shadow-2xl shadow-[#FF5C1A]/40 flex items-center justify-center hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+        class="group relative w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white shadow-2xl shadow-indigo-500/40 flex items-center justify-center hover:scale-105 hover:-translate-y-1 transition-all duration-300"
         aria-label="Open chat"
       >
         <div class="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
-        <MessageSquare class="w-7 h-7 transition-transform group-hover:scale-110" />
+        <MessageSquare class="w-5 h-5 transition-transform group-hover:scale-110" />
         <!-- Notification Badge -->
         <span v-if="false" class="absolute top-0 right-0 w-4 h-4 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[10px] font-bold">1</span>
       </button>

@@ -1,377 +1,182 @@
 <template>
   <Transition name="fade">
-    <div v-if="modelValue" class="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-4">
+    <div v-if="modelValue" class="fixed inset-0 z-[150] flex items-center justify-center p-4">
       <!-- Backdrop -->
-      <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-md transition-opacity" @click="$emit('update:modelValue', false)"></div>
+      <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" @click="$emit('update:modelValue', false)"></div>
       
       <!-- Modal Content -->
-      <div class="relative bg-white w-full h-full md:h-auto md:max-w-[480px] md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden animate-zoom-in">
+      <div class="relative bg-white w-full max-w-sm rounded-3xl shadow-lg border border-gray-100 flex flex-col overflow-hidden animate-zoom-in">
         <!-- Close Button -->
         <button 
           @click="$emit('update:modelValue', false)"
-          class="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all z-10"
+          class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-full transition-all z-10"
         >
-          <X class="w-6 h-6" />
+          <X class="w-5 h-5" />
         </button>
 
-        <div class="flex-1 overflow-y-auto px-8 py-12 md:py-16 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
           <!-- Header -->
-          <div class="text-center mb-10">
-            <div class="w-16 h-16 bg-parentPrimary/10 text-parentPrimary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-parentPrimary/5">
-              <UserCheck v-if="view === 'login'" class="w-8 h-8" />
-              <UserPlus v-else-if="view === 'register'" class="w-8 h-8" />
-              <User v-else-if="view === 'guest'" class="w-8 h-8" />
-              <ShieldCheck v-else-if="['verify', 'verify_reset'].includes(view)" class="w-8 h-8" />
-              <KeyRound v-else class="w-8 h-8" />
+          <div class="text-center mb-6">
+            <div class="w-12 h-12 bg-parentPrimary/10 text-parentPrimary rounded-xl flex items-center justify-center mx-auto mb-4">
+              <UserCheck v-if="view === 'login'" class="w-6 h-6" />
+              <UserPlus v-else-if="view === 'register'" class="w-6 h-6" />
+              <User v-else-if="view === 'guest'" class="w-6 h-6" />
+              <ShieldCheck v-else-if="['verify', 'verify_reset'].includes(view)" class="w-6 h-6" />
+              <KeyRound v-else-if="['forgot', 'reset'].includes(view)" class="w-6 h-6" />
+              <Store v-else class="w-6 h-6" />
             </div>
-            <h2 class="text-3xl font-medium text-gray-900 tracking-tight leading-none mb-3">
-              {{ view === 'login' ? 'Welcome Back!' : view === 'register' ? 'Join Errandr' : view === 'guest' ? 'Guest Checkout' : view === 'forgot' ? 'Reset Password' : view === 'verify_reset' ? 'Enter Code' : view === 'reset' ? 'New Password' : 'Verify Email' }}
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight leading-none mb-2">
+              {{ view === 'options' ? 'Checkout' : view === 'login' ? 'Welcome Back!' : view === 'register' ? 'Join Errandr' : view === 'guest' ? 'Guest Checkout' : view === 'forgot' ? 'Reset Password' : view === 'verify_reset' ? 'Enter Code' : view === 'reset' ? 'New Password' : 'Verify Email' }}
             </h2>
-            <p class="text-sm font-medium text-gray-400 leading-relaxed px-4">
-              {{ view === 'login' ? 'Sign in to continue your checkout and track your order.' : view === 'register' ? 'Create an account to start your campus food journey!' : view === 'guest' ? 'Enter your details to continue. (Signup anytime later to track orders!)' : view === 'forgot' ? 'Enter your email address to receive a password reset code.' : view === 'verify_reset' ? `We've sent a password reset code to ${forgotEmail}.` : view === 'reset' ? 'Choose a strong password to secure your account.' : 'We\'ve sent a code to your email. Please enter it below.' }}
+            <p class="text-xs font-medium text-gray-500 leading-relaxed px-2">
+              {{ view === 'options' ? 'How would you like to continue?' : view === 'login' ? 'Sign in to continue your checkout.' : view === 'register' ? 'Create an account to track your orders!' : view === 'guest' ? 'Enter details to continue as guest.' : view === 'forgot' ? 'Enter email for a reset code.' : view === 'verify_reset' ? `Code sent to ${forgotEmail}.` : view === 'reset' ? 'Choose a strong password.' : 'Enter the code sent to your email.' }}
             </p>
           </div>
 
-          <!-- Back Button for Forgot/Reset Flow -->
-          <div v-if="['forgot', 'verify_reset', 'reset'].includes(view)" class="mb-6 -mt-4 text-left">
+          <!-- Back Button for inner flows -->
+          <div v-if="view !== 'options' && view !== 'verify'" class="mb-4 text-left">
             <button 
               type="button" 
-              @click="goBackToLogin" 
-              class="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-gray-950 transition-colors"
+              @click="view = 'options'" 
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-gray-900 transition-colors"
             >
-              <ArrowLeft class="w-3.5 h-3.5" />
-              <span>Back to Sign In</span>
+              <ArrowLeft class="w-3 h-3" />
+              <span>Back</span>
             </button>
           </div>
 
-          <!-- Tabs -->
-          <div v-if="!['verify', 'forgot', 'verify_reset', 'reset', 'guest'].includes(view)" class="flex p-1.5 bg-gray-50 rounded-2xl mb-10">
-            <button 
-              @click="view = 'login'" 
-              :class="[
-                'flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all',
-                view === 'login' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'
-              ]"
-            >LOGIN</button>
-            <button 
-              @click="view = 'register'" 
-              :class="[
-                'flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all',
-                view === 'register' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'
-              ]"
-            >SIGN UP</button>
+          <!-- Error Message -->
+          <div v-if="error" class="mb-4 p-3 bg-rose-50 rounded-xl flex items-start gap-2">
+            <AlertCircle class="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+            <p class="text-[11px] font-bold text-rose-600 text-left">{{ error }}</p>
           </div>
 
-          <!-- Error Message -->
-          <div v-if="error" class="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-start gap-3 animate-shake">
-            <AlertCircle class="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
-            <p class="text-[11px] font-bold text-rose-600 leading-relaxed text-left">{{ error }}</p>
+          <!-- Initial Options View -->
+          <div v-if="view === 'options'" class="space-y-3">
+            <button 
+              @click="view = 'login'" 
+              class="w-full py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all flex items-center justify-center gap-2"
+            >
+              Sign In to Account
+            </button>
+            <button 
+              @click="view = 'register'" 
+              class="w-full py-3 bg-gray-50 text-gray-900 border border-gray-100 hover:border-gray-200 hover:bg-gray-100 rounded-xl text-sm font-bold transition-all"
+            >
+              Create New Account
+            </button>
+            <div class="relative py-2 flex items-center justify-center">
+              <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+              <span class="relative bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">or</span>
+            </div>
+            <button 
+              @click="view = 'guest'" 
+              class="w-full py-3 bg-white text-gray-600 border border-gray-200 hover:border-gray-300 rounded-xl text-sm font-bold transition-all"
+            >
+              Continue as Guest
+            </button>
           </div>
 
           <!-- Forms -->
-          <form @submit.prevent="handleSubmit" class="space-y-6">
+          <form v-else @submit.prevent="handleSubmit" class="space-y-4">
             <!-- Login View -->
             <template v-if="view === 'login'">
-              <div class="space-y-4">
-                <div class="group">
-                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Email Address</p>
-                  <input 
-                    v-model="loginForm.email" 
-                    type="email" 
-                    placeholder="student@campus.edu"
-                    required
-                    class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                  />
+              <div class="space-y-3">
+                <input v-model="loginForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <div class="relative">
+                  <input v-model="loginForm.password" :type="showLoginPassword ? 'text' : 'password'" placeholder="Password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                  <button type="button" @click="showLoginPassword = !showLoginPassword" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-900 transition-colors">
+                    <Eye v-if="!showLoginPassword" class="w-4 h-4" />
+                    <EyeOff v-else class="w-4 h-4" />
+                  </button>
                 </div>
-                <div class="group">
-                  <div class="flex items-center justify-between mb-2 px-1">
-                    <p class="text-xs font-medium text-gray-400">Password</p>
-                    <button type="button" @click="view = 'forgot'" class="text-xs font-medium text-parentPrimary hover:underline">Forgot Password?</button>
-                  </div>
-                  <div class="relative flex items-center">
-                    <input 
-                      v-model="loginForm.password" 
-                      :type="showLoginPassword ? 'text' : 'password'" 
-                      placeholder="••••••••"
-                      required
-                      class="w-full pl-6 pr-14 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                    />
-                    <button 
-                      type="button" 
-                      @click="showLoginPassword = !showLoginPassword" 
-                      class="absolute right-5 p-1 text-gray-400 hover:text-gray-900 transition-colors"
-                    >
-                      <Eye v-if="!showLoginPassword" class="w-5 h-5" />
-                      <EyeOff v-else class="w-5 h-5" />
-                    </button>
-                  </div>
+                <div class="text-right">
+                  <button type="button" @click="view = 'forgot'" class="text-[10px] font-bold text-parentPrimary hover:underline">Forgot Password?</button>
                 </div>
               </div>
-              
-              <!-- Guest Checkout Option -->
-              <div class="pt-6 relative flex items-center justify-center">
-                <div class="absolute inset-0 flex items-center">
-                  <div class="w-full border-t border-gray-100"></div>
-                </div>
-                <span class="relative bg-white px-4 text-xs font-medium text-gray-400">or</span>
-              </div>
-              <button 
-                type="button"
-                @click="view = 'guest'"
-                class="w-full py-3.5 bg-gray-50 text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-100 rounded-2xl text-sm font-medium transition-all"
-              >
-                Continue as Guest
-              </button>
             </template>
 
             <!-- Guest View -->
             <template v-else-if="view === 'guest'">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="group">
-                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">First Name</p>
-                  <input 
-                    v-model="guestForm.firstName" 
-                    type="text" 
-                    placeholder="Ebuka"
-                    required
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                  />
-                </div>
-                <div class="group">
-                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Last Name</p>
-                  <input 
-                    v-model="guestForm.lastName" 
-                    type="text" 
-                    placeholder="Chima"
-                    required
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                  />
-                </div>
+              <div class="grid grid-cols-2 gap-3">
+                <input v-model="guestForm.firstName" type="text" placeholder="First Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <input v-model="guestForm.lastName" type="text" placeholder="Last Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
               </div>
-              <div class="group">
-                <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Email Address</p>
-                <input 
-                  v-model="guestForm.email" 
-                  type="email" 
-                  placeholder="student@campus.edu"
-                  required
-                  class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                />
-              </div>
-              <div class="group">
-                <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Phone Number</p>
-                <input 
-                  v-model="guestForm.phone" 
-                  type="tel" 
-                  placeholder="08012345678"
-                  required
-                  class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                />
-              </div>
+              <input v-model="guestForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+              <input v-model="guestForm.phone" type="tel" placeholder="Phone Number" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
             </template>
 
             <!-- Register View -->
             <template v-else-if="view === 'register'">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="group">
-                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">First Name</p>
-                  <input 
-                    v-model="registerForm.firstName" 
-                    type="text" 
-                    placeholder="Ebuka"
-                    required
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                  />
-                </div>
-                <div class="group">
-                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Last Name</p>
-                  <input 
-                    v-model="registerForm.lastName" 
-                    type="text" 
-                    placeholder="Chima"
-                    required
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                  />
-                </div>
+              <div class="grid grid-cols-2 gap-3">
+                <input v-model="registerForm.firstName" type="text" placeholder="First Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <input v-model="registerForm.lastName" type="text" placeholder="Last Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
               </div>
-              <div class="group">
-                <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Email Address</p>
-                <input 
-                  v-model="registerForm.email" 
-                  type="email" 
-                  placeholder="student@campus.edu"
-                  required
-                  class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                />
-              </div>
-              <div class="group">
-                <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Password</p>
-                <div class="relative flex items-center">
-                  <input 
-                    v-model="registerForm.password" 
-                    :type="showRegisterPassword ? 'text' : 'password'" 
-                    placeholder="Create a strong password"
-                    required
-                    class="w-full pl-6 pr-14 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                  />
-                  <button 
-                    type="button" 
-                    @click="showRegisterPassword = !showRegisterPassword" 
-                    class="absolute right-5 p-1 text-gray-400 hover:text-gray-900 transition-colors"
-                  >
-                    <Eye v-if="!showRegisterPassword" class="w-5 h-5" />
-                    <EyeOff v-else class="w-5 h-5" />
-                  </button>
-                </div>
+              <input v-model="registerForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+              <div class="relative">
+                <input v-model="registerForm.password" :type="showRegisterPassword ? 'text' : 'password'" placeholder="Create password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <button type="button" @click="showRegisterPassword = !showRegisterPassword" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-900 transition-colors">
+                  <Eye v-if="!showRegisterPassword" class="w-4 h-4" />
+                  <EyeOff v-else class="w-4 h-4" />
+                </button>
               </div>
             </template>
 
             <!-- Forgot Password View -->
             <template v-else-if="view === 'forgot'">
-              <div class="space-y-4">
-                <div class="group">
-                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Email Address</p>
-                  <input 
-                    v-model="forgotEmail" 
-                    type="email" 
-                    placeholder="student@campus.edu"
-                    required
-                    class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                  />
-                </div>
-              </div>
+              <input v-model="forgotEmail" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
             </template>
 
-            <!-- Verify Reset OTP View -->
-            <template v-else-if="view === 'verify_reset'">
-              <div class="space-y-6">
-                <div class="flex justify-between items-center gap-2">
-                  <input 
-                    v-for="i in 6" 
-                    :key="i"
-                    :id="'reset-otp-input-'+i"
-                    v-model="resetOtpDigits[i-1]"
-                    type="text"
-                    maxlength="1"
-                    @input="handleResetOtpInput($event, i)"
-                    @keydown.delete="handleResetOtpBackspace($event, i)"
-                    class="w-14 h-14 md:w-12 md:h-16 text-center text-xl font-medium bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl outline-none transition-all"
-                  />
+            <!-- Verify OTP Views -->
+            <template v-else-if="view === 'verify_reset' || view === 'verify'">
+              <div class="space-y-4">
+                <div class="flex justify-center gap-2">
+                  <input v-for="i in 6" :key="i" :id="'otp-input-'+i" v-model="(view === 'verify_reset' ? resetOtpDigits : otpDigits)[i-1]" type="text" maxlength="1" @input="handleOtpInput($event, i)" @keydown.delete="handleOtpBackspace($event, i)" class="w-10 h-12 text-center text-lg font-bold bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" />
                 </div>
                 <div class="text-center pt-2">
-                  <p class="text-sm font-bold text-gray-400 mb-2">Haven't received it?</p>
-                  <button 
-                    type="button" 
-                    @click="handleResendResetOtp" 
-                    :disabled="resendLoading || resendTimer > 0"
-                    class="text-sm font-medium text-parentPrimary hover:underline disabled:text-gray-300 transition-all "
-                  >
+                  <button type="button" @click="handleResend" :disabled="resendLoading || resendTimer > 0" class="text-xs font-bold text-parentPrimary hover:underline disabled:text-gray-300">
                     {{ resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code' }}
                   </button>
                 </div>
               </div>
             </template>
 
-            <!-- Set New Password View -->
+            <!-- Reset Password -->
             <template v-else-if="view === 'reset'">
-              <div class="space-y-4">
-                <div class="group">
-                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">New Password</p>
-                  <div class="relative flex items-center">
-                    <input 
-                      v-model="resetForm.password" 
-                      :type="showResetPassword ? 'text' : 'password'" 
-                      placeholder="Min. 8 characters"
-                      required
-                      minlength="8"
-                      class="w-full pl-6 pr-14 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                    />
-                    <button 
-                      type="button" 
-                      @click="showResetPassword = !showResetPassword" 
-                      class="absolute right-5 p-1 text-gray-400 hover:text-gray-900 transition-colors"
-                    >
-                      <Eye v-if="!showResetPassword" class="w-5 h-5" />
-                      <EyeOff v-else class="w-5 h-5" />
-                    </button>
-                  </div>
+              <div class="space-y-3">
+                <div class="relative">
+                  <input v-model="resetForm.password" :type="showResetPassword ? 'text' : 'password'" placeholder="New password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" />
+                  <button type="button" @click="showResetPassword = !showResetPassword" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400">
+                    <Eye v-if="!showResetPassword" class="w-4 h-4" />
+                    <EyeOff v-else class="w-4 h-4" />
+                  </button>
                 </div>
-                <div class="group">
-                  <p class="text-xs font-medium text-gray-400 mb-2 pl-1 text-left">Confirm Password</p>
-                  <div class="relative flex items-center">
-                    <input 
-                      v-model="resetForm.confirmPassword" 
-                      :type="showConfirmPassword ? 'text' : 'password'" 
-                      placeholder="Repeat new password"
-                      required
-                      minlength="8"
-                      class="w-full pl-6 pr-14 py-4 bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-2xl text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-200"
-                    />
-                    <button 
-                      type="button" 
-                      @click="showConfirmPassword = !showConfirmPassword" 
-                      class="absolute right-5 p-1 text-gray-400 hover:text-gray-900 transition-colors"
-                    >
-                      <Eye v-if="!showConfirmPassword" class="w-5 h-5" />
-                      <EyeOff v-else class="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </template>
-
-            <!-- Verify Registration OTP View -->
-            <template v-else-if="view === 'verify'">
-              <div class="space-y-6">
-                <div class="flex justify-between items-center gap-2">
-                  <input 
-                    v-for="i in 6" 
-                    :key="i"
-                    :id="'otp-input-'+i"
-                    v-model="otpDigits[i-1]"
-                    type="text"
-                    maxlength="1"
-                    @input="handleOtpInput($event, i)"
-                    @keydown.delete="handleOtpBackspace($event, i)"
-                    class="w-10 h-14 md:w-12 md:h-16 text-center text-xl font-medium bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl outline-none transition-all"
-                  />
-                </div>
-                <div class="text-center pt-2">
-                  <p class="text-sm font-bold text-gray-400 mb-2">Haven't received it?</p>
-                  <button 
-                    type="button" 
-                    @click="handleResend" 
-                    :disabled="resendLoading || resendTimer > 0"
-                    class="text-sm font-medium text-parentPrimary hover:underline disabled:text-gray-300 transition-all "
-                  >
-                    {{ resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code' }}
+                <div class="relative">
+                  <input v-model="resetForm.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm new password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" />
+                  <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400">
+                    <Eye v-if="!showConfirmPassword" class="w-4 h-4" />
+                    <EyeOff v-else class="w-4 h-4" />
                   </button>
                 </div>
               </div>
             </template>
 
             <!-- Submit Button -->
-            <div class="pt-4">
-              <button 
-                type="submit" 
-                :disabled="loading"
-                class="w-full py-3.5 bg-gray-900 text-white rounded-2xl text-sm font-medium hover:bg-parentPrimary transition-all shadow-xl shadow-gray-100 disabled:opacity-50 flex items-center justify-center gap-3 group"
-              >
+            <div class="pt-2">
+              <button type="submit" :disabled="loading" class="w-full py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                 <template v-if="loading">
                   <Loader2 class="w-4 h-4 animate-spin text-white" />
                   <span>Processing...</span>
                 </template>
                 <template v-else>
-                  <span>{{ view === 'login' ? 'Sign in now' : view === 'register' ? 'Create Account' : view === 'guest' ? 'Continue Checkout' : view === 'forgot' ? 'Send Code' : view === 'verify_reset' ? 'Verify Code' : view === 'reset' ? 'Update Password' : 'Verify & Continue' }}</span>
-                  <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <span>{{ view === 'login' ? 'Sign In' : view === 'register' ? 'Create Account' : view === 'guest' ? 'Continue' : view === 'forgot' ? 'Send Code' : view === 'verify_reset' ? 'Verify Code' : view === 'reset' ? 'Update Password' : 'Verify & Continue' }}</span>
                 </template>
               </button>
             </div>
           </form>
 
-          <p v-if="!['verify', 'verify_reset', 'reset', 'guest'].includes(view)" class="mt-8 text-center text-sm font-bold text-gray-400 leading-relaxed">
-            By continuing, you agree to Errandr's <br/>
-            <span class="text-gray-900 hover:underline cursor-pointer">Terms of Service</span> & <span class="text-gray-900 hover:underline cursor-pointer">Privacy Policy</span>
+          <p v-if="view === 'options'" class="mt-6 text-center text-[10px] font-bold text-gray-400">
+            By continuing, you agree to Errandr's <span class="text-gray-900 hover:underline cursor-pointer">Terms</span> & <span class="text-gray-900 hover:underline cursor-pointer">Privacy</span>
           </p>
         </div>
       </div>
@@ -381,7 +186,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
-import { X, UserCheck, UserPlus, ShieldCheck, ArrowRight, Loader2, AlertCircle, KeyRound, ArrowLeft, Eye, EyeOff, User } from 'lucide-vue-next';
+import { X, UserCheck, UserPlus, ShieldCheck, ArrowRight, Loader2, AlertCircle, KeyRound, ArrowLeft, Eye, EyeOff, User, Store } from 'lucide-vue-next';
 import { useAuth } from '@/composables/modules/auth';
 import { auth_api } from '@/api_factory/modules/auth';
 import { useCustomToast } from '@/composables/core/useCustomToast';
@@ -395,7 +200,7 @@ const emit = defineEmits(['update:modelValue', 'authenticated', 'guest-checkout'
 const { login, register, verifyOTP } = useAuth();
 const { showToast } = useCustomToast();
 
-const view = ref<'login' | 'register' | 'verify' | 'forgot' | 'verify_reset' | 'reset' | 'guest'>('login');
+const view = ref<'options' | 'login' | 'register' | 'verify' | 'forgot' | 'verify_reset' | 'reset' | 'guest'>('options');
 const loading = ref(false);
 const error = ref('');
 

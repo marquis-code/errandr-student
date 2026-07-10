@@ -6,13 +6,14 @@
  <ArrowLeft class="w-6 h-6 text-white" />
  </button>
  <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold overflow-hidden shrink-0 border border-white/10 shadow-sm relative group cursor-pointer">
- {{ order?.errander?.firstName?.[0] || 'E' }}
+   <img v-if="chatTargetAvatar" :src="chatTargetAvatar" class="w-full h-full object-cover" />
+   <span v-else>{{ chatTargetName[0] || '?' }}</span>
  </div>
  <div class="flex-1 min-w-0 cursor-pointer" v-if="order">
- <h1 class="text-base font-bold truncate leading-tight tracking-tight">{{ order.errander?.firstName || 'Your Errandr' }}</h1>
- <p class="text-[12px] text-white/80 font-medium truncate mt-0.5">
- {{ isTyping ? 'typing...' : 'online' }}
- </p>
+   <h1 class="text-base font-bold truncate leading-tight tracking-tight">{{ chatTargetName }}</h1>
+   <p class="text-[12px] text-white/80 font-medium truncate mt-0.5">
+     {{ isTyping ? 'typing...' : 'online' }}
+   </p>
  </div>
  <div class="flex items-center gap-5 ml-2 shrink-0">
  <Video class="w-5 h-5 text-white cursor-pointer hover:opacity-80 transition-opacity" />
@@ -64,17 +65,41 @@
  </svg>
  </div>
 
- <div class="flex items-end gap-3 flex-wrap relative">
- <span class="break-words flex-1 min-w-0 font-normal leading-relaxed pb-[10px] pl-1 pr-1">{{ msg.message }}</span>
- <div class="flex items-center gap-1 shrink-0 absolute bottom-[-2px] right-0 bg-transparent">
- <span class="text-[10.5px] text-gray-500 font-medium">
- {{ formatTime(msg.createdAt) }}
- </span>
- <div v-if="isMe(msg)" class="flex items-center">
- <CheckCheck class="w-[15px] h-[15px] text-[#34B7F1]" stroke-width="2.5" />
- </div>
- </div>
- </div>
+  <div class="flex flex-col gap-1 w-full relative group/msg">
+    <!-- Reply block -->
+    <div v-if="msg.replyTo || msg.replyToMessageId" class="bg-black/5 rounded p-1.5 mb-1 text-sm border-l-4 border-[#00A884] opacity-80 flex flex-col cursor-pointer max-w-[200px] truncate" @click="scrollToReply(msg)">
+      <span class="text-[#00A884] font-semibold text-xs">{{ msg.replyTo?.sender?.firstName || 'User' }}</span>
+      <span class="truncate text-xs">{{ msg.replyTo?.messageType === 'image' ? 'Photo' : msg.replyTo?.messageType === 'voice' ? 'Voice note' : msg.replyTo?.message || 'Replied message' }}</span>
+    </div>
+    
+    <!-- Image -->
+    <div v-if="msg.messageType === 'image' && msg.attachment" class="rounded-md overflow-hidden mb-1">
+      <img :src="msg.attachment" class="max-w-[200px] sm:max-w-[250px] max-h-[300px] object-cover" />
+    </div>
+    
+    <!-- Voice -->
+    <div v-else-if="msg.messageType === 'voice' && msg.attachment" class="min-w-[150px] mb-1">
+      <audio controls :src="msg.attachment" class="h-8 w-full max-w-[200px]"></audio>
+    </div>
+    
+    <!-- Text -->
+    <span v-else-if="msg.message" class="break-words flex-1 min-w-0 font-normal leading-relaxed pb-[10px] pl-1 pr-1">{{ msg.message }}</span>
+    
+    <div class="flex items-center gap-1 shrink-0 absolute bottom-[-2px] right-0 bg-transparent">
+      <span class="text-[10.5px] text-gray-500 font-medium">
+        {{ formatTime(msg.createdAt) }}
+      </span>
+      <div v-if="isMe(msg)" class="flex items-center">
+        <Check v-if="msg.status === 'pending'" class="w-[15px] h-[15px] text-gray-400" stroke-width="2.5" />
+        <CheckCheck v-else class="w-[15px] h-[15px] text-[#34B7F1]" stroke-width="2.5" />
+      </div>
+    </div>
+    
+    <!-- Reply Button (visible on hover) -->
+    <button @click="setReply(msg)" class="absolute top-1/2 -translate-y-1/2 p-1.5 bg-white shadow-md rounded-full text-gray-500 hover:text-[#00A884] opacity-0 group-hover/msg:opacity-100 transition-opacity" :class="isMe(msg) ? '-left-10' : '-right-10'">
+      <Reply class="w-4 h-4" />
+    </button>
+  </div>
  </div>
  </div>
  
@@ -91,51 +116,82 @@
  </div>
  </div>
 
- <!-- WhatsApp Input Bar -->
- <div class="px-2 py-2.5 bg-[#F0F2F5] flex flex-col gap-2 sticky bottom-0 border-t border-gray-200">
- <div class="flex items-end gap-2 max-w-4xl mx-auto w-full">
- <!-- Input Container -->
- <div class="flex-1 bg-white rounded-[24px] px-3 py-1 flex items-end shadow-sm border border-transparent focus-within:border-gray-200 transition-all min-h-[44px]">
- <button class="p-2 mb-0.5 shrink-0 text-[#54656F] hover:text-[#00A884] transition-colors rounded-full hover:bg-gray-50">
- <Smile class="w-[26px] h-[26px]" />
- </button>
- 
- <textarea
- v-model="newMessage"
- rows="1"
- placeholder="Type a message"
- class="w-full bg-transparent border-none outline-none text-[16px] font-normal text-[#111B21] placeholder:text-gray-400 resize-none overflow-hidden mx-2 py-[11px]"
- @input="handleInput"
- @keydown.enter.prevent="sendMessage"
- style="min-height: 24px; max-height: 120px;"
- ></textarea>
+  <!-- Emoji Picker -->
+  <div v-if="showEmojiPicker" class="absolute bottom-[70px] left-2 bg-white rounded-lg shadow-lg border border-gray-100 p-2 max-w-[300px] animate-fade-in z-30">
+    <div class="grid grid-cols-6 gap-2 text-2xl">
+      <button v-for="emoji in emojis" :key="emoji" @click="selectEmoji(emoji)" class="hover:bg-gray-100 rounded p-1 transition-colors">
+        {{ emoji }}
+      </button>
+    </div>
+  </div>
 
- <button class="p-2 mb-0.5 shrink-0 text-[#54656F] hover:text-[#00A884] transition-colors rounded-full hover:bg-gray-50 transform -rotate-45">
- <Paperclip class="w-[22px] h-[22px]" />
- </button>
- </div>
+  <!-- WhatsApp Input Bar -->
+  <div class="px-2 py-2.5 bg-[#F0F2F5] flex flex-col gap-2 sticky bottom-0 border-t border-gray-200 z-20">
+    <!-- Reply Preview Bar -->
+    <div v-if="replyingTo" class="bg-[#E2E8F0] rounded-lg p-2 mx-2 flex items-center justify-between shadow-inner animate-fade-in relative border-l-4 border-[#00A884]">
+      <div class="flex flex-col min-w-0 pr-4">
+        <span class="text-[#00A884] font-bold text-sm">Replying to {{ replyingTo?.sender?.firstName || 'User' }}</span>
+        <span class="text-xs text-gray-600 truncate">{{ replyingTo.messageType === 'image' ? 'Photo' : replyingTo.messageType === 'voice' ? 'Voice note' : replyingTo.message }}</span>
+      </div>
+      <button @click="replyingTo = null" class="p-1 text-gray-500 hover:text-gray-800 rounded-full hover:bg-gray-300 transition-colors shrink-0">
+        <X class="w-4 h-4" />
+      </button>
+    </div>
 
- <!-- Send Button -->
- <button 
- @click="sendMessage"
- :class="[
- 'w-[48px] h-[48px] text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md shrink-0 mb-0.5',
- newMessage.trim() ? 'bg-[#00A884] hover:bg-[#008f6f]' : 'bg-[#00A884] hover:bg-[#008f6f]'
- ]"
- >
- <Send v-if="newMessage.trim()" class="w-[20px] h-[20px] ml-1 mt-[2px] stroke-2" />
- <Mic v-else class="w-[22px] h-[22px] fill-current" />
- </button>
- </div>
- </div>
+    <!-- Hidden file input -->
+    <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="hidden" />
+
+    <div class="flex items-end gap-2 max-w-4xl mx-auto w-full">
+      <!-- Input Container -->
+      <div class="flex-1 bg-white rounded-[24px] px-3 py-1 flex items-end shadow-sm border border-transparent focus-within:border-gray-200 transition-all min-h-[44px]">
+        <button @click="toggleEmojiPicker" class="p-2 mb-0.5 shrink-0 text-[#54656F] hover:text-[#00A884] transition-colors rounded-full hover:bg-gray-50" :class="{'text-[#00A884]': showEmojiPicker}">
+          <Smile class="w-[26px] h-[26px]" />
+        </button>
+        
+        <textarea
+          v-model="newMessage"
+          rows="1"
+          placeholder="Type a message"
+          class="w-full bg-transparent border-none outline-none text-[16px] font-normal text-[#111B21] placeholder:text-gray-400 resize-none overflow-hidden mx-2 py-[11px]"
+          @input="handleInput"
+          @keydown.enter.prevent="sendMessage"
+          style="min-height: 24px; max-height: 120px;"
+        ></textarea>
+
+        <button @click="triggerFileInput" class="p-2 mb-0.5 shrink-0 text-[#54656F] hover:text-[#00A884] transition-colors rounded-full hover:bg-gray-50 transform -rotate-45" :disabled="isUploading">
+          <Paperclip v-if="!isUploading" class="w-[22px] h-[22px]" />
+          <span v-else class="w-[22px] h-[22px] border-2 border-[#00A884] border-t-transparent rounded-full animate-spin inline-block"></span>
+        </button>
+      </div>
+
+      <!-- Send Button -->
+      <button 
+        @click="newMessage.trim() ? sendMessage() : null"
+        @mousedown="!newMessage.trim() ? startRecording() : null"
+        @touchstart.passive="!newMessage.trim() ? startRecording() : null"
+        @mouseup="stopRecording"
+        @mouseleave="stopRecording"
+        @touchend="stopRecording"
+        :class="[
+          'w-[48px] h-[48px] text-white rounded-full flex items-center justify-center transition-all shadow-md shrink-0 mb-0.5',
+          newMessage.trim() ? 'bg-[#00A884] hover:bg-[#008f6f] hover:scale-105 active:scale-95' : 
+          isRecording ? 'bg-red-500 scale-125 animate-pulse' : 'bg-[#00A884] hover:bg-[#008f6f]'
+        ]"
+      >
+        <Send v-if="newMessage.trim()" class="w-[20px] h-[20px] ml-1 mt-[2px] stroke-2" />
+        <Mic v-else class="w-[22px] h-[22px] fill-current" />
+      </button>
+    </div>
+  </div>
  </div>
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, CheckCheck, Smile, Paperclip, Send, Mic, Video, Phone, MoreVertical } from 'lucide-vue-next';
-import { ref, onMounted, nextTick } from 'vue';
+import { ArrowLeft, CheckCheck, Check, Smile, Paperclip, Send, Mic, Video, Phone, MoreVertical, X, Reply } from 'lucide-vue-next';
+import { ref, onMounted, nextTick, computed, onUnmounted } from 'vue';
 import { useRoute, useRouter, useHead } from '#imports';
 import { orders_api } from '@/api_factory/modules/orders';
+import { upload_api } from '@/api_factory/modules/upload';
 import { useUser } from '@/composables/modules/auth/user';
 import { useSocket } from '@/composables/useSocket';
 
@@ -149,6 +205,34 @@ const order = ref<any>(null);
 const messages = ref<any[]>([]);
 const newMessage = ref('');
 const isTyping = ref(false);
+
+const isUploading = ref(false);
+const isRecording = ref(false);
+const mediaRecorder = ref<MediaRecorder | null>(null);
+const audioChunks = ref<Blob[]>([]);
+const showEmojiPicker = ref(false);
+const replyingTo = ref<any>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const emojis = ['😀', '😂', '🥺', '😍', '🙏', '👍', '❤️', '🔥', '🎉', '😊', '😭', '😎', '😡', '🤔', '🙌', '✨', '💯', '👏'];
+
+const chatTargetName = computed(() => {
+  if (!order.value) return 'Loading...';
+  if (route.query.target === 'vendor') {
+    return order.value.vendor?.storeName || 'Vendor';
+  }
+  return order.value.errander?.firstName 
+    ? `${order.value.errander.firstName} ${order.value.errander.lastName || ''}`.trim() 
+    : 'Your Rider';
+});
+
+const chatTargetAvatar = computed(() => {
+  if (!order.value) return '';
+  if (route.query.target === 'vendor') {
+    return order.value.vendor?.logo || '';
+  }
+  return order.value.errander?.avatar || '';
+});
 const chatContainer = ref<HTMLElement | null>(null);
 let typingTimeout: any = null;
 
@@ -173,39 +257,174 @@ const scrollToBottom = () => {
  });
 };
 
+const getReceiverId = () => {
+  if (!order.value) return null;
+  if (route.query.target === 'vendor') {
+    return order.value.vendor?._id;
+  }
+  return order.value.errander?._id;
+};
+
 const handleInput = (e: Event) => {
  const target = e.target as HTMLTextAreaElement;
  target.style.height = 'auto';
  target.style.height = `${target.scrollHeight}px`;
 
- if (!order.value?.errander) return;
- emit('typing', { orderId: route.params.id, receiverId: order.value.errander._id });
+ const receiverId = getReceiverId();
+ if (!receiverId) return;
+ emit('typing', { orderId: route.params.id, receiverId });
  
  clearTimeout(typingTimeout);
  typingTimeout = setTimeout(() => {
- emit('stopTyping', { orderId: route.params.id, receiverId: order.value.errander._id });
+ emit('stopTyping', { orderId: route.params.id, receiverId });
  }, 2000);
 };
 
+const sendOptimisticMessage = (payload: any) => {
+  const tempId = 'temp-' + Date.now();
+  const optimisticMsg = {
+    _id: tempId,
+    ...payload,
+    sender: { _id: payload.senderId },
+    createdAt: new Date().toISOString(),
+    status: 'pending'
+  };
+  messages.value.push(optimisticMsg);
+  scrollToBottom();
+  
+  emit('sendMessage', payload);
+  return tempId;
+};
+
 const sendMessage = () => {
- if (!newMessage.value.trim() || !order.value?.errander) return;
+ const receiverId = getReceiverId();
+ if (!newMessage.value.trim() || !receiverId) return;
  
- emit('sendMessage', {
- orderId: route.params.id,
- senderId: user.value?._id,
- receiverId: order.value.errander._id,
- message: newMessage.value,
- });
+ const payload: any = {
+   orderId: route.params.id,
+   senderId: user.value?._id,
+   receiverId: receiverId,
+   message: newMessage.value,
+   messageType: 'text',
+ };
+ 
+ if (replyingTo.value) {
+   payload.replyToMessageId = replyingTo.value._id;
+   payload.replyTo = replyingTo.value;
+ }
+ 
+ sendOptimisticMessage(payload);
  
  newMessage.value = '';
+ replyingTo.value = null;
+ showEmojiPicker.value = false;
  
- // reset text area height
  nextTick(() => {
- const textareas = document.querySelectorAll('textarea');
- textareas.forEach(t => t.style.height = '44px');
+   const textareas = document.querySelectorAll('textarea');
+   textareas.forEach(t => t.style.height = '44px');
  });
 
- emit('stopTyping', { orderId: route.params.id, receiverId: order.value.errander._id });
+ emit('stopTyping', { orderId: route.params.id, receiverId });
+};
+
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+const handleFileUpload = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  const receiverId = getReceiverId();
+  if (!file || !receiverId) return;
+
+  isUploading.value = true;
+  try {
+    const res = await upload_api.uploadFile(file, 'image');
+    const attachmentUrl = res.data?.url || res.data?.secure_url;
+    if (attachmentUrl) {
+      sendOptimisticMessage({
+        orderId: route.params.id,
+        senderId: user.value?._id,
+        receiverId: receiverId,
+        message: 'Photo',
+        messageType: 'image',
+        attachment: attachmentUrl
+      });
+    }
+  } catch (error) {
+    console.error('Failed to upload image', error);
+  } finally {
+    isUploading.value = false;
+    if (fileInput.value) fileInput.value.value = '';
+  }
+};
+
+const startRecording = async () => {
+  if (newMessage.value.trim()) return;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder.value = new MediaRecorder(stream);
+    audioChunks.value = [];
+
+    mediaRecorder.value.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        audioChunks.value.push(event.data);
+      }
+    };
+
+    mediaRecorder.value.onstop = async () => {
+      const audioBlob = new Blob(audioChunks.value, { type: 'audio/webm' });
+      isUploading.value = true;
+      try {
+        const res = await upload_api.uploadFile(audioBlob, 'audio');
+        const attachmentUrl = res.data?.url || res.data?.secure_url;
+        const receiverId = getReceiverId();
+        if (attachmentUrl && receiverId) {
+          sendOptimisticMessage({
+            orderId: route.params.id,
+            senderId: user.value?._id,
+            receiverId: receiverId,
+            message: 'Voice note',
+            messageType: 'voice',
+            attachment: attachmentUrl
+          });
+        }
+      } catch (error) {
+        console.error('Failed to upload audio', error);
+      } finally {
+        isUploading.value = false;
+      }
+      stream.getTracks().forEach(track => track.stop());
+    };
+
+    mediaRecorder.value.start();
+    isRecording.value = true;
+  } catch (err) {
+    console.error('Error accessing microphone', err);
+  }
+};
+
+const stopRecording = () => {
+  if (mediaRecorder.value && isRecording.value) {
+    mediaRecorder.value.stop();
+    isRecording.value = false;
+  }
+};
+
+const toggleEmojiPicker = () => {
+  showEmojiPicker.value = !showEmojiPicker.value;
+};
+
+const selectEmoji = (emoji: string) => {
+  newMessage.value += emoji;
+};
+
+const setReply = (msg: any) => {
+  replyingTo.value = msg;
+};
+
+const scrollToReply = (msg: any) => {
+  // Not implemented, but could find DOM node and scroll
 };
 
 onMounted(async () => {
@@ -223,12 +442,20 @@ onMounted(async () => {
  emit('joinOrder', { orderId: route.params.id });
 
  on('newMessage', (msg: any) => {
- // Also include check for msg order id to protect from leakage
- const msgOrderId = msg.orderId || msg.order;
- if (msgOrderId === route.params.id || msgOrderId?.toString() === route.params.id) {
- messages.value.push(msg);
- scrollToBottom();
- }
+  const msgOrderId = msg.orderId || msg.order;
+  if (msgOrderId === route.params.id || msgOrderId?.toString() === route.params.id) {
+    if (msg.senderId === user.value?._id || msg.sender?._id === user.value?._id) {
+      const pendingIdx = messages.value.findIndex(m => m.status === 'pending' && m.message === msg.message && (m.messageType || 'text') === (msg.messageType || 'text'));
+      if (pendingIdx !== -1) {
+        messages.value[pendingIdx] = msg;
+        return;
+      }
+    }
+    if (!messages.value.some(m => m._id === msg._id)) {
+      messages.value.push(msg);
+      scrollToBottom();
+    }
+  }
  });
 
  on('typing', (data: any) => {

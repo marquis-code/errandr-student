@@ -1,4 +1,4 @@
-import { ref, onUnmounted, computed } from 'vue';
+import { ref, onUnmounted, toValue, type MaybeRefOrGetter } from 'vue';
 import { useSocket } from '@/composables/useSocket';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 
@@ -18,7 +18,11 @@ interface Message {
   createdAt: string;
 }
 
-export const useOrderChat = (orderId: string, currentUserId?: string, targetUserId?: string) => {
+export const useOrderChat = (
+  orderIdArg: MaybeRefOrGetter<string>,
+  currentUserIdArg?: MaybeRefOrGetter<string | undefined>,
+  targetUserIdArg?: MaybeRefOrGetter<string | undefined>
+) => {
   const { connect, emit, on, off } = useSocket('chat');
   const messages = ref<Message[]>([]);
   const loading = ref(false);
@@ -27,15 +31,21 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
 
   const fetchMessages = async () => {
     loading.value = true;
+    const orderId = toValue(orderIdArg);
+    const currentUserId = toValue(currentUserIdArg);
+    const targetUserId = toValue(targetUserIdArg);
     try {
       const res = await api.get(`/chat/order/${orderId}`);
       if (currentUserId && targetUserId) {
         messages.value = (res.data || []).filter((m: any) => {
           const sId = String(m.senderId || m.sender?._id || m.sender || '');
           const rId = String(m.receiverId || m.receiver?._id || m.receiver || '');
-          const cId = String(currentUserId);
-          const tId = String(targetUserId);
-          return (sId === cId && rId === tId) || (sId === tId && rId === cId);
+          const cIds = String(currentUserId).split(',').map(id => id.trim());
+          const tIds = String(targetUserId).split(',').map(id => id.trim());
+          const isGeneric = !rId || rId === 'undefined';
+          const isRelevant = isGeneric || (cIds.includes(sId) && tIds.includes(rId)) || (tIds.includes(sId) && cIds.includes(rId));
+          console.log(`[Student fetchMessages] msgId=${m._id}, sId=${sId}, rId=${rId}, cIds=${cIds.join(',')}, tIds=${tIds.join(',')}, isGeneric=${isGeneric}, isRelevant=${isRelevant}`);
+          return isRelevant;
         });
       } else {
         messages.value = res.data || [];
@@ -47,11 +57,24 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
     }
   };
 
+  const extractObjectId = (str: string) => {
+    if (!str) return '';
+    const parts = String(str).split(',');
+    for (const p of parts) {
+      const t = p.trim();
+      if (/^[0-9a-fA-F]{24}$/.test(t)) return t;
+    }
+    return String(str).split(',')[0]?.trim() || '';
+  };
+
   const sendMessage = (text: string, receiverId: string, senderId: string, type: 'text' | 'image' | 'voice' = 'text', attachment?: string) => {
+    const orderId = toValue(orderIdArg);
+    const cleanSenderId = extractObjectId(senderId);
+    const cleanReceiverId = extractObjectId(receiverId);
     emit('sendMessage', {
       orderId,
-      senderId,
-      receiverId,
+      senderId: cleanSenderId,
+      receiverId: cleanReceiverId,
       message: text,
       messageType: type,
       attachment
@@ -59,6 +82,7 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
   };
 
   const sendTyping = (userId: string) => {
+    const orderId = toValue(orderIdArg);
     emit('typing', { orderId, userId });
     if (typingTimeout.value) clearTimeout(typingTimeout.value);
     typingTimeout.value = setTimeout(() => {
@@ -72,17 +96,23 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
     off('newMessage');
     off('userTyping');
     
+    const orderId = toValue(orderIdArg);
+    
     emit('joinOrder', { orderId });
 
     on('newMessage', (message: any) => {
+      const currentUserId = toValue(currentUserIdArg);
+      const targetUserId = toValue(targetUserIdArg);
       const msgOrderId = message.orderId || message.order;
-      if (msgOrderId === orderId) {
+      if (msgOrderId === toValue(orderIdArg)) {
         if (currentUserId && targetUserId) {
           const sId = String(message.senderId || message.sender?._id || message.sender || '');
           const rId = String(message.receiverId || message.receiver?._id || message.receiver || '');
-          const cId = String(currentUserId);
-          const tId = String(targetUserId);
-          const isRelevant = (sId === cId && rId === tId) || (sId === tId && rId === cId);
+          const cIds = String(currentUserId).split(',').map(id => id.trim());
+          const tIds = String(targetUserId).split(',').map(id => id.trim());
+          const isGeneric = !rId || rId === 'undefined';
+          const isRelevant = isGeneric || (cIds.includes(sId) && tIds.includes(rId)) || (tIds.includes(sId) && cIds.includes(rId));
+          console.log(`[Student newMessage] msgId=${message._id}, sId=${sId}, rId=${rId}, cIds=${cIds.join(',')}, tIds=${tIds.join(',')}, isGeneric=${isGeneric}, isRelevant=${isRelevant}`);
           if (!isRelevant) return;
         }
 
@@ -98,7 +128,7 @@ export const useOrderChat = (orderId: string, currentUserId?: string, targetUser
   };
 
   onUnmounted(() => {
-    emit('leaveOrder', { orderId });
+    emit('leaveOrder', { orderId: toValue(orderIdArg) });
   });
 
   return {

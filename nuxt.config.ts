@@ -3,9 +3,6 @@ import { defineNuxtConfig } from "nuxt/config";
 export default defineNuxtConfig({
   ssr: false,
 
-  // Use 'vercel-static' preset so Vercel serves the SPA correctly
-  // (default 'node-server' produces a server build that won't work on Vercel static hosting)
-
   site: {
     url: 'https://erranders.org',
     name: 'Errander',
@@ -19,12 +16,14 @@ export default defineNuxtConfig({
       routes: ['/', '/404.html', '/200.html'],
       ignore: ['/dynamic-routes', '/api'],
       failOnError: false
-    }
+    },
+    // ⬇ ensures the built/preview server also binds to 3001 (devServer.port only covers `nuxt dev`)
+    devProxy: undefined,
   },
 
   devServer: {
-    port: 3003,
-    host: 'localhost'
+    port: Number(process.env.NUXT_PORT || process.env.PORT || 3001),
+    host: process.env.NUXT_HOST || 'localhost'
   },
 
   imports: {
@@ -50,28 +49,13 @@ export default defineNuxtConfig({
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "format-detection", content: "telephone=no" },
-
-        // ✅ SEO meta
-        {
-          name: "description",
-          content: 'Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.'
-        },
-        {
-          name: "keywords",
-          content: 'Student delivery, campus food delivery, Errander, food ordering, university delivery'
-        },
+        { name: "description", content: 'Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.' },
+        { name: "keywords", content: 'Student delivery, campus food delivery, Errander, food ordering, university delivery' },
         { name: "author", content: "Errander" },
-
-        // ✅ Open Graph (for social previews)
         { property: "og:title", content: "Errander — Student Portal" },
-        {
-          property: "og:description",
-          content:
-            "Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.",
-        },
+        { property: "og:description", content: "Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel." },
         { property: "og:type", content: "website" },
       ],
-
       link: [
         { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
         { rel: "shortcut icon", href: "/favicon.ico", type: "image/x-icon" },
@@ -80,12 +64,8 @@ export default defineNuxtConfig({
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
         { rel: "manifest", href: "/site.webmanifest" }
       ],
-
       script: [
-        {
-          src: "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js",
-          type: "text/javascript",
-        },
+        { src: "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js", type: "text/javascript" },
       ],
     },
   },
@@ -112,7 +92,8 @@ export default defineNuxtConfig({
       firebaseApiKey: process.env.FIREBASE_API_KEY || '',
       firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
       firebaseProjectId: process.env.FIREBASE_PROJECT_ID || '',
-      paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY || ''
+      paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY || '',
+      mapboxToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN
     },
   },
 

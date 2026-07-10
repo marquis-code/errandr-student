@@ -203,20 +203,22 @@
       <div
         v-for="product in heroSearchSuggestions"
         :key="product._id"
-        @click="router.push(`/vendors/${product.vendor._id || product.vendor}`)"
+        @click="router.push(`/vendors/${product.itemType === 'vendor' ? product._id : (product.vendor._id || product.vendor)}`)"
         class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
       >
         <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">
-          <img v-if="product.image" :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+          <img v-if="product.image || product.imageUrl || product.logo" :src="product.image || product.imageUrl || product.logo" class="w-full h-full object-cover group-hover:scale-110 transition-transform" />
           <div v-else class="w-full h-full flex items-center justify-center bg-parentPrimary/10 text-parentPrimary">
             <Store class="w-5 h-5" />
           </div>
         </div>
         <div class="flex-1 text-left">
-          <h4 class="text-sm font-medium text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h4>
-          <p class="text-sm font-bold text-gray-400">{{ product.vendor?.storeName || 'Campus Vendor' }}</p>
+          <h4 class="text-sm font-medium text-gray-900 group-hover:text-parentPrimary transition-colors">{{ product.name || product.storeName }}</h4>
+          <p class="text-sm font-bold text-gray-400">
+            {{ product.itemType === 'vendor' ? (product.category?.name || product.category || 'Vendor') : (product.vendor?.storeName || 'Campus Vendor') }}
+          </p>
         </div>
-        <div class="text-right">
+        <div class="text-right" v-if="product.price">
           <span class="text-sm font-medium text-gray-900">₦{{ product.price?.toLocaleString() }}</span>
         </div>
       </div>
@@ -775,11 +777,13 @@ const fetchSuggestions = async () => {
       time: searchTime.value 
     })
     
-    // Combine products and services from the new search endpoint
+    // Combine vendors, products, menuItems, and services from the new search endpoint
     const searchData = res.data?.data || res.data || {}
     const combined = [
-      ...(searchData.products || []),
-      ...(searchData.services || [])
+      ...(searchData.vendors || []).map((v: any) => ({ ...v, itemType: 'vendor' })),
+      ...(searchData.menuItems || []).map((m: any) => ({ ...m, itemType: 'menuItem' })),
+      ...(searchData.products || []).map((p: any) => ({ ...p, itemType: 'product' })),
+      ...(searchData.services || []).map((s: any) => ({ ...s, itemType: 'service' }))
     ]
     
     // Limit to 6 items for the dropdown

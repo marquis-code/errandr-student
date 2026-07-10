@@ -6,10 +6,7 @@
       <NuxtPage class="z-10" />
     </NuxtLayout>
     
-    <!-- Chat Widget - Bottom Right -->
-    <div class="fixed bottom-6 right-6 z-[999998]">
-      <ChatWidget />
-    </div>
+
     
     <!-- Background Audio - Bottom Left -->
     <!-- <ClientOnly>

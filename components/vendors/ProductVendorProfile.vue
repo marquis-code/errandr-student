@@ -132,11 +132,11 @@
                     {{ vendor.preparationTime }} min
                   </span>
                 </template>
-                <template v-if="vendor.deliveryFee > 0 || vendor.baseDeliveryFee > 0">
+                <template v-if="lowestProductPrice > 0">
                   <span class="w-1 h-1 rounded-full bg-white/30"></span>
                   <span class="flex items-center gap-1">
                     <Bike class="w-3 h-3" />
-                    From ₦{{ vendor.deliveryFee || vendor.baseDeliveryFee || 0 }}
+                    From ₦{{ lowestProductPrice.toLocaleString() }}
                   </span>
                 </template>
               </div>
@@ -231,23 +231,37 @@
         class="sticky z-30 bg-white/95 backdrop-blur-xl border-b border-gray-50 transition-all duration-300"
         :class="scrolled ? 'top-[57px]' : 'top-0'"
       >
-        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3">
-          <div class="flex gap-2 overflow-x-auto scrollbar-hide">
-            <button
-              v-for="cat in categories"
-              :key="cat"
-              @click="scrollToCategory(cat)"
-              class="whitespace-nowrap px-4 py-2 rounded-xl text-xs font-medium transition-all shrink-0 active:scale-95"
-              :class="activeCategory === cat 
-                ? 'bg-parentPrimary text-white shadow-md shadow-parentPrimary/20 scale-[1.02]' 
-                : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900'"
-            >
-              {{ toTitleCase(cat) }}
-              <span 
-                class="ml-1 text-[10px] px-1.5 py-0.5 rounded-md"
-                :class="activeCategory === cat ? 'bg-white/20' : 'bg-gray-100 text-gray-400'"
-              >{{ groupedProducts[cat]?.length || 0 }}</span>
-            </button>
+        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 space-y-4">
+          <!-- Search Bar -->
+          <div class="relative max-w-md w-full">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search class="h-4 w-4 text-gray-400" />
+            </div>
+            <input 
+              v-model="searchQuery"
+              type="text" 
+              :placeholder="`Search ${vendor?.storeName || 'Store'}...`"
+              class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-parentPrimary focus:border-parentPrimary sm:text-sm transition-all"
+            />
+          </div>
+
+          <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+            <template v-for="cat in categories" :key="cat">
+              <button
+                v-if="groupedProducts[cat] && groupedProducts[cat].length > 0"
+                @click="scrollToCategory(cat)"
+                class="whitespace-nowrap px-4 py-2 rounded-xl text-xs font-medium transition-all shrink-0 active:scale-95"
+                :class="activeCategory === cat 
+                  ? 'bg-parentPrimary text-white shadow-md shadow-parentPrimary/20 scale-[1.02]' 
+                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900'"
+              >
+                {{ toTitleCase(cat) }}
+                <span 
+                  class="ml-1 text-[10px] px-1.5 py-0.5 rounded-md"
+                  :class="activeCategory === cat ? 'bg-white/20' : 'bg-gray-100 text-gray-400'"
+                >{{ groupedProducts[cat].length }}</span>
+              </button>
+            </template>
           </div>
         </div>
       </div>
@@ -260,12 +274,12 @@
           
           <!-- Products Column -->
           <div class="flex-1 space-y-10">
-            <section 
-              v-for="cat in categories" 
-              :key="cat" 
-              :id="cat.toLowerCase().replace(/\s+/g, '-')"
-              class="scroll-mt-32"
-            >
+            <template v-for="cat in categories" :key="cat">
+              <section 
+                v-if="groupedProducts[cat] && groupedProducts[cat].length > 0"
+                :id="cat.toLowerCase().replace(/\s+/g, '-')"
+                class="scroll-mt-32"
+              >
               <!-- Category Header -->
               <div class="flex items-center gap-3 mb-5">
                 <h2 class="text-lg font-medium text-gray-900 tracking-tight">{{ toTitleCase(cat) }}</h2>
@@ -278,14 +292,15 @@
                 <div 
                   v-for="product in groupedProducts[cat]" 
                   :key="product._id"
-                  @click="selectedProduct = product"
+                  @click="openProductModal(product)"
                   class="group flex items-center gap-3 p-2.5 bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-md transition-all cursor-pointer active:scale-[0.98]"
                 >
                   <!-- Square Image / Mini Carousel -->
                   <div class="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0 relative" @click.stop="getMediaItems(product).length ? openLightbox(getMediaItems(product), 0) : null">
-                    <img :src="getMediaItems(product)[0]?.url || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
+                    <video v-if="getMediaItems(product)[0]?.type === 'video'" :src="getMediaItems(product)[0]?.url" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                    <img v-else :src="getMediaItems(product)[0]?.url || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
                     <!-- Play icon if it's a video -->
-                    <div v-if="getMediaItems(product)[0]?.type === 'video'" class="absolute inset-0 bg-black/20 flex items-center justify-center">
+                    <div v-if="getMediaItems(product)[0]?.type === 'video'" class="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
                       <Play class="w-6 h-6 text-white" fill="currentColor" />
                     </div>
                     <!-- Indicator for multiple media -->
@@ -305,11 +320,23 @@
                       <div>
                         <span v-if="product.discountPrice" class="text-[10px] text-gray-300 line-through mr-1">₦{{ product.price.toLocaleString() }}</span>
                         <span class="text-sm font-medium text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                        <span v-if="product.portionUnit" class="text-[10px] text-gray-500 ml-1">per {{ product.portionUnit }}</span>
                       </div>
                     </div>
                   </div>
-                  <!-- Add Button -->
+                  <!-- Out of Stock / Add Button -->
+                  <div v-if="isProductOutOfStock(product)" class="flex flex-col items-center gap-1 shrink-0">
+                    <button 
+                      @click.stop="notifyRestock(product._id)"
+                      class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-amber-100 hover:text-amber-600 transition-colors shadow-sm"
+                      title="Notify when restocked"
+                    >
+                      <Bell class="w-3.5 h-3.5" />
+                    </button>
+                    <span class="text-[8px] font-bold text-red-500 uppercase tracking-wider">Out of stock</span>
+                  </div>
                   <button 
+                    v-else
                     @click.stop="addToCart(product)"
                     class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary active:scale-90 transition-all shadow-md shrink-0"
                   >
@@ -323,7 +350,7 @@
                 <div 
                   v-for="product in groupedProducts[cat]" 
                   :key="product._id"
-                  @click="selectedProduct = product"
+                  @click="openProductModal(product)"
                   class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
                 >
                   <!-- Media Carousel -->
@@ -355,9 +382,24 @@
                     <div class="flex items-end justify-between mt-4 pt-3 border-t border-gray-50">
                       <div>
                         <span v-if="product.discountPrice" class="text-xs text-gray-300 line-through block mb-0.5">₦{{ product.price.toLocaleString() }}</span>
-                        <span class="text-base font-medium text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                        <div class="flex items-baseline gap-1">
+                          <span class="text-base font-medium text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                          <span v-if="product.portionUnit" class="text-[10px] text-gray-500">per {{ product.portionUnit }}</span>
+                        </div>
+                      </div>
+                      
+                      <div v-if="isProductOutOfStock(product)" class="flex flex-col items-end gap-1">
+                        <span class="text-[9px] font-bold text-red-500 uppercase tracking-wider">Out of stock</span>
+                        <button 
+                          @click.stop="notifyRestock(product._id)"
+                          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-amber-100 hover:text-amber-700 transition-colors"
+                        >
+                          <Bell class="w-3 h-3" />
+                          <span class="text-[10px] font-medium">Notify me</span>
+                        </button>
                       </div>
                       <button 
+                        v-else
                         @click.stop="addToCart(product)"
                         class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-parentPrimary/30 shadow-black/5 shrink-0"
                       >
@@ -368,6 +410,7 @@
                 </div>
               </div>
             </section>
+            </template>
           </div>
 
 
@@ -476,7 +519,7 @@
                 <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="p-4 space-y-4">
                   <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-3">
                     <!-- Pack Header -->
-                    <div class="flex items-center justify-between">
+                    <div v-if="isFoodVendor" class="flex items-center justify-between">
                       <span class="text-[10px] font-medium bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `${packTerm} ${pIndex + 1}` }}</span>
                       <div class="flex items-center gap-1">
                         <button @click="duplicatePack(vendor._id, pack)" class="p-1.5 text-gray-400 hover:text-parentPrimary transition-all" :title="`Duplicate ${packTerm.toLowerCase()}`">
@@ -490,8 +533,9 @@
                     <!-- Pack Items -->
                     <div class="space-y-2">
                       <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-gray-100">
-                          <img :src="item.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
+                        <div class="w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-gray-100 bg-gray-50 relative">
+                          <video v-if="item.image && item.image.match(/\.(mp4|webm|ogg|mov)/i)" :src="item.image" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                          <img v-else :src="item.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
                         </div>
                         <div class="flex-1 min-w-0">
                           <p class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
@@ -507,7 +551,7 @@
                   </div>
 
                   <!-- Add Pack -->
-                  <button @click="addNewPack(vendor._id)" class="w-full py-3 border border-dashed border-gray-200 rounded-xl text-xs font-medium text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
+                  <button v-if="isFoodVendor" @click="addNewPack(vendor._id)" class="w-full py-3 border border-dashed border-gray-200 rounded-xl text-xs font-medium text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
                     <Plus class="w-3.5 h-3.5" /> New {{ packTerm }}
                   </button>
 
@@ -553,16 +597,6 @@
     <!-- ============================================ -->
     <Teleport to="body">
       <Transition
-        enter-active-class="transition-opacity duration-300"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition-opacity duration-200"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div v-if="showMobileCartDrawer" class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm lg:hidden" @click="showMobileCartDrawer = false"></div>
-      </Transition>
-      <Transition
         enter-active-class="transition-transform duration-300 ease-out"
         enter-from-class="translate-y-full"
         enter-to-class="translate-y-0"
@@ -570,21 +604,26 @@
         leave-from-class="translate-y-0"
         leave-to-class="translate-y-full"
       >
-        <div v-if="showMobileCartDrawer" class="fixed inset-x-0 bottom-0 z-[101] bg-white rounded-t-[2rem] max-h-[85vh] overflow-y-auto lg:hidden shadow-2xl">
-          <!-- Handle -->
-          <div class="sticky top-0 bg-white pt-3 pb-2 px-5 border-b border-gray-50 z-10 rounded-t-[2rem]">
-            <div class="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3"></div>
-            <div class="flex items-center justify-between">
-              <h2 class="text-lg font-medium text-gray-900 tracking-tight">Your Order</h2>
-              <button @click="showMobileCartDrawer = false" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
+        <div v-if="showMobileCartDrawer" class="fixed inset-0 z-[101] bg-white overflow-y-auto lg:hidden flex flex-col">
+          <!-- Header -->
+          <div class="sticky top-0 bg-white border-b border-gray-100 z-10 shadow-sm">
+            <div class="flex items-center justify-between px-5 py-4">
+              <button @click="showMobileCartDrawer = false" class="w-10 h-10 bg-parentPrimary rounded-full flex items-center justify-center text-white shrink-0 hover:bg-parentPrimary/90 active:scale-95 transition-all">
+                <ArrowLeft class="w-5 h-5"/>
+              </button>
+              <div class="text-center">
+                <p class="text-[10px] font-bold text-gray-900 tracking-widest uppercase mb-0.5">Your Cart From</p>
+                <h2 class="text-[17px] font-bold text-gray-900 leading-none">{{ vendor.storeName }}</h2>
+              </div>
+              <button @click="showMobileCartDrawer = false" class="w-10 h-10 bg-gray-50 hover:bg-gray-100 transition-colors rounded-full flex items-center justify-center text-gray-400 shrink-0 active:scale-95">
                 <X class="w-4 h-4"/>
               </button>
             </div>
           </div>
           
-          <div class="p-5 space-y-6 pb-10">
+          <div class="flex-1 flex flex-col bg-white">
             <!-- Group Participants (if in group) -->
-            <div v-if="groupOrder" class="space-y-3">
+            <div v-if="groupOrder" class="p-5 space-y-3 border-b border-gray-50">
               <h3 class="text-xs font-medium text-gray-400 tracking-widest">Participants ({{ groupOrder.participants?.length || 0 }})</h3>
               <div v-for="p in groupOrder.participants" :key="p.user?._id || p.user" class="p-3 bg-gray-50 rounded-xl flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-medium text-xs text-gray-500 overflow-hidden shrink-0">
@@ -613,62 +652,98 @@
             </div>
 
             <!-- Pack Items -->
-            <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="space-y-5">
-              <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-medium bg-gray-900 text-white px-3 py-1 rounded-lg">{{ pack.name || `${packTerm} ${pIndex + 1}` }}</span>
-                  <div class="flex items-center gap-1">
-                    <button @click="duplicatePack(vendor._id, pack)" class="p-1.5 text-gray-400 hover:text-parentPrimary"><Copy class="w-3.5 h-3.5" /></button>
-                    <button @click="cart.removePack(vendor._id, pack.id)" class="p-1.5 text-gray-400 hover:text-rose-500"><Trash2 class="w-3.5 h-3.5" /></button>
+            <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="flex-1 flex flex-col">
+              <div class="p-5 space-y-8 flex-1">
+                <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-6">
+                  <!-- Pack Header -->
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-400">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
+                    <button @click="cart.removePack(vendor._id, pack.id)" class="p-1.5 text-red-500 hover:text-red-600 transition-colors">
+                      <Trash2 class="w-4 h-4" />
+                    </button>
+                  </div>
+                  
+                  <!-- Items inside Pack -->
+                  <div class="space-y-5">
+                    <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center justify-between gap-3">
+                      <div class="flex-1 min-w-0 pr-4">
+                        <p class="text-[15px] font-bold text-gray-900 underline decoration-gray-900 decoration-[1.5px] underline-offset-[5px] mb-1.5 truncate">{{ toTitleCase(item.name) }}</p>
+                        <p class="text-sm font-medium text-gray-400">₦{{ item.price?.toLocaleString() }}</p>
+                      </div>
+                      
+                      <!-- Quantity Control Pill -->
+                      <div class="flex items-center justify-between bg-white border border-gray-100 rounded-full px-1 py-1 shadow-sm shrink-0 min-w-[90px]">
+                        <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-8 h-8 rounded-full hover:bg-gray-50 flex items-center justify-center text-gray-900 font-medium transition-colors">
+                          <Minus class="w-3.5 h-3.5" />
+                        </button>
+                        <span class="text-[15px] font-bold text-gray-900 min-w-[14px] text-center">{{ item.quantity }}</span>
+                        <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-8 h-8 rounded-full hover:bg-gray-50 flex items-center justify-center text-gray-900 font-medium transition-colors">
+                          <Plus class="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Pack Actions -->
+                  <div v-if="isFoodVendor" class="flex items-center justify-center gap-5 pt-3">
+                    <button @click="addNewPack(vendor._id)" class="text-[13px] font-bold text-parentPrimary flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+                      <Plus class="w-4 h-4" /> Add to this pack
+                    </button>
+                    <div class="w-px h-[18px] bg-gray-200"></div>
+                    <button @click="cart.duplicatePack(vendor._id, pack.id)" class="text-[13px] font-bold text-gray-900 flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+                      <Copy class="w-4 h-4" /> Duplicate pack
+                    </button>
                   </div>
                 </div>
-                <div class="space-y-2">
-                  <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                      <img :src="item.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
-                      <p class="text-xs font-medium text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
-                    </div>
-                    <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100 shrink-0">
-                      <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-7 h-7 rounded-md bg-white text-gray-500 flex items-center justify-center text-sm font-bold shadow-sm">−</button>
-                      <span class="text-xs font-medium min-w-[18px] text-center">{{ item.quantity }}</span>
-                      <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-7 h-7 rounded-md bg-white text-gray-500 flex items-center justify-center text-sm font-bold shadow-sm">+</button>
-                    </div>
-                  </div>
+
+                <!-- Global Cart Actions -->
+                <div class="flex items-center justify-between pt-8 border-t border-gray-50 mt-4 pb-2">
+                  <button @click="cart.clearCart(vendor._id)" class="text-[13px] font-bold text-red-500 bg-red-50 hover:bg-red-100 transition-colors px-4 py-2.5 rounded-[20px] flex items-center gap-2">
+                    <Trash2 class="w-4 h-4" /> Clear cart
+                  </button>
+                  <button @click="showMobileCartDrawer = false" class="text-[13px] font-bold text-parentPrimary bg-parentPrimary/10 hover:bg-parentPrimary/20 transition-colors px-4 py-2.5 rounded-[20px] flex items-center gap-2">
+                    <Plus class="w-4 h-4" /> Add more items
+                  </button>
                 </div>
               </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <button @click="addNewPack(vendor._id)" class="py-3 border border-dashed border-gray-200 rounded-xl text-xs font-medium text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
-                  <Plus class="w-3.5 h-3.5" /> New {{ packTerm }}
-                </button>
-                <button @click="showMobileCartDrawer = false" class="py-3 bg-gray-100 text-gray-600 rounded-xl text-xs font-medium text-center">
-                  Keep Shopping
+              
+              <!-- Leave Note -->
+              <div class="border-y border-gray-100 bg-white">
+                <button @click="openVendorNoteModal" class="w-full flex items-center justify-between px-5 py-5 hover:bg-gray-50 transition-colors">
+                  <div class="flex items-center gap-4 text-left">
+                    <FileText class="w-[22px] h-[22px] text-gray-900 stroke-[2]" />
+                    <div>
+                      <p class="text-[15px] font-bold text-gray-900 mb-0.5">Leave a note for the vendor</p>
+                      <p class="text-[13px] font-medium text-gray-400 truncate max-w-[260px]">{{ cart.vendorNotes.value[vendor._id] || 'Any requests, special vendor instructions etc.' }}</p>
+                    </div>
+                  </div>
+                  <ChevronRight class="w-5 h-5 text-gray-400" />
                 </button>
               </div>
 
-              <div class="pt-4 border-t border-gray-100 space-y-4">
-                <div class="flex justify-between items-center">
-                  <span class="text-xs font-medium text-gray-400 tracking-wider">Subtotal</span>
-                  <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
+              <!-- Fixed Bottom Bar -->
+              <div class="p-5 bg-white space-y-4 sticky bottom-0 border-t border-gray-50">
+                <div class="flex justify-between items-center px-1 mb-2">
+                  <span class="text-[15px] font-medium text-gray-900">Subtotal</span>
+                  <span class="text-lg font-bold text-gray-900 tracking-tight">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
                 </div>
                 <NuxtLink 
                   v-if="!isVendorClosed"
                   :to="isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart'" 
-                  class="flex-1 py-3.5 bg-gray-900 text-white rounded-xl font-bold text-[15px] shadow-lg shadow-gray-900/20 hover:bg-parentPrimary hover:shadow-parentPrimary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                  class="w-full h-14 bg-parentPrimary text-white rounded-[14px] font-bold text-base hover:bg-[#007040] transition-colors flex items-center justify-center active:scale-[0.98]"
                 >
-                  {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Proceed to Checkout' }}
-                  <ArrowRight class="w-4 h-4" />
+                  {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Continue to checkout' }}
                 </NuxtLink>
               </div>
             </div>
             
-            <div v-else class="text-center py-8">
-              <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">🛒</div>
-              <p class="text-sm font-medium text-gray-900 mb-1">Your cart is empty</p>
-              <p class="text-xs font-medium text-gray-400">Tap + on any item to start</p>
+            <div v-else class="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[50vh]">
+              <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🛒</div>
+              <p class="text-lg font-bold text-gray-900 mb-2">Your cart is empty</p>
+              <p class="text-[15px] font-medium text-gray-400 mb-8 max-w-[220px]">Tap + on any item to start building your order.</p>
+              <button @click="showMobileCartDrawer = false" class="px-8 h-12 bg-parentPrimary text-white rounded-[14px] font-bold text-[15px] hover:bg-parentPrimary/90 transition-all active:scale-[0.98]">
+                Browse Menu
+              </button>
             </div>
           </div>
         </div>
@@ -692,7 +767,7 @@
       >
         <button 
           @click="showMobileCartDrawer = true"
-          class="w-full flex items-center justify-between bg-parentPrimary text-white rounded-2xl px-5 py-4 shadow-2xl shadow-parentPrimary/30 active:scale-[0.97] transition-all"
+          class="w-full flex items-center justify-between bg-parentPrimary text-white rounded-2xl pl-5 pr-[72px] py-4 shadow-2xl shadow-parentPrimary/30 active:scale-[0.97] transition-all"
         >
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white text-sm font-medium">
@@ -705,7 +780,7 @@
                   👥 Group Order
                 </span>
               </div>
-              <p class="text-[10px] font-bold text-white/70">{{ cart.getVendorStats(vendor._id).packs.length }} {{ cart.getVendorStats(vendor._id).packs.length > 1 ? packsTerm.toLowerCase() : packTerm.toLowerCase() }}</p>
+              <p v-if="isFoodVendor" class="text-[10px] font-bold text-white/70">{{ cart.getVendorStats(vendor._id).packs.length }} {{ cart.getVendorStats(vendor._id).packs.length > 1 ? packsTerm.toLowerCase() : packTerm.toLowerCase() }}</p>
             </div>
           </div>
           <div class="text-right">
@@ -925,39 +1000,37 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <div v-if="selectedProduct" class="fixed inset-0 z-[110] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="selectedProduct = null">
-          <div class="bg-white rounded-t-[2rem] md:rounded-[2rem] w-full md:max-w-sm overflow-hidden shadow-2xl animate-slide-up-mobile md:animate-zoom-in">
+        <div v-if="selectedProduct" class="fixed inset-0 z-[110] flex flex-col md:items-center md:justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="selectedProduct = null">
+          <div class="bg-white flex-1 md:flex-initial md:rounded-[2rem] w-full md:max-w-sm overflow-y-auto shadow-2xl animate-slide-up-mobile md:animate-zoom-in flex flex-col">
             <!-- Product Media Carousel -->
             <div class="h-56 md:h-64 relative group">
               <div 
                 class="w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-                v-if="hasMultipleMedia(selectedProduct)"
+                v-if="getMediaItems(selectedProduct).length > 1"
               >
                 <div 
-                  v-for="(img, idx) in (selectedProduct.images?.length ? selectedProduct.images : [selectedProduct.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')])" 
-                  :key="'img-'+idx" 
+                  v-for="(media, idx) in getMediaItems(selectedProduct)" 
+                  :key="'media-'+idx" 
                   class="w-full h-full flex-shrink-0 snap-center relative"
+                  :class="media.type === 'video' ? 'bg-black flex items-center justify-center' : ''"
                 >
-                  <img :src="img" class="w-full h-full object-cover" />
-                </div>
-                <div 
-                  v-for="(vid, idx) in (selectedProduct.videos || [])" 
-                  :key="'vid-'+idx" 
-                  class="w-full h-full flex-shrink-0 snap-center relative bg-black flex items-center justify-center"
-                >
-                  <video :src="vid" class="w-full h-full object-cover" controls playsinline></video>
+                  <video v-if="media.type === 'video'" :src="media.url" class="w-full h-full object-cover" controls playsinline></video>
+                  <img v-else :src="media.url" class="w-full h-full object-cover" />
                 </div>
               </div>
-              <div v-else class="w-full h-full relative">
-                <img :src="selectedProduct.image || (isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg')" class="w-full h-full object-cover" />
+              <div v-else class="w-full h-full relative flex items-center justify-center bg-black">
+                <template v-if="getMediaItems(selectedProduct).length === 1">
+                  <video v-if="getMediaItems(selectedProduct)[0].type === 'video'" :src="getMediaItems(selectedProduct)[0].url" class="w-full h-full object-cover" controls playsinline></video>
+                  <img v-else :src="getMediaItems(selectedProduct)[0].url" class="w-full h-full object-cover" />
+                </template>
+                <img v-else :src="isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg'" class="w-full h-full object-cover" />
               </div>
-
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
               <button @click="selectedProduct = null" class="absolute top-4 right-4 w-9 h-9 bg-black/30 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-black/50 transition-all border border-white/10 shadow-lg z-10">
                 <X class="w-5 h-5" />
               </button>
               <div class="absolute bottom-4 left-5 right-5 pointer-events-none z-10">
-                <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[9px] font-medium mb-2 inline-block shadow-sm">{{ selectedProduct.category }}</span>
+                <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[9px] font-medium mb-2 inline-block shadow-sm">{{ selectedProduct.category?.name || selectedProduct.category }}</span>
                 <h2 class="text-xl font-medium text-white tracking-tight leading-tight">{{ selectedProduct.name }}</h2>
               </div>
             </div>
@@ -968,21 +1041,102 @@
                 {{ selectedProduct.description || defaultProductDescription }}
               </p>
 
-              <!-- Quantity & Add -->
-              <div class="flex items-center justify-between pt-2">
-                <div>
-                  <p class="text-[10px] font-medium text-gray-400 tracking-wider mb-1">Price</p>
-                  <div class="flex items-center gap-2">
-                    <span v-if="selectedProduct.discountPrice" class="text-sm text-gray-300 line-through">₦{{ selectedProduct.price.toLocaleString() }}</span>
-                    <span class="text-2xl font-medium text-gray-900 tracking-tighter">₦{{ (selectedProduct.discountPrice || selectedProduct.price).toLocaleString() }}</span>
+              <!-- CUSTOMIZATIONS -->
+              <div class="space-y-6 mt-4">
+                <!-- Modifiers -->
+                <div v-for="mod in selectedProduct.modifiers" :key="mod._id" class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-bold text-gray-900">{{ mod.name }}</h4>
+                    <span v-if="mod.minSelection > 0" class="text-[10px] font-bold px-2 py-1 bg-amber-50 text-amber-600 rounded-md uppercase tracking-wider">Required</span>
+                    <span v-else-if="mod.maxSelection > 1" class="text-[10px] font-medium text-gray-500">Select up to {{ mod.maxSelection }}</span>
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <div v-for="item in mod.items" :key="item.name" class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
+                        <span v-if="item.price > 0" class="text-xs text-gray-500">+₦{{ item.price.toLocaleString() }}</span>
+                      </div>
+                      
+                      <div class="flex items-center gap-3">
+                        <button v-if="selectedCustomizations[mod._id]?.[item.name]" @click="handleCustomizationChange(mod, item, false)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                          <Minus class="w-4 h-4" />
+                        </button>
+                        
+                        <span v-if="selectedCustomizations[mod._id]?.[item.name]" class="text-sm font-semibold w-4 text-center">
+                          {{ selectedCustomizations[mod._id][item.name].quantity }}
+                        </span>
+                        
+                        <button @click="handleCustomizationChange(mod, item, true)" class="w-7 h-7 flex items-center justify-center rounded-full bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white transition-colors">
+                          <Plus class="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                <!-- Add Ons -->
+                <div v-for="addon in selectedProduct.addOns" :key="addon._id" class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-bold text-gray-900">{{ addon.name }}</h4>
+                    <span v-if="addon.minSelection > 0" class="text-[10px] font-bold px-2 py-1 bg-amber-50 text-amber-600 rounded-md uppercase tracking-wider">Required</span>
+                    <span v-else-if="addon.maxSelection > 1" class="text-[10px] font-medium text-gray-500">Select up to {{ addon.maxSelection }}</span>
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <div v-for="item in addon.items" :key="item.name" class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
+                        <span v-if="item.price > 0" class="text-xs text-gray-500">+₦{{ item.price.toLocaleString() }}</span>
+                      </div>
+                      
+                      <div class="flex items-center gap-3">
+                        <button v-if="selectedCustomizations[addon._id]?.[item.name]" @click="handleCustomizationChange(addon, item, false)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                          <Minus class="w-4 h-4" />
+                        </button>
+                        
+                        <span v-if="selectedCustomizations[addon._id]?.[item.name]" class="text-sm font-semibold w-4 text-center">
+                          {{ selectedCustomizations[addon._id][item.name].quantity }}
+                        </span>
+                        
+                        <button @click="handleCustomizationChange(addon, item, true)" class="w-7 h-7 flex items-center justify-center rounded-full bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white transition-colors">
+                          <Plus class="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quantity & Add -->
+              <div class="flex items-center justify-between pt-6 border-t border-gray-100 mt-6 sticky bottom-0 bg-white z-10 pb-2">
+                <div>
+                  <p class="text-[10px] font-medium text-gray-400 tracking-wider mb-1">Total Price</p>
+                  <div>
+                    <span v-if="selectedProduct.discountPrice && dynamicPrice === selectedProduct.discountPrice" class="text-sm text-gray-300 line-through">₦{{ selectedProduct.price.toLocaleString() }}</span>
+                    <div class="flex items-baseline gap-1">
+                      <span class="text-2xl font-medium text-gray-900 tracking-tighter">₦{{ dynamicPrice.toLocaleString() }}</span>
+                      <span v-if="selectedProduct.portionUnit" class="text-xs text-gray-500 font-medium">per {{ selectedProduct.portionUnit }}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div v-if="isProductOutOfStock(selectedProduct)" class="flex items-center gap-3">
+                  <span class="text-xs font-bold text-red-500 uppercase tracking-wider">Out of stock</span>
+                  <button 
+                    @click="notifyRestock(selectedProduct._id)"
+                    class="h-12 px-5 bg-gray-100 hover:bg-amber-100 text-gray-700 hover:text-amber-700 rounded-xl font-bold transition-all flex items-center gap-2"
+                  >
+                    <Bell class="w-5 h-5" /> Notify Me
+                  </button>
+                </div>
                 <button 
+                  v-else
+                  :disabled="!isProductModalValid"
                   @click="addToCart(selectedProduct); selectedProduct = null"
-                  class="bg-parentPrimary text-white px-7 py-4 rounded-2xl text-xs font-medium hover:bg-parentPrimary/90 transition-all shadow-xl shadow-parentPrimary/20 active:scale-95 flex items-center gap-2"
+                  class="h-12 px-8 bg-gray-900 hover:bg-parentPrimary text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Plus class="w-4 h-4" />
-                  Add to Cart
+                  <Plus class="w-5 h-5" /> Add to cart
                 </button>
               </div>
             </div>
@@ -998,12 +1152,67 @@
       <div class="w-10 h-10 border-2 border-gray-100 border-t-parentPrimary rounded-full animate-spin"></div>
       <p class="text-xs font-bold text-gray-400">Loading store...</p>
     </div>
+    <!-- ============================================ -->
+    <!-- VENDOR NOTE MODAL                            -->
+    <!-- ============================================ -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition-opacity duration-300"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-200"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="showVendorNoteModal" class="fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm flex flex-col items-center justify-end md:justify-center p-0 md:p-4" @click.self="showVendorNoteModal = false">
+          <div 
+            class="bg-white w-full max-w-[28rem] rounded-t-[2rem] md:rounded-[2rem] overflow-hidden shadow-2xl transform transition-all animate-slide-up-mobile md:animate-zoom-in relative"
+          >
+            <!-- Close button floating -->
+            <button @click="showVendorNoteModal = false" class="absolute top-4 right-4 w-10 h-10 bg-gray-50 hover:bg-gray-100 transition-colors rounded-full flex items-center justify-center text-emerald-600 shadow-sm z-10 active:scale-95">
+              <X class="w-5 h-5" />
+            </button>
+            
+            <div class="p-6 md:p-8 pt-8">
+              <h3 class="text-[22px] font-bold text-gray-900 text-center mb-6">Vendor Instruction</h3>
+              
+              <div class="space-y-4">
+                <div>
+                  <p class="text-xs font-bold text-gray-900 tracking-widest uppercase mb-3">INSTRUCTIONS FOR VENDOR</p>
+                  <textarea 
+                    v-model="tempVendorNote"
+                    rows="5"
+                    placeholder="Example: Please I want extra pepper"
+                    class="w-full bg-[#f9f9f9] border-none focus:ring-0 rounded-2xl px-5 py-4 text-[15px] font-medium text-gray-900 outline-none transition-all resize-none placeholder:text-gray-400"
+                  ></textarea>
+                </div>
+                
+                <div class="flex items-center gap-3 py-2">
+                  <div class="relative flex items-center">
+                    <input type="checkbox" id="saveForLater" class="w-5 h-5 border-2 border-gray-900 rounded-[4px] appearance-none checked:bg-gray-900 checked:border-gray-900 transition-colors peer cursor-pointer" />
+                    <svg class="absolute w-3.5 h-3.5 text-white pointer-events-none left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                  <label for="saveForLater" class="text-[15px] font-medium text-gray-900 cursor-pointer select-none">Save for later</label>
+                </div>
+                
+                <button 
+                  @click="saveVendorNote"
+                  class="w-full h-14 mt-4 bg-[#005030] text-white rounded-[14px] font-bold text-base hover:bg-[#004020] transition-colors flex items-center justify-center active:scale-[0.98]"
+                >
+                  Add instructions
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { 
-  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut
+  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useHead, navigateTo } from '#imports';
@@ -1014,6 +1223,7 @@ import { useGroupOrder } from '@/composables/modules/group-order';
 import { useFavorites } from '@/composables/modules/favorites';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
+import { menu_items_api } from '@/api_factory/modules/menu-items';
 import { services_api } from '@/api_factory/modules/services';
 import AnimatedInput from '@/components/ui/AnimatedInput.vue';
 import ShareModal from "@/components/ui/ShareModal.vue";
@@ -1047,8 +1257,11 @@ const props = defineProps<{ vendor: any }>();
 const vendor = computed(() => props.vendor);
 
 const isFoodVendor = computed(() => {
-  const type = vendor.value?.businessType || vendor.value?.storeType || '';
-  return type.toLowerCase() === 'food' || type.toLowerCase() === 'restaurant';
+  const type = (vendor.value?.businessType || vendor.value?.storeType || '').toLowerCase();
+  const category = (vendor.value?.category || '').toLowerCase();
+  
+  const foodCategories = ['restaurant', 'eatery', 'snacks', 'drinks', 'bakery', 'food'];
+  return foodCategories.includes(category) || type === 'food' || type === 'restaurant';
 });
 
 const packTerm = computed(() => isFoodVendor.value ? 'Pack' : 'Cart');
@@ -1062,6 +1275,7 @@ const isGroupOrderActiveForThisVendor = computed(() => {
 });
 
 const products = ref<any[]>([]);
+const searchQuery = ref('');
 const vendorServices = ref<any[]>([]);
 const showBookingModal = ref(false);
 const showReviewsModal = ref(false);
@@ -1071,16 +1285,23 @@ const lightboxInitialIndex = ref(0);
 
 const getMediaItems = (product: any) => {
   const items = [];
+  const isVideo = (url: string) => url && typeof url === 'string' && !!url.match(/\\.(mp4|webm|ogg|mov)/i);
+  
   if (product.videos && product.videos.length > 0) {
     items.push(...product.videos.map((url: string) => ({ type: 'video', url })));
   }
   if (product.images && product.images.length > 0) {
-    items.push(...product.images.map((url: string) => ({ type: 'image', url })));
+    items.push(...product.images.map((url: string) => ({ type: isVideo(url) ? 'video' : 'image', url })));
   } else if (product.image) {
-    items.push({ type: 'image', url: product.image });
+    items.push({ type: isVideo(product.image) ? 'video' : 'image', url: product.image });
   }
   return items;
 };
+
+const lowestProductPrice = computed(() => {
+  if (!products.value || products.value.length === 0) return 0;
+  return Math.min(...products.value.map((p: any) => p.discountPrice || p.price));
+});
 
 const openLightbox = (mediaItems: any[], index: number = 0) => {
   lightboxMediaItems.value = mediaItems;
@@ -1093,7 +1314,7 @@ const openBookingModal = (service: any) => {
   selectedServiceToBook.value = service;
   showBookingModal.value = true;
 };
-const categories = ref<any[]>([]);
+const categories = computed(() => Object.keys(groupedProducts.value));
 const activeCategory = ref('');
 const isFavorited = ref(false);
 const activeBatch = computed(() => {
@@ -1105,9 +1326,97 @@ const showGroupNamingModal = ref(false);
 const showHostInstructionsModal = ref(false);
 const showGuestInstructionsModal = ref(false);
 const showLeaveConfirmationModal = ref(false);
+const showVendorNoteModal = ref(false);
+const tempVendorNote = ref('');
 const isLeaving = ref(false);
 const groupName = ref('');
 const selectedProduct = ref<any>(null);
+const selectedCustomizations = ref<Record<string, Record<string, { price: number; quantity: number; name: string; groupName: string }>>>({});
+
+const openProductModal = (product: any) => {
+  selectedProduct.value = product;
+  selectedCustomizations.value = {};
+  
+  // Pre-select defaults if any (future enhancement)
+};
+
+const handleCustomizationChange = (group: any, option: any, isAdd: boolean) => {
+  if (!selectedCustomizations.value[group._id]) {
+    selectedCustomizations.value[group._id] = {};
+  }
+  
+  const currentSelections = selectedCustomizations.value[group._id];
+  const optionName = option.name;
+  
+  if (isAdd) {
+    const totalInGroup = Object.values(currentSelections).reduce((sum: number, item: any) => sum + item.quantity, 0);
+    if (totalInGroup >= group.maxSelection) {
+      showToast(`You can only select up to ${group.maxSelection} for ${group.name}`, 'error');
+      return;
+    }
+    
+    if (!currentSelections[optionName]) {
+      currentSelections[optionName] = { price: option.price, quantity: 1, name: optionName, groupName: group.name };
+    } else {
+      currentSelections[optionName].quantity += 1;
+    }
+  } else {
+    if (currentSelections[optionName]) {
+      currentSelections[optionName].quantity -= 1;
+      if (currentSelections[optionName].quantity <= 0) {
+        delete currentSelections[optionName];
+      }
+    }
+  }
+};
+
+const dynamicPrice = computed(() => {
+  if (!selectedProduct.value) return 0;
+  let basePrice = selectedProduct.value.discountPrice || selectedProduct.value.price;
+  let extras = 0;
+  Object.values(selectedCustomizations.value).forEach(group => {
+    Object.values(group).forEach((item: any) => {
+      extras += item.price * item.quantity;
+    });
+  });
+  return basePrice + extras;
+});
+
+const isProductModalValid = computed(() => {
+  if (!selectedProduct.value) return false;
+  
+  // Check required modifiers
+  const modifiers = selectedProduct.value.modifiers || [];
+  for (const mod of modifiers) {
+    if (mod.minSelection > 0) {
+      const selected = selectedCustomizations.value[mod._id] || {};
+      const totalSelected = Object.values(selected).reduce((sum: number, i: any) => sum + i.quantity, 0);
+      if (totalSelected < mod.minSelection) return false;
+    }
+  }
+  
+  // Check required add-ons
+  const addOns = selectedProduct.value.addOns || [];
+  for (const addOn of addOns) {
+    if (addOn.minSelection > 0) {
+      const selected = selectedCustomizations.value[addOn._id] || {};
+      const totalSelected = Object.values(selected).reduce((sum: number, i: any) => sum + i.quantity, 0);
+      if (totalSelected < addOn.minSelection) return false;
+    }
+  }
+  
+  return true;
+});
+
+const openVendorNoteModal = () => {
+  tempVendorNote.value = cart.vendorNotes.value[props.vendor._id] || '';
+  showVendorNoteModal.value = true;
+};
+
+const saveVendorNote = () => {
+  cart.vendorNotes.value[props.vendor._id] = tempVendorNote.value;
+  showVendorNoteModal.value = false;
+};
 
 const hasMultipleMedia = (product: any) => {
   if (!product) return false;
@@ -1200,8 +1509,21 @@ const toTitleCase = (str: string) => {
 
 const groupedProducts = computed(() => {
   const groups: Record<string, any[]> = {};
-  products.value.forEach(p => {
-    const cat = p.category || 'Other';
+  
+  // Filter products by search query
+  const filteredProducts = products.value.filter(p => {
+    if (!searchQuery.value) return true;
+    const query = searchQuery.value.toLowerCase();
+    const nameMatch = (p.name || '').toLowerCase().includes(query);
+    const descMatch = (p.description || '').toLowerCase().includes(query);
+    return nameMatch || descMatch;
+  });
+
+  filteredProducts.forEach(p => {
+    let cat = p.category || 'Other';
+    if (typeof cat === 'object' && cat !== null) {
+      cat = cat.name || 'Other';
+    }
     if (!groups[cat]) groups[cat] = [];
     groups[cat].push(p);
   });
@@ -1231,15 +1553,30 @@ const removeFromCart = (product: any) => {
 };
 
 const addToCart = (product: any) => {
+  if (!isProductModalValid.value) {
+    showToast('Please select all required options', 'error');
+    return;
+  }
+  
+  const customItems: any[] = [];
+  Object.values(selectedCustomizations.value).forEach(group => {
+    Object.values(group).forEach((item: any) => {
+      for (let i = 0; i < item.quantity; i++) {
+        customItems.push({ name: item.name, price: item.price, selected: item.groupName });
+      }
+    });
+  });
+
   cart.addItem({
     productId: product._id,
     vendorId: vendor.value._id,
     name: product.name,
     price: product.discountPrice || product.price,
-    image: product.image,
+    image: getMediaItems(product)[0]?.url || product.image,
     quantity: 1,
-    customizations: [],
+    customizations: customItems,
   });
+  
   if (isGroupOrderActiveForThisVendor.value) {
     setTimeout(() => syncWithCart(vendor.value._id), 100);
   }
@@ -1362,6 +1699,23 @@ const confirmLeaveGroup = async () => {
   }
 };
 
+const isProductOutOfStock = (product: any) => {
+  return product.isAvailable === false || (product.trackStock && product.inStock <= 0) || product.publishItem === false;
+};
+
+const notifyRestock = async (productId: string) => {
+  if (!user.value) {
+    showToast('Please log in to receive restock notifications', 'error');
+    return;
+  }
+  try {
+    const res = await menu_items_api.notifyRestock(productId);
+    showToast(res?.data?.message || 'We will notify you when this is restocked', 'success');
+  } catch (err: any) {
+    showToast(err?.response?.data?.message || 'Failed to set restock notification', 'error');
+  }
+};
+
 const handleScroll = () => {
   scrolled.value = window.scrollY > 200;
   
@@ -1382,26 +1736,19 @@ onMounted(async () => {
   cart.initCart();
   try {
     const paramId = route.params.id as string;
-    const isObjectId = /^[0-9a-fA-F]{24}$/.test(paramId);
-
-    let vendorRes;
-    if (isObjectId) {
-      vendorRes = await vendors_api.getById(paramId);
+    let productsRes;
+    if (isFoodVendor.value) {
+      productsRes = await menu_items_api.getByVendor(vendor.value._id);
     } else {
-      vendorRes = await vendors_api.getBySubdomain(paramId);
+      productsRes = await products_api.getByVendor(vendor.value._id);
     }
-
-    if (vendorRes.data && !(vendorRes as any).type) {
-      vendor.value = vendorRes.data;
-      
-      const productsRes = await products_api.getByVendor(vendor.value._id);
-      products.value = productsRes.data || [];
-    } else {
-      throw new Error('Using mock data');
-    }
-    const uniqueCats = [...new Set(products.value.map((p: any) => p.category).filter(Boolean))];
-    categories.value = uniqueCats;
-    if (uniqueCats.length > 0) activeCategory.value = uniqueCats[0];
+    products.value = productsRes.data || [];
+    const uniqueCats = [...new Set(products.value.map((p: any) => {
+      if (typeof p.category === 'object' && p.category !== null) return p.category.name;
+      return p.category;
+    }).filter(Boolean))];
+    // categories are now computed dynamically
+    if (uniqueCats.length > 0) activeCategory.value = uniqueCats[0] as string;
     window.addEventListener('scroll', handleScroll);
     checkIfFavorited();
     if (route.query.group) {
@@ -1444,7 +1791,7 @@ onMounted(async () => {
       { _id: 'p2', name: 'Chicken Suya', price: 1500, category: 'Snacks', image: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400' },
       { _id: 'p3', name: 'Zobo Drink', price: 500, category: 'Beverages', image: 'https://images.unsplash.com/photo-1544380903-5339f408272a?w=400' }
     ];
-    categories.value = ['Main Dishes', 'Snacks', 'Beverages'];
+    // categories are now computed dynamically
     activeCategory.value = 'Main Dishes';
   }
 });

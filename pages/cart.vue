@@ -42,7 +42,7 @@
             class="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all group hover:-translate-y-0.5 hover:shadow-md block"
           >
             <div class="h-28 w-full bg-gray-50 relative overflow-hidden">
-              <video v-if="(vendor.banner || vendor.logo) && (vendor.banner || vendor.logo).match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.banner || vendor.logo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" autoplay loop muted playsinline></video>
+              <video v-if="(vendor.banner || vendor.logo) && (vendor.banner || vendor.logo).match(/\\.(mp4|webm|ogg|mov)/i)" :src="vendor.banner || vendor.logo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" autoplay loop muted playsinline></video>
               <img v-else :src="vendor.banner || vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
               <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1">
@@ -147,16 +147,15 @@
               <div class="p-5 space-y-4">
                 <AnimatedInput v-model="recipientName" label="Full Name"  />
                 <AnimatedInput v-model="recipientPhone" label="Phone Number" type="tel" />
-                <SelectInput v-model="deliveryOption" label="Delivery Policy" :options="[{label: 'Use an Errander (₦150)', value: 'use_an_errander'}, {label: 'I\'ll pick it up myself', value: 'pickup'}]" />
+                <SelectInput v-model="deliveryOption" label="Delivery Policy" :options="[{label: isFetchingFees ? 'Use an Errander (Calculating...)' : (computedTotalDeliveryFee > 0 ? `Use an Errander (₦${computedTotalDeliveryFee.toLocaleString()})` : 'Use an Errander (Calculated at checkout)'), value: 'use_an_errander'}, {label: 'I\'ll pick it up myself', value: 'pickup'}]" />
                 
-                <div v-if="deliveryOption === 'use_an_errander'" class="animate-fade-in">
+                <div v-if="deliveryOption === 'use_an_errander'" class="animate-fade-in relative z-50">
                   <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Hostel / Campus Location</label>
-                  <textarea
-                    v-model="specificAddress"
-                    rows="2"
-                    placeholder="e.g. Moremi Hall, Room 302, Unilag"
-                    class="w-full bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-300 resize-none"
-                  ></textarea>
+                  <UiMapboxAutocomplete 
+                    v-model="specificAddress" 
+                    @select="handleAddressSelect" 
+                    placeholder="e.g. Moremi Hall, Room 302, Unilag" 
+                  />
                 </div>
               </div>
             </div>
@@ -176,7 +175,7 @@
                 <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Select Delivery Date</label>
                 <input 
                   v-model="scheduledDate"
-                  type="date"
+                  type="datetime-local"
                   :min="minPreOrderDate"
                   class="w-full bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none transition-all"
                 />
@@ -321,7 +320,8 @@
                     <span class="text-[9px] font-medium bg-gray-900 text-white px-2.5 py-1 rounded-md">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
                     <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3">
                       <div class="w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-gray-100 bg-gray-50">
-                        <img :src="item.image || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+                        <video v-if="item.image && item.image.match(/\\.(mp4|webm|ogg|mov)/i)" :src="item.image" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                        <img v-else :src="item.image || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                       </div>
                       <div class="flex-1 min-w-0">
                         <h5 class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
@@ -352,8 +352,12 @@
                     <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-medium'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
                   </div>
                   <div class="flex justify-between items-center text-xs font-bold text-gray-500">
-                    <span>Fees & Packaging</span>
-                    <span class="text-gray-900 font-medium">₦{{ (computedTotalPackagingFee + computedTotalServiceFee).toLocaleString() }}</span>
+                    <span>Packaging Fee</span>
+                    <span class="text-gray-900 font-medium">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
+                  </div>
+                  <div class="flex justify-between items-center text-xs font-bold text-gray-500">
+                    <span>Service Fee</span>
+                    <span class="text-gray-900 font-medium">₦{{ computedTotalServiceFee.toLocaleString() }}</span>
                   </div>
                   <div v-if="isBirthday" class="flex justify-between items-center text-xs font-bold text-[#008950]">
                     <span class="flex items-center gap-1">🎂 Birthday Treat</span>
@@ -480,7 +484,8 @@
                 </div>
                 <div v-for="(item, iIndex) in pack.items" :key="'mb-item-'+iIndex" class="flex items-center gap-3">
                   <div class="w-11 h-11 bg-gray-50 rounded-lg overflow-hidden border border-gray-100 shrink-0">
-                    <img :src="item.image || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+                    <video v-if="item.image && item.image.match(/\\.(mp4|webm|ogg|mov)/i)" :src="item.image" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                    <img v-else :src="item.image || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                   </div>
                   <div class="flex-1 min-w-0">
                     <h5 class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
@@ -656,6 +661,7 @@ import { useWallet } from '@/composables/modules/wallets';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 
 definePageMeta({ layout: false });
+import { orders_api } from '@/api_factory/modules/orders';
 
 const cartStore = useCart();
 const { user } = useUser();
@@ -684,6 +690,12 @@ const config = useRuntimeConfig();
 const recipientName = ref('');
 const recipientPhone = ref('');
 const specificAddress = ref('');
+const deliveryCoordinates = ref<[number, number] | null>(null);
+
+const handleAddressSelect = (data: { address: string, coordinates: [number, number] }) => {
+  specificAddress.value = data.address;
+  deliveryCoordinates.value = data.coordinates;
+};
 const deliveryOption = ref('use_an_errander');
 const placing = ref(false);
 const showAuthModal = ref(false);
@@ -698,6 +710,21 @@ const isMysteryBox = ref(false);
 const isDormDelivery = ref(false);
 const scheduledDate = ref('');
 const useFreeDeliveryToken = ref(false);
+
+const platformProcessingFee = ref(500);
+const platformServiceFeePercentage = ref(5);
+
+const fetchPlatformSettings = async () => {
+  try {
+    const res = await orders_api.getCustomErrandSettings();
+    if (res?.data) {
+      platformProcessingFee.value = res.data.platformProcessingFee ?? 500;
+      platformServiceFeePercentage.value = res.data.platformServiceFeePercentage ?? 5;
+    }
+  } catch (e) {
+    console.error('Failed to fetch platform settings', e);
+  }
+};
 
 const isPreOrderCart = computed(() => {
   return cartStore.allVendorIds.value.some(id => vendorsMetadata.value[id]?.preOrderOnly);
@@ -789,6 +816,7 @@ const fetchDeliveryFees = async () => {
         params: {
           vendorId: vId,
           deliveryAddress: address,
+          deliveryLocation: deliveryCoordinates.value ? JSON.stringify({ type: 'Point', coordinates: deliveryCoordinates.value }) : undefined,
           weight: 1, // Add weight logic if tracking weight in the future
           customerId: user.value?._id
         }
@@ -812,6 +840,7 @@ watch(
 
 onMounted(() => {
   fetchDeliveryFees();
+  fetchPlatformSettings();
 });
 const computedTotalDeliveryFee = computed(() => {
   if (deliveryOption.value === 'pickup') return 0;
@@ -840,7 +869,7 @@ const computedTotalPackagingFee = computed(() => {
   return Math.round(total);
 });
 
-const computedTotalServiceFee = computed(() => Math.round(currentSubtotal.value * 0.05));
+const computedTotalServiceFee = computed(() => Math.round(currentSubtotal.value * (platformServiceFeePercentage.value / 100)));
 
 const computedBirthdayDiscount = computed(() => {
   if (!isBirthday.value) return 0;
@@ -866,12 +895,7 @@ const subtotalBeforeFee = computed(() =>
 );
 
 const computedPaystackFee = computed(() => {
-  if (paymentMethod.value !== 'card') return 0;
-  const amount = subtotalBeforeFee.value;
-  if (amount === 0) return 0;
-  let fee = amount < 2500 ? (amount / 0.985) - amount : ((amount + 100) / 0.985) - amount;
-  if (fee > 2000) fee = 2000;
-  return Math.ceil(fee);
+  return platformProcessingFee.value;
 });
 
 const finalTotal = computed(() => subtotalBeforeFee.value + computedPaystackFee.value);
@@ -1118,8 +1142,9 @@ const preCreateOrders = async (): Promise<string[]> => {
       const res = await createOrder({
         vendorId, customer: participant.user._id, items: participant.items.map((i: any) => ({ product: i.productId, name: i.name, price: i.price, image: i.image, quantity: i.quantity, subtotal: i.price * i.quantity })),
         subtotal, deliveryFee, serviceFee: Math.round(subtotal * 0.05), packagingFee: vendorMeta?.packagingFee ?? 300, total: subtotal + Math.round(subtotal * 0.05) + (vendorMeta?.packagingFee ?? 300) + deliveryFee,
-        deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, isGroupOrder: true, groupId: activeCode.value, isGroupLeader: participant.user._id === groupOrder.value.host._id,
-        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value
+        deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, isGroupOrder: true, groupId: activeCode.value, isGroupLeader: participant.user._id === groupOrder.value.host._id,
+        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value,
+        vendorNote: cartStore.vendorNotes.value[vendorId] || ''
       });
       if (res?._id || res?.data?._id) createdIds.push(res?._id || res?.data?._id);
     }
@@ -1131,8 +1156,9 @@ const preCreateOrders = async (): Promise<string[]> => {
       const res = await createOrder({
         vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal })) })),
         subtotal: stats.subtotal, deliveryFee, serviceFee: stats.serviceFee, packagingFee: vendor?.packagingFee ?? 300, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: vendor?.packagingFee ?? 300 },
-        isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, weight: 1.0,
-        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value
+        isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
+        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
+        vendorNote: cartStore.vendorNotes.value[vId] || ''
       });
       if (res?._id || res?.data?._id) { 
         createdIds.push(res?._id || res?.data?._id); 

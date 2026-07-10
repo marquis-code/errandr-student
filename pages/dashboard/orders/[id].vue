@@ -1,376 +1,404 @@
 <template>
-  <div class="space-y-6 md:space-y-8 pb-32 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary" v-if="order">
-    <!-- Header -->
-    <div class="bg-gray-900 rounded-none sm:rounded-[2rem] p-5 sm:p-6 lg:p-10 relative overflow-hidden group border-0 sm:border border-white/5 mx-0 sm:mx-4 mt-0 sm:mt-4 shadow-none sm:shadow-xl">
-      <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 text-center md:text-left">
-        <div class="space-y-3">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white text-[10px] font-bold mx-auto md:mx-0 tracking-wider">
-            order id: {{ order._id?.slice(-8).toUpperCase() }}
+  <div class="bg-white min-h-screen w-full pb-32 animate-fade-in font-sans" v-if="order">
+    <!-- Header Section -->
+    <div class="w-full max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 pt-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 pb-8">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
+            <span class="w-2 h-2 rounded-full" :class="order.status === 'delivered' ? 'bg-emerald-500' : 'bg-parentPrimary animate-pulse'"></span>
+            <span class="text-xs font-medium text-gray-600 tracking-wide">Order #{{ order._id?.slice(-8) }}</span>
           </div>
-          <h1 class="text-2xl md:text-3xl font-medium text-white tracking-tight leading-tight">
-            order <span class="text-parentPrimary capitalize">{{ order.status?.replace(/_/g, ' ')?.toLowerCase() }}</span>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight capitalize">
+            {{ order.status?.replace(/_/g, ' ') }}
           </h1>
-          <p class="text-white/60 text-sm md:text-sm font-medium leading-relaxed max-w-sm mx-auto md:mx-0">We're making sure your delivery arrives safely and on time.</p>
+          <p class="text-gray-500 text-sm max-w-xl font-medium">We're updating your delivery status in real-time.</p>
         </div>
-        
-        <div class="flex items-center justify-center gap-4 bg-white/5 backdrop-blur-xl p-4 md:p-6 rounded-2xl border border-white/10 group-hover:scale-105 transition-all duration-500 max-w-xs mx-auto md:mx-0">
-          <div class="w-12 h-12 md:w-14 md:h-14 bg-parentPrimary rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg shadow-parentPrimary/30">
-            <Clock class="w-6 h-6 md:w-7 md:h-7" />
-          </div>
-          <div class="text-left">
-            <p class="text-[10px] font-bold text-white/50 mb-0.5 tracking-wider">estimated time</p>
-            <p class="text-lg md:text-xl font-medium text-white tracking-tight leading-none">12-15 mins</p>
-          </div>
+
+        <!-- ETA Block -->
+        <div v-if="order.status !== 'pending' && order.status !== 'delivered'" class="flex items-center gap-4 p-4 rounded-xl bg-orange-50/50 border border-orange-100/50 transition-all hover:bg-orange-50">
+           <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center border border-orange-100 shadow-sm text-parentPrimary">
+             <Clock class="w-5 h-5" />
+           </div>
+           <div>
+             <p class="text-xs font-medium text-orange-600/80 mb-0.5 tracking-wide">Estimated arrival</p>
+             <p class="text-xl font-bold text-gray-900 tracking-tight">12-15 <span class="text-sm font-medium text-gray-500">mins</span></p>
+           </div>
         </div>
       </div>
     </div>
 
-    <!-- PENDING IN-DRIVE NEGOTIATION BLOCK -->
-    <div v-if="order.type === 'custom_errand' && order.status === 'pending'" class="px-0 sm:px-4">
-      <div class="bg-orange-50 border border-orange-100 rounded-none sm:rounded-[2rem] p-6 text-center shadow-none sm:shadow-sm">
-        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-orange-100">
-           <Bike class="w-8 h-8 text-parentPrimary animate-bounce" />
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 mb-2">Waiting for a Rider...</h3>
-        <p class="text-sm text-gray-600 mb-6">Your errand has been broadcasted. If it takes too long, you can increase the runner fee to attract more riders.</p>
-        
-        <div class="max-w-xs mx-auto flex gap-3">
-          <input v-model.number="newFee" type="number" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-parentPrimary font-bold text-gray-900" placeholder="New fee" />
-          <button @click="increaseFee" :disabled="isIncreasingFee || newFee <= order.deliveryFee" class="bg-parentPrimary text-white font-bold px-6 py-3 rounded-xl hover:bg-orange-600 transition-colors disabled:opacity-50">
-            {{ isIncreasingFee ? 'Updating...' : 'Update' }}
-          </button>
-        </div>
+    <!-- Stepper (Full Width, Open) -->
+    <div class="w-full max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 py-8">
+       <div class="flex items-center justify-between min-w-full gap-4 overflow-x-auto hide-scrollbar pb-2">
+          <template v-for="(step, idx) in orderSteps" :key="idx">
+            <div class="flex flex-col items-center gap-3 relative z-10 flex-1 min-w-[100px] md:min-w-[120px]">
+              <div :class="[
+                'w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 border',
+                isStepCompleted(step.status) ? 'bg-gray-900 text-white border-gray-900 shadow-sm' : 
+                isStepCurrent(step.status) ? 'bg-parentPrimary text-white border-parentPrimary shadow-sm scale-105 ring-4 ring-parentPrimary/10' : 'bg-white text-gray-400 border-gray-200'
+              ]">
+                <Check v-if="isStepCompleted(step.status)" class="w-5 h-5" />
+                <Loader2 v-else-if="isStepCurrent(step.status)" class="w-5 h-5 animate-spin" />
+                <span v-else class="text-sm font-medium">{{ idx + 1 }}</span>
+              </div>
+              <span :class="[
+                'text-sm font-medium text-center tracking-wide',
+                (isStepCompleted(step.status) || isStepCurrent(step.status)) ? 'text-gray-900' : 'text-gray-400'
+              ]">{{ step.label }}</span>
+            </div>
+            
+            <div v-if="idx < orderSteps.length - 1" class="flex-1 h-[2px] w-full hidden md:block rounded-full" :class="isStepCompleted(orderSteps[idx + 1].status) || isStepCurrent(orderSteps[idx + 1].status) ? 'bg-gray-900' : 'bg-gray-100'"></div>
+          </template>
+       </div>
+    </div>
 
-        <div v-if="viewersCount > 0" class="mt-6 flex items-center justify-center gap-2 text-sm font-bold text-orange-600 animate-pulse bg-orange-100/50 py-2 rounded-xl">
-          <Eye class="w-4 h-4" />
-          {{ viewersCount }} rider{{ viewersCount > 1 ? 's are' : ' is' }} currently viewing this request
-        </div>
+    <!-- Main Content Grid -->
+    <div class="w-full max-w-[1600px] mx-auto px-4 md:px-8 xl:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+       
+       <!-- Dynamic Left Content (7 columns) -->
+       <div class="lg:col-span-7 space-y-8">
+           
+           <!-- Actionable Cards Grid -->
+           <div v-if="order.status !== 'pending' && order.status !== 'awaiting_payment'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              <!-- Verification Code -->
+              <div class="group relative p-8 rounded-[1.5rem] bg-emerald-50/30 border border-emerald-100/50 overflow-hidden transition-all hover:bg-emerald-50/50 flex flex-col justify-between">
+                 <div class="absolute right-0 top-0 w-32 h-32 bg-emerald-100/50 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+                 <div class="relative z-10">
+                   <div class="flex items-center justify-between mb-8">
+                      <div class="flex items-center gap-3">
+                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-emerald-600 border border-emerald-100">
+                           <ShieldCheck class="w-5 h-5" />
+                         </div>
+                         <h4 class="text-sm font-medium text-emerald-900/60 tracking-wide">Verification code</h4>
+                      </div>
+                      <button @click="copyVerificationCode" class="p-2 rounded-lg bg-emerald-100/50 hover:bg-emerald-200/50 text-emerald-700 transition-colors border border-emerald-200/50 active:scale-95" title="Copy Code">
+                         <Copy class="w-4 h-4" />
+                      </button>
+                   </div>
+                   <div class="flex items-center justify-center gap-2 mb-8">
+                      <div v-for="(digit, idx) in (order.uniqueCode || '0000').split('')" :key="idx" class="flex-1 aspect-square max-w-[3rem] sm:max-w-[3.5rem] rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-xl sm:text-2xl font-bold text-emerald-950 shadow-sm">
+                        {{ digit }}
+                      </div>
+                   </div>
+                   <p class="text-sm font-medium text-emerald-700">Present this code to your rider upon delivery.</p>
+                 </div>
+              </div>
 
-        <!-- INCOMING BIDS (IN-DRIVE) -->
-        <div v-if="pendingBids.length > 0" class="mt-8 text-left">
-          <h4 class="text-xs font-bold text-gray-400 mb-4 tracking-wider uppercase">Incoming Offers</h4>
-          <div class="space-y-3">
-            <div v-for="bid in pendingBids" :key="bid._id" class="bg-white border border-orange-100 rounded-2xl p-4 flex items-center justify-between shadow-sm">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gray-100 overflow-hidden">
-                  <img v-if="bid.errander?.avatar" :src="bid.errander.avatar" class="w-full h-full object-cover" />
-                  <User v-else class="w-full h-full p-2 text-gray-400" />
+              <!-- Rider Details -->
+              <div v-if="order.errander" class="group relative p-8 rounded-[1.5rem] bg-gray-50/50 border border-gray-100 overflow-hidden transition-all hover:bg-gray-50 flex flex-col justify-between">
+                 <div class="absolute right-0 top-0 w-32 h-32 bg-blue-50/50 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+                 <div class="relative z-10 flex flex-col h-full justify-between gap-6">
+                   <div>
+                      <div class="flex items-center gap-3 mb-6">
+                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-blue-500 border border-gray-200">
+                           <Bike class="w-5 h-5" />
+                         </div>
+                         <h4 class="text-sm font-medium text-gray-500 tracking-wide">Your rider</h4>
+                      </div>
+                      <div class="flex items-center gap-4">
+                         <div class="w-12 h-12 rounded-full bg-gray-200 border border-white shadow-sm overflow-hidden flex items-center justify-center text-gray-500 text-lg font-bold">
+                            <img v-if="order.errander.avatar" :src="order.errander.avatar" class="w-full h-full object-cover" />
+                            <span v-else>{{ order.errander.firstName?.[0] }}{{ order.errander.lastName?.[0] }}</span>
+                         </div>
+                         <div>
+                            <h3 class="text-base font-bold text-gray-900">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
+                            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 text-blue-600 text-xs font-medium mt-1 tracking-wide">
+                               <Check class="w-3 h-3" /> Background verified
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="flex gap-3">
+                      <a :href="`tel:${order.errander.phone}`" class="flex-1 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 text-sm font-medium text-center hover:border-gray-300 hover:bg-gray-50 transition-colors shadow-sm">Call</a>
+                      <NuxtLink :to="`/chat/${order._id}?target=errander`" class="flex-1 py-2.5 rounded-lg bg-gray-900 text-white text-sm font-medium text-center hover:bg-black transition-colors shadow-sm">Message</NuxtLink>
+                   </div>
+                 </div>
+              </div>
+
+              <!-- Vendor Details -->
+              <div v-if="order.type !== 'custom_errand' && order.vendor" class="group relative p-8 rounded-[1.5rem] bg-orange-50/30 border border-orange-100/50 overflow-hidden transition-all hover:bg-orange-50/50 flex flex-col justify-between">
+                 <div class="absolute right-0 top-0 w-32 h-32 bg-orange-100/50 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+                 <div class="relative z-10 flex flex-col h-full justify-between gap-6">
+                   <div>
+                      <div class="flex items-center gap-3 mb-6">
+                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-parentPrimary border border-orange-200">
+                           <Store class="w-5 h-5" />
+                         </div>
+                         <h4 class="text-sm font-medium text-gray-500 tracking-wide">The vendor</h4>
+                      </div>
+                      <div class="flex items-center gap-4">
+                         <div class="w-12 h-12 rounded-full bg-white border border-orange-100 shadow-sm overflow-hidden flex items-center justify-center text-gray-500 text-lg font-bold">
+                            <video v-if="order.vendor?.logo && order.vendor.logo.match(/\.(mp4|webm|ogg|mov)$/i)" :src="order.vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                            <img v-else-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
+                            <Store v-else class="w-6 h-6 text-gray-300" />
+                         </div>
+                         <div>
+                            <h3 class="text-base font-bold text-gray-900">{{ order.vendor?.storeName || 'Vendor' }}</h3>
+                            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-orange-50 text-parentPrimary text-xs font-medium mt-1 tracking-wide">
+                               <ShieldCheck class="w-3 h-3" /> Verified partner
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="flex gap-3">
+                      <NuxtLink :to="`/chat/${order._id}?target=vendor`" class="flex-1 py-2.5 rounded-lg bg-gray-900 text-white text-sm font-medium text-center hover:bg-black transition-colors shadow-sm">Message Vendor</NuxtLink>
+                   </div>
+                 </div>
+              </div>
+
+           </div>
+
+           <!-- PENDING IN-DRIVE NEGOTIATION BLOCK -->
+           <div v-if="order.type === 'custom_errand' && order.status === 'pending'" class="p-8 md:p-10 rounded-[1.5rem] bg-gray-50/50 border border-gray-100 flex flex-col items-center text-center">
+              <div class="w-14 h-14 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center mb-5">
+                 <Bike class="w-6 h-6 text-gray-400" />
+              </div>
+              <h3 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Looking for a rider</h3>
+              <p class="text-gray-500 font-medium text-sm max-w-lg mb-6">Your errand is broadcasted to available riders nearby. Increase the fee to make your request more attractive.</p>
+              
+              <div class="w-full max-w-sm flex flex-col sm:flex-row gap-3">
+                 <input v-model.number="newFee" type="number" class="w-full px-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-parentPrimary focus:ring-2 focus:ring-parentPrimary/10 font-medium text-gray-900 bg-white transition-all text-sm" placeholder="New fee amount" />
+                 <button @click="increaseFee" :disabled="isIncreasingFee || newFee <= order.deliveryFee" class="bg-gray-900 text-white font-medium px-5 py-3 rounded-lg hover:bg-black transition-colors disabled:opacity-50 flex-shrink-0 text-sm">
+                    {{ isIncreasingFee ? 'Updating...' : 'Update fee' }}
+                 </button>
+              </div>
+
+              <div v-if="viewersCount > 0" class="mt-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-500 shadow-sm">
+                 <Eye class="w-3.5 h-3.5 text-parentPrimary animate-pulse" />
+                 {{ viewersCount }} rider{{ viewersCount > 1 ? 's' : '' }} viewing right now
+              </div>
+
+              <!-- Bids -->
+              <div v-if="pendingBids.length > 0" class="w-full mt-10 pt-8 border-t border-gray-200 text-left">
+                 <h4 class="text-sm font-medium text-gray-900 tracking-wide mb-4">Received offers</h4>
+                 <div class="space-y-3">
+                    <div v-for="bid in pendingBids" :key="bid._id" class="p-3 rounded-xl bg-white border border-gray-200 hover:border-parentPrimary/30 transition-colors flex flex-col sm:flex-row items-center justify-between gap-4">
+                       <div class="flex items-center gap-3 w-full sm:w-auto">
+                          <div class="w-10 h-10 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
+                             <img v-if="bid.errander?.avatar" :src="bid.errander.avatar" class="w-full h-full object-cover" />
+                             <User v-else class="w-4 h-4 m-auto mt-2.5 text-gray-400" />
+                          </div>
+                          <div>
+                             <p class="text-sm font-medium text-gray-900">{{ bid.errander?.firstName || 'Rider' }} {{ bid.errander?.lastName || '' }}</p>
+                             <p class="text-sm font-medium text-gray-500">Offer: <span class="font-bold text-gray-900">₦{{ bid.amount?.toLocaleString() }}</span></p>
+                          </div>
+                       </div>
+                       <button @click="acceptBid(bid._id)" :disabled="isAcceptingBid === bid._id" class="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-parentPrimary text-white text-sm font-medium hover:bg-orange-600 transition-colors disabled:opacity-50">
+                          {{ isAcceptingBid === bid._id ? 'Accepting...' : 'Accept offer' }}
+                       </button>
+                    </div>
+                 </div>
+              </div>
+           </div>
+
+           <!-- AWAITING PAYMENT BLOCK -->
+           <div v-if="order.type === 'custom_errand' && order.status === 'awaiting_payment'" class="p-8 md:p-10 rounded-[1.5rem] bg-blue-50/30 border border-blue-100/50 flex flex-col items-center text-center">
+              <div class="w-14 h-14 rounded-xl bg-white border border-blue-100 shadow-sm flex items-center justify-center mb-5">
+                 <Check class="w-6 h-6 text-blue-500" />
+              </div>
+              <h3 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Rider accepted</h3>
+              <p class="text-gray-500 font-medium text-sm max-w-lg mb-6">Secure the rider by paying the escrow fee. This covers their labor and our convenience fee.</p>
+              
+              <button @click="payForErrand" :disabled="isInitializingPayment" class="bg-gray-900 text-white font-medium px-6 py-3 rounded-lg hover:bg-black transition-colors disabled:opacity-50 flex items-center gap-3 text-sm">
+                 <Zap v-if="!isInitializingPayment" class="w-4 h-4 text-parentPrimary" />
+                 {{ isInitializingPayment ? 'Processing...' : 'Pay escrow & open chat' }}
+              </button>
+           </div>
+
+           <!-- Rider Account Details (Custom Errand) -->
+           <div v-if="order.type === 'custom_errand' && order.erranderDetails?.accountNumber" class="p-6 md:p-8 rounded-[1.5rem] bg-gray-50/50 border border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div class="flex items-center gap-4">
+                 <div class="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-400">
+                    <CreditCard class="w-5 h-5" />
+                 </div>
+                 <div>
+                    <h4 class="font-bold text-gray-900 text-base">Transfer item funds</h4>
+                    <p class="text-sm font-medium text-gray-500 max-w-xs mt-0.5">Transfer the money for the items directly to your rider. The rider fee is safely in escrow.</p>
+                 </div>
+              </div>
+              <div class="flex items-center justify-between gap-6 p-4 rounded-xl bg-white border border-gray-200 w-full lg:w-auto shadow-sm">
+                 <div>
+                    <p class="text-xs font-medium text-gray-500 tracking-wide mb-0.5">{{ order.erranderDetails.bankName }}</p>
+                    <p class="text-lg font-bold text-gray-900 tracking-tight">{{ order.erranderDetails.accountNumber }}</p>
+                    <p class="text-xs font-medium text-gray-400 tracking-wide mt-0.5">{{ order.erranderDetails.accountName }}</p>
+                 </div>
+                 <button @click="copyAccountDetails" class="p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-100 text-gray-600 transition-colors active:scale-95">
+                    <Copy class="w-4 h-4" />
+                 </button>
+              </div>
+           </div>
+
+           <!-- Dual Rating Section -->
+           <div v-if="order && order.status === 'DELIVERED' && (!order.hasRatedVendor || !order.hasRatedErrander)" class="p-8 md:p-10 rounded-[1.5rem] bg-gray-900 text-white relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/10 to-transparent"></div>
+              <div class="relative z-10">
+                 <div class="text-center mb-8">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-parentPrimary text-xs font-medium tracking-wide mb-3">
+                       <Sparkles class="w-3.5 h-3.5" /> Earn 20 points
+                    </div>
+                    <h2 class="text-xl font-bold tracking-tight mb-2">How was your experience?</h2>
+                    <p class="text-white/60 text-sm font-medium">Your feedback helps us maintain top quality service.</p>
+                 </div>
+
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Vendor -->
+                    <div v-if="order.type !== 'custom_errand' && !order.hasRatedVendor" class="p-6 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center">
+                       <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-3">
+                          <Utensils class="w-5 h-5 text-white/40" />
+                       </div>
+                       <h4 class="font-medium text-base mb-0.5">The meal</h4>
+                       <p class="text-xs font-medium text-white/40 tracking-wide mb-4">Rate the vendor</p>
+                       
+                       <div class="flex gap-1.5 mb-4">
+                          <button v-for="i in 5" :key="i" @click="ratingForm.vendorRating = i" class="hover:scale-110 transition-transform focus:outline-none">
+                             <Star :class="['w-6 h-6 transition-colors', ratingForm.vendorRating >= i ? 'text-yellow-400 fill-yellow-400' : 'text-white/20']" />
+                          </button>
+                       </div>
+                       <textarea v-model="ratingForm.vendorReview" placeholder="Feedback on the food..." class="w-full p-3 rounded-lg bg-black/40 border border-white/10 text-xs font-medium placeholder-white/30 focus:outline-none focus:border-parentPrimary resize-none h-20"></textarea>
+                    </div>
+
+                    <!-- Rider -->
+                    <div v-if="!order.hasRatedErrander" class="p-6 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center" :class="{ 'md:col-span-2 max-w-lg mx-auto w-full': order.type === 'custom_errand' || order.hasRatedVendor }">
+                       <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-3">
+                          <Bike class="w-5 h-5 text-white/40" />
+                       </div>
+                       <h4 class="font-medium text-base mb-0.5">The delivery</h4>
+                       <p class="text-xs font-medium text-white/40 tracking-wide mb-4">Rate your rider</p>
+                       
+                       <div class="flex gap-1.5 mb-4">
+                          <button v-for="i in 5" :key="i" @click="ratingForm.erranderRating = i" class="hover:scale-110 transition-transform focus:outline-none">
+                             <Star :class="['w-6 h-6 transition-colors', ratingForm.erranderRating >= i ? 'text-yellow-400 fill-yellow-400' : 'text-white/20']" />
+                          </button>
+                       </div>
+                       <textarea v-model="ratingForm.erranderReview" placeholder="How was the service?" class="w-full p-3 rounded-lg bg-black/40 border border-white/10 text-xs font-medium placeholder-white/30 focus:outline-none focus:border-parentPrimary resize-none h-20"></textarea>
+                    </div>
+                 </div>
+
+                 <div class="mt-8 max-w-sm mx-auto">
+                    <button @click="submitRatings" :disabled="isSubmittingRating || (!ratingForm.vendorRating && !ratingForm.erranderRating)" class="w-full py-3 rounded-lg bg-parentPrimary text-white text-sm font-medium hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:bg-gray-600 flex items-center justify-center gap-2">
+                       <Loader2 v-if="isSubmittingRating" class="w-4 h-4 animate-spin" />
+                       {{ isSubmittingRating ? 'Submitting...' : 'Submit ratings' }}
+                    </button>
+                 </div>
+              </div>
+           </div>
+
+       </div>
+
+       <!-- Right Sidebar (5 columns, providing ample space for wider cards) -->
+       <div class="lg:col-span-5 space-y-8">
+          
+          <!-- Delivery Address Box -->
+          <div class="p-8 md:p-10 rounded-[1.5rem] bg-gray-900 text-white relative overflow-hidden shadow-xl shadow-gray-900/10">
+             <div class="absolute right-0 bottom-0 w-48 h-48 bg-parentPrimary/20 rounded-full blur-3xl -mr-10 -mb-10"></div>
+             <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-6">
+                   <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 text-white backdrop-blur-sm">
+                     <MapPin class="w-5 h-5" />
+                   </div>
+                   <h4 class="text-sm font-medium text-white/60 tracking-wide">Delivery address</h4>
+                </div>
+                <h3 class="text-xl md:text-2xl font-medium leading-relaxed tracking-tight">{{ order.deliveryAddress || 'Campus Residency' }}</h3>
+                <div class="mt-8 inline-flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-white/10 border border-white/10 backdrop-blur-sm">
+                   <div class="w-2.5 h-2.5 rounded-full bg-parentPrimary animate-pulse shadow-[0_0_10px_rgba(255,92,26,0.8)]"></div>
+                   <span class="text-sm font-medium text-white/90 tracking-wide">Live tracking active</span>
+                </div>
+             </div>
+          </div>
+
+          <!-- Order Summary Sidebar -->
+          <div v-if="order.type !== 'custom_errand'" class="p-8 md:p-10 rounded-[1.5rem] bg-gray-50/60 border border-gray-100">
+             <h4 class="text-sm font-medium text-gray-900 mb-6 tracking-wide">Receipt summary</h4>
+             
+             <div class="space-y-6">
+               <div v-for="item in order.items" :key="item._id" class="flex items-center justify-between gap-4">
+                 <div class="flex items-center gap-4">
+                   <div class="w-12 h-12 rounded-xl bg-white border border-gray-200 overflow-hidden flex-shrink-0 shadow-sm">
+                     <img :src="item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'" class="w-full h-full object-cover" />
+                   </div>
+                   <div>
+                     <h5 class="text-sm font-medium text-gray-900 line-clamp-1">{{ item.name }}</h5>
+                     <p class="text-sm text-gray-500 font-medium mt-0.5">Qty: {{ item.quantity }}</p>
+                   </div>
+                 </div>
+                 <p class="text-sm font-bold text-gray-900 shrink-0">₦{{ (item.price * item.quantity).toLocaleString() }}</p>
+               </div>
+             </div>
+
+             <div class="mt-8 pt-6 border-t border-gray-200 border-dashed space-y-4">
+               <div class="flex justify-between text-sm">
+                 <span class="text-gray-500 font-medium">Subtotal</span>
+                 <span class="text-gray-900 font-bold">₦{{ order.subtotal?.toLocaleString() }}</span>
+               </div>
+               <div class="flex justify-between text-sm">
+                 <span class="text-gray-500 font-medium">Fees & delivery</span>
+                 <span class="text-gray-900 font-bold">₦{{ (order.total - order.subtotal)?.toLocaleString() }}</span>
+               </div>
+             </div>
+             
+             <div class="mt-6 p-5 rounded-xl bg-gray-900 text-white flex justify-between items-center shadow-md shadow-gray-900/10">
+               <span class="text-sm font-medium text-white/80 tracking-wide">Grand total</span>
+               <span class="text-2xl font-bold tracking-tight">₦{{ order.total?.toLocaleString() }}</span>
+             </div>
+          </div>
+          
+          <!-- Errand Instructions Sidebar -->
+          <div v-if="order.type === 'custom_errand'" class="p-8 md:p-10 rounded-[1.5rem] bg-gray-50/60 border border-gray-100">
+             <h4 class="text-sm font-medium text-gray-900 mb-6 tracking-wide">Errand details</h4>
+             <div class="space-y-6 text-sm">
+               <div class="p-5 bg-white rounded-xl border border-gray-200 text-gray-700 leading-relaxed font-medium shadow-sm">
+                 {{ order.description || 'No description provided.' }}
+               </div>
+               <div class="flex justify-between items-center pt-2">
+                 <span class="text-gray-500 font-medium">Urgency</span>
+                 <span class="text-gray-900 font-bold capitalize">{{ order.urgency || 'standard' }}</span>
+               </div>
+               <div v-if="order.estimatedItemCost" class="flex justify-between items-center">
+                 <span class="text-gray-500 font-medium">Est. item cost</span>
+                 <span class="text-gray-900 font-bold">₦{{ order.estimatedItemCost?.toLocaleString() }}</span>
+               </div>
+               <div class="flex justify-between items-center">
+                 <span class="text-gray-500 font-medium">Rider fee</span>
+                 <span class="text-gray-900 font-bold">₦{{ order.deliveryFee?.toLocaleString() }}</span>
+               </div>
+             </div>
+             <div class="mt-6 p-5 rounded-xl bg-gray-900 text-white flex justify-between items-center shadow-md shadow-gray-900/10">
+               <span class="text-sm font-medium text-white/80 tracking-wide">Total escrow</span>
+               <span class="text-2xl font-bold tracking-tight">₦{{ order.total?.toLocaleString() }}</span>
+             </div>
+          </div>
+
+          <NuxtLink to="/support" class="flex items-center justify-between p-6 rounded-[1.5rem] bg-white border border-gray-200 hover:border-gray-300 transition-colors group shadow-sm">
+             <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors group-hover:bg-parentPrimary/5 border border-gray-100">
+                  <LifeBuoy class="w-6 h-6" />
                 </div>
                 <div>
-                  <p class="text-sm font-bold text-gray-900">{{ bid.errander?.firstName || 'Rider' }} {{ bid.errander?.lastName || '' }}</p>
-                  <p class="text-xs font-medium text-gray-500">Proposes: <span class="font-bold text-parentPrimary">₦{{ bid.amount?.toLocaleString() }}</span></p>
+                   <h4 class="text-sm font-medium text-gray-900">Need help?</h4>
+                   <p class="text-sm font-medium text-gray-500 mt-0.5">Contact support</p>
                 </div>
-              </div>
-              <button 
-                @click="acceptBid(bid._id)" 
-                :disabled="isAcceptingBid === bid._id"
-                class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-parentPrimary transition-colors disabled:opacity-50"
-              >
-                {{ isAcceptingBid === bid._id ? 'Accepting...' : 'Accept Offer' }}
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- AWAITING PAYMENT BLOCK -->
-    <div v-if="order.type === 'custom_errand' && order.status === 'awaiting_payment'" class="px-0 sm:px-4">
-      <div class="bg-blue-50 border border-blue-100 rounded-none sm:rounded-[2rem] p-6 text-center shadow-none sm:shadow-sm">
-        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-blue-100">
-           <Check class="w-8 h-8 text-blue-500" />
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 mb-2">A Rider Accepted!</h3>
-        <p class="text-sm text-gray-600 mb-6">Pay the Escrow Fee (Labor ₦{{order.deliveryFee}} + Convenience ₦50) to lock them in.</p>
-        
-        <button @click="payForErrand" :disabled="isInitializingPayment" class="bg-gray-900 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-black transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mx-auto">
-          {{ isInitializingPayment ? 'Redirecting to Payment...' : 'Pay Escrow & Open Chat' }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Tracking Stepper -->
-    <div class="px-0 sm:px-4">
-      <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group">
-        <h4 class="text-xs font-bold text-gray-400 mb-8 tracking-wider">order status</h4>
-        <div class="relative pl-2">
-          <!-- Connecting Line -->
-          <div class="absolute left-[19px] top-4 bottom-4 w-0.5 bg-gray-100"></div>
-          
-          <div class="space-y-8">
-            <div v-for="(step, idx) in orderSteps" :key="idx" class="relative flex items-start gap-4">
-              <div :class="[
-                'w-6 h-6 rounded-full flex items-center justify-center shrink-0 z-10 border-2 transition-all mt-0.5 bg-white',
-                isStepCompleted(step.status) ? 'border-parentPrimary text-parentPrimary' : 
-                (isStepCurrent(step.status) ? 'border-parentPrimary text-parentPrimary' : 'border-gray-200 text-transparent')
-              ]">
-                <Check v-if="isStepCompleted(step.status)" class="w-3.5 h-3.5" />
-                <div v-else-if="isStepCurrent(step.status)" class="w-2 h-2 rounded-full bg-parentPrimary animate-pulse"></div>
-              </div>
-              <div class="flex-1">
-                <p :class="['text-sm font-bold', (isStepCompleted(step.status) || isStepCurrent(step.status)) ? 'text-gray-900' : 'text-gray-400']">{{ step.label }}</p>
-                <p class="text-xs font-medium text-gray-400 mt-1">{{ step.description }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Live Map Placeholder -->
-    <div v-if="order.status !== 'pending'" class="px-0 sm:px-4">
-      <div class="bg-gray-50 h-48 md:h-64 rounded-none sm:rounded-[2rem] border-0 sm:border-8 border-white relative overflow-hidden group shadow-none sm:shadow-sm">
-        <div class="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/0,0,1,0/1200x600?access_token=token')] bg-cover bg-center grayscale opacity-30" />
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="flex flex-col items-center gap-3 text-center p-4 md:p-6 bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 ">
-            <Navigation class="w-6 h-6 md:w-8 md:h-8 text-parentPrimary animate-bounce" />
-            <p class="text-sm md:text-sm font-bold text-gray-900">map tracking active</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Verification, Delivery Errandr, ETA Card -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-0 sm:px-4">
-      <!-- Verification -->
-      <div v-if="order.status !== 'pending'" class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group transition-all duration-300">
-        <div class="absolute -right-5 -top-5 w-24 h-24 bg-gray-50 rounded-full blur-2xl group-hover:bg-parentPrimary/10 transition-colors" />
-        <h4 class="text-xs font-bold text-gray-400 mb-6 tracking-wider">verification code</h4>
-        <div class="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-          <div v-for="(digit, idx) in (order.uniqueCode || '0000').split('')" :key="idx" class="w-10 h-10 md:w-12 md:h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-xl font-medium text-gray-900 border border-gray-100 group-hover:bg-white group-hover:border-parentPrimary/30 transition-all">
-            {{ digit }}
-          </div>
-        </div>
-        <p class="text-xs font-bold text-gray-400 mt-6 leading-relaxed text-center sm:text-left">Show this code to your Errandr to confirm delivery.</p>
-      </div>
-
-      <!-- Delivery Errandr -->
-      <div v-if="order.errander" class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm flex flex-col items-center text-center group transition-all duration-300">
-        <div class="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 text-white text-xl font-medium group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 uppercase">
-          {{ order.errander.firstName?.[0] }}{{ order.errander.lastName?.[0] }}
-        </div>
-        <div class="space-y-1 mb-6 w-full">
-          <p class="text-xs font-bold text-gray-400 tracking-wider">your Errandr</p>
-          <h3 class="font-medium text-gray-900 text-lg tracking-tight">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
-          <p class="text-xs text-parentPrimary font-bold mt-2 bg-parentPrimary/5 px-3 py-1.5 rounded-full inline-block">{{ order.errander.phone }}</p>
-
-          <!-- Account Details for Custom Errands -->
-          <div v-if="order.type === 'custom_errand' && order.erranderDetails?.accountNumber" class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-100 text-left">
-            <p class="text-[10px] font-bold text-gray-400 tracking-wider mb-2">RIDER ACCOUNT DETAILS</p>
-            <div class="flex items-center justify-between gap-2">
-              <div>
-                <p class="text-sm font-bold text-gray-900">{{ order.erranderDetails.bankName }}</p>
-                <p class="text-lg font-bold text-parentPrimary tracking-tight">{{ order.erranderDetails.accountNumber }}</p>
-                <p class="text-xs font-medium text-gray-500 uppercase">{{ order.erranderDetails.accountName }}</p>
-              </div>
-              <button 
-                @click="copyAccountDetails" 
-                class="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-parentPrimary hover:border-parentPrimary/30 transition-all active:scale-95 shrink-0"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-            <p class="text-[10px] font-medium text-gray-400 mt-3 leading-tight">Transfer funds to your rider to purchase your requested items. The rider fee has already been escrowed.</p>
-          </div>
-        </div>
-        <div class="flex flex-col gap-2 w-full">
-          <NuxtLink v-if="order.type === 'custom_errand'" :to="`/chat/${order._id}`" class="w-full py-4 bg-parentPrimary text-white rounded-xl text-sm font-bold hover:bg-orange-600 transition-all active:scale-95 text-center tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-parentPrimary/20">
-            <MessageSquare class="w-5 h-5" /> Open Live Chat with Rider
+             </div>
+             <ArrowRight class="w-5 h-5 text-gray-300 group-hover:text-parentPrimary transition-colors group-hover:translate-x-1" />
           </NuxtLink>
-          <div class="flex gap-2 w-full">
-            <a :href="`tel:${order.errander.phone}`" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-parentPrimary transition-all active:scale-95 text-center tracking-wider">call</a>
-            <NuxtLink v-if="order.type !== 'custom_errand'" :to="`/chat/${order._id}`" class="flex-1 py-3 bg-white border border-gray-100 text-gray-900 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all active:scale-95 text-center tracking-wider">chat</NuxtLink>
-          </div>
-        </div>
-      </div>
-
-      <!-- ETA Card -->
-      <div class="bg-parentPrimary p-5 sm:p-8 rounded-none sm:rounded-[2rem] text-white overflow-hidden relative group transition-all duration-300 shadow-none sm:shadow-sm">
-        <div class="absolute -top-4 -right-4 p-8 transform rotate-12 group-hover:rotate-0 transition-transform duration-700 opacity-20 hidden md:block">
-          <Bike class="w-24 h-24" />
-        </div>
-        <div class="relative z-10 space-y-4">
-          <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/10">
-            <MapPin class="w-4 h-4 text-white" />
-          </div>
-          <div>
-            <p class="text-xs font-bold mb-1 text-white/70 tracking-wider">delivering to</p>
-            <h3 class="text-lg font-bold tracking-tight leading-tight line-clamp-2">{{ order.deliveryAddress || 'Campus Residency' }}</h3>
-          </div>
-          <div class="pt-4 border-t border-white/10">
-            <div class="flex items-center gap-2">
-              <div class="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-              <span class="text-xs font-bold tracking-wider">tracking live</span>
-            </div>
-          </div>
-        </div>
-      </div>
+       </div>
     </div>
 
-    <!-- Dual Rating Section -->
-    <section v-if="order && order.status === 'DELIVERED' && (!order.hasRatedVendor || !order.hasRatedErrander)" class="max-w-4xl mx-auto px-0 sm:px-4 mt-8 slide-up">
-      <div class="bg-gray-900 rounded-none sm:rounded-[2.5rem] p-5 sm:p-12 text-white relative overflow-hidden group border-0 sm:border border-white/5 shadow-none sm:shadow-xl">
-        <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/20 via-transparent to-transparent opacity-50 transition-opacity duration-1000" />
-        
-        <div class="relative z-10 text-center mb-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-parentPrimary text-sm font-medium tracking-wider mb-4">
-            <Sparkles class="w-3.5 h-3.5" /> earn 20 points
-          </div>
-          <h2 class="text-3xl md:text-4xl font-medium tracking-tighter mb-2">how was your errand?</h2>
-          <p class="text-white/50 text-sm font-medium">{{ order.type === 'custom_errand' ? 'Rate your Errandr to help us improve.' : 'Rate the meal and your Errandr to help us improve.' }}</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-          <!-- Vendor Rating -->
-          <div v-if="order.type !== 'custom_errand' && !order.hasRatedVendor" class="bg-white/5 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 space-y-6 flex flex-col items-center">
-            <div class="text-center">
-              <Utensils class="w-8 h-8 text-parentPrimary mx-auto mb-3" />
-              <h4 class="font-medium text-lg tracking-tight">the meal</h4>
-              <p class="text-xs font-bold text-white/40 tracking-wider">rate the vendor</p>
-            </div>
-            
-            <div class="flex justify-center gap-2">
-              <button v-for="i in 5" :key="i" @click="ratingForm.vendorRating = i" class="transition-all duration-300 hover:scale-125">
-                <Star :class="['w-8 h-8', ratingForm.vendorRating >= i ? 'text-parentPrimary fill-parentPrimary' : 'text-white/10']" />
-              </button>
-            </div>
-            
-            <textarea v-model="ratingForm.vendorReview" placeholder="Any feedback on the food?" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-parentPrimary outline-none min-h-[100px] transition-all" />
-          </div>
-
-          <!-- Errander Rating -->
-          <div v-if="!order.hasRatedErrander" class="bg-white/5 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 space-y-6 flex flex-col items-center">
-            <div class="text-center">
-              <Bike class="w-8 h-8 text-parentPrimary mx-auto mb-3" />
-              <h4 class="font-medium text-lg tracking-tight">the delivery</h4>
-              <p class="text-xs font-bold text-white/40 tracking-wider">rate your Errandr</p>
-            </div>
-            
-            <div class="flex justify-center gap-2">
-              <button v-for="i in 5" :key="i" @click="ratingForm.erranderRating = i" class="transition-all duration-300 hover:scale-125">
-                <Star :class="['w-8 h-8', ratingForm.erranderRating >= i ? 'text-parentPrimary fill-parentPrimary' : 'text-white/10']" />
-              </button>
-            </div>
-            
-            <textarea v-model="ratingForm.erranderReview" placeholder="How was the service?" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-parentPrimary outline-none min-h-[100px] transition-all" />
-          </div>
-        </div>
-
-        <div class="mt-10 relative z-10 w-full max-w-sm mx-auto">
-          <button 
-            @click="submitRatings"
-            :disabled="isSubmittingRating || (!ratingForm.vendorRating && !ratingForm.erranderRating)"
-            class="w-full py-5 bg-parentPrimary text-white rounded-[2rem] font-medium text-sm tracking-wider disabled:opacity-50 disabled:grayscale transition-all active:scale-95 group/btn shadow-lg shadow-parentPrimary/20"
-          >
-            <span class="flex items-center justify-center gap-2">
-              {{ isSubmittingRating ? 'saving feedback...' : 'submit ratings' }}
-              <Zap v-if="!isSubmittingRating" class="w-4 h-4 group-hover/btn:animate-pulse" />
-            </span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Order Items (Marketplace only) -->
-    <section v-if="order.type !== 'custom_errand'" class="max-w-4xl mx-auto px-0 sm:px-4 mt-8">
-      <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden">
-        <h4 class="text-xs font-bold text-gray-400 mb-8 tracking-wider">order summary</h4>
-
-        <div class="space-y-6">
-          <div v-for="item in order.items" :key="item._id" class="flex items-center gap-4 group/item">
-            <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gray-50 flex-shrink-0 relative overflow-hidden border border-gray-100">
-              <img :src="item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'" class="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-700" />
-            </div>
-            <div class="flex-1 min-w-0 pr-2">
-              <h5 class="text-sm font-bold text-gray-900 tracking-tight mb-1 truncate">{{ item.name }}</h5>
-              <p class="text-xs font-bold text-gray-400">qty: {{ item.quantity }} × ₦{{ item.price?.toLocaleString() }}</p>
-            </div>
-            <div class="text-right shrink-0">
-              <p class="text-sm font-medium text-gray-900 tracking-tight">₦{{ (item.price * item.quantity).toLocaleString() }}</p>
-            </div>
-          </div>
-
-          <div class="pt-6 border-t border-gray-50 space-y-4">
-            <div class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
-              <span>subtotal</span>
-              <span class="text-gray-900 font-medium">₦{{ order.subtotal?.toLocaleString() }}</span>
-            </div>
-            <div class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
-              <span>fees & delivery</span>
-              <span class="text-gray-900 font-medium">₦{{ (order.total - order.subtotal)?.toLocaleString() }}</span>
-            </div>
-            <div class="flex justify-between items-center pt-6 border-t border-gray-50 mt-2">
-              <span class="text-xs font-medium text-gray-900 tracking-widest uppercase">grand total</span>
-              <span class="text-2xl font-medium text-parentPrimary tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Errand Details (Custom Errand only) -->
-    <section v-if="order.type === 'custom_errand'" class="max-w-4xl mx-auto px-0 sm:px-4 mt-8">
-      <div class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden">
-        <h4 class="text-xs font-bold text-gray-400 mb-8 tracking-wider">errand instructions</h4>
-
-        <div class="space-y-6">
-          <div class="p-6 bg-orange-50 rounded-2xl border border-orange-100">
-            <h5 class="text-sm font-bold text-gray-900 tracking-tight mb-2">What you requested:</h5>
-            <p class="text-sm font-medium text-gray-700 leading-relaxed">{{ order.description || 'No description provided.' }}</p>
-          </div>
-
-          <div class="pt-6 border-t border-gray-50 space-y-4">
-            <div class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
-              <span>urgency</span>
-              <span class="text-gray-900 font-medium capitalize">{{ order.urgency || 'standard' }}</span>
-            </div>
-            <div v-if="order.estimatedItemCost" class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
-              <span>estimated item cost</span>
-              <span class="text-gray-900 font-medium">₦{{ order.estimatedItemCost?.toLocaleString() }}</span>
-            </div>
-            <div class="flex justify-between text-xs font-bold text-gray-400 tracking-wider">
-              <span>agreed rider fee</span>
-              <span class="text-gray-900 font-medium">₦{{ order.deliveryFee?.toLocaleString() }}</span>
-            </div>
-            <div class="flex justify-between items-center pt-6 border-t border-gray-50 mt-2">
-              <span class="text-xs font-medium text-gray-900 tracking-widest uppercase">total escrow paid</span>
-              <span class="text-2xl font-medium text-parentPrimary tracking-tighter">₦{{ order.total?.toLocaleString() }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Support -->
-    <div class="max-w-4xl mx-auto px-0 sm:px-4 pb-12">
-      <NuxtLink 
-        to="/support"
-        class="w-full py-5 bg-gray-50 rounded-none sm:rounded-[2rem] border-0 sm:border border-gray-100 flex flex-row items-center justify-center gap-3 group hover:bg-gray-100 transition-all duration-300 active:scale-95 shadow-none sm:shadow-sm block text-center"
-      >
-        <div class="inline-flex items-center justify-center gap-3">
-          <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors">
-            <ShieldCheck class="w-5 h-5" />
-          </div>
-          <span class="text-xs font-medium text-gray-400 tracking-wider group-hover:text-gray-900 transition-colors">need help? support</span>
-        </div>
-      </NuxtLink>
-    </div>
   </div>
 
   <!-- Loading State -->
-  <div v-else class="min-h-screen flex flex-col items-center justify-center gap-8 px-4">
+  <div v-else class="min-h-screen bg-white flex flex-col items-center justify-center gap-6 px-4">
     <div class="relative">
-      <div class="w-24 h-24 border-4 border-parentPrimary/10 border-t-parentPrimary rounded-full animate-spin" />
-      <Zap class="absolute inset-0 m-auto w-8 h-8 text-parentPrimary animate-pulse" />
+       <div class="w-16 h-16 border-[3px] border-gray-100 border-t-parentPrimary rounded-full animate-spin"></div>
+       <Zap class="w-5 h-5 text-parentPrimary absolute inset-0 m-auto animate-pulse" />
     </div>
     <div class="text-center">
-      <h3 class="text-lg font-medium text-gray-900 tracking-tighter uppercase mb-2">fetching order</h3>
-      <p class="text-xs font-medium text-gray-300 tracking-wider animate-pulse">syncing...</p>
+       <h3 class="font-medium text-gray-900 text-base mb-1">Loading order</h3>
+       <p class="text-sm font-medium text-gray-500">Syncing live data...</p>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { 
@@ -387,7 +415,8 @@ import {
   Eye,
   User,
   MessageSquare,
-  Copy
+  Copy,
+  Store
 } from 'lucide-vue-next';
 import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
 import { useRoute, useHead } from '#imports';
@@ -550,6 +579,12 @@ const copyAccountDetails = () => {
   const text = `${bankName}\n${accountNumber}\n${accountName}`;
   navigator.clipboard.writeText(text);
   showToast({ title: 'Copied!', message: 'Account details copied to clipboard.', toastType: 'success' });
+};
+
+const copyVerificationCode = () => {
+  if (!order.value?.uniqueCode) return;
+  navigator.clipboard.writeText(order.value.uniqueCode);
+  showToast({ title: 'Copied!', message: 'Verification code copied to clipboard.', toastType: 'success' });
 };
 
 // Order Tracking Stepper Logic

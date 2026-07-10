@@ -20,7 +20,7 @@
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1.5">Select Date</label>
           <input 
-            type="date" 
+            type="datetime-local" 
             v-model="bookingForm.scheduledDate" 
             :min="new Date().toISOString().split('T')[0]"
             class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-parentPrimary focus:border-parentPrimary block p-3 outline-none transition-all"

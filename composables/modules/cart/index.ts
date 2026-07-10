@@ -21,6 +21,7 @@ interface Pack {
 
 // Global state (Singleton Pattern)
 const carts = ref<Record<string, { packs: Pack[]; activePackId: string }>>({});
+const vendorNotes = ref<Record<string, string>>({});
 const deliveryAddress = ref('');
 const deliveryNotes = ref('');
 const deliveryLocation = ref<{ type: string; coordinates: number[] } | null>(null);
@@ -41,6 +42,7 @@ export const useCart = () => {
       try {
         const parsed = JSON.parse(stored);
         carts.value = parsed.carts || {};
+        vendorNotes.value = parsed.vendorNotes || {};
         packCounter = parsed.packCounter || 0;
       } catch (e) {
         console.error('Failed to parse stored cart', e);
@@ -53,6 +55,7 @@ export const useCart = () => {
     if (import.meta.client) {
       localStorage.setItem('errandr_cart_multi_v1', JSON.stringify({
         carts: carts.value,
+        vendorNotes: vendorNotes.value,
         packCounter,
       }));
     }
@@ -210,6 +213,7 @@ export const useCart = () => {
       delete carts.value[vendorId];
     } else {
       carts.value = {};
+      vendorNotes.value = {};
       deliveryAddress.value = '';
       deliveryNotes.value = '';
       deliveryLocation.value = null;
@@ -280,6 +284,7 @@ export const useCart = () => {
     updateItemQuantity,
     deliveryAddress,
     deliveryNotes,
+    vendorNotes,
     deliveryLocation,
   };
 };
