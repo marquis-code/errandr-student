@@ -5,7 +5,7 @@
  <div class="max-w-5xl mx-auto px-4 py-3 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
  <div class="flex items-center gap-3">
  <button 
- @click="router.back()" 
+ @click="router.push('/')" 
  class="w-9 h-9 bg-white rounded-xl flex items-center justify-center border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all group active:scale-95 shrink-0"
  >
  <ArrowLeft class="w-4 h-4 text-gray-900 group-hover:-translate-x-1 transition-transform" />
