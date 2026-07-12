@@ -464,6 +464,8 @@ const recordingTime = ref(0)
 let mediaRecorder: MediaRecorder | null = null
 let audioChunks: Blob[] = []
 let timerInterval: any = null
+let recordedAudioBlob: Blob | null = null
+let selectedImageFile: File | null = null
 
 const startRecording = async () => {
   try {
@@ -476,9 +478,9 @@ const startRecording = async () => {
     })
 
     mediaRecorder.addEventListener('stop', () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' })
+      recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' })
       const reader = new FileReader()
-      reader.readAsDataURL(audioBlob)
+      reader.readAsDataURL(recordedAudioBlob)
       reader.onloadend = () => {
         attachedVoiceNoteBase64.value = reader.result as string
       }
@@ -518,11 +520,13 @@ const toggleRecording = () => {
 
 const removeVoiceNote = () => {
   attachedVoiceNoteBase64.value = ''
+  recordedAudioBlob = null
 }
 
 const handleImageUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
+  selectedImageFile = file
   const reader = new FileReader()
   reader.onload = (e) => {
     attachedImageBase64.value = e.target?.result as string
@@ -532,6 +536,7 @@ const handleImageUpload = (event: Event) => {
 
 const removeImage = () => {
   attachedImageBase64.value = ''
+  selectedImageFile = null
 }
 
 const isStep1Valid = computed(() => {
@@ -576,13 +581,34 @@ const submitErrand = async () => {
       localStorage.setItem('recentDropoffs', JSON.stringify(updated))
     }
 
+    let uploadedImageUrl = ''
+    let uploadedVoiceNoteUrl = ''
+
+    if (selectedImageFile) {
+      const formData = new FormData()
+      formData.append('file', selectedImageFile)
+      const uploadRes = await api.post('/upload?resourceType=image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      uploadedImageUrl = uploadRes.data.url
+    }
+
+    if (recordedAudioBlob) {
+      const formData = new FormData()
+      formData.append('file', recordedAudioBlob, 'voicenote.webm')
+      const uploadRes = await api.post('/upload?resourceType=video', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      uploadedVoiceNoteUrl = uploadRes.data.url
+    }
+
     const response = await api.post('/orders', {
       type: 'custom_errand',
       pickupLocation: finalPickup,
       dropoffLocation: form.value.dropoffLocation,
       description: finalDescription,
-      attachedImage: attachedImageBase64.value || undefined,
-      attachedVoiceNote: attachedVoiceNoteBase64.value || undefined,
+      attachedImage: uploadedImageUrl || undefined,
+      attachedVoiceNote: uploadedVoiceNoteUrl || undefined,
       estimatedItemCost: form.value.estimatedItemCost || 0,
       runnerFee: form.value.runnerFee,
       urgency: 'standard'
