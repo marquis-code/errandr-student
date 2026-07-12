@@ -1,5 +1,141 @@
 <template>
   <div class="min-h-screen bg-white" v-if="vendor">
+    <!-- MINI MART LAYOUT -->
+    <template v-if="isMiniMart">
+      <div class="max-w-2xl mx-auto p-4 md:p-6 pb-8 pt-8">
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-6">
+          <button @click="router.back()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all">
+            <ArrowLeft class="w-5 h-5 text-gray-900" />
+          </button>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden border border-gray-100 bg-white shrink-0">
+              <video v-if="vendor.logo && vendor.logo.match(/\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+              <img v-else :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-gray-900 leading-tight">{{ toTitleCase(vendor.storeName) }}</h2>
+              <p class="text-xs text-gray-500 font-medium">Mini Mart</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative mb-6">
+          <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input 
+            v-model="searchQuery" 
+            type="text" 
+            :placeholder="`Search ${vendor?.storeName || 'Store'}`"
+            class="w-full bg-gray-100 text-gray-900 border-none rounded-xl pl-12 pr-4 py-3.5 focus:ring-1 focus:ring-gray-200 outline-none placeholder-gray-500"
+          />
+        </div>
+
+        <!-- Bundles -->
+        <div class="mb-8" v-if="packs.length > 0">
+          <h3 class="text-gray-900 font-bold mb-3 text-[17px]">Bundles</h3>
+          <div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+            <div 
+              v-for="pack in packs" 
+              :key="pack._id"
+              class="bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[200px] shrink-0 cursor-pointer hover:bg-gray-100 transition-colors"
+            >
+              <h4 class="font-bold text-gray-900 mb-1 text-[15px]">{{ pack.name }}</h4>
+              <p class="text-xs text-gray-500">{{ pack.description || 'Bundle items' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top picks -->
+        <div class="mb-8" v-if="topPicks.length > 0">
+          <h3 class="text-gray-900 font-bold mb-3 text-[17px]">Top picks</h3>
+          <div class="flex flex-col">
+            <div 
+              v-for="product in topPicks" 
+              :key="'top-' + product._id"
+              @click="openProductModal(product)"
+              class="flex items-center justify-between py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors px-2"
+            >
+              <div class="flex flex-col">
+                <span class="font-bold text-gray-900 text-[15px]">{{ product.name }}</span>
+                <span class="font-bold text-gray-500 text-[15px]">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+              </div>
+              
+              <div @click.stop class="flex items-center gap-2">
+                <div v-if="getProductCount(product._id) > 0" class="flex items-center gap-3 bg-gray-100 rounded-full px-2 py-1">
+                  <button @click="removeFromCart(product._id)" class="text-gray-500 hover:text-gray-900 w-6 h-6 flex justify-center items-center">
+                    <Minus class="w-4 h-4" />
+                  </button>
+                  <span class="font-bold text-gray-900 text-sm w-4 text-center">{{ getProductCount(product._id) }}</span>
+                  <button @click="quickAddToCart(product)" class="text-parentPrimary hover:text-green-700 w-6 h-6 flex justify-center items-center">
+                    <Plus class="w-4 h-4" />
+                  </button>
+                </div>
+                <button v-else @click="quickAddToCart(product)" class="bg-gray-100 hover:bg-gray-200 text-parentPrimary rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                  <Plus class="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full store toggle -->
+        <button @click="showFullStore = !showFullStore" class="flex items-center gap-2 text-blue-400 font-medium text-[15px] mb-8 hover:text-blue-300 transition-colors">
+          See full store <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showFullStore }" />
+        </button>
+        
+        <!-- Full store -->
+        <div v-if="showFullStore" class="mb-8">
+          <div v-for="cat in categories" :key="cat" class="mb-6">
+            <h3 class="text-gray-500 font-bold mb-2 text-xs uppercase tracking-widest px-2" v-if="groupedProducts[cat] && groupedProducts[cat].length > 0">{{ cat }}</h3>
+            <div class="flex flex-col">
+              <div 
+                v-for="product in groupedProducts[cat]" 
+                :key="product._id"
+                @click="openProductModal(product)"
+                class="flex items-center justify-between py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors px-2"
+              >
+                <div class="flex flex-col">
+                  <span class="font-bold text-gray-900 text-[15px]">{{ product.name }}</span>
+                  <span class="font-bold text-gray-500 text-[15px]">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                </div>
+
+                <div @click.stop class="flex items-center gap-2">
+                  <div v-if="getProductCount(product._id) > 0" class="flex items-center gap-3 bg-gray-100 rounded-full px-2 py-1">
+                    <button @click="removeFromCart(product._id)" class="text-gray-500 hover:text-gray-900 w-6 h-6 flex justify-center items-center">
+                      <Minus class="w-4 h-4" />
+                    </button>
+                    <span class="font-bold text-gray-900 text-sm w-4 text-center">{{ getProductCount(product._id) }}</span>
+                    <button @click="quickAddToCart(product)" class="text-parentPrimary hover:text-green-700 w-6 h-6 flex justify-center items-center">
+                      <Plus class="w-4 h-4" />
+                    </button>
+                  </div>
+                  <button v-else @click="quickAddToCart(product)" class="bg-gray-100 hover:bg-gray-200 text-parentPrimary rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                    <Plus class="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Anything else -->
+        <div class="mt-4 px-2">
+          <h3 class="text-gray-900 font-bold mb-3 text-[17px]">Anything else?</h3>
+          <textarea 
+            v-model="anythingElseNote"
+            rows="2"
+            placeholder="Tell the vendor what else to grab"
+            class="w-full bg-gray-100 text-gray-900 border-none rounded-xl px-4 py-3.5 focus:ring-1 focus:ring-gray-200 outline-none placeholder-gray-500 resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Spacer for Sticky Cart -->
+        <div class="h-40 w-full shrink-0"></div>
+      </div>
+    </template>
+
+    <template v-else>
     <!-- Collapsed Sticky Header (appears on scroll) -->
     <header 
       class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 transition-all duration-500"
@@ -270,6 +406,47 @@
       <!-- MAIN CONTENT AREA                            -->
       <!-- ============================================ -->
       <div class="max-w-[1400px] mx-auto px-4 md:px-6 mt-6">
+        
+        <!-- TOP PICKS FOR MINI-MART -->
+        <div v-if="isMiniMart && topPicks.length > 0" class="mb-10">
+          <div class="flex items-center gap-3 mb-5">
+            <h2 class="text-lg font-bold text-gray-900 tracking-tight">Top Picks</h2>
+            <div class="h-px bg-gray-100 flex-1"></div>
+            <span class="text-[10px] uppercase font-bold text-parentPrimary tracking-wider bg-parentPrimary/10 px-2 py-0.5 rounded-full">Popular</span>
+          </div>
+          <div class="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x">
+            <div 
+              v-for="product in topPicks" 
+              :key="'top-' + product._id"
+              @click="openProductModal(product)"
+              class="w-[140px] md:w-[160px] shrink-0 snap-start bg-white rounded-2xl border border-gray-100 p-3 hover:border-parentPrimary/30 hover:shadow-md transition-all cursor-pointer relative"
+            >
+              <div class="w-full aspect-square rounded-xl bg-gray-50 mb-3 overflow-hidden">
+                <img :src="getMediaItems(product)[0]?.url || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+              </div>
+              <h3 class="text-sm font-medium text-gray-900 leading-tight truncate mb-1">{{ product.name }}</h3>
+              <p class="text-xs font-bold text-gray-900 mb-2">₦{{ (product.discountPrice || product.price).toLocaleString() }}</p>
+              
+              <div v-if="isMiniMart && getProductCount(product._id) > 0" class="absolute bottom-3 right-3 flex items-center gap-1.5 bg-gray-100 rounded-xl px-1 py-1 h-8 shadow-sm">
+                <button @click.stop="removeFromCart(product)" class="w-6 h-6 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-gray-50 active:scale-95 transition-all text-gray-700">
+                  <Minus class="w-3 h-3" />
+                </button>
+                <span class="text-[10px] font-bold w-3 text-center text-gray-900">{{ getProductCount(product._id) }}</span>
+                <button @click.stop="quickAddToCart(product)" class="w-6 h-6 flex items-center justify-center rounded-lg bg-parentPrimary shadow-sm hover:brightness-110 active:scale-95 transition-all text-white">
+                  <Plus class="w-3 h-3" />
+                </button>
+              </div>
+              <button 
+                v-else-if="!isProductOutOfStock(product)"
+                @click.stop="isMiniMart ? quickAddToCart(product) : addToCart(product)"
+                class="absolute bottom-3 right-3 w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary transition-colors shadow-sm"
+              >
+                <Plus class="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="flex flex-col lg:flex-row gap-8">
           
           <!-- Products Column -->
@@ -290,7 +467,7 @@
               <!-- MOBILE: Horizontal List Cards -->
               <div class="md:hidden space-y-3">
                 <div 
-                  v-for="product in groupedProducts[cat]" 
+                  v-for="product in (isMiniMart && !expandedCategories[cat] ? groupedProducts[cat].slice(0, 10) : groupedProducts[cat])" 
                   :key="product._id"
                   @click="openProductModal(product)"
                   class="group flex items-center gap-3 p-2.5 bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-md transition-all cursor-pointer active:scale-[0.98]"
@@ -335,9 +512,18 @@
                     </button>
                     <span class="text-[8px] font-bold text-red-500 uppercase tracking-wider">Out of stock</span>
                   </div>
+                  <div v-if="isMiniMart && getProductCount(product._id) > 0" class="flex items-center justify-between w-[88px] bg-gray-100 rounded-xl px-1.5 py-1 h-10 shrink-0">
+                    <button @click.stop="removeFromCart(product)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-gray-50 text-gray-700 active:scale-95 transition-transform">
+                      <Minus class="w-3 h-3" />
+                    </button>
+                    <span class="text-[13px] font-bold text-gray-900">{{ getProductCount(product._id) }}</span>
+                    <button @click.stop="quickAddToCart(product)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-parentPrimary shadow-sm hover:brightness-110 text-white active:scale-95 transition-transform">
+                      <Plus class="w-3 h-3" />
+                    </button>
+                  </div>
                   <button 
                     v-else
-                    @click.stop="addToCart(product)"
+                    @click.stop="isMiniMart ? quickAddToCart(product) : addToCart(product)"
                     class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary active:scale-90 transition-all shadow-md shrink-0"
                   >
                     <Plus class="w-4 h-4" />
@@ -348,7 +534,7 @@
               <!-- DESKTOP: Grid Cards -->
               <div class="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div 
-                  v-for="product in groupedProducts[cat]" 
+                  v-for="product in (isMiniMart && !expandedCategories[cat] ? groupedProducts[cat].slice(0, 10) : groupedProducts[cat])" 
                   :key="product._id"
                   @click="openProductModal(product)"
                   class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
@@ -398,9 +584,18 @@
                           <span class="text-[10px] font-medium">Notify me</span>
                         </button>
                       </div>
+                      <div v-if="isMiniMart && getProductCount(product._id) > 0" class="flex items-center gap-2 bg-gray-100 rounded-xl px-1.5 h-10 shadow-inner shrink-0">
+                        <button @click.stop="removeFromCart(product)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-gray-50 active:scale-95 transition-all text-gray-700">
+                          <Minus class="w-3.5 h-3.5" />
+                        </button>
+                        <span class="text-xs font-bold w-4 text-center text-gray-900">{{ getProductCount(product._id) }}</span>
+                        <button @click.stop="quickAddToCart(product)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-parentPrimary shadow-sm hover:brightness-110 active:scale-95 transition-all text-white">
+                          <Plus class="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                       <button 
                         v-else
-                        @click.stop="addToCart(product)"
+                        @click.stop="isMiniMart ? quickAddToCart(product) : addToCart(product)"
                         class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-parentPrimary/30 shadow-black/5 shrink-0"
                       >
                         <Plus class="w-4.5 h-4.5" />
@@ -409,6 +604,17 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Mini-mart Expand Category Button -->
+              <div v-if="isMiniMart && !expandedCategories[cat] && groupedProducts[cat].length > 10" class="mt-4 flex justify-center">
+                <button 
+                  @click="expandedCategories[cat] = true"
+                  class="px-5 py-2.5 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-xl text-sm font-bold border border-gray-200 transition-all active:scale-[0.98]"
+                >
+                  See all {{ groupedProducts[cat].length }} items
+                </button>
+              </div>
+
             </section>
             </template>
           </div>
@@ -539,7 +745,12 @@
                         </div>
                         <div class="flex-1 min-w-0">
                           <p class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</p>
-                          <p class="text-xs font-medium text-parentPrimary">₦{{ item.price?.toLocaleString() }}</p>
+                          <div v-if="item.customizations && item.customizations.length > 0" class="mt-0.5 space-y-0.5 mb-1">
+                            <p v-for="(c, cIdx) in item.customizations" :key="cIdx" class="text-[10px] font-medium text-gray-400 leading-tight line-clamp-1">
+                              + {{ c.name }} <span v-if="c.price > 0">(₦{{ c.price.toLocaleString() }})</span>
+                            </p>
+                          </div>
+                          <p class="text-xs font-medium text-parentPrimary">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
                         </div>
                         <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100 shrink-0">
                           <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-6 h-6 rounded-md bg-white text-gray-500 flex items-center justify-center hover:text-rose-500 transition-all text-xs font-bold shadow-sm">−</button>
@@ -554,9 +765,23 @@
                   <button v-if="isFoodVendor" @click="addNewPack(vendor._id)" class="w-full py-3 border border-dashed border-gray-200 rounded-xl text-xs font-medium text-gray-400 hover:border-parentPrimary hover:text-parentPrimary transition-all flex items-center justify-center gap-2">
                     <Plus class="w-3.5 h-3.5" /> New {{ packTerm }}
                   </button>
+                  
+                  <!-- Leave Note (Desktop) -->
+                  <div class="pt-4 mt-4 border-t border-gray-100">
+                    <button @click="openVendorNoteModal" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100">
+                      <div class="flex items-center gap-3 text-left">
+                        <FileText class="w-5 h-5 text-gray-600 stroke-[2]" />
+                        <div class="min-w-0">
+                          <p class="text-xs font-bold text-gray-900 mb-0.5">Leave a note</p>
+                          <p class="text-[10px] font-medium text-gray-400 truncate w-32">{{ cart.vendorNotes.value[vendor._id] || 'Any requests...' }}</p>
+                        </div>
+                      </div>
+                      <ChevronRight class="w-4 h-4 text-gray-400" />
+                    </button>
+                  </div>
 
                   <!-- Checkout -->
-                  <div class="pt-4 border-t border-gray-100 space-y-4">
+                  <div class="pt-4 border-t border-gray-100 space-y-4 mt-4">
                     <div class="flex justify-between items-center">
                       <span class="text-xs font-medium text-gray-400 tracking-wider">Subtotal</span>
                       <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
@@ -583,6 +808,7 @@
         </div>
       </div>
     </div>
+    </template>
 
     <!-- Media Lightbox Modal -->
     <MediaLightbox 
@@ -668,7 +894,13 @@
                     <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center justify-between gap-3">
                       <div class="flex-1 min-w-0 pr-4">
                         <p class="text-[15px] font-bold text-gray-900 underline decoration-gray-900 decoration-[1.5px] underline-offset-[5px] mb-1.5 truncate">{{ toTitleCase(item.name) }}</p>
-                        <p class="text-sm font-medium text-gray-400">₦{{ item.price?.toLocaleString() }}</p>
+                        <div v-if="item.customizations && item.customizations.length > 0" class="mt-1 mb-2 space-y-1">
+                          <p v-for="(c, cIdx) in item.customizations" :key="cIdx" class="text-[13px] font-medium text-gray-500 leading-tight line-clamp-1">
+                            + {{ c.name }} <span v-if="c.price > 0">(₦{{ c.price.toLocaleString() }})</span>
+                          </p>
+                          <button @click="editCartItem(vendor._id, pack.id, iIndex, item)" class="text-[11px] text-parentPrimary font-medium underline mt-1 block">Edit customizations</button>
+                        </div>
+                        <p class="text-sm font-medium text-gray-400">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
                       </div>
                       
                       <!-- Quantity Control Pill -->
@@ -697,7 +929,7 @@
                 </div>
 
                 <!-- Global Cart Actions -->
-                <div class="flex items-center justify-between pt-8 border-t border-gray-50 mt-4 pb-2">
+                <div class="flex items-center justify-between pt-8 border-t border-gray-50 mt-4 pb-4 relative z-30">
                   <button @click="cart.clearCart(vendor._id)" class="text-[13px] font-bold text-red-500 bg-red-50 hover:bg-red-100 transition-colors px-4 py-2.5 rounded-[20px] flex items-center gap-2">
                     <Trash2 class="w-4 h-4" /> Clear cart
                   </button>
@@ -708,7 +940,7 @@
               </div>
               
               <!-- Leave Note -->
-              <div class="border-y border-gray-100 bg-white">
+              <div class="border-y border-gray-100 bg-white relative z-30 mb-4">
                 <button @click="openVendorNoteModal" class="w-full flex items-center justify-between px-5 py-5 hover:bg-gray-50 transition-colors">
                   <div class="flex items-center gap-4 text-left">
                     <FileText class="w-[22px] h-[22px] text-gray-900 stroke-[2]" />
@@ -722,7 +954,7 @@
               </div>
 
               <!-- Fixed Bottom Bar -->
-              <div class="p-5 bg-white space-y-4 sticky bottom-0 border-t border-gray-50">
+              <div class="p-5 bg-white space-y-4 sticky bottom-0 border-t border-gray-50 z-40 shadow-[0_-10px_20px_rgba(255,255,255,0.9)]">
                 <div class="flex justify-between items-center px-1 mb-2">
                   <span class="text-[15px] font-medium text-gray-900">Subtotal</span>
                   <span class="text-lg font-bold text-gray-900 tracking-tight">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
@@ -763,7 +995,8 @@
     >
       <div 
         v-if="(cart.getVendorStats(vendor._id).itemCount > 0 || groupOrder) && !showMobileCartDrawer"
-        class="fixed bottom-6 left-4 right-4 z-[50] lg:hidden"
+        class="fixed bottom-6 left-0 right-0 z-[50] max-w-2xl mx-auto px-4"
+        :class="{ 'lg:hidden': !isMiniMart }"
       >
         <button 
           @click="showMobileCartDrawer = true"
@@ -1000,7 +1233,7 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <div v-if="selectedProduct" class="fixed inset-0 z-[110] flex flex-col md:items-center md:justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="selectedProduct = null">
+        <div v-if="selectedProduct" class="fixed inset-0 z-[110] flex flex-col md:items-center md:justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="selectedProduct = null; editingCartItem = null">
           <div class="bg-white flex-1 md:flex-initial md:rounded-[2rem] w-full md:max-w-sm overflow-y-auto shadow-2xl animate-slide-up-mobile md:animate-zoom-in flex flex-col">
             <!-- Product Media Carousel -->
             <div class="h-56 md:h-64 relative group">
@@ -1026,18 +1259,24 @@
                 <img v-else :src="isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg'" class="w-full h-full object-cover" />
               </div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
-              <button @click="selectedProduct = null" class="absolute top-4 right-4 w-9 h-9 bg-black/30 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-black/50 transition-all border border-white/10 shadow-lg z-10">
+              <button @click="selectedProduct = null; editingCartItem = null" class="absolute top-4 right-4 w-9 h-9 bg-black/30 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-black/50 transition-all border border-white/10 shadow-lg z-10">
                 <X class="w-5 h-5" />
               </button>
-              <div class="absolute bottom-4 left-5 right-5 pointer-events-none z-10">
-                <span class="px-2 py-0.5 bg-parentPrimary text-white rounded-md text-[9px] font-medium mb-2 inline-block shadow-sm">{{ selectedProduct.category?.name || selectedProduct.category }}</span>
-                <h2 class="text-xl font-medium text-white tracking-tight leading-tight">{{ selectedProduct.name }}</h2>
-              </div>
             </div>
 
             <!-- Content -->
             <div class="p-6 space-y-5 pb-8">
-              <p class="text-gray-500 font-medium text-sm leading-relaxed">
+              <!-- Chowdeck style header -->
+              <div class="flex flex-col space-y-1 pb-4 border-b border-gray-100">
+                <h2 class="text-xl font-bold text-gray-900">{{ selectedProduct.name }}</h2>
+                <span class="text-xs text-gray-400 font-medium">{{ selectedProduct.category?.name || selectedProduct.category }}</span>
+                <div class="mt-2">
+                  <span class="text-sm font-bold text-gray-900">₦{{ selectedProduct.price?.toLocaleString() }}</span>
+                  <span class="text-xs text-gray-900 font-bold ml-1">{{ selectedProduct.portionUnit ? `per ${selectedProduct.portionUnit}` : 'per portion' }}</span>
+                </div>
+              </div>
+
+              <p v-if="selectedProduct.description || defaultProductDescription" class="text-gray-500 font-medium text-sm leading-relaxed">
                 {{ selectedProduct.description || defaultProductDescription }}
               </p>
 
@@ -1108,6 +1347,18 @@
                 </div>
               </div>
 
+              <!-- Product Note / Special Instructions -->
+              <div class="mt-6 border-t border-gray-100 pt-6">
+                <h4 class="text-sm font-bold text-gray-900 mb-2">Special Instructions</h4>
+                <textarea 
+                  v-model="productNote" 
+                  rows="2" 
+                  class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-sm focus:outline-none focus:ring-1 focus:ring-parentPrimary focus:bg-white transition-all resize-none placeholder-gray-400"
+                  placeholder="E.g. No onions, extra spicy..."
+                ></textarea>
+                <p class="text-[10px] text-gray-400 mt-1">Special requests are subject to the vendor's approval and may incur extra charges.</p>
+              </div>
+
               <!-- Quantity & Add -->
               <div class="flex items-center justify-between pt-6 border-t border-gray-100 mt-6 sticky bottom-0 bg-white z-10 pb-2">
                 <div>
@@ -1133,10 +1384,10 @@
                 <button 
                   v-else
                   :disabled="!isProductModalValid"
-                  @click="addToCart(selectedProduct); selectedProduct = null"
+                  @click="addToCart(selectedProduct)"
                   class="h-12 px-8 bg-gray-900 hover:bg-parentPrimary text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Plus class="w-5 h-5" /> Add to cart
+                  <Plus class="w-5 h-5" /> {{ editingCartItem ? 'Update Cart' : 'Add to cart' }}
                 </button>
               </div>
             </div>
@@ -1144,14 +1395,6 @@
         </div>
       </Transition>
     </Teleport>
-  </div>
-
-  <!-- Loading State -->
-  <div v-else class="min-h-screen bg-white flex items-center justify-center">
-    <div class="flex flex-col items-center gap-4">
-      <div class="w-10 h-10 border-2 border-gray-100 border-t-parentPrimary rounded-full animate-spin"></div>
-      <p class="text-xs font-bold text-gray-400">Loading store...</p>
-    </div>
     <!-- ============================================ -->
     <!-- VENDOR NOTE MODAL                            -->
     <!-- ============================================ -->
@@ -1208,14 +1451,22 @@
       </Transition>
     </Teleport>
   </div>
+
+  <!-- Loading State -->
+  <div v-else class="min-h-screen bg-white flex items-center justify-center">
+    <div class="flex flex-col items-center gap-4">
+      <div class="w-10 h-10 border-2 border-gray-100 border-t-parentPrimary rounded-full animate-spin"></div>
+      <p class="text-xs font-bold text-gray-400">Loading store...</p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { 
-  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText
+  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, ChevronDown, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText, RefreshCw
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import { useRoute, useHead, navigateTo } from '#imports';
+import { useRoute, useHead, navigateTo, useRouter } from '#imports';
 import { useNow } from '@vueuse/core';
 import { useCart } from '@/composables/modules/cart';
 import { useUser } from '@/composables/modules/auth/user';
@@ -1264,6 +1515,18 @@ const isFoodVendor = computed(() => {
   return foodCategories.includes(category) || type === 'food' || type === 'restaurant';
 });
 
+const isMiniMart = computed(() => {
+  const cat = (vendor.value?.category || '').toLowerCase();
+  const type = (vendor.value?.vendorType || '').toLowerCase();
+  return type === 'mini-mart' || 
+         cat === 'mini-mart' || 
+         cat === 'groceries' || 
+         cat === 'provisions' ||
+         cat.includes('mini-mart') ||
+         cat.includes('minimart') ||
+         vendor.value?.tags?.some((t: string) => ['mini-mart', 'groceries', 'provisions'].includes(t.toLowerCase()));
+});
+
 const packTerm = computed(() => isFoodVendor.value ? 'Pack' : 'Cart');
 const packsTerm = computed(() => isFoodVendor.value ? 'Packs' : 'Carts');
 
@@ -1275,6 +1538,11 @@ const isGroupOrderActiveForThisVendor = computed(() => {
 });
 
 const products = ref<any[]>([]);
+const topPicks = ref<any[]>([]);
+const packs = ref<any[]>([]);
+const expandedCategories = ref<Record<string, boolean>>({});
+const showFullStore = ref(true);
+const anythingElseNote = ref('');
 const searchQuery = ref('');
 const vendorServices = ref<any[]>([]);
 const showBookingModal = ref(false);
@@ -1285,7 +1553,7 @@ const lightboxInitialIndex = ref(0);
 
 const getMediaItems = (product: any) => {
   const items = [];
-  const isVideo = (url: string) => url && typeof url === 'string' && !!url.match(/\\.(mp4|webm|ogg|mov)/i);
+  const isVideo = (url: string) => url && typeof url === 'string' && !!url.match(/\.(mp4|webm|ogg|mov)/i);
   
   if (product.videos && product.videos.length > 0) {
     items.push(...product.videos.map((url: string) => ({ type: 'video', url })));
@@ -1331,11 +1599,14 @@ const tempVendorNote = ref('');
 const isLeaving = ref(false);
 const groupName = ref('');
 const selectedProduct = ref<any>(null);
+const editingCartItem = ref<{ vendorId: string; packId: string; itemIndex: number; quantity: number } | null>(null);
 const selectedCustomizations = ref<Record<string, Record<string, { price: number; quantity: number; name: string; groupName: string }>>>({});
+const productNote = ref('');
 
 const openProductModal = (product: any) => {
   selectedProduct.value = product;
   selectedCustomizations.value = {};
+  productNote.value = '';
   
   // Pre-select defaults if any (future enhancement)
 };
@@ -1567,6 +1838,27 @@ const addToCart = (product: any) => {
     });
   });
 
+  if (editingCartItem.value) {
+    const { vendorId, packId, itemIndex, quantity } = editingCartItem.value;
+    const vendorCart = cart.carts.value[vendorId];
+    if (vendorCart) {
+      const pack = vendorCart.packs.find(p => p.id === packId);
+      if (pack && pack.items[itemIndex]) {
+        pack.items[itemIndex].customizations = customItems;
+        pack.items[itemIndex].note = productNote.value;
+        const customTotal = customItems.reduce((s, c) => s + c.price, 0);
+        pack.items[itemIndex].subtotal = (pack.items[itemIndex].price + customTotal) * pack.items[itemIndex].quantity;
+        cart.saveToStorage();
+        if (typeof (window as any).showToast === 'function') (window as any).showToast('Item updated', 'success');
+      }
+    }
+    editingCartItem.value = null;
+    selectedProduct.value = null;
+    showProductModal.value = false;
+    showMobileCartDrawer.value = true;
+    return;
+  }
+
   cart.addItem({
     productId: product._id,
     vendorId: vendor.value._id,
@@ -1575,11 +1867,66 @@ const addToCart = (product: any) => {
     image: getMediaItems(product)[0]?.url || product.image,
     quantity: 1,
     customizations: customItems,
+    note: productNote.value,
   });
   
   if (isGroupOrderActiveForThisVendor.value) {
     setTimeout(() => syncWithCart(vendor.value._id), 100);
   }
+  
+  selectedProduct.value = null;
+  showProductModal.value = false;
+};
+
+const quickAddToCart = (product: any) => {
+  if (!vendor.value) return;
+  cart.addItem({
+    productId: product._id,
+    vendorId: vendor.value._id,
+    name: product.name,
+    price: product.discountPrice || product.price,
+    image: getMediaItems(product)[0]?.url || product.image,
+    quantity: 1,
+    customizations: [],
+    note: ''
+  });
+  
+  if (isGroupOrderActiveForThisVendor.value) {
+    setTimeout(() => syncWithCart(vendor.value._id), 100);
+  }
+};
+
+const editCartItem = (vendorId: string, packId: string, itemIndex: number, item: any) => {
+  const originalProduct = products.value.find(p => p._id === item.productId);
+  if (!originalProduct) return;
+  
+  editingCartItem.value = { vendorId, packId, itemIndex, quantity: item.quantity };
+  
+  selectedCustomizations.value = {};
+  productNote.value = item.note || '';
+  if (item.customizations && item.customizations.length > 0) {
+    item.customizations.forEach((c: any) => {
+      const groupName = c.selected;
+      let matchedGroup = null;
+      originalProduct.modifiers?.forEach((m: any) => { if (m.name === groupName) matchedGroup = m; });
+      originalProduct.addOns?.forEach((m: any) => { if (m.name === groupName) matchedGroup = m; });
+      
+      if (matchedGroup) {
+        if (!selectedCustomizations.value[matchedGroup._id]) {
+          selectedCustomizations.value[matchedGroup._id] = {};
+        }
+        if (!selectedCustomizations.value[matchedGroup._id][c.name]) {
+          selectedCustomizations.value[matchedGroup._id][c.name] = { price: c.price, quantity: 1, name: c.name, groupName: groupName };
+        } else {
+          selectedCustomizations.value[matchedGroup._id][c.name].quantity += 1;
+        }
+      }
+    });
+  }
+  
+  selectedProduct.value = originalProduct;
+  showMobileCartDrawer.value = false;
+  showProductModal.value = true;
 };
 
 const { toggleFavorite, fetchFavorites: checkFavs, isFavorited: checkIsFav } = useFavorites();
@@ -1736,13 +2083,19 @@ onMounted(async () => {
   cart.initCart();
   try {
     const paramId = route.params.id as string;
-    let productsRes;
+    let productsRes, topPicksRes, packsRes;
     if (isFoodVendor.value) {
       productsRes = await menu_items_api.getByVendor(vendor.value._id);
+      topPicksRes = await menu_items_api.getTopPicks(vendor.value._id);
     } else {
       productsRes = await products_api.getByVendor(vendor.value._id);
+      topPicksRes = await products_api.getTopPicks(vendor.value._id);
+      packsRes = await products_api.getPacks(vendor.value._id);
     }
     products.value = productsRes.data || [];
+    topPicks.value = topPicksRes.data || [];
+    packs.value = packsRes?.data || [];
+    
     const uniqueCats = [...new Set(products.value.map((p: any) => {
       if (typeof p.category === 'object' && p.category !== null) return p.category.name;
       return p.category;

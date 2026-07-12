@@ -134,8 +134,8 @@
             </div>
 
             <!-- Step 1: Delivery Details -->
-            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100">
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-visible">
+              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100 rounded-t-2xl">
                 <div class="w-8 h-8 bg-parentPrimary/10 rounded-xl flex items-center justify-center text-parentPrimary">
                   <MapPin class="w-4 h-4" />
                 </div>
@@ -161,8 +161,8 @@
             </div>
 
             <!-- Step 1.5: Pre-order Schedule -->
-            <div v-if="isPreOrderCart" class="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-fade-in">
-              <div class="flex items-center gap-3 px-5 py-4 bg-purple-50/50 border-b border-purple-100">
+            <div v-if="isPreOrderCart" class="bg-white rounded-2xl border border-gray-100 overflow-visible animate-fade-in">
+              <div class="flex items-center gap-3 px-5 py-4 bg-purple-50/50 border-b border-purple-100 rounded-t-2xl">
                 <div class="w-8 h-8 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
                   <Calendar class="w-4 h-4" />
                 </div>
@@ -187,8 +187,8 @@
             </div>
 
             <!-- Add-ons -->
-            <div v-if="hasFoodVendor" class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100">
+            <div v-if="hasFoodVendor" class="bg-white rounded-2xl border border-gray-100 overflow-visible">
+              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100 rounded-t-2xl">
                 <div class="w-8 h-8 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
                   <span class="text-base">✨</span>
                 </div>
@@ -219,8 +219,8 @@
             </div>
 
             <!-- Step 2: Payment -->
-            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100">
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-visible">
+              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100 rounded-t-2xl">
                 <div class="w-8 h-8 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500">
                   <CreditCard class="w-4 h-4" />
                 </div>
@@ -320,8 +320,8 @@
                     <span class="text-[9px] font-medium bg-gray-900 text-white px-2.5 py-1 rounded-md">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
                     <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3">
                       <div class="w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-gray-100 bg-gray-50">
-                        <video v-if="item.image && item.image.match(/\\.(mp4|webm|ogg|mov)/i)" :src="item.image" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
-                        <img v-else :src="item.image || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+                        <video v-if="item.image && item.image.match(/\.(mp4|webm|ogg|mov)/i)" :src="item.image" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                        <img v-else :src="item.image || '/placeholder-store.jpg'" @error="$event.target.src = '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                       </div>
                       <div class="flex-1 min-w-0">
                         <h5 class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
@@ -484,8 +484,8 @@
                 </div>
                 <div v-for="(item, iIndex) in pack.items" :key="'mb-item-'+iIndex" class="flex items-center gap-3">
                   <div class="w-11 h-11 bg-gray-50 rounded-lg overflow-hidden border border-gray-100 shrink-0">
-                    <video v-if="item.image && item.image.match(/\\.(mp4|webm|ogg|mov)/i)" :src="item.image" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
-                    <img v-else :src="item.image || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
+                    <video v-if="item.image && item.image.match(/\.(mp4|webm|ogg|mov)/i)" :src="item.image" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+                    <img v-else :src="item.image || '/placeholder-store.jpg'" @error="$event.target.src = '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                   </div>
                   <div class="flex-1 min-w-0">
                     <h5 class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
@@ -635,6 +635,7 @@
     <CheckoutAuthModal
       v-model="showAuthModal"
       @authenticated="handleAuthenticated"
+      @guest-checkout="handleGuestCheckout"
     />
   </div>
 </template>
@@ -696,6 +697,19 @@ const handleAddressSelect = (data: { address: string, coordinates: [number, numb
   specificAddress.value = data.address;
   deliveryCoordinates.value = data.coordinates;
 };
+
+const guestEmail = ref('');
+const guestName = ref('');
+
+const handleGuestCheckout = (guestData: any) => {
+  guestEmail.value = guestData.email;
+  guestName.value = `${guestData.firstName} ${guestData.lastName}`.trim();
+  if (!recipientName.value) recipientName.value = guestName.value;
+  if (!recipientPhone.value) recipientPhone.value = guestData.phone;
+  showAuthModal.value = false;
+  startPayment();
+};
+
 const deliveryOption = ref('use_an_errander');
 const placing = ref(false);
 const showAuthModal = ref(false);
@@ -1059,7 +1073,7 @@ const startPayment = async () => {
   // Require delivery details and authentication
   if (!recipientName.value.trim() || !recipientPhone.value.trim()) return showToast({ title: 'Missing Info', message: 'Name and phone required', toastType: 'error' });
   if (deliveryOption.value === 'use_an_errander' && !specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Address required', toastType: 'error' });
-  if (!user.value?.email) return (showAuthModal.value = true);
+  if (!user.value?.email && !guestEmail.value) return (showAuthModal.value = true);
 
   if (paymentMethod.value === 'wallet' && balance.value < finalTotal.value) {
     showTopupModal.value = true;
@@ -1093,7 +1107,7 @@ const startPayment = async () => {
          
       const data = await initializePayment({
         amount,
-        customer: { name: recipientName.value, email: user.value.email },
+        customer: { name: recipientName.value || guestName.value, email: user.value?.email || guestEmail.value },
         callback_url: `${window.location.origin}/cart${route.query.group ? '?group=' + route.query.group : ''}`,
         metadata,
       });
@@ -1140,7 +1154,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const subtotal = participant.items.reduce((s: number, i: any) => s + (i.price * i.quantity), 0);
       const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendorMeta?.deliveryFee ?? 150);
       const res = await createOrder({
-        vendorId, customer: participant.user._id, items: participant.items.map((i: any) => ({ product: i.productId, name: i.name, price: i.price, image: i.image, quantity: i.quantity, subtotal: i.price * i.quantity })),
+        vendorId, customer: participant.user._id, items: participant.items.map((i: any) => ({ product: i.productId, name: i.name, price: i.price, image: i.image, quantity: i.quantity, subtotal: i.price * i.quantity, customizations: i.customizations || [] })),
         subtotal, deliveryFee, serviceFee: Math.round(subtotal * 0.05), packagingFee: vendorMeta?.packagingFee ?? 300, total: subtotal + Math.round(subtotal * 0.05) + (vendorMeta?.packagingFee ?? 300) + deliveryFee,
         deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, isGroupOrder: true, groupId: activeCode.value, isGroupLeader: participant.user._id === groupOrder.value.host._id,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value,
@@ -1154,7 +1168,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const vendor = vendorsMetadata.value[vId];
       const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendor?.deliveryFee ?? 150);
       const res = await createOrder({
-        vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal })) })),
+        vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal, customizations: item.customizations || [] })) })),
         subtotal: stats.subtotal, deliveryFee, serviceFee: stats.serviceFee, packagingFee: vendor?.packagingFee ?? 300, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: vendor?.packagingFee ?? 300 },
         isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value,

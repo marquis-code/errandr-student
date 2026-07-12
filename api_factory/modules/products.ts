@@ -28,4 +28,13 @@ export const products_api = {
   getByVendor: (vendorId: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get(`/products/vendor/${vendorId}`);
   },
+
+  getTopPicks: (vendorId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/products/vendor/${vendorId}/top-picks`);
+  },
+
+  getPacks: (vendorId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/products/vendor/${vendorId}/packs`);
+  },
+
 };

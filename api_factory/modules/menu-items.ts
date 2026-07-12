@@ -9,5 +9,8 @@ export const menu_items_api = {
   },
   notifyRestock: (id: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.post(`/menu/items/${id}/notify-restock`);
+  },
+  getTopPicks: (vendorId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/menu/items/vendor/${vendorId}/top-picks`);
   }
 };

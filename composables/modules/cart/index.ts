@@ -286,6 +286,7 @@ export const useCart = () => {
     deliveryNotes,
     vendorNotes,
     deliveryLocation,
+    saveToStorage,
   };
 };
 
