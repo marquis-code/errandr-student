@@ -72,44 +72,149 @@
           <!-- Step 1: Details -->
           <div v-if="step === 1" class="animate-fade-in space-y-8">
             <div>
-              <h2 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Errand Details</h2>
+              <div class="flex items-center">
+                <h2 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Errand Details</h2>
+                <span class="text-xs font-bold text-parentPrimary bg-parentPrimary/10 px-2.5 py-1 rounded-full ml-3 mb-2">~30 secs</span>
+              </div>
               <p class="text-gray-500 font-medium text-sm">Tell us exactly what you need and where it's happening.</p>
             </div>
 
-            <div class="space-y-6">
-              <div class="space-y-2">
-                <label class="text-sm font-bold text-gray-700">What do you need done?</label>
-                <textarea 
-                  v-model="form.description" 
-                  rows="4" 
-                  placeholder="e.g. Go to Yaba market and buy me 3 yards of black velvet material."
-                  class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
-                ></textarea>
-              </div>
-              
-              <div class="space-y-2 relative group/field">
-                <label class="text-sm font-bold text-gray-700">Market / Task Location (Optional)</label>
-                <div class="relative">
-                  <MapPin class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/field:text-parentPrimary transition-colors" />
-                  <input 
-                    v-model="form.pickupLocation" 
-                    type="text" 
-                    placeholder="e.g. Yaba Market (Leave blank if not applicable)"
-                    class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
-                  />
-                </div>
-              </div>
+            <!-- Errand Type Toggle -->
+            <div class="flex bg-gray-50 p-1 rounded-xl">
+              <button 
+                @click="errandType = 'custom'" 
+                class="flex-1 py-2 text-sm font-bold rounded-lg transition-colors"
+                :class="errandType === 'custom' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+              >
+                Custom Errand
+              </button>
+              <button 
+                @click="errandType = 'market'" 
+                class="flex-1 py-2 text-sm font-bold rounded-lg transition-colors"
+                :class="errandType === 'market' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+              >
+                Market Run
+              </button>
+            </div>
 
-              <div class="space-y-2 relative group/field">
-                <label class="text-sm font-bold text-gray-700">Drop-off Location</label>
+            <div class="space-y-6">
+              <template v-if="errandType === 'custom'">
+                <!-- Templates -->
+                <div class="flex flex-wrap gap-2">
+                  <button v-for="tmpl in errandTemplates" :key="tmpl" @click="applyTemplate(tmpl)" class="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-100 text-gray-600 text-xs font-bold rounded-full transition-colors flex items-center gap-1.5">
+                    <ListChecks class="w-3 h-3" /> {{ tmpl }}
+                  </button>
+                </div>
+
+                <div class="space-y-2 relative">
+                  <label class="text-sm font-bold text-gray-700">What do you need done?</label>
+                  <div class="relative">
+                    <textarea 
+                      v-model="form.description" 
+                      rows="4" 
+                      placeholder="e.g. Go to Yaba market and buy me 3 yards of black velvet material."
+                      class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
+                    ></textarea>
+                    
+                    <div class="absolute bottom-4 right-4 flex items-center gap-2">
+                      <button 
+                        @click="toggleRecording" 
+                        class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                        :class="isRecording ? 'bg-red-100 text-red-500 animate-pulse' : 'bg-white border border-gray-200 text-gray-400 hover:text-parentPrimary hover:border-parentPrimary'"
+                        title="Voice to text"
+                      >
+                        <Mic class="w-4 h-4" />
+                      </button>
+                      <label class="w-8 h-8 rounded-full bg-white border border-gray-200 text-gray-400 flex items-center justify-center hover:text-parentPrimary hover:border-parentPrimary transition-colors cursor-pointer" title="Attach Photo">
+                        <input type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+                        <ImageIcon class="w-4 h-4" />
+                      </label>
+                    </div>
+                  </div>
+                  <!-- Image Preview -->
+                  <div v-if="attachedImageBase64" class="relative inline-block mt-2">
+                    <img :src="attachedImageBase64" class="h-20 w-20 object-cover rounded-xl border border-gray-200 shadow-sm" />
+                    <button @click="removeImage" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition-colors">
+                      <X class="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="space-y-2 relative group/field">
+                  <label class="text-sm font-bold text-gray-700">Task Location (Optional)</label>
+                  <div class="relative">
+                    <MapPin class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/field:text-parentPrimary transition-colors" />
+                    <input 
+                      v-model="form.pickupLocation" 
+                      type="text" 
+                      placeholder="e.g. Unilag Library (Leave blank if not applicable)"
+                      class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                    />
+                  </div>
+                </div>
+              </template>
+
+              <template v-else>
+                <!-- Market Run Fields -->
+                <div class="space-y-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
+                  <div class="space-y-2 relative group/field">
+                    <label class="text-sm font-bold text-gray-700">Which Market?</label>
+                    <div class="relative">
+                      <MapPin class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/field:text-parentPrimary transition-colors" />
+                      <input 
+                        v-model="marketForm.marketName" 
+                        type="text" 
+                        placeholder="e.g. Yaba Market, Tejuosho"
+                        class="w-full bg-white border border-gray-200 rounded-xl pl-12 pr-5 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div class="flex gap-3">
+                    <div class="space-y-2 relative group/field flex-1">
+                      <label class="text-sm font-bold text-gray-700">Item to Buy</label>
+                      <input 
+                        v-model="marketForm.itemName" 
+                        type="text" 
+                        placeholder="e.g. Black velvet material"
+                        class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                      />
+                    </div>
+                    <div class="space-y-2 relative group/field w-1/3">
+                      <label class="text-sm font-bold text-gray-700">Quantity</label>
+                      <input 
+                        v-model="marketForm.quantity" 
+                        type="text" 
+                        placeholder="e.g. 3 yards"
+                        class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Dropoff Location -->
+              <div class="space-y-3 relative group/field">
+                <div class="flex justify-between items-end">
+                  <label class="text-sm font-bold text-gray-700">Drop-off Location</label>
+                  <div v-if="recentDropoffs.length > 0" class="flex gap-2">
+                    <button v-for="loc in recentDropoffs" :key="loc" @click="form.dropoffLocation = loc" class="text-[10px] font-bold px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors">
+                      {{ loc }}
+                    </button>
+                  </div>
+                </div>
                 <div class="relative">
                   <Navigation class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/field:text-parentPrimary transition-colors" />
-                  <input 
+                  <select 
                     v-model="form.dropoffLocation" 
-                    type="text" 
-                    placeholder="e.g. Moremi Hall"
-                    class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
-                  />
+                    class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none appearance-none"
+                  >
+                    <option value="" disabled>Select your location</option>
+                    <option v-for="loc in predefinedLocations" :key="loc" :value="loc">{{ loc }}</option>
+                  </select>
+                  <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </div>
                 </div>
               </div>
             </div>
@@ -285,14 +390,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCustomToast } from '@/composables/core/useCustomToast'
 import { useRouter } from '#imports'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 import { useUser } from '@/composables/modules/auth/user'
 import { 
   Rocket, ShieldCheck, MapPin, Navigation, 
-  ArrowRight, X, CircleDollarSign, Package, Target, Layers, Info, Loader2 
+  ArrowRight, X, CircleDollarSign, Package, Target, Layers, Info, Loader2,
+  Mic, ImageIcon, ListChecks
 } from 'lucide-vue-next'
 
 definePageMeta({ layout: false }) // Use empty layout since this is a fullscreen takeover
@@ -307,6 +413,11 @@ const isSubmitting = ref(false)
 const isAuthModalOpen = ref(false)
 const justAuthenticated = ref(false)
 
+const errandType = ref<'custom' | 'market'>('custom')
+const isRecording = ref(false)
+const recentDropoffs = ref<string[]>([])
+const attachedImageBase64 = ref('')
+
 const form = ref({
   description: '',
   pickupLocation: '',
@@ -315,9 +426,97 @@ const form = ref({
   runnerFee: 0,
 })
 
+const marketForm = ref({
+  marketName: '',
+  itemName: '',
+  quantity: ''
+})
+
+const predefinedLocations = [
+  'Moremi Hall', 'Mariere Hall', 'Honors Hall', 'Biobaku Hall', 
+  'Amina Hall', 'Jaja Hall', 'Faculty of Engineering', 'Faculty of Science', 'Senate Building', 'Main Library', 'Amphitheatre'
+]
+
+const errandTemplates = [
+  "Buy groceries from",
+  "Print documents at",
+  "Pick up a package from",
+  "Get food from",
+  "Pay a bill at"
+]
+
+onMounted(() => {
+  const saved = localStorage.getItem('recentDropoffs')
+  if (saved) {
+    try {
+      recentDropoffs.value = JSON.parse(saved)
+    } catch(e){}
+  }
+})
+
+const applyTemplate = (tmpl: string) => {
+  form.value.description = `${tmpl} `
+}
+
+const toggleRecording = () => {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast({ title: 'Not Supported', message: 'Voice typing is not supported in this browser.', toastType: 'error' })
+    return
+  }
+  
+  if (isRecording.value) return; // Prevent multiple instances
+
+  const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition
+  const recognition = new SpeechRecognition()
+  recognition.continuous = false
+  recognition.interimResults = false
+  recognition.lang = 'en-NG'
+
+  recognition.onstart = () => {
+    isRecording.value = true
+  }
+
+  recognition.onresult = (event: any) => {
+    const transcript = event.results[0][0].transcript
+    form.value.description += (form.value.description ? ' ' : '') + transcript
+  }
+
+  recognition.onerror = (event: any) => {
+    console.error(event.error)
+    isRecording.value = false
+  }
+
+  recognition.onend = () => {
+    isRecording.value = false
+  }
+
+  recognition.start()
+}
+
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    attachedImageBase64.value = e.target?.result as string
+  }
+  reader.readAsDataURL(file)
+}
+
+const removeImage = () => {
+  attachedImageBase64.value = ''
+}
+
 const isStep1Valid = computed(() => {
-  return form.value.description.trim().length > 5 && 
-         form.value.dropoffLocation.trim().length > 2
+  if (errandType.value === 'custom') {
+    return form.value.description.trim().length > 5 && 
+           form.value.dropoffLocation.trim().length > 2
+  } else {
+    return marketForm.value.marketName.trim().length > 2 &&
+           marketForm.value.itemName.trim().length > 2 &&
+           marketForm.value.quantity.trim().length > 0 &&
+           form.value.dropoffLocation.trim().length > 2
+  }
 })
 
 const isStep2Valid = computed(() => {
@@ -337,11 +536,26 @@ const submitErrand = async () => {
   isSubmitting.value = true
   
   try {
+    let finalDescription = form.value.description
+    let finalPickup = form.value.pickupLocation
+
+    if (errandType.value === 'market') {
+      finalDescription = `Buy ${marketForm.value.quantity} of ${marketForm.value.itemName}`
+      finalPickup = marketForm.value.marketName
+    }
+
+    if (form.value.dropoffLocation && !recentDropoffs.value.includes(form.value.dropoffLocation)) {
+      const updated = [form.value.dropoffLocation, ...recentDropoffs.value].slice(0, 3)
+      recentDropoffs.value = updated
+      localStorage.setItem('recentDropoffs', JSON.stringify(updated))
+    }
+
     const response = await api.post('/orders', {
       type: 'custom_errand',
-      pickupLocation: form.value.pickupLocation,
+      pickupLocation: finalPickup,
       dropoffLocation: form.value.dropoffLocation,
-      description: form.value.description,
+      description: finalDescription,
+      attachedImage: attachedImageBase64.value || undefined,
       estimatedItemCost: form.value.estimatedItemCost || 0,
       runnerFee: form.value.runnerFee,
       urgency: 'standard'
