@@ -116,19 +116,32 @@
                       class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
                     ></textarea>
                     
-                    <div class="absolute bottom-4 right-4 flex items-center gap-2">
-                      <button 
-                        @click="toggleRecording" 
-                        class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                        :class="isRecording ? 'bg-red-100 text-red-500 animate-pulse' : 'bg-white border border-gray-200 text-gray-400 hover:text-parentPrimary hover:border-parentPrimary'"
-                        title="Voice to text"
-                      >
-                        <Mic class="w-4 h-4" />
-                      </button>
-                      <label class="w-8 h-8 rounded-full bg-white border border-gray-200 text-gray-400 flex items-center justify-center hover:text-parentPrimary hover:border-parentPrimary transition-colors cursor-pointer" title="Attach Photo">
-                        <input type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
-                        <ImageIcon class="w-4 h-4" />
-                      </label>
+                    <div class="absolute bottom-4 right-4 flex flex-col items-end gap-2">
+                      <div v-if="attachedVoiceNoteBase64" class="bg-gray-100 rounded-full pr-1 pl-2 py-1 flex items-center gap-2 shadow-sm border border-gray-200 w-full justify-between mt-2">
+                        <audio :src="attachedVoiceNoteBase64" controls class="h-8 max-w-[200px]" />
+                        <button @click="removeVoiceNote" class="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition-colors shrink-0">
+                          <X class="w-3 h-3" />
+                        </button>
+                      </div>
+                      
+                      <div class="flex items-center gap-2 mt-1">
+                        <span v-if="isRecording" class="text-xs font-bold text-red-500 animate-pulse bg-red-50 px-2 py-1 rounded-full">
+                          {{ Math.floor(recordingTime / 60) }}:{{ (recordingTime % 60).toString().padStart(2, '0') }} / 2:00
+                        </span>
+                        <button 
+                          @click="toggleRecording" 
+                          class="w-8 h-8 rounded-full flex items-center justify-center transition-colors relative"
+                          :class="isRecording ? 'bg-red-100 text-red-500' : 'bg-white border border-gray-200 text-gray-400 hover:text-parentPrimary hover:border-parentPrimary'"
+                          :title="isRecording ? 'Stop Recording' : 'Record Voice Note'"
+                        >
+                          <span v-if="isRecording" class="absolute inset-0 rounded-full border-2 border-red-500 animate-ping opacity-75"></span>
+                          <Mic class="w-4 h-4 z-10" />
+                        </button>
+                        <label class="w-8 h-8 rounded-full bg-white border border-gray-200 text-gray-400 flex items-center justify-center hover:text-parentPrimary hover:border-parentPrimary transition-colors cursor-pointer" title="Attach Photo">
+                          <input type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+                          <ImageIcon class="w-4 h-4" />
+                        </label>
+                      </div>
                     </div>
                   </div>
                   <!-- Image Preview -->
@@ -170,25 +183,14 @@
                     </div>
                   </div>
                   
-                  <div class="flex gap-3">
-                    <div class="space-y-2 relative group/field flex-1">
-                      <label class="text-sm font-bold text-gray-700">Item to Buy</label>
-                      <input 
-                        v-model="marketForm.itemName" 
-                        type="text" 
-                        placeholder="e.g. Black velvet material"
-                        class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
-                      />
-                    </div>
-                    <div class="space-y-2 relative group/field w-1/3">
-                      <label class="text-sm font-bold text-gray-700">Quantity</label>
-                      <input 
-                        v-model="marketForm.quantity" 
-                        type="text" 
-                        placeholder="e.g. 3 yards"
-                        class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
-                      />
-                    </div>
+                  <div class="space-y-2 relative group/field">
+                    <label class="text-sm font-bold text-gray-700">Shopping List / Items to Buy</label>
+                    <textarea 
+                      v-model="marketForm.itemsList" 
+                      rows="4" 
+                      placeholder="e.g.&#10;1. 3 yards of black velvet material&#10;2. A pack of needles"
+                      class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400"
+                    ></textarea>
                   </div>
                 </div>
               </template>
@@ -205,16 +207,16 @@
                 </div>
                 <div class="relative">
                   <Navigation class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/field:text-parentPrimary transition-colors" />
-                  <select 
+                  <input 
                     v-model="form.dropoffLocation" 
-                    class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none appearance-none"
-                  >
-                    <option value="" disabled>Select your location</option>
-                    <option v-for="loc in predefinedLocations" :key="loc" :value="loc">{{ loc }}</option>
-                  </select>
-                  <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                  </div>
+                    type="text"
+                    list="locations-list"
+                    placeholder="e.g. Moremi Hall or Yabatech Art Complex"
+                    class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none"
+                  />
+                  <datalist id="locations-list">
+                    <option v-for="loc in predefinedLocations" :key="loc" :value="loc"></option>
+                  </datalist>
                 </div>
               </div>
             </div>
@@ -428,8 +430,7 @@ const form = ref({
 
 const marketForm = ref({
   marketName: '',
-  itemName: '',
-  quantity: ''
+  itemsList: ''
 })
 
 const predefinedLocations = [
@@ -458,39 +459,65 @@ const applyTemplate = (tmpl: string) => {
   form.value.description = `${tmpl} `
 }
 
-const toggleRecording = () => {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    showToast({ title: 'Not Supported', message: 'Voice typing is not supported in this browser.', toastType: 'error' })
-    return
-  }
-  
-  if (isRecording.value) return; // Prevent multiple instances
+const attachedVoiceNoteBase64 = ref('')
+const recordingTime = ref(0)
+let mediaRecorder: MediaRecorder | null = null
+let audioChunks: Blob[] = []
+let timerInterval: any = null
 
-  const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition
-  const recognition = new SpeechRecognition()
-  recognition.continuous = false
-  recognition.interimResults = false
-  recognition.lang = 'en-NG'
+const startRecording = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    mediaRecorder = new MediaRecorder(stream)
+    audioChunks = []
 
-  recognition.onstart = () => {
+    mediaRecorder.addEventListener('dataavailable', event => {
+      audioChunks.push(event.data)
+    })
+
+    mediaRecorder.addEventListener('stop', () => {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' })
+      const reader = new FileReader()
+      reader.readAsDataURL(audioBlob)
+      reader.onloadend = () => {
+        attachedVoiceNoteBase64.value = reader.result as string
+      }
+      stream.getTracks().forEach(track => track.stop())
+    })
+
+    mediaRecorder.start()
     isRecording.value = true
-  }
+    recordingTime.value = 0
 
-  recognition.onresult = (event: any) => {
-    const transcript = event.results[0][0].transcript
-    form.value.description += (form.value.description ? ' ' : '') + transcript
+    timerInterval = setInterval(() => {
+      recordingTime.value += 1
+      if (recordingTime.value >= 120) {
+        stopRecording()
+      }
+    }, 1000)
+  } catch (error) {
+    showToast({ title: 'Error', message: 'Microphone access denied.', toastType: 'error' })
   }
+}
 
-  recognition.onerror = (event: any) => {
-    console.error(event.error)
+const stopRecording = () => {
+  if (mediaRecorder && isRecording.value) {
+    mediaRecorder.stop()
     isRecording.value = false
+    if (timerInterval) clearInterval(timerInterval)
   }
+}
 
-  recognition.onend = () => {
-    isRecording.value = false
+const toggleRecording = () => {
+  if (isRecording.value) {
+    stopRecording()
+  } else {
+    startRecording()
   }
+}
 
-  recognition.start()
+const removeVoiceNote = () => {
+  attachedVoiceNoteBase64.value = ''
 }
 
 const handleImageUpload = (event: Event) => {
@@ -509,12 +536,11 @@ const removeImage = () => {
 
 const isStep1Valid = computed(() => {
   if (errandType.value === 'custom') {
-    return form.value.description.trim().length > 5 && 
+    return (form.value.description.trim().length > 5 || attachedVoiceNoteBase64.value) && 
            form.value.dropoffLocation.trim().length > 2
   } else {
     return marketForm.value.marketName.trim().length > 2 &&
-           marketForm.value.itemName.trim().length > 2 &&
-           marketForm.value.quantity.trim().length > 0 &&
+           marketForm.value.itemsList.trim().length > 2 &&
            form.value.dropoffLocation.trim().length > 2
   }
 })
@@ -540,7 +566,7 @@ const submitErrand = async () => {
     let finalPickup = form.value.pickupLocation
 
     if (errandType.value === 'market') {
-      finalDescription = `Buy ${marketForm.value.quantity} of ${marketForm.value.itemName}`
+      finalDescription = `Market Run items:\n${marketForm.value.itemsList}`
       finalPickup = marketForm.value.marketName
     }
 
@@ -556,6 +582,7 @@ const submitErrand = async () => {
       dropoffLocation: form.value.dropoffLocation,
       description: finalDescription,
       attachedImage: attachedImageBase64.value || undefined,
+      attachedVoiceNote: attachedVoiceNoteBase64.value || undefined,
       estimatedItemCost: form.value.estimatedItemCost || 0,
       runnerFee: form.value.runnerFee,
       urgency: 'standard'
