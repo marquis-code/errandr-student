@@ -22,6 +22,7 @@
  
  <div class="flex items-center justify-end sm:justify-start">
  <button 
+ v-if="order?.type !== 'custom_errand'"
  @click="reorder" 
  :disabled="reordering"
  class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-gray-900 text-white rounded-xl text-xs sm:text-sm font-medium hover:bg-parentPrimary hover:shadow-lg hover:shadow-parentPrimary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
@@ -84,22 +85,37 @@
  </div>
  </div>
 
- <!-- Items Breakdown -->
- <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
- <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
- <div>
- <h3 class="text-sm font-medium text-gray-900 r">Order Breakdown</h3>
- <p class="text-sm font-bold text-gray-400 mt-0.5">{{ order.items?.length }} Items Ordered</p>
- </div>
- <div class="flex items-center gap-2">
- <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
- <span class="text-sm font-bold text-emerald-600 r">Confirmed Receipt</span>
- </div>
- </div>
+  <!-- Items Breakdown -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+  <div>
+  <h3 class="text-sm font-medium text-gray-900 r">{{ order.type === 'custom_errand' ? 'Errand Summary' : 'Order Breakdown' }}</h3>
+  <p v-if="order.type !== 'custom_errand'" class="text-sm font-bold text-gray-400 mt-0.5">{{ order.items?.length || 0 }} Items Ordered</p>
+  <p v-else class="text-sm font-bold text-gray-400 mt-0.5">Custom Errand Details</p>
+  </div>
+  <div class="flex items-center gap-2">
+  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+  <span class="text-sm font-bold text-emerald-600 r">Confirmed Receipt</span>
+  </div>
+  </div>
 
- <div class="p-6">
- <!-- If packs exist -->
- <div v-if="order.packs?.length > 0" class="space-y-8">
+  <div class="p-6">
+  <!-- Custom Errand details -->
+  <div v-if="order.type === 'custom_errand'" class="space-y-4">
+    <div class="p-4 bg-gray-50/50 rounded-xl text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+      {{ order.customDetails?.description }}
+      <div v-if="order.customDetails?.attachedVoiceNote" class="mt-4 pt-4 border-t border-gray-200 flex flex-col gap-2">
+        <span class="text-xs font-medium text-gray-500 uppercase tracking-widest">Attached Voice Note</span>
+        <audio :src="order.customDetails.attachedVoiceNote" controls class="w-full h-10 bg-white rounded-full shadow-sm" preload="metadata" />
+      </div>
+      <div class="mt-3 pt-3 border-t border-gray-200 flex justify-between items-center text-xs">
+        <span class="font-medium text-gray-500">Estimated Item Cost</span>
+        <span class="font-bold text-gray-900">₦{{ (order.customDetails?.estimatedItemCost || 0).toLocaleString() }}</span>
+      </div>
+    </div>
+  </div>
+  <!-- If packs exist -->
+  <div v-else-if="order.packs?.length > 0" class="space-y-8">
  <div v-for="(pack, pIdx) in order.packs" :key="pack._id || pIdx" class="space-y-4">
  <div class="flex items-center gap-3">
  <div class="w-6 h-6 rounded-lg bg-gray-900 text-white flex items-center justify-center text-sm font-medium shadow-md">
@@ -159,9 +175,9 @@
  </div>
 
  <div class="space-y-2">
- <h4 class="text-xl font-bold tracking-tight">{{ order.recipientName || 'Student Resident' }}</h4>
+ <h4 class="text-xl font-bold tracking-tight">{{ order.type === 'custom_errand' ? order.customDetails?.dropoffLocation : (order.recipientName || 'Student Resident') }}</h4>
  <p class="text-[11px] text-white/60 font-medium leading-relaxed  line-clamp-2">
- {{ order.deliveryAddress || order.specificAddress || 'No specific address provided' }}
+ {{ order.type === 'custom_errand' ? 'Custom Dropoff Point' : (order.deliveryAddress || order.specificAddress || 'No specific address provided') }}
  </p>
  </div>
 
@@ -211,26 +227,35 @@
  </div>
 
  <!-- Service Provider Info -->
- <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+ <div v-if="order.type !== 'custom_errand' || order.errander?._id" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
  <div class="p-6">
- <h3 class="text-sm font-medium text-gray-400 r mb-4">Service Provider</h3>
+ <h3 class="text-sm font-medium text-gray-400 r mb-4">{{ order.type === 'custom_errand' ? 'Assigned Errander' : 'Service Provider' }}</h3>
  
  <div class="flex items-center gap-4 mb-8">
  <div class="w-16 h-16 rounded-2xl border border-gray-100 shadow-inner overflow-hidden flex items-center justify-center bg-gray-50 flex-shrink-0">
+ <template v-if="order.type !== 'custom_errand'">
  <video v-if="order.vendor?.logo && order.vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="order.vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
  <img v-else-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
  <Store v-else class="w-8 h-8 text-gray-300" />
+ </template>
+ <template v-else>
+ <img v-if="order.errander?.user?.avatar" :src="order.errander.user.avatar" class="w-full h-full object-cover" />
+ <User v-else class="w-8 h-8 text-gray-300" />
+ </template>
  </div>
  <div class="flex-1 min-w-0">
- <h4 class="text-lg font-medium text-gray-900 tracking-tight truncate">{{ order.vendor?.storeName || 'Vendor' }}</h4>
- <p class="text-sm font-bold text-parentPrimary flex items-center gap-1  truncate">
- <ShieldCheck class="w-3 h-3 flex-shrink-0" /> Verified Errandr Vendor
+ <h4 class="text-lg font-medium text-gray-900 tracking-tight truncate">
+   {{ order.type === 'custom_errand' ? (order.errander?.user?.firstName || order.errander?.firstName) + ' ' + (order.errander?.user?.lastName || order.errander?.lastName || '') : (order.vendor?.storeName || 'Vendor') }}
+ </h4>
+ <p class="text-sm font-bold text-parentPrimary flex items-center gap-1 truncate">
+ <ShieldCheck class="w-3 h-3 flex-shrink-0" /> Verified {{ order.type === 'custom_errand' ? 'Errander' : 'Errandr Vendor' }}
  </p>
  </div>
  </div>
 
  <div class="space-y-3">
  <button 
+ v-if="order.type !== 'custom_errand'"
  @click="openChat(order.vendor?._id, order.vendor?.storeName, order.vendor?.logo)"
  class="w-full py-4 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-xl text-sm font-bold  transition-all flex items-center justify-center gap-2 border border-gray-100"
  >
@@ -238,12 +263,13 @@
  </button>
  <button 
  v-if="order.errander?._id"
- @click="openChat(order.errander._id, order.errander.firstName + ' (Rider)', order.errander.avatar)"
+ @click="openChat(order.errander._id, (order.errander?.user?.firstName || order.errander?.firstName) + ' (Rider)', order.errander?.user?.avatar)"
  class="w-full py-4 bg-parentPrimary/5 hover:bg-parentPrimary/10 text-parentPrimary rounded-xl text-sm font-bold  transition-all flex items-center justify-center gap-2 border border-parentPrimary/10"
  >
  <MessageSquare class="w-3.5 h-3.5" /> Message Rider
  </button>
  <button 
+ v-if="order.type !== 'custom_errand'"
  @click="navigateTo(`/vendors/${order.vendor?._id}`)"
  class="w-full py-4 text-gray-400 hover:text-gray-900 text-sm font-bold  transition-colors"
  >
@@ -447,9 +473,9 @@
 
 <script setup lang="ts">
 import { 
- ArrowLeft, Phone, MapPin, Truck, ShoppingBag, 
- Package, CheckCircle2, AlertCircle, RefreshCw,
- Search, CreditCard, MessageSquare, Clock, LayoutGrid, Star, Inbox, LifeBuoy, Store, ShieldCheck
+  ArrowLeft, Phone, MapPin, Truck, ShoppingBag, 
+  Package, CheckCircle2, AlertCircle, RefreshCw,
+  Search, CreditCard, MessageSquare, Clock, LayoutGrid, Star, Inbox, LifeBuoy, Store, ShieldCheck, User
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from '#imports';
 import { ref, computed, onMounted } from 'vue';
