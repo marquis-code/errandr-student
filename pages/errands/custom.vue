@@ -305,19 +305,22 @@
           <!-- Step 3: Summary -->
           <div v-if="step === 3" class="animate-fade-in space-y-8">
             <div>
-              <h2 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Review Request</h2>
-              <p class="text-gray-500 font-medium text-sm">Please review the financials before broadcasting to riders.</p>
+              <h2 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Review & Pay</h2>
+              <p class="text-gray-500 font-medium text-sm">Your card will be charged once. The item cost goes straight to the rider's bank.</p>
             </div>
             
             <div class="bg-gray-50 rounded-[2rem] p-6 sm:p-8 border border-gray-100">
               
               <div class="space-y-4">
-                <div class="flex justify-between items-center">
+                <div v-if="form.estimatedItemCost > 0" class="flex justify-between items-center">
                   <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
                       <Package class="w-4 h-4 text-gray-500" />
                     </div>
-                    <span class="text-sm font-bold text-gray-600">Est. Item Cost</span>
+                    <div>
+                      <span class="text-sm font-bold text-gray-600">Item Cost</span>
+                      <p class="text-[11px] text-gray-400 font-medium">Sent to rider's bank</p>
+                    </div>
                   </div>
                   <span class="font-extrabold text-gray-900">₦{{ formatMoney(form.estimatedItemCost) }}</span>
                 </div>
@@ -327,7 +330,10 @@
                     <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
                       <Target class="w-4 h-4 text-gray-500" />
                     </div>
-                    <span class="text-sm font-bold text-gray-600">Runner Fee</span>
+                    <div>
+                      <span class="text-sm font-bold text-gray-600">Runner Fee</span>
+                      <p class="text-[11px] text-gray-400 font-medium">Rider earns on completion</p>
+                    </div>
                   </div>
                   <span class="font-extrabold text-gray-900">₦{{ formatMoney(form.runnerFee) }}</span>
                 </div>
@@ -337,7 +343,7 @@
                     <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
                       <Layers class="w-4 h-4 text-gray-500" />
                     </div>
-                    <span class="text-sm font-bold text-gray-600">Platform Escrow Fee</span>
+                    <span class="text-sm font-bold text-gray-600">Platform Fee</span>
                   </div>
                   <span class="font-extrabold text-gray-900">₦50</span>
                 </div>
@@ -345,18 +351,18 @@
                 <div class="pt-2">
                   <div class="flex justify-between items-end">
                     <div>
-                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Due on Acceptance</p>
-                      <p class="text-sm text-gray-500 font-medium leading-tight max-w-[200px]">You only pay the Runner + Escrow fee once accepted.</p>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Charge</p>
+                      <p class="text-sm text-gray-500 font-medium leading-tight max-w-[200px]">One-time payment via Paystack. No hidden fees.</p>
                     </div>
-                    <span class="text-3xl font-extrabold text-parentPrimary tracking-tighter">₦{{ formatMoney(form.runnerFee + 50) }}</span>
+                    <span class="text-3xl font-extrabold text-parentPrimary tracking-tighter">₦{{ formatMoney(grandTotal) }}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="bg-blue-50/50 text-blue-800 text-sm p-5 rounded-2xl border border-blue-100 font-medium leading-relaxed flex gap-3">
-              <Info class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-              <p>Your request will be broadcasted to all available riders immediately. No payment is required until a rider accepts your fee.</p>
+            <div class="bg-emerald-50/80 text-emerald-800 text-sm p-5 rounded-2xl border border-emerald-200 font-medium leading-relaxed flex gap-3">
+              <ShieldCheck class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+              <p>You'll be redirected to Paystack to complete payment securely. Once paid, your errand goes live instantly and riders can accept it.</p>
             </div>
 
             <div class="pt-4 flex flex-col gap-3">
@@ -366,7 +372,7 @@
                 </svg>
                 <div>
                   <p class="font-bold">Authentication Successful!</p>
-                  <p class="font-medium opacity-90 mt-0.5">Thank you for logging in. Your errand details are perfectly saved! Please review them and click "Broadcast to Riders" when you're ready.</p>
+                  <p class="font-medium opacity-90 mt-0.5">Your details are saved. Click below to pay and broadcast your errand.</p>
                 </div>
               </div>
               <button 
@@ -375,8 +381,8 @@
                 class="w-full bg-parentPrimary text-white font-bold py-5 px-8 rounded-2xl hover:bg-orange-600 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-3 shadow-xl shadow-parentPrimary/20 hover:shadow-2xl hover:shadow-parentPrimary/30"
               >
                 <Loader2 v-if="isSubmitting" class="animate-spin w-5 h-5 text-white" />
-                <Rocket v-else class="w-5 h-5" />
-                <span class="text-base">{{ isSubmitting ? 'Broadcasting...' : 'Broadcast to Riders' }}</span>
+                <CreditCard v-else class="w-5 h-5" />
+                <span class="text-base">{{ isSubmitting ? 'Processing...' : `Pay ₦${formatMoney(grandTotal)} & Broadcast` }}</span>
               </button>
               <button @click="step = 2" :disabled="isSubmitting" class="w-full font-bold text-gray-500 hover:text-gray-800 py-3 transition-colors">
                 Go back to edit
@@ -394,21 +400,24 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useCustomToast } from '@/composables/core/useCustomToast'
-import { useRouter } from '#imports'
+import { useRouter, useRoute } from '#imports'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 import { useUser } from '@/composables/modules/auth/user'
+import { usePayments } from '@/composables/modules/payments'
 import { 
-  Rocket, ShieldCheck, MapPin, Navigation, 
+  Rocket, ShieldCheck, MapPin, Navigation, CreditCard,
   ArrowRight, X, CircleDollarSign, Package, Target, Layers, Info, Loader2,
   Mic, ImageIcon, ListChecks
 } from 'lucide-vue-next'
 
-definePageMeta({ layout: false }) // Use empty layout since this is a fullscreen takeover
+definePageMeta({ layout: false })
 useHead({ title: 'Request Custom Errand | Errander' })
 
 const router = useRouter()
+const route = useRoute()
 const { showToast } = useCustomToast()
-const { isLoggedIn } = useUser()
+const { isLoggedIn, user } = useUser()
+const { initializePayment, verifyPayment } = usePayments()
 
 const step = ref(1)
 const isSubmitting = ref(false)
@@ -462,12 +471,54 @@ const errandTemplates = [
   "Pay a bill at"
 ]
 
-onMounted(() => {
+onMounted(async () => {
   const saved = localStorage.getItem('recentDropoffs')
   if (saved) {
     try {
       recentDropoffs.value = JSON.parse(saved)
     } catch(e){}
+  }
+
+  // Handle Paystack callback: verify payment, create order with reference
+  if (route.query.reference) {
+    isSubmitting.value = true
+    step.value = 3
+    try {
+      const verification = await verifyPayment(route.query.reference as string)
+      const vData = verification?.data || verification
+      if (vData?.status === 'success') {
+        // Recover saved payload
+        const savedPayload = sessionStorage.getItem('pendingErrandPayload')
+        if (!savedPayload) {
+          showToast({ title: 'Error', message: 'Could not recover errand details. Please try again.', toastType: 'error' })
+          isSubmitting.value = false
+          return
+        }
+        const payload = JSON.parse(savedPayload)
+        payload.paymentReference = route.query.reference
+
+        // Create the order with payment reference
+        const response = await api.post('/orders', payload)
+        sessionStorage.removeItem('pendingErrandPayload')
+
+        if (response.data) {
+          showToast({ title: 'Payment Successful!', message: 'Your errand is now live and waiting for a rider.', toastType: 'success' })
+          router.push(`/dashboard/orders/${response.data._id}`)
+        }
+      } else {
+        showToast({ title: 'Payment Failed', message: 'Your payment could not be verified. Please try again.', toastType: 'error' })
+      }
+    } catch (e: any) {
+      console.error('Payment verification failed:', e)
+      showToast({ title: 'Error', message: e.response?.data?.message || 'Payment verification failed.', toastType: 'error' })
+    } finally {
+      isSubmitting.value = false
+      // Clean URL
+      const url = new URL(window.location.href)
+      url.searchParams.delete('reference')
+      url.searchParams.delete('trxref')
+      window.history.replaceState({}, '', url.toString())
+    }
   }
 })
 
@@ -570,8 +621,62 @@ const isStep2Valid = computed(() => {
   return form.value.runnerFee >= 200 // Minimum 200 NGN runner fee
 })
 
+const grandTotal = computed(() => {
+  return (form.value.estimatedItemCost || 0) + form.value.runnerFee + 50
+})
+
 const formatMoney = (amount: number) => {
   return (amount || 0).toLocaleString('en-NG')
+}
+
+// Helper: upload files and build payload
+const buildErrandPayload = async () => {
+  let finalDescription = form.value.description
+  let finalPickup = form.value.pickupLocation
+
+  if (errandType.value === 'market') {
+    finalDescription = `Market Run items:\n${marketForm.value.itemsList}`
+    finalPickup = marketForm.value.marketName
+  }
+
+  if (form.value.dropoffLocation && !recentDropoffs.value.includes(form.value.dropoffLocation)) {
+    const updated = [form.value.dropoffLocation, ...recentDropoffs.value].slice(0, 3)
+    recentDropoffs.value = updated
+    localStorage.setItem('recentDropoffs', JSON.stringify(updated))
+  }
+
+  let uploadedImageUrl = ''
+  let uploadedVoiceNoteUrl = ''
+
+  if (selectedImageFile) {
+    const formData = new FormData()
+    formData.append('file', selectedImageFile)
+    const uploadRes = await api.post('/upload?resourceType=image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    uploadedImageUrl = uploadRes.data.url
+  }
+
+  if (recordedAudioBlob) {
+    const formData = new FormData()
+    formData.append('file', recordedAudioBlob, 'voicenote.webm')
+    const uploadRes = await api.post('/upload?resourceType=video', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    uploadedVoiceNoteUrl = uploadRes.data.url
+  }
+
+  return {
+    type: 'custom_errand',
+    pickupLocation: finalPickup,
+    dropoffLocation: form.value.dropoffLocation,
+    description: finalDescription,
+    attachedImage: uploadedImageUrl || undefined,
+    attachedVoiceNote: uploadedVoiceNoteUrl || undefined,
+    estimatedItemCost: form.value.estimatedItemCost || 0,
+    runnerFee: form.value.runnerFee,
+    urgency: 'standard'
+  }
 }
 
 const submitErrand = async () => {
@@ -583,60 +688,32 @@ const submitErrand = async () => {
   isSubmitting.value = true
   
   try {
-    let finalDescription = form.value.description
-    let finalPickup = form.value.pickupLocation
+    const payload = await buildErrandPayload()
 
-    if (errandType.value === 'market') {
-      finalDescription = `Market Run items:\n${marketForm.value.itemsList}`
-      finalPickup = marketForm.value.marketName
-    }
+    // Save payload to sessionStorage so we can recover it after Paystack redirect
+    sessionStorage.setItem('pendingErrandPayload', JSON.stringify(payload))
 
-    if (form.value.dropoffLocation && !recentDropoffs.value.includes(form.value.dropoffLocation)) {
-      const updated = [form.value.dropoffLocation, ...recentDropoffs.value].slice(0, 3)
-      recentDropoffs.value = updated
-      localStorage.setItem('recentDropoffs', JSON.stringify(updated))
-    }
+    // Initialize Paystack payment
+    const amount = grandTotal.value
+    const customerEmail = user.value?.email || 'customer@erranders.org'
+    const customerName = user.value ? `${user.value.firstName} ${user.value.lastName}` : 'Customer'
 
-    let uploadedImageUrl = ''
-    let uploadedVoiceNoteUrl = ''
-
-    if (selectedImageFile) {
-      const formData = new FormData()
-      formData.append('file', selectedImageFile)
-      const uploadRes = await api.post('/upload?resourceType=image', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      uploadedImageUrl = uploadRes.data.url
-    }
-
-    if (recordedAudioBlob) {
-      const formData = new FormData()
-      formData.append('file', recordedAudioBlob, 'voicenote.webm')
-      const uploadRes = await api.post('/upload?resourceType=video', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      uploadedVoiceNoteUrl = uploadRes.data.url
-    }
-
-    const response = await api.post('/orders', {
-      type: 'custom_errand',
-      pickupLocation: finalPickup,
-      dropoffLocation: form.value.dropoffLocation,
-      description: finalDescription,
-      attachedImage: uploadedImageUrl || undefined,
-      attachedVoiceNote: uploadedVoiceNoteUrl || undefined,
-      estimatedItemCost: form.value.estimatedItemCost || 0,
-      runnerFee: form.value.runnerFee,
-      urgency: 'standard'
+    const data = await initializePayment({
+      amount,
+      customer: { name: customerName, email: customerEmail },
+      callback_url: `${window.location.origin}/errands/custom`,
+      metadata: { type: 'custom_errand', estimatedItemCost: payload.estimatedItemCost, runnerFee: payload.runnerFee },
     })
 
-    if (response.data) {
-      showToast({ title: 'Success!', message: 'Your custom errand is now live and waiting for a rider.', toastType: 'success' })
-      router.push(`/dashboard/orders/${response.data._id}`)
+    const authUrl = data?.data?.authorization_url || data?.authorization_url
+    if (authUrl) {
+      window.location.href = authUrl
+    } else {
+      showToast({ title: 'Error', message: 'Payment gateway unavailable. Please try again.', toastType: 'error' })
     }
   } catch (error: any) {
     console.error(error)
-    showToast({ title: 'Error', message: error.response?.data?.message || 'Failed to submit errand request.', toastType: 'error' })
+    showToast({ title: 'Error', message: error.response?.data?.message || 'Failed to initialize payment.', toastType: 'error' })
   } finally {
     isSubmitting.value = false
   }
