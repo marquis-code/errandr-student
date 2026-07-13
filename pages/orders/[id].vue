@@ -520,10 +520,15 @@ const submitRating = async () => {
  if (rating.value === 0) return;
  submittingRating.value = true;
  try {
-  const res = await orders_api.rateOrder(route.params.id as string, {
-    rating: rating.value,
-    review: reviewText.value
-  });
+  const payload: any = {
+    erranderRating: rating.value,
+    erranderReview: reviewText.value
+  };
+  if (order.value.type !== 'custom_errand') {
+    payload.vendorRating = rating.value;
+    payload.vendorReview = reviewText.value;
+  }
+  const res = await orders_api.rateOrder(route.params.id as string, payload);
   order.value = res.data;
  } catch (error) {
   console.error('Failed to submit rating', error);
