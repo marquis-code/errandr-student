@@ -257,8 +257,8 @@
                 <div class="relative group/field">
                   <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within/field:text-parentPrimary transition-colors">₦</span>
                   <input 
-                    v-model.number="form.estimatedItemCost" 
-                    type="number" 
+                    v-model="formattedItemCost" 
+                    type="text" 
                     placeholder="0"
                     class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-12 pr-5 py-4 text-gray-900 font-medium text-lg focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
                   />
@@ -271,9 +271,9 @@
                 <div class="relative group/field">
                   <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within/field:text-parentPrimary transition-colors">₦</span>
                   <input 
-                    v-model.number="form.runnerFee" 
-                    type="number" 
-                    placeholder="1000"
+                    v-model="formattedRunnerFee" 
+                    type="text" 
+                    placeholder="1,000"
                     class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-12 pr-5 py-4 text-gray-900 font-medium text-lg focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
                   />
                 </div>
@@ -426,6 +426,22 @@ const form = ref({
   dropoffLocation: '',
   estimatedItemCost: 0,
   runnerFee: 0,
+})
+
+const formattedItemCost = computed({
+  get: () => form.value.estimatedItemCost ? form.value.estimatedItemCost.toLocaleString('en-NG') : '',
+  set: (val) => {
+    const num = Number(val.toString().replace(/[^0-9]/g, ''))
+    form.value.estimatedItemCost = num
+  }
+})
+
+const formattedRunnerFee = computed({
+  get: () => form.value.runnerFee ? form.value.runnerFee.toLocaleString('en-NG') : '',
+  set: (val) => {
+    const num = Number(val.toString().replace(/[^0-9]/g, ''))
+    form.value.runnerFee = num
+  }
 })
 
 const marketForm = ref({
