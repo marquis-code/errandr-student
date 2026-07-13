@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white" v-if="vendor">
+  <div class="min-h-screen bg-white" v-if="vendor" :style="vendor.brandColor ? { '--color-parent-primary': vendor.brandColor } : {}">
     <!-- MINI MART LAYOUT -->
     <template v-if="isMiniMart">
       <div class="max-w-2xl mx-auto p-4 md:p-6 pb-8 pt-8">
@@ -381,23 +381,38 @@
             />
           </div>
 
-          <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-            <template v-for="cat in categories" :key="cat">
-              <button
-                v-if="groupedProducts[cat] && groupedProducts[cat].length > 0"
-                @click="scrollToCategory(cat)"
-                class="whitespace-nowrap px-4 py-2 rounded-xl text-xs font-medium transition-all shrink-0 active:scale-95"
-                :class="activeCategory === cat 
-                  ? 'bg-parentPrimary text-white shadow-md shadow-parentPrimary/20 scale-[1.02]' 
-                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900'"
-              >
-                {{ toTitleCase(cat) }}
-                <span 
-                  class="ml-1 text-[10px] px-1.5 py-0.5 rounded-md"
-                  :class="activeCategory === cat ? 'bg-white/20' : 'bg-gray-100 text-gray-400'"
-                >{{ groupedProducts[cat].length }}</span>
-              </button>
-            </template>
+          <!-- Category Dropdown -->
+          <div class="relative max-w-md w-full z-40" ref="menuCatDropdownRef">
+            <button 
+              @click="showMenuCatDropdown = !showMenuCatDropdown"
+              class="w-full flex items-center justify-between px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:ring-1 focus:ring-parentPrimary transition-all"
+            >
+              <div class="flex items-center gap-2">
+                <Filter class="w-4 h-4 text-gray-500" />
+                <span>{{ activeCategory ? toTitleCase(activeCategory) : 'All Categories' }}</span>
+              </div>
+              <ChevronDown class="w-4 h-4 text-gray-500 transition-transform" :class="{ 'rotate-180': showMenuCatDropdown }" />
+            </button>
+
+            <!-- Dropdown Menu -->
+            <Transition name="fade-up">
+              <div v-if="showMenuCatDropdown" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden max-h-[300px] overflow-y-auto">
+                <template v-for="cat in categories" :key="cat">
+                  <button
+                    v-if="groupedProducts[cat] && groupedProducts[cat].length > 0"
+                    @click="scrollToCategory(cat); showMenuCatDropdown = false"
+                    class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-between"
+                    :class="activeCategory === cat ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                  >
+                    <span>{{ toTitleCase(cat) }}</span>
+                    <span 
+                      class="text-[10px] px-1.5 py-0.5 rounded-md"
+                      :class="activeCategory === cat ? 'bg-parentPrimary/20 text-parentPrimary' : 'bg-gray-100 text-gray-400'"
+                    >{{ groupedProducts[cat].length }}</span>
+                  </button>
+                </template>
+              </div>
+            </Transition>
           </div>
         </div>
       </div>
@@ -407,6 +422,13 @@
       <!-- ============================================ -->
       <div class="max-w-[1400px] mx-auto px-4 md:px-6 mt-6">
         
+        <!-- LOADING SPINNER -->
+        <div v-if="menuLoading" class="flex flex-col items-center justify-center py-24 min-h-[300px]">
+          <div class="w-12 h-12 border-4 border-parentPrimary/20 border-t-parentPrimary rounded-full animate-spin mb-4"></div>
+          <p class="text-sm font-medium text-gray-500">Loading menu...</p>
+        </div>
+        
+        <template v-else>
         <!-- TOP PICKS FOR MINI-MART -->
         <div v-if="isMiniMart && topPicks.length > 0" class="mb-10">
           <div class="flex items-center gap-3 mb-5">
@@ -806,6 +828,7 @@
             </div>
           </aside>
         </div>
+        </template>
       </div>
     </div>
     </template>
@@ -1540,6 +1563,7 @@ const isGroupOrderActiveForThisVendor = computed(() => {
 const products = ref<any[]>([]);
 const topPicks = ref<any[]>([]);
 const packs = ref<any[]>([]);
+const menuLoading = ref(true);
 const expandedCategories = ref<Record<string, boolean>>({});
 const showFullStore = ref(true);
 const anythingElseNote = ref('');
@@ -1585,6 +1609,12 @@ const openBookingModal = (service: any) => {
 const categories = computed(() => Object.keys(groupedProducts.value));
 const activeCategory = ref('');
 const isFavorited = ref(false);
+
+const showMenuCatDropdown = ref(false);
+const menuCatDropdownRef = ref(null);
+onClickOutside(menuCatDropdownRef, () => {
+  showMenuCatDropdown.value = false;
+});
 const activeBatch = computed(() => {
   if (!vendor.value?.batchSchedule) return null;
   return vendor.value.batchSchedule.find((b: any) => b.isActive && new Date(b.deadline) > new Date());
@@ -2081,6 +2111,7 @@ const handleScroll = () => {
 
 onMounted(async () => {
   cart.initCart();
+  menuLoading.value = true;
   try {
     const paramId = route.params.id as string;
     let productsRes, topPicksRes, packsRes;
@@ -2095,7 +2126,6 @@ onMounted(async () => {
     products.value = productsRes.data || [];
     topPicks.value = topPicksRes.data || [];
     packs.value = packsRes?.data || [];
-    
     const uniqueCats = [...new Set(products.value.map((p: any) => {
       if (typeof p.category === 'object' && p.category !== null) return p.category.name;
       return p.category;
@@ -2146,6 +2176,8 @@ onMounted(async () => {
     ];
     // categories are now computed dynamically
     activeCategory.value = 'Main Dishes';
+  } finally {
+    menuLoading.value = false;
   }
 });
 

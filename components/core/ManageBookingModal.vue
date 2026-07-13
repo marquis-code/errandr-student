@@ -90,7 +90,7 @@
                       <button
                         type="submit"
                         :disabled="loading"
-                        class="w-full mt-4 bg-[#5b52e6] hover:bg-[#4b43c6] text-white py-3.5 rounded-xl font-medium transition-colors flex items-center justify-center shadow-md shadow-indigo-200"
+                        class="w-full mt-4 bg-parentPrimary hover:bg-parentPrimary/90 text-white py-3.5 rounded-xl font-medium transition-colors flex items-center justify-center shadow-md shadow-parentPrimary/20"
                       >
                         <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
                         <span v-else>Login</span>

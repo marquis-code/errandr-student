@@ -16,7 +16,7 @@
         </div>
         
         <!-- Search & Filter buttons -->
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
           <div class="relative group z-20 w-full md:w-64">
             <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-parentPrimary transition-colors" />
             <input
@@ -26,12 +26,50 @@
               class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none shadow-sm placeholder:text-gray-400"
             />
           </div>
+
+          <!-- Category Dropdown -->
+          <div class="relative z-30" ref="categoryDropdownRef">
+            <button 
+              @click="showCategoryDropdown = !showCategoryDropdown"
+              class="flex items-center gap-2 px-4 py-2.5 border border-gray-100 rounded-xl text-xs font-medium transition-all shadow-sm shrink-0 active:scale-95 bg-white"
+              :class="globalFilter ? 'text-parentPrimary border-parentPrimary/30' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <span v-if="globalFilter">{{ globalFiltersList.find(f => f.keyword === globalFilter)?.icon || '📌' }}</span>
+              <Filter v-else class="w-3.5 h-3.5" />
+              <span class="truncate max-w-[100px]">{{ globalFilter ? (globalFiltersList.find(f => f.keyword === globalFilter)?.label || globalFilter) : 'Category' }}</span>
+              <ChevronDown class="w-3 h-3 ml-1 transition-transform" :class="{ 'rotate-180': showCategoryDropdown }" />
+            </button>
+
+            <!-- Dropdown Menu -->
+            <Transition name="fade-up">
+              <div v-if="showCategoryDropdown" class="absolute top-full left-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden max-h-[300px] overflow-y-auto">
+                <button 
+                  @click="setFilter(''); showCategoryDropdown = false; selectedCategory = 'all'"
+                  class="w-full text-left px-4 py-3 text-xs font-bold hover:bg-gray-50 transition-colors flex items-center gap-3"
+                  :class="!globalFilter ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-600'"
+                >
+                  <Filter class="w-3.5 h-3.5" />
+                  <span>All Categories</span>
+                </button>
+                <button 
+                  v-for="filter in globalFiltersList" 
+                  :key="filter.keyword"
+                  @click="setFilter(filter.keyword); showCategoryDropdown = false; selectedCategory = 'all'"
+                  class="w-full text-left px-4 py-3 text-xs font-bold hover:bg-gray-50 transition-colors flex items-center gap-3"
+                  :class="globalFilter === filter.keyword ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-600'"
+                >
+                  <span class="text-sm leading-none">{{ filter.icon }}</span>
+                  <span>{{ filter.label }}</span>
+                </button>
+              </div>
+            </Transition>
+          </div>
           
           <button 
             @click="showMobileFilters = true" 
             class="flex items-center gap-2 px-4 py-2.5 border border-gray-100 rounded-xl text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm shrink-0 active:scale-95"
           >
-            <Filter class="w-3.5 h-3.5" /> Filters
+            <SlidersHorizontal class="w-3.5 h-3.5" /> Filters
           </button>
           
           <button 
@@ -42,20 +80,6 @@
             Reset
           </button>
         </div>
-      </div>
-
-      <!-- Global Filters Bar -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-4 no-scrollbar scroll-smooth mb-8 border-b border-gray-50 snap-x">
-        <button 
-          v-for="filter in globalFiltersList" 
-          :key="filter.keyword" 
-          @click="setFilter(filter.keyword); selectedCategory = 'all'"
-          class="snap-start shrink-0 px-4 py-2.5 rounded-xl border text-xs font-medium transition-all flex items-center gap-2 active:scale-95"
-          :class="globalFilter === filter.keyword ? 'border-parentPrimary bg-parentPrimary/10 text-parentPrimary shadow-sm shadow-parentPrimary/10' : 'bg-white border-gray-100 hover:border-parentPrimary/30 text-gray-600 hover:bg-gray-50'"
-        >
-          <span class="text-sm shrink-0">{{ filter.icon }}</span>
-          <span>{{ filter.label }}</span>
-        </button>
       </div>
 
       <!-- Loading State -->
@@ -200,7 +224,7 @@
             🔍 "{{ searchQuery }}"
           </span>
           <span v-if="selectedCategory !== 'all'" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-xs font-bold text-gray-600">
-            {{ allCategories.find(c => c.key === selectedCategory)?.icon }} {{ allCategories.find(c => c.key === selectedCategory)?.label }}
+            📌 <span class="capitalize">{{ selectedCategory }}</span>
           </span>
           <span v-if="showOnlyOffers" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-xs font-bold text-gray-600">
             🏷️ Offers only
@@ -348,7 +372,8 @@
 
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useHead } from '#imports';
-import { Search, Tag, Clock, Star, Heart, Filter, X, Share2, Bell } from 'lucide-vue-next';
+import { Search, Tag, Clock, Star, Heart, Filter, X, Share2, Bell, SlidersHorizontal, ChevronDown } from 'lucide-vue-next';
+import { onClickOutside } from '@vueuse/core';
 import VendorNotifyModal from '@/components/vendors/VendorNotifyModal.vue';
 import { useFavorites } from '@/composables/modules/favorites';
 import UiSelectInput from '@/components/ui/SelectInput.vue';
@@ -374,6 +399,13 @@ const maxDeliveryFee = ref(1000);
 const minRating = ref('0');
 const sortBy = ref('popularity');
 const { favoriteVendorIds, fetchFavorites, toggleFavorite, isVendorFavorited } = useFavorites();
+
+const showCategoryDropdown = ref(false);
+const categoryDropdownRef = ref(null);
+
+onClickOutside(categoryDropdownRef, () => {
+  showCategoryDropdown.value = false;
+});
 
 watch(globalFilter, (newVal) => {
   searchQuery.value = newVal;
@@ -417,22 +449,7 @@ const handleShareVendor = (vendor: any) => {
   isShareModalOpen.value = true;
 };
 
-const allCategories = [
-  { key: 'all', label: 'All', icon: '🏪' },
-  { key: 'favorites', label: 'Favorites', icon: '❤️' },
-  { key: 'restaurant', label: 'Restaurants', icon: '🍽️' },
-  { key: 'eatery', label: 'Local Food', icon: '🍛' },
-  { key: 'snacks', label: 'Snacks', icon: '🍿' },
-  { key: 'drinks', label: 'Drinks', icon: '🥤' },
-  { key: 'bakery', label: 'Bakery', icon: '🍰' },
-  { key: 'groceries', label: 'Groceries', icon: '🛒' },
-  { key: 'pharmacy', label: 'Pharmacy', icon: '💊' },
-  { key: 'stationery', label: 'Stationery', icon: '📚' },
-  { key: 'chinese', label: 'Chinese', icon: '🥡' },
-  { key: 'indian', label: 'Indian', icon: '🥘' },
-  { key: 'pizza', label: 'Pizza', icon: '🍕' },
-  { key: 'sushi', label: 'Sushi', icon: '🍣' },
-];
+
 
 const hasActiveFilters = computed(() => {
   return searchQuery.value !== '' ||

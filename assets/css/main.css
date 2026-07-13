@@ -16,7 +16,7 @@
 html,
 body {
   font-family: 'Onest', sans-serif;
-  @apply bg-gray-50 text-gray-900 antialiased selection:bg-parentPrimary/10 selection:text-parentPrimary;
+  @apply bg-gray-50 text-gray-900 antialiased selection:bg-parentPrimary selection:text-white;
 }
 
 * {
@@ -124,11 +124,11 @@ input[type=number] {
 }
 
 .custom-input {
-  @apply w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.25rem] text-sm font-bold tracking-tight outline-none focus:bg-white focus:border-parentPrimary/30 focus:ring-4 focus:ring-parentPrimary/5 transition-all placeholder:text-gray-300;
+  @apply w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.25rem] text-sm font-bold tracking-tight outline-none focus:bg-white focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary transition-all placeholder:text-gray-300;
 }
 
 .custom-checkbox {
-  @apply appearance-none w-6 h-6 border border-gray-200 rounded-lg bg-white cursor-pointer relative transition-all checked:bg-parentPrimary checked:border-parentPrimary hover:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10;
+  @apply appearance-none w-6 h-6 border border-gray-200 rounded-lg bg-white cursor-pointer relative transition-all checked:bg-parentPrimary checked:border-parentPrimary hover:border-parentPrimary focus:ring-2 focus:ring-parentPrimary;
 }
 
 .custom-checkbox:checked::after {

@@ -87,8 +87,48 @@
                 />
               </div>
 
+              <!-- Category -->
+              <div class="flex-[0.8] flex items-center w-full px-2 py-1 md:py-0 relative" ref="categoryDropdownRef">
+                <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
+                  <Filter class="w-5 h-5" />
+                </div>
+                <div 
+                  @click="showCategoryDropdown = !showCategoryDropdown"
+                  class="w-full bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 px-2 min-w-0 cursor-pointer select-none text-left truncate"
+                >
+                  {{ globalFilter ? globalFiltersList.find(f => f.keyword === globalFilter)?.label || globalFilter : 'Any category' }}
+                </div>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                  <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showCategoryDropdown }" />
+                </div>
+                
+                <!-- Category Dropdown -->
+                <Transition name="fade-up">
+                  <div v-if="showCategoryDropdown" class="absolute top-full left-0 right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden max-h-[300px] overflow-y-auto">
+                    <button 
+                      @click="setFilter(''); showCategoryDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3"
+                      :class="!globalFilter ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      <span class="text-base leading-none">📌</span>
+                      <span>Any category</span>
+                    </button>
+                    <button 
+                      v-for="catFilter in globalFiltersList" 
+                      :key="catFilter.keyword"
+                      @click="setFilter(catFilter.keyword); showCategoryDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3"
+                      :class="globalFilter === catFilter.keyword ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      <span class="text-base leading-none">{{ catFilter.icon }}</span>
+                      <span>{{ catFilter.label }}</span>
+                    </button>
+                  </div>
+                </Transition>
+              </div>
+
               <!-- Location -->
-              <div class="flex-1 flex items-center w-full px-2 py-1 md:py-0 relative" ref="locationDropdownRef">
+              <div class="flex-[0.8] flex items-center w-full px-2 py-1 md:py-0 relative" ref="locationDropdownRef">
                 <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
                   <MapPin class="w-5 h-5" />
                 </div>
@@ -310,31 +350,7 @@
       </div>
     </section>
 
-    <!-- Horizontal Scrollable Categories Filter (Sticky Navigation) -->
-    <div class="sticky top-16 md:top-20 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
-      <section class="max-w-7xl mx-auto pl-2 sm:px-6 lg:px-8 py-3">
-        <div class="flex overflow-x-auto hide-scrollbar gap-2 snap-x pr-2 sm:pr-0 items-center">
-          <button 
-            @click="setFilter('')" 
-            class="flex items-center gap-2 px-4 py-2 min-w-max rounded-full border snap-start transition-all"
-            :class="[!globalFilter ? 'border-parentPrimary bg-parentPrimary/10 text-parentPrimary shadow-sm shadow-parentPrimary/10' : 'bg-white border-gray-200 hover:border-gray-300 text-gray-600 hover:bg-gray-50']"
-          >
-            <Filter class="w-3.5 h-3.5" />
-            <span class="text-xs font-bold tracking-tight">All</span>
-          </button>
-          <button 
-            v-for="catFilter in globalFiltersList" 
-            :key="catFilter.keyword"
-            @click="setFilter(catFilter.keyword)" 
-            class="flex items-center gap-2 px-4 py-2 min-w-max rounded-full border snap-start transition-all"
-            :class="[globalFilter === catFilter.keyword ? 'border-parentPrimary bg-parentPrimary/10 text-parentPrimary shadow-sm shadow-parentPrimary/10' : 'bg-white border-gray-200 hover:border-gray-300 text-gray-600 hover:bg-gray-50']"
-          >
-            <span class="text-sm leading-none">{{ catFilter.icon }}</span>
-            <span class="text-xs font-bold tracking-tight">{{ catFilter.label }}</span>
-          </button>
-        </div>
-      </section>
-    </div>
+
 
 
 
@@ -732,12 +748,19 @@ const timeDropdownRef = ref(null)
 const showLocationDropdown = ref(false)
 const locationDropdownRef = ref(null)
 
+const showCategoryDropdown = ref(false)
+const categoryDropdownRef = ref(null)
+
 onClickOutside(timeDropdownRef, () => {
   showTimeDropdown.value = false
 })
 
 onClickOutside(locationDropdownRef, () => {
   showLocationDropdown.value = false
+})
+
+onClickOutside(categoryDropdownRef, () => {
+  showCategoryDropdown.value = false
 })
 
 
