@@ -112,6 +112,47 @@
         <span class="font-medium text-gray-500">Estimated Item Cost</span>
         <span class="font-bold text-gray-900">₦{{ (order.customDetails?.estimatedItemCost || 0).toLocaleString() }}</span>
       </div>
+
+      <!-- Reconciliation Status / Approval -->
+      <div v-if="order.reconciliationStatus && order.reconciliationStatus !== 'not_applicable'" class="mt-4 pt-4 border-t border-gray-200">
+        <div v-if="order.reconciliationStatus === 'pending'" class="text-xs font-medium text-amber-600 bg-amber-50 p-3 rounded-xl border border-amber-100 flex items-center gap-2">
+          <Clock class="w-4 h-4" /> Rider will submit actual item cost after purchase.
+        </div>
+        
+        <div v-else-if="order.reconciliationStatus === 'submitted'" class="bg-blue-50 p-4 rounded-xl border border-blue-100 space-y-3">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0">
+              🧾
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-blue-900">Approve Actual Cost</h4>
+              <p class="text-xs text-blue-700 mt-1">The rider reported spending <strong>₦{{ order.actualItemCost?.toLocaleString() }}</strong>.</p>
+              <p v-if="order.refundAmount > 0" class="text-[11px] font-bold text-emerald-600 mt-1">
+                You will be refunded ₦{{ order.refundAmount.toLocaleString() }} to your wallet.
+              </p>
+              <p v-else-if="order.actualItemCost > order.customDetails?.estimatedItemCost" class="text-[11px] font-bold text-blue-600 mt-1">
+                The rider covered the extra ₦{{ (order.actualItemCost - order.customDetails.estimatedItemCost).toLocaleString() }}.
+              </p>
+            </div>
+          </div>
+          <button 
+            @click="approveReconciliation"
+            :disabled="approvingReconciliation"
+            class="w-full py-2.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+          >
+            <Loader2 v-if="approvingReconciliation" class="w-4 h-4 animate-spin" />
+            <span v-else>👍</span>
+            {{ approvingReconciliation ? 'Approving...' : 'Approve & Confirm' }}
+          </button>
+        </div>
+
+        <div v-else-if="order.reconciliationStatus === 'approved'" class="text-xs font-bold text-emerald-700 bg-emerald-50 p-3 rounded-xl border border-emerald-100 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <CheckCircle class="w-4 h-4" /> Actual Cost: ₦{{ order.actualItemCost?.toLocaleString() }}
+          </div>
+          <span v-if="order.refundAmount > 0" class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full">Refunded ₦{{ order.refundAmount.toLocaleString() }}</span>
+        </div>
+      </div>
     </div>
   </div>
   <!-- If packs exist -->
@@ -501,6 +542,36 @@ const hoverRating = ref(0);
 const reviewText = ref('');
 const submittingRating = ref(false);
 const cancelling = ref(false);
+const approvingReconciliation = ref(false);
+
+const approveReconciliation = async () => {
+  approvingReconciliation.value = true;
+  try {
+    const res = await api.put(`/orders/${order.value._id}/reconcile/approve`);
+    if (res && (res as any).type !== 'ERROR') {
+      order.value = (res as any).data;
+      showToast({
+        title: 'Approved!',
+        message: 'Reconciliation approved successfully.',
+        toastType: 'success'
+      });
+    } else {
+      showToast({
+        title: 'Error',
+        message: (res as any)?.data?.message || 'Could not approve reconciliation',
+        toastType: 'error'
+      });
+    }
+  } catch (e: any) {
+    showToast({
+      title: 'Error',
+      message: e?.response?.data?.message || 'Something went wrong',
+      toastType: 'error'
+    });
+  } finally {
+    approvingReconciliation.value = false;
+  }
+};
 
 const cancelOrder = async () => {
   if (!confirm('Are you sure you want to cancel this order? You will receive a full refund to your wallet.')) return;

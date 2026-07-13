@@ -338,6 +338,19 @@
                   <span class="font-extrabold text-gray-900">₦{{ formatMoney(form.runnerFee) }}</span>
                 </div>
 
+                <div v-if="transferFee > 0" class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
+                      <ArrowRight class="w-4 h-4 text-gray-500" />
+                    </div>
+                    <div>
+                      <span class="text-sm font-bold text-gray-600">Transfer Fee</span>
+                      <p class="text-[11px] text-gray-400 font-medium">Paystack bank transfer</p>
+                    </div>
+                  </div>
+                  <span class="font-extrabold text-gray-900">₦{{ transferFee }}</span>
+                </div>
+
                 <div class="flex justify-between items-center border-b border-gray-200 pb-4">
                   <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
@@ -621,8 +634,14 @@ const isStep2Valid = computed(() => {
   return form.value.runnerFee >= 200 // Minimum 200 NGN runner fee
 })
 
+const transferFee = computed(() => {
+  const itemCost = form.value.estimatedItemCost || 0
+  if (itemCost <= 0) return 0
+  return itemCost <= 5000 ? 10 : 25
+})
+
 const grandTotal = computed(() => {
-  return (form.value.estimatedItemCost || 0) + form.value.runnerFee + 50
+  return (form.value.estimatedItemCost || 0) + form.value.runnerFee + 50 + transferFee.value
 })
 
 const formatMoney = (amount: number) => {
