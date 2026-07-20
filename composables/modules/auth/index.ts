@@ -10,6 +10,7 @@ export const useAuth = () => {
   const { setUser, setToken, logOut } = useUser();
   const { showToast } = useCustomToast();
   const loading = ref(false);
+  const firebaseLoading = ref(false);
 
   const login = async (payload: any, options: { redirect?: boolean } = { redirect: true }) => {
     const route = useRoute();
@@ -53,7 +54,7 @@ export const useAuth = () => {
   };
 
   const firebaseLogin = async (options: { redirect?: boolean } = { redirect: true }) => {
-    loading.value = true;
+    firebaseLoading.value = true;
     try {
       const config = useRuntimeConfig();
       const firebaseConfig = {
@@ -108,7 +109,7 @@ export const useAuth = () => {
       });
       throw e;
     } finally {
-      loading.value = false;
+      firebaseLoading.value = false;
     }
   };
 
@@ -261,6 +262,7 @@ export const useAuth = () => {
 
   return {
     loading,
+    firebaseLoading,
     login,
     firebaseLogin,
     guestCheckout,
