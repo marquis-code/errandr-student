@@ -38,10 +38,16 @@
             <div 
               v-for="pack in packs" 
               :key="pack._id"
-              class="bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[200px] shrink-0 cursor-pointer hover:bg-gray-100 transition-colors"
+              @click="openProductModal(pack)"
+              class="bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[200px] shrink-0 cursor-pointer hover:bg-gray-100 transition-colors flex flex-col justify-between"
             >
-              <h4 class="font-bold text-gray-900 mb-1 text-[15px]">{{ pack.name }}</h4>
-              <p class="text-xs text-gray-500">{{ pack.description || 'Bundle items' }}</p>
+              <div>
+                <h4 class="font-bold text-gray-900 mb-1 text-[15px]">{{ pack.name }}</h4>
+                <p class="text-xs text-gray-500 mb-2">{{ pack.description || 'Bundle items' }}</p>
+              </div>
+              <div class="text-sm font-bold text-gray-900 mt-auto">
+                ₦{{ (pack.bundlePrice || pack.price || 0).toLocaleString() }}
+              </div>
             </div>
           </div>
         </div>
@@ -58,7 +64,7 @@
             >
               <div class="flex flex-col">
                 <span class="font-bold text-gray-900 text-[15px]">{{ product.name }}</span>
-                <span class="font-bold text-gray-500 text-[15px]">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                <span class="font-bold text-gray-500 text-[15px]">₦{{ (product.discountPrice || product.pricePerPortion || product.price || 0).toLocaleString() }}</span>
               </div>
               
               <div @click.stop class="flex items-center gap-2">
@@ -97,7 +103,7 @@
               >
                 <div class="flex flex-col">
                   <span class="font-bold text-gray-900 text-[15px]">{{ product.name }}</span>
-                  <span class="font-bold text-gray-500 text-[15px]">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                  <span class="font-bold text-gray-500 text-[15px]">₦{{ (product.discountPrice || product.pricePerPortion || product.price || 0).toLocaleString() }}</span>
                 </div>
 
                 <div @click.stop class="flex items-center gap-2">
@@ -203,7 +209,7 @@
         <div class="absolute inset-0 bg-gradient-to-r from-gray-900/30 to-transparent"></div>
         
         <!-- Top Navigation -->
-        <div class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 py-4 md:py-6">
+        <div class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 pt-safe-top pb-4 md:pb-6 mt-4 md:mt-6">
           <button @click="router.back()" class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 text-white hover:bg-white/20 transition-all active:scale-95">
             <ArrowLeft class="w-4 h-4" />
           </button>
@@ -367,9 +373,9 @@
         class="sticky z-30 bg-white/95 backdrop-blur-xl border-b border-gray-50 transition-all duration-300"
         :class="scrolled ? 'top-[57px]' : 'top-0'"
       >
-        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 space-y-4">
+        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-2.5 flex flex-col md:flex-row items-center gap-3">
           <!-- Search Bar -->
-          <div class="relative max-w-md w-full">
+          <div class="relative w-full md:w-1/2 lg:max-w-md">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search class="h-4 w-4 text-gray-400" />
             </div>
@@ -377,42 +383,29 @@
               v-model="searchQuery"
               type="text" 
               :placeholder="`Search ${vendor?.storeName || 'Store'}...`"
-              class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-parentPrimary focus:border-parentPrimary sm:text-sm transition-all"
+              class="block w-full pl-10 pr-3 py-2 border border-gray-100 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-parentPrimary focus:border-parentPrimary sm:text-sm transition-all shadow-sm"
             />
           </div>
 
-          <!-- Category Dropdown -->
-          <div class="relative max-w-md w-full z-40" ref="menuCatDropdownRef">
+          <!-- Category Tabs (Chowdeck Style) -->
+          <div class="flex-1 w-full overflow-x-auto scrollbar-hide flex items-center gap-2 pb-1">
             <button 
-              @click="showMenuCatDropdown = !showMenuCatDropdown"
-              class="w-full flex items-center justify-between px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:ring-1 focus:ring-parentPrimary transition-all"
+              @click="scrollToCategory('')"
+              class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0"
+              :class="!activeCategory ? 'bg-parentPrimary/10 text-parentPrimary font-bold' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
             >
-              <div class="flex items-center gap-2">
-                <Filter class="w-4 h-4 text-gray-500" />
-                <span>{{ activeCategory ? toTitleCase(activeCategory) : 'All Categories' }}</span>
-              </div>
-              <ChevronDown class="w-4 h-4 text-gray-500 transition-transform" :class="{ 'rotate-180': showMenuCatDropdown }" />
+              All
             </button>
-
-            <!-- Dropdown Menu -->
-            <Transition name="fade-up">
-              <div v-if="showMenuCatDropdown" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden max-h-[300px] overflow-y-auto">
-                <template v-for="cat in categories" :key="cat">
-                  <button
-                    v-if="groupedProducts[cat] && groupedProducts[cat].length > 0"
-                    @click="scrollToCategory(cat); showMenuCatDropdown = false"
-                    class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-between"
-                    :class="activeCategory === cat ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
-                  >
-                    <span>{{ toTitleCase(cat) }}</span>
-                    <span 
-                      class="text-[10px] px-1.5 py-0.5 rounded-md"
-                      :class="activeCategory === cat ? 'bg-parentPrimary/20 text-parentPrimary' : 'bg-gray-100 text-gray-400'"
-                    >{{ groupedProducts[cat].length }}</span>
-                  </button>
-                </template>
-              </div>
-            </Transition>
+            <template v-for="cat in categories" :key="cat">
+              <button
+                v-if="groupedProducts[cat] && groupedProducts[cat].length > 0"
+                @click="scrollToCategory(cat)"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0"
+                :class="activeCategory === cat ? 'bg-parentPrimary/10 text-parentPrimary font-bold' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+              >
+                {{ toTitleCase(cat) }}
+              </button>
+            </template>
           </div>
         </div>
       </div>
@@ -447,7 +440,7 @@
                 <img :src="getMediaItems(product)[0]?.url || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
               </div>
               <h3 class="text-sm font-medium text-gray-900 leading-tight truncate mb-1">{{ product.name }}</h3>
-              <p class="text-xs font-bold text-gray-900 mb-2">₦{{ (product.discountPrice || product.price).toLocaleString() }}</p>
+              <p class="text-xs font-bold text-gray-900 mb-2">₦{{ (product.discountPrice || product.pricePerPortion || product.price || 0).toLocaleString() }}</p>
               
               <div v-if="isMiniMart && getProductCount(product._id) > 0" class="absolute bottom-3 right-3 flex items-center gap-1.5 bg-gray-100 rounded-xl px-1 py-1 h-8 shadow-sm">
                 <button @click.stop="removeFromCart(product)" class="w-6 h-6 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-gray-50 active:scale-95 transition-all text-gray-700">
@@ -460,7 +453,7 @@
               </div>
               <button 
                 v-else-if="!isProductOutOfStock(product)"
-                @click.stop="isMiniMart ? quickAddToCart(product) : addToCart(product)"
+                @click.stop="handleListAdd(product)"
                 class="absolute bottom-3 right-3 w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary transition-colors shadow-sm"
               >
                 <Plus class="w-3.5 h-3.5" />
@@ -517,8 +510,8 @@
                     <p class="text-[11px] text-gray-400 font-medium line-clamp-1 mt-0.5 leading-relaxed">{{ product.description || defaultProductDescription }}</p>
                     <div class="flex items-center justify-between mt-2">
                       <div>
-                        <span v-if="product.discountPrice" class="text-[10px] text-gray-300 line-through mr-1">₦{{ product.price.toLocaleString() }}</span>
-                        <span class="text-sm font-medium text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                        <span v-if="product.discountPrice" class="text-[10px] text-gray-300 line-through mr-1">₦{{ (product.pricePerPortion || product.price || 0).toLocaleString() }}</span>
+                        <span class="text-sm font-medium text-gray-900">₦{{ (product.discountPrice || product.pricePerPortion || product.price || 0).toLocaleString() }}</span>
                         <span v-if="product.portionUnit" class="text-[10px] text-gray-500 ml-1">per {{ product.portionUnit }}</span>
                       </div>
                     </div>
@@ -545,7 +538,7 @@
                   </div>
                   <button 
                     v-else
-                    @click.stop="isMiniMart ? quickAddToCart(product) : addToCart(product)"
+                    @click.stop="handleListAdd(product)"
                     class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary active:scale-90 transition-all shadow-md shrink-0"
                   >
                     <Plus class="w-4 h-4" />
@@ -589,9 +582,9 @@
                     
                     <div class="flex items-end justify-between mt-4 pt-3 border-t border-gray-50">
                       <div>
-                        <span v-if="product.discountPrice" class="text-xs text-gray-300 line-through block mb-0.5">₦{{ product.price.toLocaleString() }}</span>
+                        <span v-if="product.discountPrice" class="text-xs text-gray-300 line-through block mb-0.5">₦{{ (product.pricePerPortion || product.price || 0).toLocaleString() }}</span>
                         <div class="flex items-baseline gap-1">
-                          <span class="text-base font-medium text-gray-900">₦{{ (product.discountPrice || product.price).toLocaleString() }}</span>
+                          <span class="text-base font-medium text-gray-900">₦{{ (product.discountPrice || product.pricePerPortion || product.price || 0).toLocaleString() }}</span>
                           <span v-if="product.portionUnit" class="text-[10px] text-gray-500">per {{ product.portionUnit }}</span>
                         </div>
                       </div>
@@ -617,7 +610,7 @@
                       </div>
                       <button 
                         v-else
-                        @click.stop="isMiniMart ? quickAddToCart(product) : addToCart(product)"
+                        @click.stop="handleListAdd(product)"
                         class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-parentPrimary/30 shadow-black/5 shrink-0"
                       >
                         <Plus class="w-4.5 h-4.5" />
@@ -1294,8 +1287,8 @@
                 <h2 class="text-xl font-bold text-gray-900">{{ selectedProduct.name }}</h2>
                 <span class="text-xs text-gray-400 font-medium">{{ selectedProduct.category?.name || selectedProduct.category }}</span>
                 <div class="mt-2">
-                  <span class="text-sm font-bold text-gray-900">₦{{ selectedProduct.price?.toLocaleString() }}</span>
-                  <span class="text-xs text-gray-900 font-bold ml-1">{{ selectedProduct.portionUnit ? `per ${selectedProduct.portionUnit}` : 'per portion' }}</span>
+                  <span class="text-sm font-bold text-gray-900">₦{{ (selectedProduct.discountPrice || selectedProduct.pricePerPortion || selectedProduct.bundlePrice || selectedProduct.price || 0).toLocaleString() }}</span>
+                  <span v-if="selectedProduct.portionUnit || isFoodVendor" class="text-xs text-gray-900 font-bold ml-1">{{ selectedProduct.portionUnit ? `per ${selectedProduct.portionUnit}` : (selectedProduct.bundlePrice ? 'per pack' : 'per portion') }}</span>
                 </div>
               </div>
 
@@ -1309,19 +1302,19 @@
                 <div v-for="mod in selectedProduct.modifiers" :key="mod._id" class="space-y-3">
                   <div class="flex items-center justify-between">
                     <h4 class="text-sm font-bold text-gray-900">{{ mod.name }}</h4>
-                    <span v-if="mod.minSelection > 0" class="text-[10px] font-bold px-2 py-1 bg-amber-50 text-amber-600 rounded-md uppercase tracking-wider">Required</span>
-                    <span v-else-if="mod.maxSelection > 1" class="text-[10px] font-medium text-gray-500">Select up to {{ mod.maxSelection }}</span>
+                    <span v-if="mod.isRequired" class="text-[10px] font-bold px-2 py-1 bg-amber-50 text-amber-600 rounded-md uppercase tracking-wider">Required</span>
+                    <span v-else class="text-[10px] font-medium text-gray-500">Select 1</span>
                   </div>
                   
                   <div class="space-y-2">
-                    <div v-for="item in mod.items" :key="item.name" class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
+                    <div v-for="item in mod.options" :key="item.name" class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
                       <div class="flex flex-col">
                         <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
-                        <span v-if="item.price > 0" class="text-xs text-gray-500">+₦{{ item.price.toLocaleString() }}</span>
+                        <span v-if="(item.priceDelta || item.price) > 0" class="text-xs text-gray-500">+₦{{ (item.priceDelta || item.price).toLocaleString() }}</span>
                       </div>
                       
                       <div class="flex items-center gap-3">
-                        <button v-if="selectedCustomizations[mod._id]?.[item.name]" @click="handleCustomizationChange(mod, item, false)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                        <button v-if="selectedCustomizations[mod._id]?.[item.name]" @click="handleCustomizationChange(mod, item, false, true)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
                           <Minus class="w-4 h-4" />
                         </button>
                         
@@ -1329,7 +1322,7 @@
                           {{ selectedCustomizations[mod._id][item.name].quantity }}
                         </span>
                         
-                        <button @click="handleCustomizationChange(mod, item, true)" class="w-7 h-7 flex items-center justify-center rounded-full bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white transition-colors">
+                        <button @click="handleCustomizationChange(mod, item, true, true)" class="w-7 h-7 flex items-center justify-center rounded-full bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white transition-colors">
                           <Plus class="w-4 h-4" />
                         </button>
                       </div>
@@ -1338,22 +1331,23 @@
                 </div>
 
                 <!-- Add Ons -->
-                <div v-for="addon in selectedProduct.addOns" :key="addon._id" class="space-y-3">
+                <div v-for="addon in selectedProduct.addOnGroupIds" :key="addon._id" class="space-y-3">
                   <div class="flex items-center justify-between">
                     <h4 class="text-sm font-bold text-gray-900">{{ addon.name }}</h4>
-                    <span v-if="addon.minSelection > 0" class="text-[10px] font-bold px-2 py-1 bg-amber-50 text-amber-600 rounded-md uppercase tracking-wider">Required</span>
-                    <span v-else-if="addon.maxSelection > 1" class="text-[10px] font-medium text-gray-500">Select up to {{ addon.maxSelection }}</span>
+                    <span v-if="addon.selectionType === 'single'" class="text-[10px] font-medium text-gray-500">Select 1</span>
+                    <span v-else-if="addon.minSelect > 0" class="text-[10px] font-bold px-2 py-1 bg-amber-50 text-amber-600 rounded-md uppercase tracking-wider">Required</span>
+                    <span v-else-if="addon.maxSelect > 1" class="text-[10px] font-medium text-gray-500">Select up to {{ addon.maxSelect }}</span>
                   </div>
                   
                   <div class="space-y-2">
-                    <div v-for="item in addon.items" :key="item.name" class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
+                    <div v-for="item in addon.options" :key="item.name" class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
                       <div class="flex flex-col">
                         <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
-                        <span v-if="item.price > 0" class="text-xs text-gray-500">+₦{{ item.price.toLocaleString() }}</span>
+                        <span v-if="(item.priceDelta || item.price) > 0" class="text-xs text-gray-500">+₦{{ (item.priceDelta || item.price).toLocaleString() }}</span>
                       </div>
                       
                       <div class="flex items-center gap-3">
-                        <button v-if="selectedCustomizations[addon._id]?.[item.name]" @click="handleCustomizationChange(addon, item, false)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                        <button v-if="selectedCustomizations[addon._id]?.[item.name]" @click="handleCustomizationChange(addon, item, false, false)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
                           <Minus class="w-4 h-4" />
                         </button>
                         
@@ -1361,7 +1355,7 @@
                           {{ selectedCustomizations[addon._id][item.name].quantity }}
                         </span>
                         
-                        <button @click="handleCustomizationChange(addon, item, true)" class="w-7 h-7 flex items-center justify-center rounded-full bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white transition-colors">
+                        <button @click="handleCustomizationChange(addon, item, true, false)" class="w-7 h-7 flex items-center justify-center rounded-full bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white transition-colors">
                           <Plus class="w-4 h-4" />
                         </button>
                       </div>
@@ -1377,7 +1371,7 @@
                   v-model="productNote" 
                   rows="2" 
                   class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-sm focus:outline-none focus:ring-1 focus:ring-parentPrimary focus:bg-white transition-all resize-none placeholder-gray-400"
-                  placeholder="E.g. No onions, extra spicy..."
+                  :placeholder="isFoodVendor ? 'E.g. No onions, extra spicy...' : 'E.g. Specific color, custom message...'"
                 ></textarea>
                 <p class="text-[10px] text-gray-400 mt-1">Special requests are subject to the vendor's approval and may incur extra charges.</p>
               </div>
@@ -1390,7 +1384,7 @@
                     <span v-if="selectedProduct.discountPrice && dynamicPrice === selectedProduct.discountPrice" class="text-sm text-gray-300 line-through">₦{{ selectedProduct.price.toLocaleString() }}</span>
                     <div class="flex items-baseline gap-1">
                       <span class="text-2xl font-medium text-gray-900 tracking-tighter">₦{{ dynamicPrice.toLocaleString() }}</span>
-                      <span v-if="selectedProduct.portionUnit" class="text-xs text-gray-500 font-medium">per {{ selectedProduct.portionUnit }}</span>
+                      <span v-if="selectedProduct.portionUnit || isFoodVendor" class="text-xs text-gray-500 font-medium">{{ selectedProduct.portionUnit ? `per ${selectedProduct.portionUnit}` : 'per portion' }}</span>
                     </div>
                   </div>
                 </div>
@@ -1490,7 +1484,7 @@ import {
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useHead, navigateTo, useRouter } from '#imports';
-import { useNow } from '@vueuse/core';
+import { useNow, onClickOutside } from '@vueuse/core';
 import { useCart } from '@/composables/modules/cart';
 import { useUser } from '@/composables/modules/auth/user';
 import { useGroupOrder } from '@/composables/modules/group-order';
@@ -1641,7 +1635,18 @@ const openProductModal = (product: any) => {
   // Pre-select defaults if any (future enhancement)
 };
 
-const handleCustomizationChange = (group: any, option: any, isAdd: boolean) => {
+const handleListAdd = (product: any) => {
+  const hasOptions = (product.modifiers && product.modifiers.length > 0) || 
+                     (product.addOnGroupIds && product.addOnGroupIds.length > 0);
+  
+  if (hasOptions) {
+    openProductModal(product);
+  } else {
+    quickAddToCart(product);
+  }
+};
+
+const handleCustomizationChange = (group: any, option: any, isAdd: boolean, isModifier: boolean = false) => {
   if (!selectedCustomizations.value[group._id]) {
     selectedCustomizations.value[group._id] = {};
   }
@@ -1651,13 +1656,21 @@ const handleCustomizationChange = (group: any, option: any, isAdd: boolean) => {
   
   if (isAdd) {
     const totalInGroup = Object.values(currentSelections).reduce((sum: number, item: any) => sum + item.quantity, 0);
-    if (totalInGroup >= group.maxSelection) {
-      showToast(`You can only select up to ${group.maxSelection} for ${group.name}`, 'error');
+    const isSingleSelect = isModifier || group.selectionType === 'single';
+    const maxSel = isSingleSelect ? 1 : (group.maxSelect || 99);
+    
+    if (totalInGroup >= maxSel) {
+      if (isSingleSelect) {
+        selectedCustomizations.value[group._id] = {};
+        selectedCustomizations.value[group._id][optionName] = { price: option.priceDelta || option.price || 0, quantity: 1, name: optionName, groupName: group.name };
+        return;
+      }
+      showToast(`You can only select up to ${maxSel} for ${group.name}`, 'error');
       return;
     }
     
     if (!currentSelections[optionName]) {
-      currentSelections[optionName] = { price: option.price, quantity: 1, name: optionName, groupName: group.name };
+      currentSelections[optionName] = { price: option.priceDelta || option.price || 0, quantity: 1, name: optionName, groupName: group.name };
     } else {
       currentSelections[optionName].quantity += 1;
     }
@@ -1673,7 +1686,7 @@ const handleCustomizationChange = (group: any, option: any, isAdd: boolean) => {
 
 const dynamicPrice = computed(() => {
   if (!selectedProduct.value) return 0;
-  let basePrice = selectedProduct.value.discountPrice || selectedProduct.value.price;
+  let basePrice = selectedProduct.value.discountPrice || selectedProduct.value.pricePerPortion || selectedProduct.value.bundlePrice || selectedProduct.value.price || 0;
   let extras = 0;
   Object.values(selectedCustomizations.value).forEach(group => {
     Object.values(group).forEach((item: any) => {
@@ -1689,20 +1702,20 @@ const isProductModalValid = computed(() => {
   // Check required modifiers
   const modifiers = selectedProduct.value.modifiers || [];
   for (const mod of modifiers) {
-    if (mod.minSelection > 0) {
+    if (mod.isRequired) {
       const selected = selectedCustomizations.value[mod._id] || {};
       const totalSelected = Object.values(selected).reduce((sum: number, i: any) => sum + i.quantity, 0);
-      if (totalSelected < mod.minSelection) return false;
+      if (totalSelected < 1) return false;
     }
   }
   
   // Check required add-ons
-  const addOns = selectedProduct.value.addOns || [];
+  const addOns = selectedProduct.value.addOnGroupIds || [];
   for (const addOn of addOns) {
-    if (addOn.minSelection > 0) {
+    if (addOn.minSelect > 0) {
       const selected = selectedCustomizations.value[addOn._id] || {};
       const totalSelected = Object.values(selected).reduce((sum: number, i: any) => sum + i.quantity, 0);
-      if (totalSelected < addOn.minSelection) return false;
+      if (totalSelected < addOn.minSelect) return false;
     }
   }
   
@@ -1884,7 +1897,6 @@ const addToCart = (product: any) => {
     }
     editingCartItem.value = null;
     selectedProduct.value = null;
-    showProductModal.value = false;
     showMobileCartDrawer.value = true;
     return;
   }
@@ -1893,7 +1905,7 @@ const addToCart = (product: any) => {
     productId: product._id,
     vendorId: vendor.value._id,
     name: product.name,
-    price: product.discountPrice || product.price,
+    price: product.discountPrice || product.pricePerPortion || product.bundlePrice || product.price || 0,
     image: getMediaItems(product)[0]?.url || product.image,
     quantity: 1,
     customizations: customItems,
@@ -1905,7 +1917,6 @@ const addToCart = (product: any) => {
   }
   
   selectedProduct.value = null;
-  showProductModal.value = false;
 };
 
 const quickAddToCart = (product: any) => {
@@ -1914,7 +1925,7 @@ const quickAddToCart = (product: any) => {
     productId: product._id,
     vendorId: vendor.value._id,
     name: product.name,
-    price: product.discountPrice || product.price,
+    price: product.discountPrice || product.pricePerPortion || product.bundlePrice || product.price || 0,
     image: getMediaItems(product)[0]?.url || product.image,
     quantity: 1,
     customizations: [],
@@ -1939,7 +1950,7 @@ const editCartItem = (vendorId: string, packId: string, itemIndex: number, item:
       const groupName = c.selected;
       let matchedGroup = null;
       originalProduct.modifiers?.forEach((m: any) => { if (m.name === groupName) matchedGroup = m; });
-      originalProduct.addOns?.forEach((m: any) => { if (m.name === groupName) matchedGroup = m; });
+      originalProduct.addOnGroupIds?.forEach((m: any) => { if (m.name === groupName) matchedGroup = m; });
       
       if (matchedGroup) {
         if (!selectedCustomizations.value[matchedGroup._id]) {
@@ -1956,7 +1967,7 @@ const editCartItem = (vendorId: string, packId: string, itemIndex: number, item:
   
   selectedProduct.value = originalProduct;
   showMobileCartDrawer.value = false;
-  showProductModal.value = true;
+  // Trigger modal visibility via selectedProduct
 };
 
 const { toggleFavorite, fetchFavorites: checkFavs, isFavorited: checkIsFav } = useFavorites();
@@ -2024,6 +2035,10 @@ const duplicatePack = (vendorId: string, pack: any) => {
 
 const scrollToCategory = (cat: string) => {
   activeCategory.value = cat;
+  if (!cat) {
+    window.scrollTo({ top: 350, behavior: 'smooth' });
+    return;
+  }
   const element = document.getElementById(cat.toLowerCase().replace(/\s+/g, '-'));
   if (element) {
     element.scrollIntoView({ behavior: 'smooth', block: 'start' });

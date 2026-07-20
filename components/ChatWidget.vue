@@ -160,19 +160,49 @@
                   :disabled="isGuest && needsGuestInfo"
                 />
               </div>
-              <button class="text-gray-400 hover:text-gray-600 transition-colors p-2" title="Attach file">
+              
+              <!-- Hidden File Input -->
+              <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="handleFileUpload" />
+              <button @click="$refs.fileInput.click()" class="text-gray-400 hover:text-gray-600 transition-colors p-2" title="Attach Image">
                 <Paperclip class="w-5 h-5" />
               </button>
+              
+              <!-- Microphone (VN) -->
+              <button 
+                @mousedown="startRecording" 
+                @mouseup="stopRecording" 
+                @mouseleave="stopRecording"
+                @touchstart.prevent="startRecording"
+                @touchend.prevent="stopRecording"
+                class="text-gray-400 hover:text-red-500 transition-colors p-2 relative" 
+                :class="{'text-red-500 animate-pulse': isRecording}"
+                title="Hold to Record Voice Note"
+              >
+                <Mic class="w-5 h-5" />
+                <span v-if="isRecording" class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+              </button>
+
               <button
-                v-if="newMessage.trim()"
+                v-if="newMessage.trim() || isRecording"
                 @click="handleSend"
-                :disabled="sending || !newMessage.trim() || (isGuest && needsGuestInfo)"
+                :disabled="sending || (!newMessage.trim() && !isRecording) || (isGuest && needsGuestInfo)"
                 class="w-10 h-10 rounded-full bg-[#FF5C1A] hover:bg-[#E54D12] text-white flex items-center justify-center disabled:opacity-50 transition-all shadow-md shadow-orange-500/20 animate-in zoom-in"
               >
                 <ArrowRight class="w-5 h-5" />
               </button>
             </div>
           </div>
+        </div>
+      </Transition>
+
+      <!-- Friendly Tooltip -->
+      <Transition name="fade">
+        <div v-if="!isOpen && showTooltip" class="absolute bottom-[60px] right-0 mb-2 w-64 p-3 bg-white text-gray-800 text-sm font-medium rounded-2xl shadow-xl border border-gray-100 flex items-start gap-3 pointer-events-none origin-bottom-right z-50">
+          <div class="absolute -bottom-2 right-4 w-4 h-4 bg-white border-b border-r border-gray-100 transform rotate-45"></div>
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+            <Smile class="w-5 h-5 text-[#FF5C1A]" />
+          </div>
+          <p class="leading-tight">We are here to help and answer all your questions from live chat!</p>
         </div>
       </Transition>
 
@@ -192,8 +222,9 @@
 </template>
 
 <script setup lang="ts">
-import { X, ArrowRight, MessageSquare, Smile, ChevronDown, Lock, Paperclip } from 'lucide-vue-next'
+import { X, ArrowRight, MessageSquare, Smile, ChevronDown, Lock, Paperclip, Mic } from 'lucide-vue-next'
 import { onMounted, ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
 import { useUser } from '@/composables/modules/auth/user'
 import { useChat } from '@/composables/modules/chat/useChat'
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket'
@@ -204,13 +235,72 @@ function isMobile() {
 }
 
 const { user, isLoggedIn } = useUser()
+const route = useRoute()
 
 const isOpen = ref(false)
+const showTooltip = ref(false)
 const showDetails = ref(true) // Auto open details
 const newMessage = ref('')
 const messageContainer = ref<HTMLDivElement | null>(null)
 const typingTimeout = ref<number | null>(null)
 const isTyping = ref(false)
+
+// File Upload & VN Refs
+const fileInput = ref<HTMLInputElement | null>(null)
+const isRecording = ref(false)
+let mediaRecorder: MediaRecorder | null = null
+let audioChunks: Blob[] = []
+
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  // Since we are mocking the file upload to standard backend behavior:
+  // In a real scenario, we'd upload `file` via core_api.uploadFile()
+  // and then send the returned URL as a chat message.
+  // For now, we simulate a successful local object URL so the user can see it works visually.
+  const tempUrl = URL.createObjectURL(file);
+  sendMessage(`[Image Attached] ${tempUrl}`);
+  
+  if (fileInput.value) {
+    fileInput.value.value = '';
+  }
+};
+
+const startRecording = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) audioChunks.push(event.data);
+    };
+    
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      const tempUrl = URL.createObjectURL(audioBlob);
+      // Simulate sending VN link
+      sendMessage(`[Voice Note Attached] ${tempUrl}`);
+      // Stop mic tracks to save battery
+      stream.getTracks().forEach(track => track.stop());
+    };
+    
+    mediaRecorder.start();
+    isRecording.value = true;
+  } catch (err) {
+    console.error('Microphone access denied or not supported', err);
+    alert('Microphone access is required to send voice notes.');
+  }
+};
+
+const stopRecording = () => {
+  if (mediaRecorder && isRecording.value) {
+    mediaRecorder.stop();
+    isRecording.value = false;
+  }
+};
 
 const {
   room,
@@ -238,7 +328,15 @@ watch(isLoggedIn, (logged) => {
   }
 }, { immediate: true })
 
-const showChatWidget = computed(() => true)
+const showChatWidget = computed(() => {
+  if (isLoggedIn.value) {
+    const rName = String(route.name || '')
+    if (rName.includes('dashboard') || rName.includes('orders') || rName.includes('order-id')) {
+      return false
+    }
+  }
+  return true
+})
 
 const needsGuestInfo = computed(() => !guestProfile.value.name || !guestProfile.value.email)
 
@@ -346,9 +444,22 @@ watch(messages, async () => {
   }
 }, { deep: true })
 
-onMounted(() => {
+onMounted(async () => {
+  // Show tooltip after 2 seconds
+  setTimeout(() => {
+    showTooltip.value = true;
+  }, 2000);
+
+  // Hide tooltip after 10 seconds
+  setTimeout(() => {
+    showTooltip.value = false;
+  }, 10000);
+
+  if (room.value?._id) {
+    await attachSocketListeners()
+  }
+  
   connectSocket()
-  attachSocketListeners()
   if (socket.value) {
     socket.value.on('chat:user-typing', (payload: { isTyping: boolean; roomId?: string }) => {
       if (room.value?._id && payload?.roomId && payload.roomId !== room.value._id) return

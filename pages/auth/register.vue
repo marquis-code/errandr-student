@@ -22,7 +22,7 @@
         <UiAnimatedInput v-model="form.matricNumber" type="text" label="matric number" placeholder="" />
         <UiAnimatedInput v-model="form.password" type="password" label="password" required minlength="6" placeholder="" />
         <BirthdayPicker v-model="form.dateOfBirth" />
-        <UiAnimatedInput v-model="form.referredBy" type="text" label="referral code (optional)" placeholder="Who referred you?" @input="formatReferralCode" />
+        <UiAnimatedInput v-model="form.referredBy" type="text" label="referral code (optional)" @input="formatReferralCode" />
 
         <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
 

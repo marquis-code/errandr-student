@@ -40,4 +40,8 @@ export const auth_api = {
   verifyResetOtp: (payload: { email: string; otp: string }) => {
     return GATEWAY_ENDPOINT.post('/auth/verify-reset-otp', payload);
   },
+
+  changePassword: (payload: any) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.post('/auth/change-password', payload);
+  },
 };

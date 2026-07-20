@@ -12,7 +12,7 @@
             Hungry? <br/> <span class="text-parentPrimary">Let's fix that.</span>
           </h2>
         </div>
-        <NuxtLink to="/auth/register" class="inline-flex flex justify-center items-center items-center gap-4 px-10 py-3 bg-parentPrimary text-white rounded-full font-medium text-lg shadow-[0_20px_50px_rgba(255,92,26,0.3)] hover:scale-105 transition-transform group">
+        <NuxtLink to="/vendors" class="inline-flex flex justify-center items-center items-center gap-4 px-10 py-3 bg-parentPrimary text-white rounded-full font-medium text-lg shadow-[0_20px_50px_rgba(255,92,26,0.3)] hover:scale-105 transition-transform group">
           Get Started
           <ArrowUpRight class="w-6 h-6 group-hover:rotate-45 transition-transform duration-300" />
         </NuxtLink>

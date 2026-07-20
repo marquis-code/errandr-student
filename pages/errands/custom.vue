@@ -44,16 +44,16 @@
       <!-- Mobile Header -->
       <div class="lg:hidden p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 sticky top-0">
         <NuxtLink to="/" class="inline-block">
-           <img src="@/assets/img/erranders.png" alt="Errander Logo" class="h-6" />
+           <img src="@/assets/img/logo-light.png" alt="Errander Logo" class="h-10" />
         </NuxtLink>
-        <button @click="$router.back()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors">
+        <button @click="$router.back()" class="w-10 h-10 rounded-full bg-gray-25 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors">
           <X class="w-5 h-5" />
         </button>
       </div>
 
       <!-- Close Button Desktop -->
       <div class="hidden lg:flex absolute top-8 right-8 z-10">
-        <button @click="$router.back()" class="w-12 h-12 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:scale-105 transition-all shadow-sm">
+        <button @click="$router.back()" class="w-12 h-12 rounded-full bg-gray-25 border border-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:scale-105 transition-all shadow-sm">
           <X class="w-5 h-5" />
         </button>
       </div>
@@ -101,7 +101,7 @@
               <template v-if="errandType === 'custom'">
                 <!-- Templates -->
                 <div class="flex flex-wrap gap-2">
-                  <button v-for="tmpl in errandTemplates" :key="tmpl" @click="applyTemplate(tmpl)" class="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-100 text-gray-600 text-xs font-bold rounded-full transition-colors flex items-center gap-1.5">
+                  <button v-for="tmpl in errandTemplates" :key="tmpl" @click="applyTemplate(tmpl)" class="px-3 py-1.5 bg-gray-25 hover:bg-gray-100 border border-gray-100 text-gray-600 text-xs font-bold rounded-full transition-colors flex items-center gap-1.5">
                     <ListChecks class="w-3 h-3" /> {{ tmpl }}
                   </button>
                 </div>
@@ -113,7 +113,7 @@
                       v-model="form.description" 
                       rows="4" 
                       placeholder="e.g. Go to Yaba market and buy me 3 yards of black velvet material."
-                      class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
+                      class="w-full bg-gray-25 border border-gray-100 rounded-2xl px-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
                     ></textarea>
                     
                     <div class="absolute bottom-4 right-4 flex flex-col items-end gap-2">
@@ -161,7 +161,7 @@
                       v-model="form.pickupLocation" 
                       type="text" 
                       placeholder="e.g. Unilag Library (Leave blank if not applicable)"
-                      class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                      class="w-full bg-gray-25 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
                     />
                   </div>
                 </div>
@@ -169,7 +169,7 @@
 
               <template v-else>
                 <!-- Market Run Fields -->
-                <div class="space-y-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
+                <div class="space-y-4 bg-gray-25/50 p-4 rounded-2xl border border-gray-100">
                   <div class="space-y-2 relative group/field">
                     <label class="text-sm font-bold text-gray-700">Which Market?</label>
                     <div class="relative">
@@ -212,7 +212,7 @@
                     type="text"
                     list="locations-list"
                     placeholder="e.g. Moremi Hall or Yabatech Art Complex"
-                    class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none"
+                    class="w-full bg-gray-25 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none"
                   />
                   <datalist id="locations-list">
                     <option v-for="loc in predefinedLocations" :key="loc" :value="loc"></option>
@@ -260,35 +260,36 @@
                     v-model="formattedItemCost" 
                     type="text" 
                     placeholder="0"
-                    class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-12 pr-5 py-4 text-gray-900 font-medium text-lg focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                    class="w-full bg-gray-25 border border-gray-100 rounded-2xl pl-12 pr-5 py-4 text-gray-900 font-medium text-lg focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
                   />
                 </div>
               </div>
 
               <div class="space-y-2 pt-2">
                 <label class="text-sm font-bold text-gray-700">Runner Fee (Labor)</label>
-                <p class="text-xs text-gray-500 font-medium mb-2">How much are you offering the rider for their effort?</p>
+                <p class="text-xs text-gray-500 font-medium mb-2">How much are you offering the rider for their effort? (Minimum ₦200)</p>
                 <div class="relative group/field">
                   <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within/field:text-parentPrimary transition-colors">₦</span>
                   <input 
                     v-model="formattedRunnerFee" 
                     type="text" 
                     placeholder="1,000"
-                    class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-12 pr-5 py-4 text-gray-900 font-medium text-lg focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                    class="w-full bg-gray-25 border border-gray-100 rounded-2xl pl-12 pr-5 py-4 text-gray-900 font-medium text-lg focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
                   />
                 </div>
+                <p v-if="form.runnerFee > 0 && form.runnerFee < 200" class="text-xs text-red-500 font-bold mt-1">Minimum runner fee is ₦200</p>
                 <!-- Quick Price Pills -->
                 <div class="flex flex-wrap gap-2 mt-3">
-                  <button @click="form.runnerFee = 500" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦500</button>
-                  <button @click="form.runnerFee = 1000" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦1,000</button>
-                  <button @click="form.runnerFee = 2000" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦2,000</button>
-                  <button @click="form.runnerFee = 3500" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦3,500</button>
+                  <button @click="form.runnerFee = 500" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-25 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦500</button>
+                  <button @click="form.runnerFee = 1000" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-25 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦1,000</button>
+                  <button @click="form.runnerFee = 2000" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-25 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦2,000</button>
+                  <button @click="form.runnerFee = 3500" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-25 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦3,500</button>
                 </div>
               </div>
             </div>
 
             <div class="pt-6 flex gap-3">
-              <button @click="step = 1" class="px-6 py-4 rounded-2xl font-bold text-gray-600 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100 shrink-0">
+              <button @click="step = 1" class="px-6 py-4 rounded-2xl font-bold text-gray-600 bg-gray-25 hover:bg-gray-100 transition-colors border border-gray-100 shrink-0">
                 Back
               </button>
               <button 
@@ -309,7 +310,7 @@
               <p class="text-gray-500 font-medium text-sm">Your card will be charged once. The item cost goes straight to the rider's bank.</p>
             </div>
             
-            <div class="bg-gray-50 rounded-[2rem] p-6 sm:p-8 border border-gray-100">
+            <div class="bg-gray-25 rounded-[2rem] p-6 sm:p-8 border border-gray-100">
               
               <div class="space-y-4">
                 <div v-if="form.estimatedItemCost > 0" class="flex justify-between items-center">
@@ -391,7 +392,7 @@
               <button 
                 @click="submitErrand" 
                 :disabled="isSubmitting"
-                class="w-full bg-parentPrimary text-white font-bold py-5 px-8 rounded-2xl hover:bg-orange-600 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-3 shadow-xl shadow-parentPrimary/20 hover:shadow-2xl hover:shadow-parentPrimary/30"
+                class="w-full bg-parentPrimary text-sm text-white font-bold py-3 px-8 rounded-2xl hover:bg-orange-600 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-3 shadow-xl shadow-parentPrimary/20 hover:shadow-2xl hover:shadow-parentPrimary/30"
               >
                 <Loader2 v-if="isSubmitting" class="animate-spin w-5 h-5 text-white" />
                 <CreditCard v-else class="w-5 h-5" />
@@ -451,18 +452,32 @@ const form = ref({
 })
 
 const formattedItemCost = computed({
-  get: () => form.value.estimatedItemCost ? form.value.estimatedItemCost.toLocaleString('en-NG') : '',
+  get: () => {
+    if (!form.value.estimatedItemCost) return ''
+    return form.value.estimatedItemCost.toLocaleString('en-NG')
+  },
   set: (val) => {
-    const num = Number(val.toString().replace(/[^0-9]/g, ''))
-    form.value.estimatedItemCost = num
+    if (!val) {
+      form.value.estimatedItemCost = 0
+      return
+    }
+    const numStr = val.toString().replace(/[^0-9]/g, '')
+    form.value.estimatedItemCost = numStr ? parseInt(numStr, 10) : 0
   }
 })
 
 const formattedRunnerFee = computed({
-  get: () => form.value.runnerFee ? form.value.runnerFee.toLocaleString('en-NG') : '',
+  get: () => {
+    if (!form.value.runnerFee) return ''
+    return form.value.runnerFee.toLocaleString('en-NG')
+  },
   set: (val) => {
-    const num = Number(val.toString().replace(/[^0-9]/g, ''))
-    form.value.runnerFee = num
+    if (!val) {
+      form.value.runnerFee = 0
+      return
+    }
+    const numStr = val.toString().replace(/[^0-9]/g, '')
+    form.value.runnerFee = numStr ? parseInt(numStr, 10) : 0
   }
 })
 

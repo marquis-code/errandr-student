@@ -1,12 +1,14 @@
 <template>
   <div>
+    <VitePwaManifest />
     <UiToast class="z-[9999999]" />
     <UiGlobalLoader />
     <NuxtLayout class="z-10">
       <NuxtPage class="z-10" />
     </NuxtLayout>
     
-
+    <CoreGlobalAdModal />
+    <ChatWidget />
     
     <!-- Background Audio - Bottom Left -->
     <!-- <ClientOnly>
@@ -25,13 +27,31 @@ body {
 
 <script setup lang="ts">
 // Global app configuration
+import { onMounted, watch } from 'vue'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useCart } from '@/composables/modules/cart'
+import { useStudentNotifications } from '@/composables/useStudentNotifications'
+import { useUser } from '@/composables/modules/auth/user'
 
 const { initCart } = useCart()
+const { isLoggedIn } = useUser()
+const { requestPermissionAndRegister, listenForNotifications } = useStudentNotifications()
 
 initCart()
 useRealtimeNotifications()
+
+onMounted(() => {
+  listenForNotifications()
+  if (isLoggedIn.value) {
+    requestPermissionAndRegister()
+  }
+})
+
+watch(isLoggedIn, (newVal) => {
+  if (newVal) {
+    requestPermissionAndRegister()
+  }
+})
 
 useHead({
   title: 'Errandr - Student Portal',
@@ -48,8 +68,7 @@ useHead({
     { rel: 'shortcut icon', type: 'image/x-icon', href: '/favicon.ico' },
     { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
     { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/favicon-96x96.png' },
-    { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-    { rel: 'manifest', href: '/site.webmanifest' }
+    { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
   ]
 })
 

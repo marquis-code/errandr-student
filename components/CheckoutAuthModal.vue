@@ -54,6 +54,25 @@
           <!-- Initial Options View -->
           <div v-if="view === 'options'" class="space-y-3">
             <button 
+              @click="handleGoogleAuth"
+              type="button"
+              :disabled="googleLoading || loading"
+              class="w-full py-3 bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+            >
+              <Loader2 v-if="googleLoading" class="w-4 h-4 animate-spin text-gray-400" />
+              <svg v-else class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              Continue with Google
+            </button>
+            <div class="relative py-2 flex items-center justify-center">
+              <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+              <span class="relative bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">or</span>
+            </div>
+            <button 
               @click="view = 'login'" 
               class="w-full py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all flex items-center justify-center gap-2"
             >
@@ -82,6 +101,25 @@
             <!-- Login View -->
             <template v-if="view === 'login'">
               <div class="space-y-3">
+                <button 
+                  @click="handleGoogleAuth"
+                  type="button"
+                  :disabled="googleLoading || loading"
+                  class="w-full py-3 bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 mb-2"
+                >
+                  <Loader2 v-if="googleLoading" class="w-4 h-4 animate-spin text-gray-400" />
+                  <svg v-else class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  Sign in with Google
+                </button>
+                <div class="relative py-2 flex items-center justify-center mb-2">
+                  <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+                  <span class="relative bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">or sign in with email</span>
+                </div>
                 <input v-model="loginForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
                 <div class="relative">
                   <input v-model="loginForm.password" :type="showLoginPassword ? 'text' : 'password'" placeholder="Password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
@@ -108,7 +146,28 @@
 
             <!-- Register View -->
             <template v-else-if="view === 'register'">
-              <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-3">
+                <button 
+                  @click="handleGoogleAuth"
+                  type="button"
+                  :disabled="googleLoading || loading"
+                  class="w-full py-3 bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 mb-2"
+                >
+                  <Loader2 v-if="googleLoading" class="w-4 h-4 animate-spin text-gray-400" />
+                  <svg v-else class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  Sign up with Google
+                </button>
+                <div class="relative py-2 flex items-center justify-center mb-2">
+                  <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+                  <span class="relative bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">or sign up with email</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3 mt-3">
                 <input v-model="registerForm.firstName" type="text" placeholder="First Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
                 <input v-model="registerForm.lastName" type="text" placeholder="Last Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
               </div>
@@ -197,11 +256,12 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue', 'authenticated', 'guest-checkout']);
 
-const { login, register, verifyOTP } = useAuth();
+const { login, register, verifyOTP, firebaseLogin } = useAuth();
 const { showToast } = useCustomToast();
 
 const view = ref<'options' | 'login' | 'register' | 'verify' | 'forgot' | 'verify_reset' | 'reset' | 'guest'>('options');
 const loading = ref(false);
+const googleLoading = ref(false);
 const error = ref('');
 
 const loginForm = reactive({
@@ -315,6 +375,21 @@ const handleResendResetOtp = async () => {
 const goBackToLogin = () => {
   view.value = 'login';
   error.value = '';
+};
+
+const handleGoogleAuth = async () => {
+  error.value = '';
+  googleLoading.value = true;
+  try {
+    await firebaseLogin({ redirect: false });
+    emit('authenticated');
+    emit('update:modelValue', false);
+  } catch (e: any) {
+    console.error('Google Auth action failed:', e);
+    error.value = e.response?.data?.message || e.message || 'Something went wrong with Google authentication. Please try again.';
+  } finally {
+    googleLoading.value = false;
+  }
 };
 
 const handleSubmit = async () => {

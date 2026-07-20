@@ -1,25 +1,24 @@
 // src/composables/core/useCustomToast.ts
 import { useToast } from '@/composables/useToast'
 
-type ToastType = 'success' | 'error' | 'warning' | 'info'
+type ToastType = 'success' | 'error' | 'warning' | 'info' | 'notification'
 
 interface ToastOptions {
   title: string
   message: string
   toastType: ToastType
   duration?: number
+  action?: () => void
 }
 
 export const useCustomToast = () => {
   const { showToast: _showToast } = useToast()
   
   const showToast = (options: ToastOptions) => {
-    const { title, message, toastType } = options
+    const { title, message, toastType, action } = options
     
-    // Format message to include title for standard toast component
-    const fullMessage = title ? `${title}: ${message}` : message
-    
-    return _showToast(fullMessage, toastType)
+    // Pass title to the new _showToast signature
+    return _showToast(message, toastType, action, title)
   }
   
   return {

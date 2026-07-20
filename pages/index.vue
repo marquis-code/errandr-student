@@ -63,166 +63,35 @@
           </div>
 
           <!-- Search Bar -->
+          <!-- Search Bar Redesign -->
           <div 
-            class="mt-8 max-w-4xl mx-auto group relative transition-all duration-700 w-full px-2 sm:px-0 sm:w-full"
+            class="mt-10 max-w-3xl mx-auto group relative transition-all duration-700 w-full px-4 sm:px-0"
             style="isolation: isolate;"
             :class="showSuggestions ? 'z-[200]' : 'z-20'"
           >
-            <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-10 blur-xl transition-opacity duration-500 rounded-[2rem] md:rounded-full"></div>
-            <div class="relative flex flex-col md:flex-row items-center bg-white border border-gray-200 focus-within:border-parentPrimary/50 p-2 md:p-2 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:shadow-[0_20px_50px_rgb(0,0,0,0.08)] transition-all duration-500 gap-2 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100">
-              
-              <!-- What do you need? -->
-              <div class="flex-1 flex items-center w-full px-2 py-1 md:py-0">
-                <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
-                  <Search class="w-5 h-5" />
-                </div>
-                <input 
-                  type="text" 
-                  v-model="heroSearchQuery"
-                  @keyup.enter="handleHeroSearch"
-                  @focus="showSuggestions = true"
-                  @blur="handleSearchBlur"
-                  placeholder="Meals, groceries, services..." 
-                  class="w-full bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 placeholder:text-gray-400 px-2 min-w-0"
-                />
+            <!-- Search Input Wrapper -->
+            <div class="relative z-[70]">
+              <!-- Main Search Input -->
+            <div class="relative bg-white border border-gray-200 focus-within:border-parentPrimary/50 p-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] focus-within:shadow-[0_20px_50px_rgb(0,0,0,0.12)] transition-all duration-500 flex items-center group-hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)]">
+              <div class="absolute -inset-1 bg-parentPrimary opacity-0 group-focus-within:opacity-10 blur-xl transition-opacity duration-500 rounded-full"></div>
+              <div class="w-12 h-12 flex items-center justify-center text-gray-500 shrink-0 ml-2 relative z-10">
+                <Search class="w-5 h-5 text-gray-400 group-focus-within:text-parentPrimary transition-colors" />
               </div>
-
-              <!-- Category -->
-              <div class="flex-[0.8] flex items-center w-full px-2 py-1 md:py-0 relative" ref="categoryDropdownRef">
-                <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
-                  <Filter class="w-5 h-5" />
-                </div>
-                <div 
-                  @click="showCategoryDropdown = !showCategoryDropdown"
-                  class="w-full bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 px-2 min-w-0 cursor-pointer select-none text-left truncate"
-                >
-                  {{ globalFilter ? globalFiltersList.find(f => f.keyword === globalFilter)?.label || globalFilter : 'Any category' }}
-                </div>
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                  <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showCategoryDropdown }" />
-                </div>
-                
-                <!-- Category Dropdown -->
-                <Transition name="fade-up">
-                  <div v-if="showCategoryDropdown" class="absolute top-full left-0 right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden max-h-[300px] overflow-y-auto">
-                    <button 
-                      @click="setFilter(''); showCategoryDropdown = false; showSuggestions = true"
-                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3"
-                      :class="!globalFilter ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
-                    >
-                      <span class="text-base leading-none">📌</span>
-                      <span>Any category</span>
-                    </button>
-                    <button 
-                      v-for="catFilter in globalFiltersList" 
-                      :key="catFilter.keyword"
-                      @click="setFilter(catFilter.keyword); showCategoryDropdown = false; showSuggestions = true"
-                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3"
-                      :class="globalFilter === catFilter.keyword ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
-                    >
-                      <span class="text-base leading-none">{{ catFilter.icon }}</span>
-                      <span>{{ catFilter.label }}</span>
-                    </button>
-                  </div>
-                </Transition>
-              </div>
-
-              <!-- Location -->
-              <div class="flex-[0.8] flex items-center w-full px-2 py-1 md:py-0 relative" ref="locationDropdownRef">
-                <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
-                  <MapPin class="w-5 h-5" />
-                </div>
-                <input 
-                  type="text" 
-                  v-model="searchLocation"
-                  @keyup.enter="handleHeroSearch"
-                  @focus="showLocationDropdown = true; showSuggestions = true"
-                  @input="showLocationDropdown = true"
-                  placeholder="Current location" 
-                  class="w-full bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 placeholder:text-gray-400 px-2 min-w-0"
-                />
-                
-                <!-- Location Dropdown -->
-                <Transition name="fade-up">
-                  <div v-if="showLocationDropdown" class="absolute top-full left-0 right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden py-2">
-                    <div class="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Popular Locations</div>
-                    <button 
-                      @click="searchLocation = 'UNILAG'; showLocationDropdown = false; fetchSuggestions()"
-                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
-                    >
-                      <MapPin class="w-4 h-4 text-gray-400" />
-                      UNILAG
-                    </button>
-                    <button 
-                      @click="searchLocation = 'YABATECH'; showLocationDropdown = false; fetchSuggestions()"
-                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
-                    >
-                      <MapPin class="w-4 h-4 text-gray-400" />
-                      YABATECH
-                    </button>
-                    <button 
-                      @click="searchLocation = 'LUTH'; showLocationDropdown = false; fetchSuggestions()"
-                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
-                    >
-                      <MapPin class="w-4 h-4 text-gray-400" />
-                      LUTH
-                    </button>
-                  </div>
-                </Transition>
-              </div>
-
-              <!-- Time -->
-              <div class="flex-[0.8] flex items-center w-full px-2 py-1 md:py-0 relative" ref="timeDropdownRef">
-                <div class="w-10 h-10 flex items-center justify-center text-gray-500 flex-shrink-0">
-                  <Calendar class="w-5 h-5" />
-                </div>
-                <div 
-                  @click="showTimeDropdown = !showTimeDropdown"
-                  class="w-full bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 px-2 min-w-0 cursor-pointer select-none text-left"
-                >
-                  {{ searchTime === 'any' ? 'Any time' : searchTime === 'now' ? 'Now' : 'Scheduled' }}
-                </div>
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                  <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showTimeDropdown }" />
-                </div>
-                
-                <!-- Custom Dropdown -->
-                <Transition name="fade-up">
-                  <div v-if="showTimeDropdown" class="absolute top-full left-0 right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden">
-                    <button 
-                      @click="searchTime = 'any'; showTimeDropdown = false; showSuggestions = true"
-                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
-                      :class="searchTime === 'any' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
-                    >
-                      Any time
-                    </button>
-                    <button 
-                      @click="searchTime = 'now'; showTimeDropdown = false; showSuggestions = true"
-                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
-                      :class="searchTime === 'now' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
-                    >
-                      Now
-                    </button>
-                    <button 
-                      @click="searchTime = 'scheduled'; showTimeDropdown = false; showSuggestions = true"
-                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
-                      :class="searchTime === 'scheduled' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
-                    >
-                      Scheduled
-                    </button>
-                  </div>
-                </Transition>
-              </div>
-
-              <!-- Search Button -->
-              <div class="w-full md:w-auto p-1 md:p-0">
-                <button 
-                  @click="handleHeroSearch"
-                  class="w-full md:w-auto h-12 md:h-12 px-6 md:px-8 bg-gray-900 text-white rounded-2xl md:rounded-full text-sm md:text-base font-medium hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
-                >
-                  <span class="inline">Search</span>
-                </button>
-              </div>
+              <input 
+                type="text" 
+                v-model="heroSearchQuery"
+                @keyup.enter="handleHeroSearch"
+                @focus="showSuggestions = true"
+                @blur="handleSearchBlur"
+                placeholder="Search vendor name, meals, groceries..." 
+                class="w-full bg-transparent border-none outline-none text-base md:text-lg font-medium text-gray-900 placeholder:text-gray-400 px-2 min-w-0 relative z-10"
+              />
+              <button 
+                @click="handleHeroSearch"
+                class="h-12 md:h-14 px-6 md:px-8 bg-gray-900 text-white rounded-full text-sm md:text-base font-semibold hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 shrink-0 relative z-10 shadow-md"
+              >
+                <span>Search</span>
+              </button>
             </div>
 
            <Transition name="fade-up">
@@ -343,6 +212,136 @@
     </div>
   </div>
 </Transition>
+            </div>
+
+            <!-- Filters Row -->
+            <div class="flex flex-wrap items-center justify-center gap-2 md:gap-3 mt-4 relative z-10">
+              <!-- Category Pill -->
+              <div class="relative" ref="categoryDropdownRef">
+                <div 
+                  @click="showCategoryDropdown = !showCategoryDropdown"
+                  class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full px-4 py-2 shadow-sm flex items-center gap-2 hover:border-parentPrimary/50 hover:bg-white cursor-pointer transition-all h-10"
+                >
+                  <Filter class="w-4 h-4" :class="globalFilter ? 'text-parentPrimary' : 'text-gray-400'" />
+                  <span class="text-xs md:text-sm font-medium" :class="globalFilter ? 'text-gray-900' : 'text-gray-600'">
+                    {{ globalFilter ? globalFiltersList.find(f => f.keyword === globalFilter)?.label || globalFilter : 'Any category' }}
+                  </span>
+                  <ChevronDown class="w-3.5 h-3.5 text-gray-400 transition-transform ml-0.5" :class="{ 'rotate-180': showCategoryDropdown }" />
+                </div>
+                
+                <!-- Category Dropdown -->
+                <Transition name="fade-up">
+                  <div v-if="showCategoryDropdown" class="absolute top-full left-0 sm:left-1/2 sm:-translate-x-1/2 mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden max-h-[300px] overflow-y-auto w-56">
+                    <button 
+                      @click="setFilter(''); showCategoryDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3"
+                      :class="!globalFilter ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      <span class="text-base leading-none">✨</span>
+                      <span>Any category</span>
+                    </button>
+                    <button 
+                      v-for="catFilter in globalFiltersList" 
+                      :key="catFilter.keyword"
+                      @click="setFilter(catFilter.keyword); showCategoryDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3"
+                      :class="globalFilter === catFilter.keyword ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      <span class="text-base leading-none">{{ catFilter.icon }}</span>
+                      <span>{{ catFilter.label }}</span>
+                    </button>
+                  </div>
+                </Transition>
+              </div>
+
+              <!-- Location Pill -->
+              <div class="relative" ref="locationDropdownRef">
+                <div class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full px-4 py-2 shadow-sm flex items-center gap-2 hover:border-parentPrimary/50 hover:bg-white transition-all h-10 group/loc cursor-pointer" @click="showLocationDropdown = !showLocationDropdown">
+                  <MapPin class="w-4 h-4 text-gray-400" />
+                  <input 
+                    type="text" 
+                    v-model="searchLocation"
+                    @keyup.enter="handleHeroSearch"
+                    @focus="showLocationDropdown = true; showSuggestions = true"
+                    @input="showLocationDropdown = true"
+                    placeholder="Current location" 
+                    class="bg-transparent border-none outline-none text-xs md:text-sm font-medium text-gray-900 placeholder:text-gray-600 w-24 md:w-28 cursor-pointer group-hover/loc:placeholder:text-gray-900 transition-colors"
+                  />
+                  <ChevronDown class="w-3.5 h-3.5 text-gray-400 transition-transform ml-0.5" :class="{ 'rotate-180': showLocationDropdown }" />
+                </div>
+                
+                <!-- Location Dropdown -->
+                <Transition name="fade-up">
+                  <div v-if="showLocationDropdown" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden py-2 w-56">
+                    <div class="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Popular Locations</div>
+                    <button 
+                      @click="searchLocation = 'UNILAG'; showLocationDropdown = false; fetchSuggestions()"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
+                    >
+                      <MapPin class="w-4 h-4 text-gray-400" />
+                      UNILAG
+                    </button>
+                    <button 
+                      @click="searchLocation = 'YABATECH'; showLocationDropdown = false; fetchSuggestions()"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
+                    >
+                      <MapPin class="w-4 h-4 text-gray-400" />
+                      YABATECH
+                    </button>
+                    <button 
+                      @click="searchLocation = 'LUTH'; showLocationDropdown = false; fetchSuggestions()"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-3"
+                    >
+                      <MapPin class="w-4 h-4 text-gray-400" />
+                      LUTH
+                    </button>
+                  </div>
+                </Transition>
+              </div>
+
+              <!-- Time Pill -->
+              <div class="relative" ref="timeDropdownRef">
+                <div 
+                  @click="showTimeDropdown = !showTimeDropdown"
+                  class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full px-4 py-2 shadow-sm flex items-center gap-2 hover:border-parentPrimary/50 hover:bg-white cursor-pointer transition-all h-10"
+                >
+                  <Calendar class="w-4 h-4 text-gray-400" />
+                  <span class="text-xs md:text-sm font-medium text-gray-600 whitespace-nowrap">
+                    {{ searchTime === 'any' ? 'Any time' : searchTime === 'now' ? 'Now' : 'Scheduled' }}
+                  </span>
+                  <ChevronDown class="w-3.5 h-3.5 text-gray-400 transition-transform ml-0.5" :class="{ 'rotate-180': showTimeDropdown }" />
+                </div>
+                
+                <!-- Time Dropdown -->
+                <Transition name="fade-up">
+                  <div v-if="showTimeDropdown" class="absolute top-full right-0 sm:left-1/2 sm:-translate-x-1/2 mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden w-48">
+                    <button 
+                      @click="searchTime = 'any'; showTimeDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
+                      :class="searchTime === 'any' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      Any time
+                    </button>
+                    <button 
+                      @click="searchTime = 'now'; showTimeDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
+                      :class="searchTime === 'now' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      Now
+                    </button>
+                    <button 
+                      @click="searchTime = 'scheduled'; showTimeDropdown = false; showSuggestions = true"
+                      class="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
+                      :class="searchTime === 'scheduled' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700'"
+                    >
+                      Scheduled
+                    </button>
+                  </div>
+                </Transition>
+              </div>
+            </div>
+
+
           </div>
 
           <!-- Removed Global Filters Bar (Moved to LandingNavbar.vue) -->

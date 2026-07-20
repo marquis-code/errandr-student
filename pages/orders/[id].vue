@@ -297,14 +297,14 @@
  <div class="space-y-3">
  <button 
  v-if="order.type !== 'custom_errand'"
- @click="openChat(order.vendor?._id, order.vendor?.storeName, order.vendor?.logo)"
+ @click="openChat((order.vendor?.owner?._id || order.vendor?.owner || '') + ',' + (order.vendor?._id || ''), order.vendor?.storeName || 'Vendor', order.vendor?.logo)"
  class="w-full py-4 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-xl text-sm font-bold  transition-all flex items-center justify-center gap-2 border border-gray-100"
  >
  <MessageSquare class="w-3.5 h-3.5" /> Message Store
  </button>
  <button 
  v-if="order.errander?._id"
- @click="openChat(order.errander._id, (order.errander?.user?.firstName || order.errander?.firstName) + ' (Rider)', order.errander?.user?.avatar)"
+ @click="openChat(order.errander?.user?._id || order.errander?.user || order.errander._id, (order.errander?.user?.firstName || order.errander?.firstName) + ' (Rider)', order.errander?.user?.avatar)"
  class="w-full py-4 bg-parentPrimary/5 hover:bg-parentPrimary/10 text-parentPrimary rounded-xl text-sm font-bold  transition-all flex items-center justify-center gap-2 border border-parentPrimary/10"
  >
  <MessageSquare class="w-3.5 h-3.5" /> Message Rider
@@ -461,7 +461,7 @@
       <div class="space-y-2">
         <button 
           v-if="order?.vendor"
-          @click="triggerSupportChat(order.vendor._id, order.vendor.storeName || 'Vendor', order.vendor.logo)"
+          @click="triggerSupportChat(order.vendor.owner || order.vendor._id, order.vendor.storeName || 'Vendor', order.vendor.logo)"
           class="w-full p-4 rounded-xl border border-gray-100 hover:border-parentPrimary hover:bg-parentPrimary/5 flex items-center gap-4 transition-all bg-white"
         >
           <div class="w-10 h-10 rounded-full border border-gray-100 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
@@ -637,6 +637,30 @@ import { useSocket } from '@/composables/useSocket';
 
 const { connect, on } = useSocket('notifications');
 
+const checkAutoOpenChat = () => {
+  if (route.query.openChat && order.value) {
+    const targetId = route.query.openChat as string;
+    
+    // Check if it's the vendor
+    if (order.value.vendor && (targetId === order.value.vendor.owner || targetId === order.value.vendor._id)) {
+      openChat(targetId, order.value.vendor.storeName || 'Vendor', order.value.vendor.logo);
+    } 
+    // Check if it's the rider
+    else if (order.value.errander && (targetId === order.value.errander._id || targetId === order.value.errander.user?._id)) {
+      openChat(targetId, order.value.errander.firstName + ' (Rider)', order.value.errander.avatar || order.value.errander.user?.avatar);
+    }
+    // Admin or unknown, open the support modal
+    else if (targetId === 'admin_support_channel') {
+      triggerSupportChat('admin_support_channel', 'Errandr Support', '');
+    } else if (targetId === 'true') {
+      showSupportModal.value = true;
+    }
+    
+    // Clean up query param so it doesn't reopen if they refresh
+    router.replace({ query: { ...route.query, openChat: undefined } });
+  }
+}
+
 onMounted(() => {
  fetchOrder();
  connect();
@@ -645,6 +669,10 @@ onMounted(() => {
  fetchOrder();
  }
  });
+});
+
+watch(order, () => {
+  checkAutoOpenChat();
 });
 
 const formatDate = (dateStr: string) => {

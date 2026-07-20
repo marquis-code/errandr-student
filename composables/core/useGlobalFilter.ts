@@ -16,6 +16,25 @@ export const useGlobalFilter = () => {
   const dynamicCategories = useState<any[]>('dynamic-categories', () => []);
   const loadingCategories = useState<boolean>('loading-categories', () => false);
 
+  const getCategoryIcon = (category: string) => {
+    const map: Record<string, string> = {
+      restaurant: '🍽️',
+      eatery: '🍔',
+      snacks: '🍿',
+      drinks: '🥤',
+      groceries: '🛒',
+      bakery: '🥐',
+      food: '🍲',
+      pharmacy: '💊',
+      stationery: '✏️',
+      laundry: '🧺',
+      printing: '🖨️',
+      errands: '🏃',
+      services: '🛠️'
+    };
+    return map[category.toLowerCase()] || '🛍️';
+  };
+
   const fetchCategories = async () => {
     if (dynamicCategories.value.length > 0 || loadingCategories.value) return;
     
@@ -27,7 +46,7 @@ export const useGlobalFilter = () => {
       const mapped = categories.map((cat: string) => {
         const keyword = cat;
         const label = cat.charAt(0).toUpperCase() + cat.slice(1).replace(/_/g, ' ');
-        return { label, icon: '📌', keyword };
+        return { label, icon: getCategoryIcon(cat), keyword };
       });
 
       dynamicCategories.value = mapped;

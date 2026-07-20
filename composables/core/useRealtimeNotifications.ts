@@ -7,7 +7,7 @@ const LISTENERS_KEY = 'realtime_notification_listeners'
 
 const playNotificationSound = () => {
   try {
-    const audio = new Audio('/sounds/notification.wav')
+    const audio = new Audio('/sounds/order-alert.mp3')
     audio.play().catch(e => console.warn('Audio playback failed', e))
   } catch (error) {
     // ignore
@@ -31,9 +31,19 @@ export const useRealtimeNotifications = () => {
 
     showToast({
       title: payload.title || 'Notification',
-      message: payload.message || payload.type || 'You have a new update',
-      toastType: payload.priority === 'high' ? 'warning' : 'info',
+      message: payload.body || payload.message || payload.type || 'You have a new update',
+      toastType: payload.priority === 'high' || payload.type === 'NEW_CHAT_MESSAGE' ? 'warning' : 'info',
       duration: 5000,
+      action: payload.type === 'NEW_CHAT_MESSAGE' && payload.data?.orderId ? () => {
+        // Navigate to the order page with a query parameter indicating we should open the chat
+        // We also pass the senderId to ensure the correct chat room opens
+        const router = useRouter()
+        if (router) {
+          router.push(`/orders/${payload.data.orderId}?openChat=${payload.data.senderId || 'true'}`)
+        } else {
+          window.location.href = `/orders/${payload.data.orderId}?openChat=${payload.data.senderId || 'true'}`
+        }
+      } : undefined
     })
   }
 

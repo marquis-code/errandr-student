@@ -290,7 +290,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useUser } from '@/composables/modules/auth/user'
 import { useRouter, useRoute } from 'vue-router'
 import { 

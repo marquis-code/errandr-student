@@ -4,7 +4,7 @@
     class="fixed w-[95%] left-1/2 -translate-x-1/2 z-[60] transition-all duration-500 rounded-[2rem] mt-4"
     :class="[
       scrolled 
-        ? 'bg-white/80 backdrop-blur-2xl border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.05)] py-3' 
+        ? 'bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] py-3' 
         : 'bg-transparent py-5'
     ]"
   >

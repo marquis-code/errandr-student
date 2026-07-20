@@ -111,7 +111,7 @@
                    </div>
                    <div class="flex gap-3">
                       <a :href="`tel:${order.errander.phone}`" class="flex-1 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 text-sm font-medium text-center hover:border-gray-300 hover:bg-gray-50 transition-colors shadow-sm">Call</a>
-                      <NuxtLink :to="`/chat/${order._id}?target=errander`" class="flex-1 py-2.5 rounded-lg bg-gray-900 text-white text-sm font-medium text-center hover:bg-black transition-colors shadow-sm">Message</NuxtLink>
+                      <button @click="openChat(String(order.errander?.user?._id || order.errander?.user || order.errander._id), (order.errander?.user?.firstName || order.errander?.firstName) + ' (Rider)', order.errander?.user?.avatar)" class="flex-1 py-2.5 rounded-lg bg-gray-900 text-white text-sm font-medium text-center hover:bg-black transition-colors shadow-sm">Message</button>
                    </div>
                  </div>
               </div>
@@ -142,7 +142,7 @@
                       </div>
                    </div>
                    <div class="flex gap-3">
-                      <NuxtLink :to="`/chat/${order._id}?target=vendor`" class="flex-1 py-2.5 rounded-lg bg-gray-900 text-white text-sm font-medium text-center hover:bg-black transition-colors shadow-sm">Message Vendor</NuxtLink>
+                      <button @click="openChat((order.vendor?.owner?._id || order.vendor?.owner || '') + ',' + (order.vendor?._id || ''), order.vendor?.storeName || 'Vendor', order.vendor?.logo)" class="flex-1 py-2.5 rounded-lg bg-gray-900 text-white text-sm font-medium text-center hover:bg-black transition-colors shadow-sm">Message Vendor</button>
                    </div>
                  </div>
               </div>
@@ -158,7 +158,7 @@
               <p class="text-gray-500 font-medium text-sm max-w-lg mb-6">Your errand is broadcasted to available riders nearby. Increase the fee to make your request more attractive.</p>
               
               <div class="w-full max-w-sm flex flex-col sm:flex-row gap-3">
-                 <input v-model.number="newFee" type="number" class="w-full px-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-parentPrimary focus:ring-2 focus:ring-parentPrimary/10 font-medium text-gray-900 bg-white transition-all text-sm" placeholder="New fee amount" />
+                 <input v-model="formattedNewFee" type="text" @input="handleFeeInput" class="w-full px-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-parentPrimary focus:ring-2 focus:ring-parentPrimary/10 font-medium text-gray-900 bg-white transition-all text-sm" placeholder="New fee amount" />
                  <button @click="increaseFee" :disabled="isIncreasingFee || newFee <= order.deliveryFee" class="bg-gray-900 text-white font-medium px-5 py-3 rounded-lg hover:bg-black transition-colors disabled:opacity-50 flex-shrink-0 text-sm">
                     {{ isIncreasingFee ? 'Updating...' : 'Update fee' }}
                  </button>
@@ -397,8 +397,19 @@
        <p class="text-sm font-medium text-gray-500">Syncing live data...</p>
     </div>
   </div>
-</template>
 
+  <!-- OrderChat Drawer -->
+  <OrderChat
+    v-if="order"
+    :is-open="isChatOpen"
+    :receiver-id="chatReceiverId"
+    :receiver-name="chatReceiverName"
+    :receiver-avatar="chatReceiverAvatar"
+    @close="isChatOpen = false"
+    :current-user-id="user?._id || ''"
+    :order-id="order._id"
+  />
+</template>
 
 <script setup lang="ts">
 import { 
@@ -419,7 +430,8 @@ import {
   Store
 } from 'lucide-vue-next';
 import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
-import { useRoute, useHead } from '#imports';
+import { useRoute, useRouter, useHead } from '#imports';
+import OrderChat from '@/components/core/OrderChat.vue';
 import { orders_api } from '@/api_factory/modules/orders';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 import { usePayments } from '@/composables/modules/payments';
@@ -431,13 +443,61 @@ definePageMeta({
   layout: 'student'
 })
 
+// Chat state
+const isChatOpen = ref(false);
+const chatReceiverId = ref<string>('');
+const chatReceiverName = ref('');
+const chatReceiverAvatar = ref('');
+
+const openChat = (receiverId: string | undefined, name: string, avatar?: string) => {
+   if (!receiverId) return;
+   chatReceiverId.value = receiverId;
+   chatReceiverName.value = name;
+   chatReceiverAvatar.value = avatar || '';
+   isChatOpen.value = true;
+};
+
+const checkAutoOpenChat = () => {
+  if (route.query.openChat && order.value) {
+    const targetId = route.query.openChat as string;
+    
+    // Check if it's the vendor
+    if (order.value.vendor && (targetId === order.value.vendor.owner || targetId === order.value.vendor._id || targetId === 'vendor')) {
+      openChat((order.value.vendor?.owner?._id || order.value.vendor?.owner || '') + ',' + (order.value.vendor?._id || ''), order.value.vendor.storeName || 'Vendor', order.value.vendor.logo);
+    } 
+    // Check if it's the rider
+    else if (order.value.errander && (targetId === order.value.errander._id || targetId === order.value.errander.user?._id || targetId === 'errander')) {
+      openChat(order.value.errander?.user?._id || order.value.errander?.user || order.value.errander._id, order.value.errander.firstName + ' (Rider)', order.value.errander.avatar || order.value.errander.user?.avatar);
+    }
+    
+    // Clean up query param so it doesn't reopen if they refresh
+    router.replace({ query: { ...route.query, openChat: undefined } });
+  }
+};
+
 const route = useRoute();
+const router = useRouter();
 const order = ref<any>(null);
 const { showToast } = useCustomToast();
 const { initializePayment } = usePayments();
 const { user } = useUser();
 const isSubmittingRating = ref(false);
 const newFee = ref(0);
+const formattedNewFee = ref('');
+
+const handleFeeInput = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const rawValue = target.value.replace(/[^\d]/g, '');
+  const numericValue = parseInt(rawValue, 10);
+  
+  if (isNaN(numericValue)) {
+    newFee.value = 0;
+    formattedNewFee.value = '';
+  } else {
+    newFee.value = numericValue;
+    formattedNewFee.value = numericValue.toLocaleString('en-US');
+  }
+};
 const isIncreasingFee = ref(false);
 const isInitializingPayment = ref(false);
 const viewersCount = ref(0);
@@ -456,11 +516,21 @@ const ratingForm = reactive({
   erranderReview: ''
 });
 
-onMounted(async () => {
-  try {
+const fetchOrder = async () => {
     const res = await orders_api.getOrder(route.params.id as string);
     order.value = res.data;
-    if (order.value.deliveryFee) newFee.value = order.value.deliveryFee + 100;
+    if (order.value.type === 'custom_errand') {
+        if (order.value.deliveryFee) {
+            newFee.value = order.value.deliveryFee + 100;
+            formattedNewFee.value = newFee.value.toLocaleString('en-US');
+        }
+    }
+}
+
+onMounted(async () => {
+  try {
+    await fetchOrder();
+    checkAutoOpenChat();
 
     if (route.query.reference && order.value.type === 'custom_errand' && order.value.status === 'awaiting_payment') {
        await api.post(`/orders/${order.value._id}/custom/pay`, { paymentReference: route.query.reference });
@@ -473,31 +543,59 @@ onMounted(async () => {
        window.history.replaceState({}, '', url.toString());
     }
 
-    if (socket.value) {
-      socket.value.on('errand:viewers_update', (data: any) => {
-        if (data.orderId === route.params.id) {
-          viewersCount.value = data.viewersCount;
-        }
-      });
-      socket.value.on('notification:new', async (payload: any) => {
-        const { type, data } = payload;
-        if (type === 'ORDER_BIDS_UPDATE' || type === 'ORDER_ACCEPTED' || type === 'ORDER_STATUS_UPDATE') {
-          if (data?.orderId === route.params.id || data?.order?._id === route.params.id) {
-             const res = await orders_api.getOrder(route.params.id as string);
-             order.value = res.data;
-          }
-        }
-      });
-    }
+    // Socket listeners will be handled by watch
   } catch (e) {
     console.error(e);
   }
 });
 
+let currentSocket: any = null;
+
+watch(() => socket.value, (newSocket) => {
+  if (currentSocket) {
+    currentSocket.off('errand:viewers_update');
+    currentSocket.off('notification:new');
+  }
+  
+  if (newSocket) {
+    currentSocket = newSocket;
+    
+    newSocket.on('errand:viewers_update', (data: any) => {
+      if (data.orderId === route.params.id) {
+        viewersCount.value = data.viewersCount;
+      }
+    });
+    
+    newSocket.on('notification:new', async (payload: any) => {
+      const { type, data, title, body } = payload;
+      if (type === 'ORDER_BIDS_UPDATE' || type === 'ORDER_ACCEPTED' || type === 'ORDER_STATUS_UPDATE') {
+        if (data?.orderId === route.params.id || data?.order?._id === route.params.id) {
+           showToast({ title: title || 'New Update', message: body || 'Your order has been updated.', toastType: 'info' });
+           const res = await orders_api.getOrder(route.params.id as string);
+           order.value = res.data;
+        }
+      }
+    });
+
+    const refreshOrder = async (payload: any) => {
+      const orderId = payload?.orderId || payload?.order?._id || payload?.data?.orderId;
+      if (orderId === route.params.id) {
+         const res = await orders_api.getOrder(route.params.id as string);
+         order.value = res.data;
+      }
+    };
+
+    newSocket.on('notification:order-status-update', refreshOrder);
+    newSocket.on('notification:order-accepted', refreshOrder);
+  }
+}, { immediate: true });
+
 onUnmounted(() => {
-  if (socket.value) {
-    socket.value.off('errand:viewers_update');
-    socket.value.off('notification:new');
+  if (currentSocket) {
+    currentSocket.off('errand:viewers_update');
+    currentSocket.off('notification:new');
+    currentSocket.off('notification:order-status-update');
+    currentSocket.off('notification:order-accepted');
   }
 });
 

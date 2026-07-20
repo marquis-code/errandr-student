@@ -19,19 +19,31 @@ interface User {
   referralCount?: number;
   department?: string;
   faculty?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  homeAddress?: string;
+  workAddress?: string;
+  preferences?: {
+    emailNotifications: boolean;
+    pushNotifications: boolean;
+    smsNotifications: boolean;
+    marketingPromos: boolean;
+  };
 }
 
 export const useUser = () => {
   const token = useCookie<string | null>('errandr_token', {
     maxAge: 60 * 60 * 24 * 7, // 1 week
     path: '/',
-    sameSite: 'lax',
+    sameSite: 'none',
+    secure: true,
   });
   
   const user = useCookie<User | null>('errandr_user', {
     maxAge: 60 * 60 * 24 * 7,
     path: '/',
-    sameSite: 'lax',
+    sameSite: 'none',
+    secure: true,
   });
 
   const setUser = (userData: User) => {
