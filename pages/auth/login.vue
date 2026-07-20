@@ -26,9 +26,11 @@
           <Loader2 v-if="loading" class="animate-spin w-6 h-6" />
           {{ loading ? 'signing in...' : 'sign in' }}
         </button>
+      </form>
 
+      <div class="max-w-md w-full mt-6">
         <!-- Divider -->
-        <div class="flex items-center gap-3 my-6">
+        <div class="flex items-center gap-3 mb-6">
           <div class="flex-1 h-px bg-gray-100" />
           <span class="text-sm text-gray-400 font-bold">or</span>
           <div class="flex-1 h-px bg-gray-100" />
@@ -48,7 +50,7 @@
         <p class="text-center text-gray-600 font-medium mt-8">
           Don't have an account? <NuxtLink to="/auth/register" class="text-[#FF5C1A] font-bold hover:underline">Sign up</NuxtLink>
         </p>
-      </form>
+      </div>
 
       <div class="mt-auto pt-12 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-400 font-medium">
         <p>&copy; {{ new Date().getFullYear() }} Errandr</p>

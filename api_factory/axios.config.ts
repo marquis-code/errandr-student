@@ -81,9 +81,26 @@ const instanceArray = [
 
 instanceArray.forEach((instance) => {
   instance.interceptors.request.use((config: any) => {
-    const { token } = useUser();
-    if (token.value) {
-      config.headers.Authorization = `Bearer ${token.value}`;
+    let token = '';
+    
+    // In browser environment, read cookie directly to avoid Nuxt useUser reactivity issues
+    if (typeof document !== 'undefined') {
+      const match = document.cookie.match(new RegExp('(^| )errandr_token=([^;]+)'));
+      if (match) {
+        token = match[2];
+      }
+    } else {
+      // Fallback for SSR/Node if needed
+      try {
+        const { token: userToken } = useUser();
+        token = userToken.value;
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   });
