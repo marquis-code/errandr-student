@@ -9,6 +9,7 @@
     
     <CoreGlobalAdModal />
     <ChatWidget />
+    <CorePushNotificationPrompt />
     
     <!-- Background Audio - Bottom Left -->
     <!-- <ClientOnly>
@@ -42,13 +43,13 @@ useRealtimeNotifications()
 
 onMounted(() => {
   listenForNotifications()
-  if (isLoggedIn.value) {
+  if (isLoggedIn.value && 'Notification' in window && Notification.permission === 'granted') {
     requestPermissionAndRegister()
   }
 })
 
 watch(isLoggedIn, (newVal) => {
-  if (newVal) {
+  if (newVal && 'Notification' in window && Notification.permission === 'granted') {
     requestPermissionAndRegister()
   }
 })
