@@ -33,6 +33,10 @@ export const vendors_api = {
     return GATEWAY_ENDPOINT.get(`/vendors/${id}`);
   },
 
+  getBatch: (ids: string[]) => {
+    return GATEWAY_ENDPOINT.post('/vendors/batch', { ids });
+  },
+
   getBySubdomain: (subdomain: string) => {
     return GATEWAY_ENDPOINT.get(`/vendors/subdomain/${subdomain}`);
   },
