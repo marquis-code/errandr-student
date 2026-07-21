@@ -107,6 +107,34 @@
           </div>
         </div>
 
+        <!-- Variant 4: Custom Ad -->
+        <div v-else-if="currentAd.type === 'custom' && currentAd.data" class="relative cursor-pointer" @click="handleCta">
+          <div class="h-48 w-full bg-[#FF5C1A] relative overflow-hidden" v-if="currentAd.data.imageUrl">
+            <img :src="currentAd.data.imageUrl" alt="Ad Banner" class="absolute inset-0 w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+          </div>
+          <div class="h-32 w-full bg-gradient-to-r from-purple-500 to-indigo-600 relative overflow-hidden" v-else>
+            <div class="absolute inset-0 bg-white/10 mix-blend-overlay"></div>
+          </div>
+          
+          <div class="p-6 bg-white text-center" :class="{ '-mt-10 relative z-10': currentAd.data.imageUrl }">
+            <div v-if="currentAd.data.imageUrl" class="bg-white rounded-2xl shadow-xl p-5">
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ currentAd.data.title || 'Special Offer' }}</h3>
+              <p class="text-sm text-gray-500 mb-5">{{ currentAd.data.description }}</p>
+              <button class="w-full py-3 bg-[#FF5C1A] text-white font-bold rounded-xl shadow-lg hover:bg-orange-600 transition-all flex items-center justify-center gap-2">
+                {{ currentAd.data.ctaText || 'Learn More' }} <ExternalLink class="w-4 h-4" />
+              </button>
+            </div>
+            <div v-else>
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ currentAd.data.title || 'Special Offer' }}</h3>
+              <p class="text-sm text-gray-500 mb-5">{{ currentAd.data.description }}</p>
+              <button class="w-full py-3 bg-[#FF5C1A] text-white font-bold rounded-xl shadow-lg hover:bg-orange-600 transition-all flex items-center justify-center gap-2">
+                {{ currentAd.data.ctaText || 'Learn More' }} <ExternalLink class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </Transition>
@@ -114,65 +142,104 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { X, ArrowRight, Box, Star } from 'lucide-vue-next';
+import { X, ArrowRight, Box, Star, ExternalLink } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
 import { useVendors } from '@/composables/modules/vendors';
 import { GATEWAY_ENDPOINT_WITH_AUTH } from '@/api_factory/axios.config';
+import axios from 'axios';
 
 const route = useRoute();
 const router = useRouter();
 const { popularVendors, fetchPopularVendors } = useVendors();
 
 const isOpen = ref(false);
-const currentAd = ref<{ type: 'vendor' | 'feature' | 'dispatcher', data?: any }>({ type: 'feature' });
+const currentAd = ref<{ type: 'vendor' | 'feature' | 'dispatcher' | 'custom', data?: any }>({ type: 'feature' });
 let adInterval: NodeJS.Timeout;
+let autoCloseTimeout: NodeJS.Timeout;
 
-// 15 minutes interval for regular appearances
-const AD_INTERVAL_MS = 15 * 60 * 1000;
+// Default 15 minutes interval
+let AD_INTERVAL_MS = 15 * 60 * 1000;
+let advertConfig = {
+  enabled: true,
+  intervalMinutes: 15,
+  autoCloseSeconds: 0,
+  contentType: 'dynamic',
+  customAd: null as any
+};
 
 // Sensitive routes where we shouldn't pop up an ad
 const SENSITIVE_ROUTES = ['cart', 'chat-id'];
 
+const fetchAdvertConfig = async () => {
+  try {
+    // Attempt to fetch public advert config
+    const res = await axios.get('http://localhost:3001/api/v1/settings/advert/public');
+    if (res.data) {
+      advertConfig = res.data;
+      AD_INTERVAL_MS = (advertConfig.intervalMinutes || 15) * 60 * 1000;
+    }
+  } catch (e) {
+    console.error('Failed to load global advert settings', e);
+  }
+};
+
 const pickRandomAd = async () => {
+  // Check if globally disabled
+  if (!advertConfig.enabled) {
+    return;
+  }
+
   // If user is on a sensitive route, skip this interval cycle
   if (SENSITIVE_ROUTES.includes(String(route.name))) {
     return;
   }
 
-  // Randomly pick a number between 0 and 2
-  const rand = Math.floor(Math.random() * 3);
+  if (advertConfig.contentType === 'custom' && advertConfig.customAd) {
+    currentAd.value = { type: 'custom', data: advertConfig.customAd };
+  } else {
+    // Dynamic Mode
+    const rand = Math.floor(Math.random() * 3);
 
-  if (rand === 0) {
-    // Vendor Ad
-    if (!popularVendors.value.length) {
-      await fetchPopularVendors();
-    }
-    if (popularVendors.value.length > 0) {
-      const randomVendor = popularVendors.value[Math.floor(Math.random() * popularVendors.value.length)];
-      currentAd.value = { type: 'vendor', data: randomVendor };
-    } else {
-      currentAd.value = { type: 'feature' };
-    }
-  } else if (rand === 1) {
-    // Dispatcher Ad
-    try {
-      const res = await GATEWAY_ENDPOINT_WITH_AUTH.get('/erranders/available');
-      const erranders = res.data?.data || res.data || [];
-      if (erranders.length > 0) {
-        const randomErrander = erranders[Math.floor(Math.random() * erranders.length)];
-        currentAd.value = { type: 'dispatcher', data: randomErrander };
+    if (rand === 0) {
+      // Vendor Ad
+      if (!popularVendors.value.length) {
+        await fetchPopularVendors();
+      }
+      if (popularVendors.value.length > 0) {
+        const randomVendor = popularVendors.value[Math.floor(Math.random() * popularVendors.value.length)];
+        currentAd.value = { type: 'vendor', data: randomVendor };
       } else {
         currentAd.value = { type: 'feature' };
       }
-    } catch (e) {
+    } else if (rand === 1) {
+      // Dispatcher Ad
+      try {
+        const res = await GATEWAY_ENDPOINT_WITH_AUTH.get('/erranders/available');
+        const erranders = res.data?.data || res.data || [];
+        if (erranders.length > 0) {
+          const randomErrander = erranders[Math.floor(Math.random() * erranders.length)];
+          currentAd.value = { type: 'dispatcher', data: randomErrander };
+        } else {
+          currentAd.value = { type: 'feature' };
+        }
+      } catch (e) {
+        currentAd.value = { type: 'feature' };
+      }
+    } else {
+      // Feature Ad
       currentAd.value = { type: 'feature' };
     }
-  } else {
-    // Feature Ad
-    currentAd.value = { type: 'feature' };
   }
 
   isOpen.value = true;
+  
+  // Auto-close handling
+  if (autoCloseTimeout) clearTimeout(autoCloseTimeout);
+  if (advertConfig.autoCloseSeconds > 0) {
+    autoCloseTimeout = setTimeout(() => {
+      closeAd();
+    }, advertConfig.autoCloseSeconds * 1000);
+  }
 };
 
 const closeAd = () => {
@@ -181,25 +248,39 @@ const closeAd = () => {
 
 const handleCta = () => {
   isOpen.value = false;
-  if (currentAd.value.type === 'vendor' && currentAd.value.data) {
+  if (currentAd.value.type === 'custom' && currentAd.value.data) {
+    const link = currentAd.value.data.ctaLink;
+    if (link.startsWith('http')) {
+      window.open(link, '_blank');
+    } else {
+      router.push(link || '/');
+    }
+  } else if (currentAd.value.type === 'vendor' && currentAd.value.data) {
     router.push(`/vendors/${currentAd.value.data._id}`);
   } else if (currentAd.value.type === 'feature' || currentAd.value.type === 'dispatcher') {
     router.push('/errands/custom');
   }
 };
 
-onMounted(() => {
-  // Trigger immediately on mount
-  pickRandomAd();
+onMounted(async () => {
+  await fetchAdvertConfig();
+
+  // Trigger immediately on mount if enabled
+  if (advertConfig.enabled) {
+    pickRandomAd();
+  }
   
   // Set interval to repeat
-  adInterval = setInterval(() => {
-    pickRandomAd();
-  }, AD_INTERVAL_MS);
+  if (advertConfig.enabled) {
+    adInterval = setInterval(() => {
+      pickRandomAd();
+    }, AD_INTERVAL_MS);
+  }
 });
 
 onUnmounted(() => {
   if (adInterval) clearInterval(adInterval);
+  if (autoCloseTimeout) clearTimeout(autoCloseTimeout);
 });
 </script>
 
