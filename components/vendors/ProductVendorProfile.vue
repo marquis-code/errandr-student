@@ -1834,10 +1834,20 @@ const groupedProducts = computed(() => {
   });
 
   filteredProducts.forEach(p => {
-    let cat = p.categoryId || p.category || 'Other';
-    if (typeof cat === 'object' && cat !== null) {
-      cat = cat.name || 'Other';
+    let cat = 'Other';
+    
+    // Explicitly check for isAddOn and use categoryId.name
+    if (p.isAddOn) {
+       cat = p.categoryId?.name || 'Add-ons';
+    } else if (p.categoryId) {
+       cat = typeof p.categoryId === 'object' ? (p.categoryId.name || 'Other') : 'Other';
+    } else if (p.category) {
+       cat = typeof p.category === 'object' ? (p.category.name || 'Other') : p.category;
     }
+    
+    // Capitalize category name for consistency
+    cat = toTitleCase(cat);
+
     if (!groups[cat]) groups[cat] = [];
     groups[cat].push(p);
   });
@@ -2168,9 +2178,15 @@ onMounted(async () => {
     topPicks.value = topPicksRes.data || [];
     packs.value = packsRes?.data || [];
     const uniqueCats = [...new Set(products.value.map((p: any) => {
+      if (p.isAddOn) return p.categoryId?.name ? toTitleCase(p.categoryId.name) : 'Add-ons';
       const catObj = p.categoryId || p.category;
-      if (typeof catObj === 'object' && catObj !== null) return catObj.name;
-      return catObj;
+      let catName = 'Other';
+      if (typeof catObj === 'object' && catObj !== null) {
+        catName = catObj.name || 'Other';
+      } else if (catObj) {
+        catName = catObj;
+      }
+      return toTitleCase(catName);
     }).filter(Boolean))];
     // categories are now computed dynamically
     if (uniqueCats.length > 0) activeCategory.value = uniqueCats[0] as string;
