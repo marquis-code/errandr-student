@@ -145,7 +145,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { X, ArrowRight, Box, Star, ExternalLink } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
 import { useVendors } from '@/composables/modules/vendors';
-import { GATEWAY_ENDPOINT_WITH_AUTH } from '@/api_factory/axios.config';
+import { GATEWAY_ENDPOINT_WITH_AUTH, GATEWAY_ENDPOINT_WITHOUT_VERSION } from '@/api_factory/axios.config';
 import axios from 'axios';
 
 const route = useRoute();
@@ -173,7 +173,7 @@ const SENSITIVE_ROUTES = ['cart', 'chat-id'];
 const fetchAdvertConfig = async () => {
   try {
     // Attempt to fetch public advert config
-    const res = await axios.get('http://localhost:3001/api/v1/settings/advert/public');
+    const res = await GATEWAY_ENDPOINT_WITHOUT_VERSION.get('/api/v1/settings/advert/public');
     if (res.data) {
       advertConfig = res.data;
       AD_INTERVAL_MS = (advertConfig.intervalMinutes || 15) * 60 * 1000;
