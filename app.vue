@@ -2,6 +2,7 @@
   <div>
     <VitePwaManifest />
     <UiToast class="z-[9999999]" />
+    <CoreNetworkStatusBanner />
     <UiGlobalLoader />
     <NuxtLayout class="z-10">
       <NuxtPage class="z-10" />

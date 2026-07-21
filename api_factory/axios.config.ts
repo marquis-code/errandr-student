@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
 import { useUser } from "@/composables/modules/auth/user";
 import { useCustomToast } from '@/composables/core/useCustomToast'
-
+import { useNetworkStatus } from '@/composables/core/useNetworkStatus'
 // Lazy-init toast to avoid calling composable outside Vue setup context
 let _showToast: ReturnType<typeof useCustomToast>['showToast'] | null = null;
 const getToast = () => {
@@ -80,6 +80,7 @@ const instanceArray = [
 ];
 
 instanceArray.forEach((instance) => {
+  instance.defaults.timeout = 15000; // Set global timeout to 15 seconds
   instance.interceptors.request.use((config: any) => {
     let token = '';
     
@@ -111,16 +112,17 @@ instanceArray.forEach((instance) => {
     },
     (err: any) => {
       const { logOut } = useUser();
-      if (typeof err.response === "undefined") {
-        getToast()({
-          title: "Error",
-          message: "kindly check your network connection",
-          toastType: "error",
-          duration: 3000
-        });
+      
+      // Check for timeout or network connection error
+      if (err.code === 'ECONNABORTED' || err.message?.includes('timeout') || err.message?.includes('Network Error') || typeof err.response === "undefined") {
+        try {
+          const { recordSlowNetwork } = useNetworkStatus();
+          recordSlowNetwork();
+        } catch (e) {}
+        
         return {
           type: "ERROR",
-          ...err.response,
+          ...(err.response || { status: 0, statusText: "Network Error" }),
         };
       }
       if (err.response.status === 401) {
