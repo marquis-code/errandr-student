@@ -1834,7 +1834,7 @@ const groupedProducts = computed(() => {
   });
 
   filteredProducts.forEach(p => {
-    let cat = p.category || 'Other';
+    let cat = p.categoryId || p.category || 'Other';
     if (typeof cat === 'object' && cat !== null) {
       cat = cat.name || 'Other';
     }
@@ -2133,6 +2133,32 @@ onMounted(async () => {
     if (isFoodVendor.value) {
       productsRes = await menu_items_api.getByVendor(vendor.value._id);
       topPicksRes = await menu_items_api.getTopPicks(vendor.value._id);
+      
+      try {
+        const addOnsRes = await menu_items_api.getAddOns(vendor.value._id);
+        if (addOnsRes && addOnsRes.data && Array.isArray(addOnsRes.data)) {
+          addOnsRes.data.forEach((group: any) => {
+            if (group.options && Array.isArray(group.options)) {
+              group.options.forEach((opt: any) => {
+                if (!productsRes.data) productsRes.data = [];
+                productsRes.data.push({
+                  _id: opt._id,
+                  name: opt.name,
+                  price: opt.price,
+                  categoryId: { name: group.name },
+                  isAvailable: opt.isAvailable !== false,
+                  image: '/placeholder-food.jpg',
+                  description: `Add-on from ${group.name}`,
+                  isAddOn: true
+                });
+              });
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Failed to fetch add-ons', e);
+      }
+      
     } else {
       productsRes = await products_api.getByVendor(vendor.value._id);
       topPicksRes = await products_api.getTopPicks(vendor.value._id);
@@ -2142,8 +2168,9 @@ onMounted(async () => {
     topPicks.value = topPicksRes.data || [];
     packs.value = packsRes?.data || [];
     const uniqueCats = [...new Set(products.value.map((p: any) => {
-      if (typeof p.category === 'object' && p.category !== null) return p.category.name;
-      return p.category;
+      const catObj = p.categoryId || p.category;
+      if (typeof catObj === 'object' && catObj !== null) return catObj.name;
+      return catObj;
     }).filter(Boolean))];
     // categories are now computed dynamically
     if (uniqueCats.length > 0) activeCategory.value = uniqueCats[0] as string;

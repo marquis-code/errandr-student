@@ -12,5 +12,8 @@ export const menu_items_api = {
   },
   getTopPicks: (vendorId: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get(`/menu/items/vendor/${vendorId}/top-picks`);
+  },
+  getAddOns: (vendorId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/menu/add-ons/vendor/${vendorId}`);
   }
 };
