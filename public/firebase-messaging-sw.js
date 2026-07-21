@@ -17,10 +17,11 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
 
-  const notificationTitle = payload.notification.title;
+  const notificationTitle = payload.notification?.title || payload.data?.title || 'New Notification';
   const notificationOptions = {
-    body: payload.notification.body,
+    body: payload.notification?.body || payload.data?.body || 'You have a new message',
     icon: '/icon.png',
+    data: payload.data || {},
     requireInteraction: true // This ensures the notification stays until the vendor clicks it
   };
 
