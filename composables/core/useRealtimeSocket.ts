@@ -43,7 +43,7 @@ export const useRealtimeSocket = () => {
 
     socket.value = io(`${baseUrl}/realtime`, {
       path: '/socket.io/',
-      transports: ['websocket'], // Force websocket to avoid sticky session proxy issues
+      transports: ['polling'], // Aggressively force polling only to bypass WebSocket handshake 500 errors on the LB
       auth: authPayload,
     })
 
