@@ -11,7 +11,7 @@
           <input 
             type="text" 
             placeholder="Search messages..." 
-            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-sm outline-none font-medium"
+            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-base outline-none font-medium"
           >
           <Search class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
         </div>
@@ -124,7 +124,7 @@
               @input="handleTyping"
               rows="1"
               placeholder="Type a message..."
-              class="flex-1 bg-transparent border-none py-3 text-sm font-medium text-gray-900 outline-none resize-none max-h-32"
+              class="flex-1 bg-transparent border-none py-3 text-base font-medium text-gray-900 outline-none resize-none max-h-32"
             ></textarea>
             <button 
               @click="handleSendMessage"

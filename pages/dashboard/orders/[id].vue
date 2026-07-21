@@ -158,7 +158,7 @@
               <p class="text-gray-500 font-medium text-sm max-w-lg mb-6">Your errand is broadcasted to available riders nearby. Increase the fee to make your request more attractive.</p>
               
               <div class="w-full max-w-sm flex flex-col sm:flex-row gap-3">
-                 <input v-model="formattedNewFee" type="text" @input="handleFeeInput" class="w-full px-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-parentPrimary focus:ring-2 focus:ring-parentPrimary/10 font-medium text-gray-900 bg-white transition-all text-sm" placeholder="New fee amount" />
+                 <input v-model="formattedNewFee" type="text" @input="handleFeeInput" class="w-full px-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-parentPrimary focus:ring-2 focus:ring-parentPrimary/10 font-medium text-gray-900 bg-white transition-all text-base" placeholder="New fee amount" />
                  <button @click="increaseFee" :disabled="isIncreasingFee || newFee <= order.deliveryFee" class="bg-gray-900 text-white font-medium px-5 py-3 rounded-lg hover:bg-black transition-colors disabled:opacity-50 flex-shrink-0 text-sm">
                     {{ isIncreasingFee ? 'Updating...' : 'Update fee' }}
                  </button>
@@ -255,7 +255,7 @@
                              <Star :class="['w-6 h-6 transition-colors', ratingForm.vendorRating >= i ? 'text-yellow-400 fill-yellow-400' : 'text-white/20']" />
                           </button>
                        </div>
-                       <textarea v-model="ratingForm.vendorReview" placeholder="Feedback on the food..." class="w-full p-3 rounded-lg bg-black/40 border border-white/10 text-xs font-medium placeholder-white/30 focus:outline-none focus:border-parentPrimary resize-none h-20"></textarea>
+                       <textarea v-model="ratingForm.vendorReview" placeholder="Feedback on the food..." class="w-full p-3 rounded-lg bg-black/40 border border-white/10 text-base font-medium placeholder-white/30 focus:outline-none focus:border-parentPrimary resize-none h-20"></textarea>
                     </div>
 
                     <!-- Rider -->
@@ -271,7 +271,7 @@
                              <Star :class="['w-6 h-6 transition-colors', ratingForm.erranderRating >= i ? 'text-yellow-400 fill-yellow-400' : 'text-white/20']" />
                           </button>
                        </div>
-                       <textarea v-model="ratingForm.erranderReview" placeholder="How was the service?" class="w-full p-3 rounded-lg bg-black/40 border border-white/10 text-xs font-medium placeholder-white/30 focus:outline-none focus:border-parentPrimary resize-none h-20"></textarea>
+                       <textarea v-model="ratingForm.erranderReview" placeholder="How was the service?" class="w-full p-3 rounded-lg bg-black/40 border border-white/10 text-base font-medium placeholder-white/30 focus:outline-none focus:border-parentPrimary resize-none h-20"></textarea>
                     </div>
                  </div>
 

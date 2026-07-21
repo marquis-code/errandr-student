@@ -43,7 +43,7 @@
                   v-model="form.currentPassword" 
                   :type="showCurrentPassword ? 'text' : 'password'"
                   placeholder="Enter current password"
-                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all pr-12"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all pr-12"
                   required
                   :disabled="loading"
                 >
@@ -65,7 +65,7 @@
                   v-model="form.newPassword" 
                   :type="showNewPassword ? 'text' : 'password'"
                   placeholder="Enter new password"
-                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all pr-12"
+                  class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all pr-12"
                   required
                   minlength="8"
                   :disabled="loading"

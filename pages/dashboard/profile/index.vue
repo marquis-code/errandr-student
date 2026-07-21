@@ -53,7 +53,7 @@
             <input 
               type="text" 
               v-model="formData.firstName"
-              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-sm outline-none"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-base outline-none"
             >
           </div>
           
@@ -62,7 +62,7 @@
             <input 
               type="text" 
               v-model="formData.lastName"
-              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-sm outline-none"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-base outline-none"
             >
           </div>
 
@@ -72,7 +72,7 @@
               type="tel" 
               v-model="formData.phone"
               placeholder="+234"
-              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-sm outline-none"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-base outline-none"
             >
           </div>
 
@@ -82,7 +82,7 @@
               type="email" 
               :value="user?.email"
               readonly
-              class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 text-sm outline-none cursor-not-allowed"
+              class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 text-base outline-none cursor-not-allowed"
             >
           </div>
 
@@ -91,7 +91,7 @@
             <input 
               type="date" 
               v-model="formData.dateOfBirth"
-              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-sm outline-none"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-base outline-none"
             >
           </div>
 
@@ -99,7 +99,7 @@
             <label class="text-sm font-bold text-gray-700">Gender</label>
             <select 
               v-model="formData.gender"
-              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-sm outline-none appearance-none"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all text-base outline-none appearance-none"
             >
               <option value="" disabled>Select gender</option>
               <option value="male">Male</option>
@@ -135,7 +135,7 @@
                 type="text" 
                 v-model="formData.homeAddress"
                 placeholder="Add a home address"
-                class="w-full bg-transparent outline-none text-sm font-bold text-gray-900 placeholder:text-gray-500 placeholder:font-normal"
+                class="w-full bg-transparent outline-none text-base font-bold text-gray-900 placeholder:text-gray-500 placeholder:font-normal"
               />
             </div>
           </div>
@@ -152,7 +152,7 @@
                 type="text" 
                 v-model="formData.workAddress"
                 placeholder="Add a work address"
-                class="w-full bg-transparent outline-none text-sm font-bold text-gray-900 placeholder:text-gray-500 placeholder:font-normal"
+                class="w-full bg-transparent outline-none text-base font-bold text-gray-900 placeholder:text-gray-500 placeholder:font-normal"
               />
             </div>
           </div>

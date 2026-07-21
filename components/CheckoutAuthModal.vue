@@ -120,9 +120,9 @@
                   <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
                   <span class="relative bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">or sign in with email</span>
                 </div>
-                <input v-model="loginForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <input v-model="loginForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
                 <div class="relative">
-                  <input v-model="loginForm.password" :type="showLoginPassword ? 'text' : 'password'" placeholder="Password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                  <input v-model="loginForm.password" :type="showLoginPassword ? 'text' : 'password'" placeholder="Password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
                   <button type="button" @click="showLoginPassword = !showLoginPassword" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-900 transition-colors">
                     <Eye v-if="!showLoginPassword" class="w-4 h-4" />
                     <EyeOff v-else class="w-4 h-4" />
@@ -137,11 +137,11 @@
             <!-- Guest View -->
             <template v-else-if="view === 'guest'">
               <div class="grid grid-cols-2 gap-3">
-                <input v-model="guestForm.firstName" type="text" placeholder="First Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
-                <input v-model="guestForm.lastName" type="text" placeholder="Last Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <input v-model="guestForm.firstName" type="text" placeholder="First Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <input v-model="guestForm.lastName" type="text" placeholder="Last Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
               </div>
-              <input v-model="guestForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
-              <input v-model="guestForm.phone" type="tel" placeholder="Phone Number" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+              <input v-model="guestForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+              <input v-model="guestForm.phone" type="tel" placeholder="Phone Number" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
             </template>
 
             <!-- Register View -->
@@ -168,12 +168,12 @@
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-3 mt-3">
-                <input v-model="registerForm.firstName" type="text" placeholder="First Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
-                <input v-model="registerForm.lastName" type="text" placeholder="Last Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <input v-model="registerForm.firstName" type="text" placeholder="First Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <input v-model="registerForm.lastName" type="text" placeholder="Last Name" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
               </div>
-              <input v-model="registerForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+              <input v-model="registerForm.email" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
               <div class="relative">
-                <input v-model="registerForm.password" :type="showRegisterPassword ? 'text' : 'password'" placeholder="Create password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+                <input v-model="registerForm.password" :type="showRegisterPassword ? 'text' : 'password'" placeholder="Create password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
                 <button type="button" @click="showRegisterPassword = !showRegisterPassword" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-900 transition-colors">
                   <Eye v-if="!showRegisterPassword" class="w-4 h-4" />
                   <EyeOff v-else class="w-4 h-4" />
@@ -183,7 +183,7 @@
 
             <!-- Forgot Password View -->
             <template v-else-if="view === 'forgot'">
-              <input v-model="forgotEmail" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
+              <input v-model="forgotEmail" type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all placeholder:text-gray-300" />
             </template>
 
             <!-- Verify OTP Views -->
@@ -204,14 +204,14 @@
             <template v-else-if="view === 'reset'">
               <div class="space-y-3">
                 <div class="relative">
-                  <input v-model="resetForm.password" :type="showResetPassword ? 'text' : 'password'" placeholder="New password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" />
+                  <input v-model="resetForm.password" :type="showResetPassword ? 'text' : 'password'" placeholder="New password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" />
                   <button type="button" @click="showResetPassword = !showResetPassword" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400">
                     <Eye v-if="!showResetPassword" class="w-4 h-4" />
                     <EyeOff v-else class="w-4 h-4" />
                   </button>
                 </div>
                 <div class="relative">
-                  <input v-model="resetForm.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm new password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" />
+                  <input v-model="resetForm.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm new password" required class="w-full pl-4 pr-10 py-3 bg-gray-50 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-parentPrimary/20 transition-all" />
                   <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400">
                     <Eye v-if="!showConfirmPassword" class="w-4 h-4" />
                     <EyeOff v-else class="w-4 h-4" />

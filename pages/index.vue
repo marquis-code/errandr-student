@@ -265,7 +265,7 @@
                     @focus="showLocationDropdown = true; showSuggestions = true"
                     @input="showLocationDropdown = true"
                     placeholder="Current location" 
-                    class="bg-transparent border-none outline-none text-xs md:text-sm font-medium text-gray-900 placeholder:text-gray-600 w-24 md:w-28 cursor-pointer group-hover/loc:placeholder:text-gray-900 transition-colors"
+                    class="bg-transparent border-none outline-none text-base md:text-sm font-medium text-gray-900 placeholder:text-gray-600 w-24 md:w-28 cursor-pointer group-hover/loc:placeholder:text-gray-900 transition-colors"
                   />
                   <ChevronDown class="w-3.5 h-3.5 text-gray-400 transition-transform ml-0.5" :class="{ 'rotate-180': showLocationDropdown }" />
                 </div>

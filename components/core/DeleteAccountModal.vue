@@ -41,7 +41,7 @@
               <textarea 
                 v-model="reason" 
                 placeholder="Tell us what went wrong..."
-                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none min-h-[100px]"
+                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none min-h-[100px]"
                 :disabled="loading"
               ></textarea>
             </div>

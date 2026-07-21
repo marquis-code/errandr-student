@@ -177,7 +177,7 @@
                   v-model="scheduledDate"
                   type="datetime-local"
                   :min="minPreOrderDate"
-                  class="w-full bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none transition-all"
+                  class="w-full bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl px-4 py-3 text-base font-bold text-gray-900 outline-none transition-all"
                 />
                 <div class="mt-3 text-[10px] font-bold text-gray-400 space-y-1">
                   <p>• Requires a minimum of {{ maxLeadTime }} hours notice.</p>
@@ -275,7 +275,7 @@
                       v-model="topupAmount"
                       type="number"
                       placeholder="Amount to add"
-                      class="w-full px-4 py-3 bg-white border border-rose-200 rounded-xl text-sm font-medium text-gray-900 outline-none focus:border-parentPrimary transition-all placeholder:text-gray-300"
+                      class="w-full px-4 py-3 bg-white border border-rose-200 rounded-xl text-base font-medium text-gray-900 outline-none focus:border-parentPrimary transition-all placeholder:text-gray-300"
                     />
                     <button 
                       @click="startTopup"
@@ -534,7 +534,7 @@
                   v-model="topupAmount" 
                   type="number"
                   placeholder="e.g. 5000"
-                  class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-emerald-500/20 rounded-xl text-sm font-medium text-gray-900 outline-none transition-all"
+                  class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-emerald-500/20 rounded-xl text-base font-medium text-gray-900 outline-none transition-all"
                 />
               </div>
               <button 

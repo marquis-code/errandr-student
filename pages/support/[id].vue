@@ -75,7 +75,7 @@
             v-model="newMessage"
             type="text"
             placeholder="Type your message to support..."
-            class="flex-1 bg-white rounded-xl border border-gray-100 px-4 py-3 text-sm font-medium focus:outline-none focus:border-parentPrimary transition-colors"
+            class="flex-1 bg-white rounded-xl border border-gray-100 px-4 py-3 text-base font-medium focus:outline-none focus:border-parentPrimary transition-colors"
             @keyup.enter="sendMessage"
           />
           <button 

@@ -215,7 +215,7 @@
                   v-model="bookingNotes" 
                   rows="2" 
                   placeholder="Any special requests?"
-                  class="w-full bg-gray-50 border border-gray-100/80 rounded-lg p-3 text-sm outline-none focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary/20 transition-all resize-none"
+                  class="w-full bg-gray-50 border border-gray-100/80 rounded-lg p-3 text-base outline-none focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary/20 transition-all resize-none"
                 ></textarea>
               </div>
 

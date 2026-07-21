@@ -33,7 +33,7 @@
           type="text" 
           placeholder="What are you craving today?" 
           @keyup.enter="handleSearch"
-          class="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-4 focus:ring-parentPrimary/10 focus:border-parentPrimary transition-all text-sm font-bold text-gray-900 placeholder:text-gray-400 shadow-sm outline-none"
+          class="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-4 focus:ring-parentPrimary/10 focus:border-parentPrimary transition-all text-base font-bold text-gray-900 placeholder:text-gray-400 shadow-sm outline-none"
         >
         <div class="absolute left-4 top-1/2 -translate-y-1/2">
           <Search class="w-4 h-4 text-gray-400 group-focus-within:text-parentPrimary transition-colors" />

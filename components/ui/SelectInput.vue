@@ -71,7 +71,7 @@
                     v-model="searchQuery"
                     type="text"
                     placeholder="Search..."
-                    class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:border-gray-200 outline-none text-sm font-medium transition-all"
+                    class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:border-gray-200 outline-none text-base font-medium transition-all"
                     @click.stop
                   />
                 </div>

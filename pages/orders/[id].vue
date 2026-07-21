@@ -381,7 +381,7 @@
  v-model="reviewText"
  rows="3"
  placeholder="Tell us what you loved (or what needs improvement)..."
- class="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm font-medium focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
+ class="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-base font-medium focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
  ></textarea>
 
  <button 

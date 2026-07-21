@@ -16,7 +16,7 @@
             v-model="phone" 
             type="tel" 
             placeholder="08123456789"
-            class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-4 text-sm font-bold text-gray-900 outline-none focus:border-parentPrimary/20 focus:bg-white transition-all group-hover:bg-gray-100/50"
+            class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-4 text-base font-bold text-gray-900 outline-none focus:border-parentPrimary/20 focus:bg-white transition-all group-hover:bg-gray-100/50"
           />
           <div class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-parentPrimary bg-parentPrimary/10 px-2 py-1 rounded-lg">MTN/GLO/AIRTEL</div>
         </div>
@@ -29,7 +29,7 @@
             v-model.number="points" 
             type="number" 
             :placeholder="`Max: ${user?.points || 0}`"
-            class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-4 text-sm font-bold text-gray-900 outline-none focus:border-parentPrimary/20 focus:bg-white transition-all group-hover:bg-gray-100/50"
+            class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-4 text-base font-bold text-gray-900 outline-none focus:border-parentPrimary/20 focus:bg-white transition-all group-hover:bg-gray-100/50"
           />
           <div class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-900">pts</div>
         </div>

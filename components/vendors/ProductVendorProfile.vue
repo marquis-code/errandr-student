@@ -383,7 +383,7 @@
               v-model="searchQuery"
               type="text" 
               :placeholder="`Search ${vendor?.storeName || 'Store'}...`"
-              class="block w-full pl-10 pr-3 py-2 border border-gray-100 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-parentPrimary focus:border-parentPrimary sm:text-sm transition-all shadow-sm"
+              class="block w-full pl-10 pr-3 py-2 border border-gray-100 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-parentPrimary focus:border-parentPrimary sm:text-base transition-all shadow-sm"
             />
           </div>
 
@@ -1370,7 +1370,7 @@
                 <textarea 
                   v-model="productNote" 
                   rows="2" 
-                  class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-sm focus:outline-none focus:ring-1 focus:ring-parentPrimary focus:bg-white transition-all resize-none placeholder-gray-400"
+                  class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-base focus:outline-none focus:ring-1 focus:ring-parentPrimary focus:bg-white transition-all resize-none placeholder-gray-400"
                   :placeholder="isFoodVendor ? 'E.g. No onions, extra spicy...' : 'E.g. Specific color, custom message...'"
                 ></textarea>
                 <p class="text-[10px] text-gray-400 mt-1">Special requests are subject to the vendor's approval and may incur extra charges.</p>

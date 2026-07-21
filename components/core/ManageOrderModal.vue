@@ -55,7 +55,7 @@
                             v-model="form.orderNumber"
                             type="text"
                             required
-                            class="peer w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm placeholder-transparent focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary outline-none transition-all"
+                            class="peer w-full border border-gray-200 rounded-xl px-4 py-3.5 text-base placeholder-transparent focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary outline-none transition-all"
                             placeholder="Order reference"
                           />
                           <label
@@ -75,7 +75,7 @@
                             v-model="form.email"
                             type="email"
                             required
-                            class="peer w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm placeholder-transparent focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary outline-none transition-all"
+                            class="peer w-full border border-gray-200 rounded-xl px-4 py-3.5 text-base placeholder-transparent focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary outline-none transition-all"
                             placeholder="Email address"
                           />
                           <label

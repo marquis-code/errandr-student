@@ -23,7 +23,7 @@
             type="datetime-local" 
             v-model="bookingForm.scheduledDate" 
             :min="new Date().toISOString().split('T')[0]"
-            class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-parentPrimary focus:border-parentPrimary block p-3 outline-none transition-all"
+            class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-base rounded-xl focus:ring-parentPrimary focus:border-parentPrimary block p-3 outline-none transition-all"
           />
         </div>
         
@@ -32,7 +32,7 @@
           <input 
             type="time" 
             v-model="bookingForm.startTime" 
-            class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-parentPrimary focus:border-parentPrimary block p-3 outline-none transition-all"
+            class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-base rounded-xl focus:ring-parentPrimary focus:border-parentPrimary block p-3 outline-none transition-all"
           />
         </div>
 
@@ -42,7 +42,7 @@
             v-model="bookingForm.notes" 
             rows="3"
             placeholder="Any special requests?"
-            class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-parentPrimary focus:border-parentPrimary block p-3 outline-none transition-all"
+            class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-base rounded-xl focus:ring-parentPrimary focus:border-parentPrimary block p-3 outline-none transition-all"
           ></textarea>
         </div>
       </div>

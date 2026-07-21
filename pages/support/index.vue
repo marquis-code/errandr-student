@@ -92,7 +92,7 @@
                 v-model="form.title" 
                 type="text" 
                 placeholder="Brief summary of the issue" 
-                class="w-full bg-white rounded-xl border border-gray-100 p-3.5 text-sm font-medium focus:outline-none focus:border-parentPrimary transition-colors" 
+                class="w-full bg-white rounded-xl border border-gray-100 p-3.5 text-base font-medium focus:outline-none focus:border-parentPrimary transition-colors" 
                 required 
               />
             </div>
@@ -104,7 +104,7 @@
                 v-model="form.description" 
                 rows="5" 
                 placeholder="Describe your issue in detail..." 
-                class="w-full bg-white rounded-xl border border-gray-100 p-4 text-sm font-medium focus:outline-none focus:border-parentPrimary transition-colors resize-none" 
+                class="w-full bg-white rounded-xl border border-gray-100 p-4 text-base font-medium focus:outline-none focus:border-parentPrimary transition-colors resize-none" 
                 required 
               />
             </div>

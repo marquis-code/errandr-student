@@ -135,3 +135,9 @@ input[type=number] {
   content: '✓';
   @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-sm font-medium shadow-sm;
 }
+/* Safety net to prevent mobile auto-zoom on inputs */
+@layer base {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}

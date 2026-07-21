@@ -30,7 +30,7 @@
           v-model="searchQuery"
           type="text" 
           placeholder="Search by vendor or ID..." 
-          class="w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-xl text-sm font-bold text-gray-900 focus:ring-4 focus:ring-parentPrimary/10 focus:border-parentPrimary transition-all placeholder:text-gray-300 outline-none shadow-sm"
+          class="w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-xl text-base font-bold text-gray-900 focus:ring-4 focus:ring-parentPrimary/10 focus:border-parentPrimary transition-all placeholder:text-gray-300 outline-none shadow-sm"
         />
       </div>
     </div>

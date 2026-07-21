@@ -81,7 +81,7 @@
                 v-model="newReview.comment"
                 rows="3"
                 placeholder="What did you like? What could be better?"
-                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all outline-none resize-none placeholder:text-gray-400"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-base focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all outline-none resize-none placeholder:text-gray-400"
                 required
               ></textarea>
             </div>

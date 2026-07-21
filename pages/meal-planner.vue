@@ -19,7 +19,7 @@
                   v-model="formattedBudget"
                   type="text"
                   placeholder="0.00"
-                  class="w-full pl-10 pr-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-medium focus:bg-white focus:border-parentPrimary/30 outline-none transition-all placeholder:text-gray-300"
+                  class="w-full pl-10 pr-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-base font-medium focus:bg-white focus:border-parentPrimary/30 outline-none transition-all placeholder:text-gray-300"
                 />
               </div>
             </div>

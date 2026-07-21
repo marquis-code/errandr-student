@@ -54,7 +54,7 @@
                       type="email"
                       required
                       placeholder="Enter your email address"
-                      class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary outline-none transition-all"
+                      class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-base focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary outline-none transition-all"
                     />
                   </div>
 
