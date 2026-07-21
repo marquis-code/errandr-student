@@ -14,22 +14,12 @@ export const useStudentNotifications = () => {
     try {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
-        // Try to get existing registration or wait with a timeout
-        let registration = await navigator.serviceWorker.getRegistration();
-        if (!registration) {
-          try {
-            registration = await Promise.race([
-              navigator.serviceWorker.ready,
-              new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
-            ]) as ServiceWorkerRegistration;
-          } catch (err) {
-            console.warn('Service worker not ready in time, falling back to default messaging SW');
-          }
-        }
+        // Wait for the PWA service worker to be ready instead of registering a new one
+        const registration = await navigator.serviceWorker.ready;
         
         const currentToken = await getToken($messaging, { 
           vapidKey: config.public.firebaseVapidKey || 'BJJs2JX_V36p-9sfug38GwMMGDWSQMObywAkys73EXlJgLEsiQaF6nRMDzVVjdgDb-MHJyw3Q_atT6KaluQN41I',
-          serviceWorkerRegistration: registration || undefined
+          serviceWorkerRegistration: registration
         });
         
         if (currentToken) {
