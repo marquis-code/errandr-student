@@ -113,7 +113,7 @@ export default defineNuxtConfig({
       navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
       importScripts: [
-        `/firebase-messaging-sw.js?apiKey=${process.env.NUXT_PUBLIC_FIREBASE_API_KEY || ''}&projectId=${process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID || ''}&messagingSenderId=${process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || ''}&appId=${process.env.NUXT_PUBLIC_FIREBASE_APP_ID || ''}`
+        `/firebase-messaging-sw.js?apiKey=${process.env.NUXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyBzYV1KzAMugqh2N0DvbTP7vr4f96j1Po4'}&projectId=${process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID || 'erranders-493fe'}&messagingSenderId=${process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '1022790982621'}&appId=${process.env.NUXT_PUBLIC_FIREBASE_APP_ID || '1:1022790982621:web:771af2aab7a6e7a200b434'}`
       ]
     },
     client: {
@@ -133,12 +133,12 @@ export default defineNuxtConfig({
       apiBase: process.env.VITE_API_BASE_URL || "https://api.erranders.org",
       wsBase: process.env.WS_BASE_URL || process.env.VITE_WS_URL || "https://api.erranders.org",
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || '',
-      firebaseApiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY || '',
-      firebaseAuthDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '',
-      firebaseProjectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID || '',
-      firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
-      firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID || '',
-      firebaseVapidKey: process.env.NUXT_PUBLIC_FIREBASE_VAPID_KEY || '',
+      firebaseApiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyBzYV1KzAMugqh2N0DvbTP7vr4f96j1Po4',
+      firebaseAuthDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'erranders-493fe.firebaseapp.com',
+      firebaseProjectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID || 'erranders-493fe',
+      firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '1022790982621',
+      firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID || '1:1022790982621:web:771af2aab7a6e7a200b434',
+      firebaseVapidKey: process.env.NUXT_PUBLIC_FIREBASE_VAPID_KEY || 'BJJs2JX_V36p-9sfug38GwMMGDWSQMObywAkys73EXlJgLEsiQaF6nRMDzVVjdgDb-MHJyw3Q_atT6KaluQN41I',
       paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY || '',
       mapboxToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN || ''
     },
