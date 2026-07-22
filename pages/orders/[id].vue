@@ -337,8 +337,20 @@
  <span class="text-gray-900">₦{{ order.packagingFee?.toLocaleString() || 0 }}</span>
  </div>
  <div class="flex justify-between items-center text-sm font-bold text-gray-500 r">
- <span>Service Charge (5%)</span>
+ <span>Service Charge</span>
  <span class="text-gray-900">₦{{ order.serviceFee?.toLocaleString() }}</span>
+ </div>
+ <div v-if="order.platformProcessingFee" class="flex justify-between items-center text-sm font-bold text-gray-500 r">
+ <span>Platform Fee</span>
+ <span class="text-gray-900">₦{{ order.platformProcessingFee?.toLocaleString() }}</span>
+ </div>
+ <div v-if="order.discount > 0" class="flex justify-between items-center text-sm font-bold text-parentPrimary r">
+ <span>Discount Applied</span>
+ <span class="font-bold">-₦{{ order.discount?.toLocaleString() }}</span>
+ </div>
+ <div v-if="order.promoCode" class="flex justify-between items-center text-[10px] font-bold text-gray-400 r mt-1">
+ <span>Promo Code Used</span>
+ <span>{{ order.promoCode }}</span>
  </div>
  <div class="h-px bg-gray-200 my-3" />
  <div class="flex justify-between items-center pt-1">

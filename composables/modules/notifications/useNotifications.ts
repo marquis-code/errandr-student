@@ -49,35 +49,10 @@ export const useNotifications = () => {
     notifications.value.unshift(notification)
   }
 
-  // Web Push Subscription Logic
   const subscribeToPushNotifications = async (): Promise<any | null> => {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      console.warn('Push messaging is not supported');
-      return null;
-    }
-
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        console.warn('Notification permission denied');
-        return null;
-      }
-
-      const vapidPublicKey = 'BKlGd11ZrLqQkfprTOj1Gj6YWCriFD5GsMOUw2sq3mfNNiwI5OXUmovI8WdeJmzekCA3f8niAAgtT0krQPpk30I';
-      const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
-
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: convertedVapidKey
-      });
-
-      return subscription;
-    } catch (e) {
-      console.error('Failed to subscribe to push notifications:', e);
-      return null;
-    }
+    // Deprecated: Native web push has been replaced by Firebase Cloud Messaging.
+    // The FCM token is handled globally in useStudentNotifications.ts.
+    return null;
   }
 
   // Helper function to convert VAPID key

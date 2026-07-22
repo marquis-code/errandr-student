@@ -371,8 +371,40 @@
                     <span>Processing Fee</span>
                     <span class="text-gray-900 font-medium">₦{{ computedPaystackFee.toLocaleString() }}</span>
                   </div>
+                  <div v-if="computedBrethrenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-parentPrimary">
+                    <span class="flex items-center gap-1"><Users class="w-3 h-3" /> Brethren Split</span>
+                    <span class="font-bold">-₦{{ computedBrethrenDiscount.toLocaleString() }}</span>
+                  </div>
+                  <div v-if="computedPromoDiscount > 0" class="flex justify-between items-center text-xs font-bold text-blue-500">
+                    <span class="flex items-center gap-1"><Tag class="w-3 h-3" /> Promo ({{ promoCodeObj.code }})</span>
+                    <span class="font-bold">-₦{{ computedPromoDiscount.toLocaleString() }}</span>
+                  </div>
                 </div>
                 <div class="px-5 pb-5 pt-3 border-t border-dashed border-gray-100 space-y-5">
+                  <div v-if="isNightOwl" class="p-3 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-3">
+                    <span class="text-lg">🦉</span>
+                    <div>
+                      <p class="text-xs font-bold text-indigo-700">Night Owl Active!</p>
+                      <p class="text-[10px] font-medium text-indigo-600">Enjoy free delivery till 2 AM</p>
+                    </div>
+                  </div>
+
+                  <div v-if="!promoCodeObj" class="flex gap-2">
+                    <input 
+                      v-model="promoCodeInput"
+                      type="text"
+                      placeholder="Promo Code"
+                      class="flex-1 px-4 py-3 bg-gray-50 border border-transparent focus:border-parentPrimary/20 rounded-xl text-xs font-medium text-gray-900 outline-none uppercase"
+                    />
+                    <button 
+                      @click="validatePromo"
+                      :disabled="isValidatingPromo || !promoCodeInput"
+                      class="px-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-gray-800 disabled:opacity-50 transition-colors"
+                    >
+                      <Loader2 v-if="isValidatingPromo" class="w-3 h-3 animate-spin" />
+                      <span v-else>Apply</span>
+                    </button>
+                  </div>
                   <div v-if="user && user.freeDeliveryTokens > 0 && !isBirthday" class="flex items-center justify-between p-3 bg-orange-50 border border-orange-100 rounded-xl cursor-pointer hover:bg-orange-100/50 transition-colors" @click="useFreeDeliveryToken = !useFreeDeliveryToken">
                     <div class="flex flex-col">
                       <span class="text-xs font-bold text-orange-600 flex items-center gap-1">🎟 Use Free Delivery</span>
@@ -641,11 +673,7 @@
 </template>
 
 <script setup lang="ts">
-import { 
-  ShoppingBag, Trash2, X, ShoppingCart, ArrowLeft, MapPin,
-  ChevronRight, ArrowRight, Users, Pencil, Loader2, Star,
-  CreditCard, Wallet, Heart, RefreshCw, Calendar, CheckCircle
-} from 'lucide-vue-next';
+import { ShoppingCart, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users } from 'lucide-vue-next';
 import AnimatedInput from '@/components/ui/AnimatedInput.vue';
 import SelectInput from '@/components/ui/SelectInput.vue';
 import CheckoutAuthModal from '@/components/CheckoutAuthModal.vue';
@@ -717,6 +745,12 @@ const showOrderBreakdown = ref(false);
 const showTopupModal = ref(false);
 const topupAmount = ref<number>(0);
 const paymentError = ref('');
+
+const promoCodeInput = ref('');
+const promoCodeObj = ref<any>(null);
+const promoDiscount = ref(0);
+const isValidatingPromo = ref(false);
+
 const showSplitModeModal = ref(false);
 const splitGroupType = ref('split_bill');
 const selectedPacks = ref<Record<string, any>>({});
@@ -856,8 +890,31 @@ onMounted(() => {
   fetchDeliveryFees();
   fetchPlatformSettings();
 });
+
+const validatePromo = async () => {
+  if (!promoCodeInput.value.trim()) return;
+  isValidatingPromo.value = true;
+  try {
+    const { data } = await api.get(`/promo-codes/validate?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}`);
+    if (data) {
+      promoCodeObj.value = data;
+      showToast({ title: 'Promo Applied!', message: `${data.code} applied successfully.`, toastType: 'success' });
+    }
+  } catch (e: any) {
+    showToast({ title: 'Invalid Code', message: e.response?.data?.message || 'Code is invalid or expired', toastType: 'error' });
+    promoCodeObj.value = null;
+  } finally {
+    isValidatingPromo.value = false;
+  }
+};
+
+const isNightOwl = computed(() => {
+  const currentHour = new Date().getHours();
+  return currentHour >= 22 || currentHour < 2;
+});
+
 const computedTotalDeliveryFee = computed(() => {
-  if (deliveryOption.value === 'pickup') return 0;
+  if (deliveryOption.value === 'pickup' || isNightOwl.value) return 0;
   let total = 0;
   cartStore.allVendorIds.value.forEach(vId => {
     // Fallback to static if dynamic fee isn't fetched yet
@@ -891,6 +948,25 @@ const computedBirthdayDiscount = computed(() => {
   return computedTotalDeliveryFee.value + Math.round(currentSubtotal.value * 0.10);
 });
 
+const computedBrethrenDiscount = computed(() => {
+  if (groupOrder.value) {
+    return Math.round(currentSubtotal.value * 0.10);
+  }
+  return 0;
+});
+
+const computedPromoDiscount = computed(() => {
+  if (!promoCodeObj.value) return 0;
+  if (promoCodeObj.value.discountType === 'percentage') {
+    let pDiscount = Math.round(currentSubtotal.value * (promoCodeObj.value.value / 100));
+    if (promoCodeObj.value.maxDiscountAmount && pDiscount > promoCodeObj.value.maxDiscountAmount) {
+      pDiscount = promoCodeObj.value.maxDiscountAmount;
+    }
+    return pDiscount;
+  }
+  return promoCodeObj.value.value;
+});
+
 const computedTokenDiscount = computed(() => {
   if (useFreeDeliveryToken.value && user.value && user.value.freeDeliveryTokens > 0 && !isBirthday.value) {
     return computedTotalDeliveryFee.value;
@@ -905,7 +981,7 @@ const groupSubtotal = computed(() => {
 });
 
 const subtotalBeforeFee = computed(() =>
-  currentSubtotal.value + computedTotalDeliveryFee.value + computedTotalPackagingFee.value + computedTotalServiceFee.value - computedBirthdayDiscount.value - computedTokenDiscount.value
+  currentSubtotal.value + computedTotalDeliveryFee.value + computedTotalPackagingFee.value + computedTotalServiceFee.value - computedBirthdayDiscount.value - computedTokenDiscount.value - computedPromoDiscount.value - computedBrethrenDiscount.value
 );
 
 const computedPaystackFee = computed(() => {
@@ -1146,6 +1222,7 @@ const startTopup = async () => {
 
 const preCreateOrders = async (): Promise<string[]> => {
   const createdIds: string[] = [];
+  let isFirstOrder = true;
   if (groupOrder.value) {
     const vendorId = groupOrder.value.vendor._id;
     for (const participant of groupOrder.value.participants) {
@@ -1153,30 +1230,38 @@ const preCreateOrders = async (): Promise<string[]> => {
       const vendorMeta = vendorsMetadata.value[vendorId];
       const subtotal = participant.items.reduce((s: number, i: any) => s + (i.price * i.quantity), 0);
       const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendorMeta?.deliveryFee ?? 150);
+      const sFee = Math.round(subtotal * (platformServiceFeePercentage.value / 100));
+      const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const res = await createOrder({
         vendorId, customer: participant.user._id, items: participant.items.map((i: any) => ({ product: i.productId, name: i.name, price: i.price, image: i.image, quantity: i.quantity, subtotal: i.price * i.quantity, customizations: i.customizations || [] })),
-        subtotal, deliveryFee, serviceFee: Math.round(subtotal * 0.05), packagingFee: vendorMeta?.packagingFee ?? 300, total: subtotal + Math.round(subtotal * 0.05) + (vendorMeta?.packagingFee ?? 300) + deliveryFee,
+        subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: vendorMeta?.packagingFee ?? 300, total: subtotal + sFee + (vendorMeta?.packagingFee ?? 300) + deliveryFee + pFee,
         deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, isGroupOrder: true, groupId: activeCode.value, isGroupLeader: participant.user._id === groupOrder.value.host._id,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value,
-        vendorNote: cartStore.vendorNotes.value[vendorId] || ''
+        vendorNote: cartStore.vendorNotes.value[vendorId] || '',
+        promoCode: promoCodeObj.value?.code || undefined,
       });
       if (res?._id || res?.data?._id) createdIds.push(res?._id || res?.data?._id);
+      isFirstOrder = false;
     }
   } else {
     for (const vId of [...cartStore.allVendorIds.value]) {
       const stats = cartStore.getVendorStats(vId) as any;
       const vendor = vendorsMetadata.value[vId];
       const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendor?.deliveryFee ?? 150);
+      const sFee = Math.round(stats.subtotal * (platformServiceFeePercentage.value / 100));
+      const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const res = await createOrder({
         vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal, customizations: item.customizations || [] })) })),
-        subtotal: stats.subtotal, deliveryFee, serviceFee: stats.serviceFee, packagingFee: vendor?.packagingFee ?? 300, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: vendor?.packagingFee ?? 300 },
+        subtotal: stats.subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: vendor?.packagingFee ?? 300, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: vendor?.packagingFee ?? 300 },
         isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
-        vendorNote: cartStore.vendorNotes.value[vId] || ''
+        vendorNote: cartStore.vendorNotes.value[vId] || '',
+        promoCode: promoCodeObj.value?.code || undefined,
       });
       if (res?._id || res?.data?._id) { 
         createdIds.push(res?._id || res?.data?._id); 
       }
+      isFirstOrder = false;
     }
   }
   return createdIds;
