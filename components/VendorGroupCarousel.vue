@@ -160,7 +160,7 @@ const { isVendorFavorited, toggleFavorite } = useFavorites()
 const props = defineProps({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
-  icon: { type: Object, required: true },
+  icon: { type: [Object, Function], required: true },
   vendors: { type: Array as () => any[], required: true },
   loading: { type: Boolean, default: false },
   carouselId: { type: String, required: true }

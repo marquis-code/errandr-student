@@ -1,10 +1,12 @@
 import { ref, onMounted } from 'vue';
 import { users_api } from '@/api_factory/modules/users';
 import { vendors_api } from '@/api_factory/modules/vendors';
+import { useUser } from '@/composables/modules/auth/user';
 
 export const useRecentlyViewed = () => {
   const recentlyViewedVendors = ref<any[]>([]);
   const loading = ref(false);
+  const { isLoggedIn } = useUser();
 
   const getLocalRecentIds = (): string[] => {
     if (typeof window === 'undefined') return [];
@@ -21,6 +23,24 @@ export const useRecentlyViewed = () => {
   };
 
   const getRecent = async () => {
+    if (!isLoggedIn.value) {
+      // User is not authenticated, fallback to local storage directly
+      const localIds = getLocalRecentIds();
+      if (localIds.length > 0) {
+        try {
+          const batchRes = await vendors_api.getBatch(localIds);
+          if (batchRes.data) {
+            // Maintain local order
+            const mapped = localIds.map(id => batchRes.data.find((v: any) => v._id === id)).filter(Boolean);
+            recentlyViewedVendors.value = mapped;
+          }
+        } catch (batchErr) {
+          console.error('Failed to fetch batch recently viewed vendors', batchErr);
+        }
+      }
+      return;
+    }
+
     try {
       loading.value = true;
       const res = await users_api.getRecentlyViewed();
@@ -67,13 +87,15 @@ export const useRecentlyViewed = () => {
     const localIds = list.map(v => v._id);
     setLocalRecentIds(localIds);
 
-    try {
-      await users_api.addRecentlyViewed(vendor._id);
-    } catch (e: any) {
-      if (e.response && e.response.status === 401) {
-        // Ignore for unauthenticated users
-      } else {
-        console.error('Failed to add recently viewed vendor', e);
+    if (isLoggedIn.value) {
+      try {
+        await users_api.addRecentlyViewed(vendor._id);
+      } catch (e: any) {
+        if (e.response && e.response.status === 401) {
+          // Ignore for unauthenticated users
+        } else {
+          console.error('Failed to add recently viewed vendor', e);
+        }
       }
     }
   };

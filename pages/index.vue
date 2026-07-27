@@ -634,7 +634,7 @@ import {
   ShieldCheck, Rocket, Megaphone,
   Menu as MenuIcon, X, Search, ArrowUpRight,
   Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown,
-  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart, Filter
+  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart, Filter, Zap
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
