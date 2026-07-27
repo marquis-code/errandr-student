@@ -312,7 +312,8 @@ import {
   ClipboardList,
   Settings,
   Package,
-  Scissors
+  Scissors,
+  Sparkles
 } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
@@ -345,6 +346,7 @@ const servicesNavItems = [
 ]
 
 const sharedNavItems = [
+  { path: '/dashboard/prime', label: 'Campus Prime', icon: Sparkles },
   { path: '/dashboard/profile', label: 'Profile', icon: User },
   { path: '/dashboard/wallet', label: 'Wallet', icon: Wallet },
   { path: '/dashboard/settings', label: 'Settings', icon: Settings },

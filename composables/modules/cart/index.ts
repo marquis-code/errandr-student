@@ -239,7 +239,7 @@ export const useCart = () => {
       subtotal: sub,
       itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
       packs: vCart.packs,
-      packagingFee: vCart.packs.length > 0 ? 300 : 0 as number,
+      packagingFee: vCart.packs.length > 0 ? 0 : 0 as number,
       serviceFee: Math.round(sub * 0.05) as number,
     };
   };

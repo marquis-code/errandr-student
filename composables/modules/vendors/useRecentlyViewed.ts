@@ -25,9 +25,9 @@ export const useRecentlyViewed = () => {
       loading.value = true;
       const res = await users_api.getRecentlyViewed();
       if (res.data) {
-        recentlyViewedVendors.value = res.data;
+        recentlyViewedVendors.value = Array.isArray(res.data) ? res.data : (res.data.data || []);
         // Sync local storage just in case
-        setLocalRecentIds(res.data.map((v: any) => v._id));
+        setLocalRecentIds(recentlyViewedVendors.value.map((v: any) => v._id));
       }
     } catch (e: any) {
       if (e.response && e.response.status === 401) {
@@ -57,7 +57,7 @@ export const useRecentlyViewed = () => {
     if (!vendor || !vendor._id) return;
     
     // Optimistically update the UI if the vendor is not already at the front
-    let list = [...recentlyViewedVendors.value];
+    let list = Array.isArray(recentlyViewedVendors.value) ? [...recentlyViewedVendors.value] : [];
     list = list.filter(v => v._id !== vendor._id);
     list.unshift(vendor);
     if (list.length > 10) list = list.slice(0, 10);

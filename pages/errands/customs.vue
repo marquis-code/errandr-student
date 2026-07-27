@@ -1,0 +1,786 @@
+<template>
+  <div class="min-h-screen bg-white flex selection:bg-parentPrimary/10 selection:text-parentPrimary font-sans">
+    
+    <!-- Left Section: Branding & Visuals (Hidden on small screens) -->
+    <div class="hidden lg:flex w-1/2 bg-gray-900 relative flex-col justify-between overflow-hidden">
+      <!-- Abstract Background Elements -->
+      <div class="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-5"></div>
+      <div class="absolute -top-[20%] -right-[10%] w-[70%] h-[70%] bg-parentPrimary/20 rounded-full blur-[120px]"></div>
+      <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-blue-500/20 rounded-full blur-[100px]"></div>
+
+      <div class="relative z-10 p-12">
+        <NuxtLink to="/" class="inline-block">
+          <img src="@/assets/img/erranders.png" alt="Errander Logo" class="h-8" />
+        </NuxtLink>
+      </div>
+
+      <div class="relative z-10 p-12 max-w-xl">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white text-sm font-bold mb-6">
+          <Rocket class="w-4 h-4 text-parentPrimary" /> Set Your Own Price
+        </div>
+        <h1 class="text-5xl font-medium text-white tracking-tight leading-tight mb-6">
+          Get anything done on campus. <span class="text-parentPrimary">Your way.</span>
+        </h1>
+        <p class="text-lg text-gray-400 font-medium leading-relaxed">
+          Need a document printed? Groceries picked up? A quick run to the market? Set your fee, broadcast to thousands of student riders, and chat instantly.
+        </p>
+
+        <!-- Testimonial / Trust Badge -->
+        <div class="mt-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-6 flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-parentPrimary to-orange-400 flex items-center justify-center shrink-0 border-2 border-gray-900">
+            <ShieldCheck class="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h4 class="text-white font-bold mb-1">Escrow Protected</h4>
+            <p class="text-sm text-gray-400 font-medium">Your funds are held safely until you confirm the errand is completed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section: The Flow -->
+    <div class="w-full lg:w-1/2 relative flex flex-col min-h-screen">
+      
+      <!-- Mobile Header -->
+      <div class="lg:hidden p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 sticky top-0">
+        <NuxtLink to="/" class="inline-block">
+           <img src="@/assets/img/logo-light.png" alt="Errander Logo" class="h-10" />
+        </NuxtLink>
+        <button @click="$router.back()" class="w-10 h-10 rounded-full bg-gray-25 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors">
+          <X class="w-5 h-5" />
+        </button>
+      </div>
+
+      <!-- Close Button Desktop -->
+      <div class="hidden lg:flex absolute top-8 right-8 z-10">
+        <button @click="$router.back()" class="w-12 h-12 rounded-full bg-gray-25 border border-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:scale-105 transition-all shadow-sm">
+          <X class="w-5 h-5" />
+        </button>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="flex-1 overflow-y-auto px-6 py-8 md:px-16 md:py-12 flex flex-col justify-center">
+        <div class="max-w-md w-full mx-auto">
+          
+          <!-- Progress Indicator -->
+          <div class="flex items-center gap-2 mb-10">
+            <div class="flex-1 h-1.5 rounded-full transition-colors duration-300" :class="step >= 1 ? 'bg-parentPrimary' : 'bg-gray-100'"></div>
+            <div class="flex-1 h-1.5 rounded-full transition-colors duration-300" :class="step >= 2 ? 'bg-parentPrimary' : 'bg-gray-100'"></div>
+            <div class="flex-1 h-1.5 rounded-full transition-colors duration-300" :class="step >= 3 ? 'bg-parentPrimary' : 'bg-gray-100'"></div>
+          </div>
+
+          <!-- Step 1: Details -->
+          <div v-if="step === 1" class="animate-fade-in space-y-8">
+            <div>
+              <div class="flex items-center">
+                <h2 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Errand Details</h2>
+                <span class="text-xs font-bold text-parentPrimary bg-parentPrimary/10 px-2.5 py-1 rounded-full ml-3 mb-2">~30 secs</span>
+              </div>
+              <p class="text-gray-500 font-medium text-sm">Tell us exactly what you need and where it's happening.</p>
+            </div>
+
+            <!-- Errand Type Toggle -->
+            <div class="flex bg-gray-50 p-1 rounded-xl">
+              <button 
+                @click="errandType = 'custom'" 
+                class="flex-1 py-2 text-sm font-bold rounded-lg transition-colors"
+                :class="errandType === 'custom' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+              >
+                Custom Errand
+              </button>
+              <button 
+                @click="errandType = 'market'" 
+                class="flex-1 py-2 text-sm font-bold rounded-lg transition-colors"
+                :class="errandType === 'market' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+              >
+                Market Run
+              </button>
+            </div>
+
+            <div class="space-y-6">
+              <template v-if="errandType === 'custom'">
+                <!-- Templates -->
+                <div class="flex flex-wrap gap-2">
+                  <button v-for="tmpl in errandTemplates" :key="tmpl" @click="applyTemplate(tmpl)" class="px-3 py-1.5 bg-gray-25 hover:bg-gray-100 border border-gray-100 text-gray-600 text-xs font-bold rounded-full transition-colors flex items-center gap-1.5">
+                    <ListChecks class="w-3 h-3" /> {{ tmpl }}
+                  </button>
+                </div>
+
+                <div class="space-y-2 relative">
+                  <label class="text-sm font-bold text-gray-700">What do you need done?</label>
+                  <div class="relative">
+                    <textarea 
+                      v-model="form.description" 
+                      rows="4" 
+                      placeholder="e.g. Go to Yaba market and buy me 3 yards of black velvet material."
+                      class="w-full bg-gray-25 border border-gray-100 rounded-2xl px-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
+                    ></textarea>
+                    
+                    <div class="absolute bottom-4 right-4 flex flex-col items-end gap-2">
+                      <div v-if="attachedVoiceNoteBase64" class="bg-gray-100 rounded-full pr-1 pl-2 py-1 flex items-center gap-2 shadow-sm border border-gray-200 w-full justify-between mt-2">
+                        <audio :src="attachedVoiceNoteBase64" controls class="h-8 max-w-[200px]" />
+                        <button @click="removeVoiceNote" class="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition-colors shrink-0">
+                          <X class="w-3 h-3" />
+                        </button>
+                      </div>
+                      
+                      <div class="flex items-center gap-2 mt-1">
+                        <span v-if="isRecording" class="text-xs font-bold text-red-500 animate-pulse bg-red-50 px-2 py-1 rounded-full">
+                          {{ Math.floor(recordingTime / 60) }}:{{ (recordingTime % 60).toString().padStart(2, '0') }} / 2:00
+                        </span>
+                        <button 
+                          @click="toggleRecording" 
+                          class="w-8 h-8 rounded-full flex items-center justify-center transition-colors relative"
+                          :class="isRecording ? 'bg-red-100 text-red-500' : 'bg-white border border-gray-200 text-gray-400 hover:text-parentPrimary hover:border-parentPrimary'"
+                          :title="isRecording ? 'Stop Recording' : 'Record Voice Note'"
+                        >
+                          <span v-if="isRecording" class="absolute inset-0 rounded-full border-2 border-red-500 animate-ping opacity-75"></span>
+                          <Mic class="w-4 h-4 z-10" />
+                        </button>
+                        <label class="w-8 h-8 rounded-full bg-white border border-gray-200 text-gray-400 flex items-center justify-center hover:text-parentPrimary hover:border-parentPrimary transition-colors cursor-pointer" title="Attach Photo">
+                          <input type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+                          <ImageIcon class="w-4 h-4" />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Image Preview -->
+                  <div v-if="attachedImageBase64" class="relative inline-block mt-2">
+                    <img :src="attachedImageBase64" class="h-20 w-20 object-cover rounded-xl border border-gray-200 shadow-sm" />
+                    <button @click="removeImage" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition-colors">
+                      <X class="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="space-y-2 relative group/field">
+                  <label class="text-sm font-bold text-gray-700">Task Location (Optional)</label>
+                  <div class="relative">
+                    <MapPin class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/field:text-parentPrimary transition-colors" />
+                    <input 
+                      v-model="form.pickupLocation" 
+                      type="text" 
+                      placeholder="e.g. Unilag Library (Leave blank if not applicable)"
+                      class="w-full bg-gray-25 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                    />
+                  </div>
+                </div>
+              </template>
+
+              <template v-else>
+                <!-- Market Run Fields -->
+                <div class="space-y-4 bg-gray-25/50 p-4 rounded-2xl border border-gray-100">
+                  <div class="space-y-2 relative group/field">
+                    <label class="text-sm font-bold text-gray-700">Which Market?</label>
+                    <div class="relative">
+                      <MapPin class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/field:text-parentPrimary transition-colors" />
+                      <input 
+                        v-model="marketForm.marketName" 
+                        type="text" 
+                        placeholder="e.g. Yaba Market, Tejuosho"
+                        class="w-full bg-white border border-gray-200 rounded-xl pl-12 pr-5 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div class="space-y-2 relative group/field">
+                    <label class="text-sm font-bold text-gray-700">Shopping List / Items to Buy</label>
+                    <textarea 
+                      v-model="marketForm.itemsList" 
+                      rows="4" 
+                      placeholder="e.g.&#10;1. 3 yards of black velvet material&#10;2. A pack of needles"
+                      class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400"
+                    ></textarea>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Dropoff Location -->
+              <div class="space-y-3 relative group/field">
+                <div class="flex justify-between items-end">
+                  <label class="text-sm font-bold text-gray-700">Drop-off Location</label>
+                  <div v-if="recentDropoffs.length > 0" class="flex gap-2">
+                    <button v-for="loc in recentDropoffs" :key="loc" @click="form.dropoffLocation = loc" class="text-[10px] font-bold px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors">
+                      {{ loc }}
+                    </button>
+                  </div>
+                </div>
+                <div class="relative">
+                  <Navigation class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/field:text-parentPrimary transition-colors" />
+                  <input 
+                    v-model="form.dropoffLocation" 
+                    type="text"
+                    list="locations-list"
+                    placeholder="e.g. Moremi Hall or Yabatech Art Complex"
+                    class="w-full bg-gray-25 border border-gray-100 rounded-2xl pl-14 pr-5 py-4 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none"
+                  />
+                  <datalist id="locations-list">
+                    <option v-for="loc in predefinedLocations" :key="loc" :value="loc"></option>
+                  </datalist>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-6">
+              <button 
+                @click="step = 2" 
+                :disabled="!isStep1Valid"
+                class="w-full bg-gray-900 text-white font-bold py-4 px-8 rounded-2xl hover:bg-parentPrimary transition-all duration-300 disabled:opacity-30 disabled:hover:bg-gray-900 shadow-xl shadow-gray-900/10 flex justify-between items-center group"
+              >
+                <span>Continue to Pricing</span>
+                <ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Financials -->
+          <div v-if="step === 2" class="animate-fade-in space-y-8">
+            <div>
+              <h2 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Set Your Price</h2>
+              <p class="text-gray-500 font-medium text-sm">You are in control. Offer a fair fee to get it accepted faster.</p>
+            </div>
+            
+            <div class="bg-parentPrimary/5 border border-parentPrimary/10 rounded-2xl p-5 flex gap-4">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-parentPrimary/10">
+                <CircleDollarSign class="w-5 h-5 text-parentPrimary" />
+              </div>
+              <p class="text-sm text-gray-700 font-medium leading-relaxed">
+                <span class="text-gray-900 font-bold">How it works:</span> 
+                Set the item cost (if you are asking the rider to buy something) and the labor fee. The labor fee goes to escrow and is paid out only when the job is done.
+              </p>
+            </div>
+
+            <div class="space-y-6">
+              <div class="space-y-2">
+                <label class="text-sm font-bold text-gray-700">Estimated Item Cost</label>
+                <p class="text-xs text-gray-500 font-medium mb-2">How much will the actual items cost? (Leave as 0 if just picking up/delivering).</p>
+                <div class="relative group/field">
+                  <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within/field:text-parentPrimary transition-colors">₦</span>
+                  <input 
+                    v-model="formattedItemCost" 
+                    type="text" 
+                    placeholder="0"
+                    class="w-full bg-gray-25 border border-gray-100 rounded-2xl pl-12 pr-5 py-4 text-gray-900 font-medium text-lg focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                  />
+                </div>
+              </div>
+
+              <div class="space-y-2 pt-2">
+                <label class="text-sm font-bold text-gray-700">Runner Fee (Labor)</label>
+                <p class="text-xs text-gray-500 font-medium mb-2">How much are you offering the rider for their effort? (Minimum ₦200)</p>
+                <div class="relative group/field">
+                  <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within/field:text-parentPrimary transition-colors">₦</span>
+                  <input 
+                    v-model="formattedRunnerFee" 
+                    type="text" 
+                    placeholder="1,000"
+                    class="w-full bg-gray-25 border border-gray-100 rounded-2xl pl-12 pr-5 py-4 text-gray-900 font-medium text-lg focus:bg-white focus:ring-2 focus:ring-parentPrimary/20 focus:border-parentPrimary transition-all outline-none placeholder:text-gray-400"
+                  />
+                </div>
+                <p v-if="form.runnerFee > 0 && form.runnerFee < 200" class="text-xs text-red-500 font-bold mt-1">Minimum runner fee is ₦200</p>
+                <!-- Quick Price Pills -->
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <button @click="form.runnerFee = 500" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-25 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦500</button>
+                  <button @click="form.runnerFee = 1000" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-25 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦1,000</button>
+                  <button @click="form.runnerFee = 2000" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-25 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦2,000</button>
+                  <button @click="form.runnerFee = 3500" class="px-4 py-2 text-sm font-bold border border-gray-100 rounded-xl hover:bg-gray-25 hover:border-gray-300 text-gray-600 transition-all bg-white shadow-sm">₦3,500</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-6 flex gap-3">
+              <button @click="step = 1" class="px-6 py-4 rounded-2xl font-bold text-gray-600 bg-gray-25 hover:bg-gray-100 transition-colors border border-gray-100 shrink-0">
+                Back
+              </button>
+              <button 
+                @click="step = 3" 
+                :disabled="!isStep2Valid"
+                class="flex-1 bg-gray-900 text-white font-bold py-4 px-6 rounded-2xl hover:bg-parentPrimary transition-all duration-300 disabled:opacity-30 disabled:hover:bg-gray-900 shadow-xl shadow-gray-900/10 flex justify-between items-center group"
+              >
+                <span>Review Request</span>
+                <ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Summary -->
+          <div v-if="step === 3" class="animate-fade-in space-y-8">
+            <div>
+              <h2 class="text-3xl font-medium text-gray-900 tracking-tight mb-2">Review & Pay</h2>
+              <p class="text-gray-500 font-medium text-sm">Your card will be charged once. The item cost goes straight to the rider's bank.</p>
+            </div>
+            
+            <div class="bg-gray-25 rounded-[2rem] p-6 sm:p-8 border border-gray-100">
+              
+              <div class="space-y-4">
+                <div v-if="form.estimatedItemCost > 0" class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
+                      <Package class="w-4 h-4 text-gray-500" />
+                    </div>
+                    <div>
+                      <span class="text-sm font-bold text-gray-600">Item Cost</span>
+                      <p class="text-[11px] text-gray-400 font-medium">Sent to rider's bank</p>
+                    </div>
+                  </div>
+                  <span class="font-extrabold text-gray-900">₦{{ formatMoney(form.estimatedItemCost) }}</span>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
+                      <Target class="w-4 h-4 text-gray-500" />
+                    </div>
+                    <div>
+                      <span class="text-sm font-bold text-gray-600">Runner Fee</span>
+                      <p class="text-[11px] text-gray-400 font-medium">Rider earns on completion</p>
+                    </div>
+                  </div>
+                  <span class="font-extrabold text-gray-900">₦{{ formatMoney(form.runnerFee) }}</span>
+                </div>
+
+                <div v-if="transferFee > 0" class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
+                      <ArrowRight class="w-4 h-4 text-gray-500" />
+                    </div>
+                    <div>
+                      <span class="text-sm font-bold text-gray-600">Transfer Fee</span>
+                      <p class="text-[11px] text-gray-400 font-medium">Paystack bank transfer</p>
+                    </div>
+                  </div>
+                  <span class="font-extrabold text-gray-900">₦{{ transferFee }}</span>
+                </div>
+
+                <div class="flex justify-between items-center border-b border-gray-200 pb-4">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
+                      <Layers class="w-4 h-4 text-gray-500" />
+                    </div>
+                    <span class="text-sm font-bold text-gray-600">Platform Fee</span>
+                  </div>
+                  <span class="font-extrabold text-gray-900">₦50</span>
+                </div>
+
+                <div class="pt-2">
+                  <div class="flex justify-between items-end">
+                    <div>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Charge</p>
+                      <p class="text-sm text-gray-500 font-medium leading-tight max-w-[200px]">One-time payment via Paystack. No hidden fees.</p>
+                    </div>
+                    <span class="text-3xl font-extrabold text-parentPrimary tracking-tighter">₦{{ formatMoney(grandTotal) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-emerald-50/80 text-emerald-800 text-sm p-5 rounded-2xl border border-emerald-200 font-medium leading-relaxed flex gap-3">
+              <ShieldCheck class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+              <p>You'll be redirected to Paystack to complete payment securely. Once paid, your errand goes live instantly and riders can accept it.</p>
+            </div>
+
+            <div class="pt-4 flex flex-col gap-3">
+              <div v-if="justAuthenticated" class="bg-green-50 text-green-800 text-sm p-4 rounded-xl border border-green-200 flex items-start gap-3 mb-2 animate-pulse-once">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <p class="font-bold">Authentication Successful!</p>
+                  <p class="font-medium opacity-90 mt-0.5">Your details are saved. Click below to pay and broadcast your errand.</p>
+                </div>
+              </div>
+              <button 
+                @click="submitErrand" 
+                :disabled="isSubmitting"
+                class="w-full bg-parentPrimary text-sm text-white font-bold py-3 px-8 rounded-2xl hover:bg-orange-600 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-3 shadow-xl shadow-parentPrimary/20 hover:shadow-2xl hover:shadow-parentPrimary/30"
+              >
+                <Loader2 v-if="isSubmitting" class="animate-spin w-5 h-5 text-white" />
+                <CreditCard v-else class="w-5 h-5" />
+                <span class="text-base">{{ isSubmitting ? 'Processing...' : `Pay ₦${formatMoney(grandTotal)} & Broadcast` }}</span>
+              </button>
+              <button @click="step = 2" :disabled="isSubmitting" class="w-full font-bold text-gray-500 hover:text-gray-800 py-3 transition-colors">
+                Go back to edit
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <CoreAuthModal :is-open="isAuthModalOpen" @update:is-open="isAuthModalOpen = $event" @success="handleAuthSuccess" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { useCustomToast } from '@/composables/core/useCustomToast'
+import { useRouter, useRoute } from '#imports'
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
+import { useUser } from '@/composables/modules/auth/user'
+import { usePayments } from '@/composables/modules/payments'
+import { 
+  Rocket, ShieldCheck, MapPin, Navigation, CreditCard,
+  ArrowRight, X, CircleDollarSign, Package, Target, Layers, Info, Loader2,
+  Mic, ImageIcon, ListChecks
+} from 'lucide-vue-next'
+
+definePageMeta({ layout: false })
+useHead({ title: 'Request Custom Errand | Errander' })
+
+const router = useRouter()
+const route = useRoute()
+const { showToast } = useCustomToast()
+const { isLoggedIn, user } = useUser()
+const { initializePayment, verifyPayment } = usePayments()
+
+const step = ref(1)
+const isSubmitting = ref(false)
+const isAuthModalOpen = ref(false)
+const justAuthenticated = ref(false)
+
+const errandType = ref<'custom' | 'market'>('custom')
+const isRecording = ref(false)
+const recentDropoffs = ref<string[]>([])
+const attachedImageBase64 = ref('')
+
+const form = ref({
+  description: '',
+  pickupLocation: '',
+  dropoffLocation: '',
+  estimatedItemCost: 0,
+  runnerFee: 0,
+})
+
+const formattedItemCost = computed({
+  get: () => {
+    if (!form.value.estimatedItemCost) return ''
+    return form.value.estimatedItemCost.toLocaleString('en-NG')
+  },
+  set: (val) => {
+    if (!val) {
+      form.value.estimatedItemCost = 0
+      return
+    }
+    const numStr = val.toString().replace(/[^0-9]/g, '')
+    form.value.estimatedItemCost = numStr ? parseInt(numStr, 10) : 0
+  }
+})
+
+const formattedRunnerFee = computed({
+  get: () => {
+    if (!form.value.runnerFee) return ''
+    return form.value.runnerFee.toLocaleString('en-NG')
+  },
+  set: (val) => {
+    if (!val) {
+      form.value.runnerFee = 0
+      return
+    }
+    const numStr = val.toString().replace(/[^0-9]/g, '')
+    form.value.runnerFee = numStr ? parseInt(numStr, 10) : 0
+  }
+})
+
+const marketForm = ref({
+  marketName: '',
+  itemsList: ''
+})
+
+const predefinedLocations = [
+  'Moremi Hall', 'Mariere Hall', 'Honors Hall', 'Biobaku Hall', 
+  'Amina Hall', 'Jaja Hall', 'Faculty of Engineering', 'Faculty of Science', 'Senate Building', 'Main Library', 'Amphitheatre'
+]
+
+const errandTemplates = [
+  "Buy groceries from",
+  "Print documents at",
+  "Pick up a package from",
+  "Get food from",
+  "Pay a bill at"
+]
+
+onMounted(async () => {
+  const saved = localStorage.getItem('recentDropoffs')
+  if (saved) {
+    try {
+      recentDropoffs.value = JSON.parse(saved)
+    } catch(e){}
+  }
+
+  // Handle Paystack callback: verify payment, create order with reference
+  if (route.query.reference) {
+    isSubmitting.value = true
+    step.value = 3
+    try {
+      const verification = await verifyPayment(route.query.reference as string)
+      const vData = verification?.data || verification
+      if (vData?.status === 'success') {
+        // Recover saved payload
+        const savedPayload = sessionStorage.getItem('pendingErrandPayload')
+        if (!savedPayload) {
+          showToast({ title: 'Error', message: 'Could not recover errand details. Please try again.', toastType: 'error' })
+          isSubmitting.value = false
+          return
+        }
+        const payload = JSON.parse(savedPayload)
+        payload.paymentReference = route.query.reference
+
+        // Create the order with payment reference
+        const response = await api.post('/orders', payload)
+        sessionStorage.removeItem('pendingErrandPayload')
+
+        if (response.data) {
+          showToast({ title: 'Payment Successful!', message: 'Your errand is now live and waiting for a rider.', toastType: 'success' })
+          router.push(`/dashboard/orders/${response.data._id}`)
+        }
+      } else {
+        showToast({ title: 'Payment Failed', message: 'Your payment could not be verified. Please try again.', toastType: 'error' })
+      }
+    } catch (e: any) {
+      console.error('Payment verification failed:', e)
+      showToast({ title: 'Error', message: e.response?.data?.message || 'Payment verification failed.', toastType: 'error' })
+    } finally {
+      isSubmitting.value = false
+      // Clean URL
+      const url = new URL(window.location.href)
+      url.searchParams.delete('reference')
+      url.searchParams.delete('trxref')
+      window.history.replaceState({}, '', url.toString())
+    }
+  }
+})
+
+const applyTemplate = (tmpl: string) => {
+  form.value.description = `${tmpl} `
+}
+
+const attachedVoiceNoteBase64 = ref('')
+const recordingTime = ref(0)
+let mediaRecorder: MediaRecorder | null = null
+let audioChunks: Blob[] = []
+let timerInterval: any = null
+let recordedAudioBlob: Blob | null = null
+let selectedImageFile: File | null = null
+
+const startRecording = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    mediaRecorder = new MediaRecorder(stream)
+    audioChunks = []
+
+    mediaRecorder.addEventListener('dataavailable', event => {
+      audioChunks.push(event.data)
+    })
+
+    mediaRecorder.addEventListener('stop', () => {
+      recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' })
+      const reader = new FileReader()
+      reader.readAsDataURL(recordedAudioBlob)
+      reader.onloadend = () => {
+        attachedVoiceNoteBase64.value = reader.result as string
+      }
+      stream.getTracks().forEach(track => track.stop())
+    })
+
+    mediaRecorder.start()
+    isRecording.value = true
+    recordingTime.value = 0
+
+    timerInterval = setInterval(() => {
+      recordingTime.value += 1
+      if (recordingTime.value >= 120) {
+        stopRecording()
+      }
+    }, 1000)
+  } catch (error) {
+    showToast({ title: 'Error', message: 'Microphone access denied.', toastType: 'error' })
+  }
+}
+
+const stopRecording = () => {
+  if (mediaRecorder && isRecording.value) {
+    mediaRecorder.stop()
+    isRecording.value = false
+    if (timerInterval) clearInterval(timerInterval)
+  }
+}
+
+const toggleRecording = () => {
+  if (isRecording.value) {
+    stopRecording()
+  } else {
+    startRecording()
+  }
+}
+
+const removeVoiceNote = () => {
+  attachedVoiceNoteBase64.value = ''
+  recordedAudioBlob = null
+}
+
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  selectedImageFile = file
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    attachedImageBase64.value = e.target?.result as string
+  }
+  reader.readAsDataURL(file)
+}
+
+const removeImage = () => {
+  attachedImageBase64.value = ''
+  selectedImageFile = null
+}
+
+const isStep1Valid = computed(() => {
+  if (errandType.value === 'custom') {
+    return (form.value.description.trim().length > 5 || attachedVoiceNoteBase64.value) && 
+           form.value.dropoffLocation.trim().length > 2
+  } else {
+    return marketForm.value.marketName.trim().length > 2 &&
+           marketForm.value.itemsList.trim().length > 2 &&
+           form.value.dropoffLocation.trim().length > 2
+  }
+})
+
+const isStep2Valid = computed(() => {
+  return form.value.runnerFee >= 200 // Minimum 200 NGN runner fee
+})
+
+const transferFee = computed(() => {
+  const itemCost = form.value.estimatedItemCost || 0
+  if (itemCost <= 0) return 0
+  return itemCost <= 5000 ? 10 : 25
+})
+
+const grandTotal = computed(() => {
+  return (form.value.estimatedItemCost || 0) + form.value.runnerFee + 50 + transferFee.value
+})
+
+const formatMoney = (amount: number) => {
+  return (amount || 0).toLocaleString('en-NG')
+}
+
+// Helper: upload files and build payload
+const buildErrandPayload = async () => {
+  let finalDescription = form.value.description
+  let finalPickup = form.value.pickupLocation
+
+  if (errandType.value === 'market') {
+    finalDescription = `Market Run items:\n${marketForm.value.itemsList}`
+    finalPickup = marketForm.value.marketName
+  }
+
+  if (form.value.dropoffLocation && !recentDropoffs.value.includes(form.value.dropoffLocation)) {
+    const updated = [form.value.dropoffLocation, ...recentDropoffs.value].slice(0, 3)
+    recentDropoffs.value = updated
+    localStorage.setItem('recentDropoffs', JSON.stringify(updated))
+  }
+
+  let uploadedImageUrl = ''
+  let uploadedVoiceNoteUrl = ''
+
+  if (selectedImageFile) {
+    const formData = new FormData()
+    formData.append('file', selectedImageFile)
+    const uploadRes = await api.post('/upload?resourceType=image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    uploadedImageUrl = uploadRes.data.url
+  }
+
+  if (recordedAudioBlob) {
+    const formData = new FormData()
+    formData.append('file', recordedAudioBlob, 'voicenote.webm')
+    const uploadRes = await api.post('/upload?resourceType=video', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    uploadedVoiceNoteUrl = uploadRes.data.url
+  }
+
+  return {
+    type: 'custom_errand',
+    pickupLocation: finalPickup,
+    dropoffLocation: form.value.dropoffLocation,
+    description: finalDescription,
+    attachedImage: uploadedImageUrl || undefined,
+    attachedVoiceNote: uploadedVoiceNoteUrl || undefined,
+    estimatedItemCost: form.value.estimatedItemCost || 0,
+    runnerFee: form.value.runnerFee,
+    urgency: 'standard'
+  }
+}
+
+const submitErrand = async () => {
+  if (!isLoggedIn.value) {
+    isAuthModalOpen.value = true
+    return
+  }
+
+  isSubmitting.value = true
+  
+  try {
+    const payload = await buildErrandPayload()
+
+    // Save payload to sessionStorage so we can recover it after Paystack redirect
+    sessionStorage.setItem('pendingErrandPayload', JSON.stringify(payload))
+
+    // Initialize Paystack payment
+    const amount = grandTotal.value
+    const customerEmail = user.value?.email || 'customer@erranders.org'
+    const customerName = user.value ? `${user.value.firstName} ${user.value.lastName}` : 'Customer'
+
+    const data = await initializePayment({
+      amount,
+      customer: { name: customerName, email: customerEmail },
+      callback_url: `${window.location.origin}/errands/custom`,
+      metadata: { type: 'custom_errand', estimatedItemCost: payload.estimatedItemCost, runnerFee: payload.runnerFee },
+    })
+
+    const authUrl = data?.data?.authorization_url || data?.authorization_url
+    if (authUrl) {
+      window.location.href = authUrl
+    } else {
+      showToast({ title: 'Error', message: 'Payment gateway unavailable. Please try again.', toastType: 'error' })
+    }
+  } catch (error: any) {
+    console.error(error)
+    showToast({ title: 'Error', message: error.response?.data?.message || 'Failed to initialize payment.', toastType: 'error' })
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+const handleAuthSuccess = () => {
+  justAuthenticated.value = true
+}
+</script>
+
+<style scoped>
+.animate-fade-in {
+  animation: slideFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hide number input spinners for clean UI */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>

@@ -16,4 +16,8 @@ export const wallets_api = {
   withdraw: (amount: number) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.post('/wallets/withdraw', { amount });
   },
+
+  subscribePrime: () => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.post('/wallets/subscribe-prime');
+  },
 };

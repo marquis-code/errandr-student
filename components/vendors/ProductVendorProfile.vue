@@ -895,62 +895,77 @@
 
             <!-- Pack Items -->
             <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="flex-1 flex flex-col">
-              <div class="p-5 space-y-8 flex-1">
-                <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="space-y-6">
+              <div class="p-5 space-y-6 flex-1">
+                <div v-for="(pack, pIndex) in cart.getVendorStats(vendor._id).packs" :key="pack.id" class="bg-white border border-gray-100 rounded-[1.5rem] shadow-sm overflow-hidden flex flex-col">
                   <!-- Pack Header -->
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-gray-400">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
-                    <button @click="cart.removePack(vendor._id, pack.id)" class="p-1.5 text-red-500 hover:text-red-600 transition-colors">
+                  <div class="flex items-center justify-between px-5 py-4 bg-gray-50/50 border-b border-gray-100">
+                    <div class="flex items-center gap-2">
+                      <div class="w-7 h-7 bg-white rounded-lg flex items-center justify-center border border-gray-200 shadow-sm text-gray-700">
+                        <Package class="w-3.5 h-3.5" />
+                      </div>
+                      <span class="text-sm font-bold text-gray-900">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
+                    </div>
+                    <button @click="cart.removePack(vendor._id, pack.id)" class="w-8 h-8 bg-white hover:bg-red-50 text-red-500 rounded-lg flex items-center justify-center border border-gray-200 hover:border-red-100 transition-colors shadow-sm">
                       <Trash2 class="w-4 h-4" />
                     </button>
                   </div>
                   
                   <!-- Items inside Pack -->
-                  <div class="space-y-5">
-                    <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center justify-between gap-3">
-                      <div class="flex-1 min-w-0 pr-4">
-                        <p class="text-[15px] font-bold text-gray-900 underline decoration-gray-900 decoration-[1.5px] underline-offset-[5px] mb-1.5 truncate">{{ toTitleCase(item.name) }}</p>
-                        <div v-if="item.customizations && item.customizations.length > 0" class="mt-1 mb-2 space-y-1">
-                          <p v-for="(c, cIdx) in item.customizations" :key="cIdx" class="text-[13px] font-medium text-gray-500 leading-tight line-clamp-1">
-                            + {{ c.name }} <span v-if="c.price > 0">(₦{{ c.price.toLocaleString() }})</span>
-                          </p>
-                          <button @click="editCartItem(vendor._id, pack.id, iIndex, item)" class="text-[11px] text-parentPrimary font-medium underline mt-1 block">Edit customizations</button>
+                  <div class="p-5 space-y-6 flex-1">
+                    <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex gap-4 border-b border-gray-50 pb-5 last:border-0 last:pb-0">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start gap-2 mb-1.5">
+                          <div>
+                            <p class="text-[15px] font-bold text-gray-900 leading-tight">{{ toTitleCase(item.name) }}</p>
+                            <p v-if="item.customizations && item.customizations.length > 0" class="text-[12px] font-medium text-gray-400 mt-0.5">Base price: ₦{{ item.price.toLocaleString() }}</p>
+                          </div>
+                          <div class="text-right">
+                            <p class="text-[15px] font-bold text-gray-900 shrink-0">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
+                          </div>
                         </div>
-                        <p class="text-sm font-medium text-gray-400">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
-                      </div>
-                      
-                      <!-- Quantity Control Pill -->
-                      <div class="flex items-center justify-between bg-white border border-gray-100 rounded-full px-1 py-1 shadow-sm shrink-0 min-w-[90px]">
-                        <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-8 h-8 rounded-full hover:bg-gray-50 flex items-center justify-center text-gray-900 font-medium transition-colors">
-                          <Minus class="w-3.5 h-3.5" />
-                        </button>
-                        <span class="text-[15px] font-bold text-gray-900 min-w-[14px] text-center">{{ item.quantity }}</span>
-                        <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-8 h-8 rounded-full hover:bg-gray-50 flex items-center justify-center text-gray-900 font-medium transition-colors">
-                          <Plus class="w-3.5 h-3.5" />
-                        </button>
+                        
+                        <div v-if="item.customizations && item.customizations.length > 0" class="mt-2 mb-3 pl-3 border-l-2 border-gray-100 space-y-1.5">
+                          <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-xs font-medium text-gray-500 flex justify-between">
+                            <span class="truncate pr-2">{{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}</span>
+                            <span v-if="c.price > 0" class="text-gray-400 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+                          </p>
+                          <button @click="editCartItem(vendor._id, pack.id, iIndex, item)" class="text-[11px] font-bold text-parentPrimary hover:underline mt-1 pt-1 block">Edit customizations</button>
+                        </div>
+                        
+                        <div class="flex items-center mt-3">
+                          <!-- Quantity Control Pill -->
+                          <div class="flex items-center bg-gray-50 border border-gray-200 rounded-full p-0.5 shadow-sm">
+                            <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-8 h-8 rounded-full bg-white hover:bg-gray-100 flex items-center justify-center text-gray-700 font-bold transition-colors shadow-sm border border-gray-100">
+                              <Minus class="w-3.5 h-3.5" />
+                            </button>
+                            <span class="text-sm font-bold text-gray-900 w-8 text-center">{{ item.quantity }}</span>
+                            <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-8 h-8 rounded-full bg-white hover:bg-gray-100 flex items-center justify-center text-gray-700 font-bold transition-colors shadow-sm border border-gray-100">
+                              <Plus class="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                   
                   <!-- Pack Actions -->
-                  <div v-if="isFoodVendor" class="flex items-center justify-center gap-5 pt-3">
-                    <button @click="addNewPack(vendor._id)" class="text-[13px] font-bold text-parentPrimary flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-                      <Plus class="w-4 h-4" /> Add to this pack
+                  <div v-if="isFoodVendor" class="px-5 pb-5 pt-4 bg-gray-50/30 border-t border-gray-50 flex items-center gap-3">
+                    <button @click="addNewPack(vendor._id)" class="flex-1 py-2.5 bg-parentPrimary/10 text-parentPrimary rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-parentPrimary/20 transition-colors">
+                      <Plus class="w-4 h-4" /> Add Item
                     </button>
-                    <div class="w-px h-[18px] bg-gray-200"></div>
-                    <button @click="cart.duplicatePack(vendor._id, pack.id)" class="text-[13px] font-bold text-gray-900 flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-                      <Copy class="w-4 h-4" /> Duplicate pack
+                    <button @click="cart.duplicatePack(vendor._id, pack.id)" class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
+                      <Copy class="w-4 h-4" /> Duplicate
                     </button>
                   </div>
                 </div>
 
                 <!-- Global Cart Actions -->
-                <div class="flex items-center justify-between pt-8 border-t border-gray-50 mt-4 pb-4 relative z-30">
-                  <button @click="cart.clearCart(vendor._id)" class="text-[13px] font-bold text-red-500 bg-red-50 hover:bg-red-100 transition-colors px-4 py-2.5 rounded-[20px] flex items-center gap-2">
-                    <Trash2 class="w-4 h-4" /> Clear cart
+                <div class="flex items-center gap-3 pt-2 mb-4 relative z-30">
+                  <button @click="showMobileCartDrawer = false" class="flex-1 py-3.5 bg-gray-100 text-gray-900 rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors active:scale-[0.98]">
+                    <Plus class="w-4 h-4" /> Add More
                   </button>
-                  <button @click="showMobileCartDrawer = false" class="text-[13px] font-bold text-parentPrimary bg-parentPrimary/10 hover:bg-parentPrimary/20 transition-colors px-4 py-2.5 rounded-[20px] flex items-center gap-2">
-                    <Plus class="w-4 h-4" /> Add more items
+                  <button @click="cart.clearCart(vendor._id)" class="flex-1 py-3.5 bg-red-50 text-red-500 rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-colors active:scale-[0.98]">
+                    <Trash2 class="w-4 h-4" /> Clear Cart
                   </button>
                 </div>
               </div>
@@ -978,7 +993,7 @@
                 <NuxtLink 
                   v-if="!isVendorClosed"
                   :to="isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart'" 
-                  class="w-full h-14 bg-parentPrimary text-white rounded-[14px] font-bold text-base hover:bg-[#007040] transition-colors flex items-center justify-center active:scale-[0.98]"
+                  class="w-full h-14 bg-parentPrimary text-white rounded-[14px] font-bold text-base hover:bg-[#FF5C1A] transition-colors flex items-center justify-center active:scale-[0.98]"
                 >
                   {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Continue to checkout' }}
                 </NuxtLink>
@@ -1307,24 +1322,20 @@
                   </div>
                   
                   <div class="space-y-2">
-                    <div v-for="item in mod.options" :key="item.name" class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
+                    <div 
+                      v-for="item in mod.options" 
+                      :key="item.name" 
+                      @click="handleCustomizationChange(mod, item, true, true)"
+                      class="flex items-center justify-between p-4 border rounded-xl transition-all cursor-pointer select-none"
+                      :class="selectedCustomizations[mod._id]?.[item.name] ? 'border-parentPrimary bg-parentPrimary/5 shadow-sm ring-1 ring-parentPrimary/20' : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50/50'"
+                    >
                       <div class="flex flex-col">
-                        <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
-                        <span v-if="(item.priceDelta || item.price) > 0" class="text-xs text-gray-500">+₦{{ (item.priceDelta || item.price).toLocaleString() }}</span>
+                        <span class="text-sm font-medium text-gray-700" :class="selectedCustomizations[mod._id]?.[item.name] ? 'text-gray-900 font-bold' : ''">{{ item.name }}</span>
+                        <span v-if="(item.priceDelta || item.price) > 0" class="text-xs mt-0.5" :class="selectedCustomizations[mod._id]?.[item.name] ? 'text-parentPrimary font-bold' : 'text-gray-500'">+₦{{ (item.priceDelta || item.price).toLocaleString() }}</span>
                       </div>
                       
-                      <div class="flex items-center gap-3">
-                        <button v-if="selectedCustomizations[mod._id]?.[item.name]" @click="handleCustomizationChange(mod, item, false, true)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
-                          <Minus class="w-4 h-4" />
-                        </button>
-                        
-                        <span v-if="selectedCustomizations[mod._id]?.[item.name]" class="text-sm font-semibold w-4 text-center">
-                          {{ selectedCustomizations[mod._id][item.name].quantity }}
-                        </span>
-                        
-                        <button @click="handleCustomizationChange(mod, item, true, true)" class="w-7 h-7 flex items-center justify-center rounded-full bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white transition-colors">
-                          <Plus class="w-4 h-4" />
-                        </button>
+                      <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors shrink-0" :class="selectedCustomizations[mod._id]?.[item.name] ? 'border-parentPrimary' : 'border-gray-200'">
+                        <div v-if="selectedCustomizations[mod._id]?.[item.name]" class="w-2.5 h-2.5 bg-parentPrimary rounded-full"></div>
                       </div>
                     </div>
                   </div>
@@ -1340,22 +1351,34 @@
                   </div>
                   
                   <div class="space-y-2">
-                    <div v-for="item in addon.options" :key="item.name" class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
+                    <div 
+                      v-for="item in addon.options" 
+                      :key="item.name" 
+                      @click="addon.selectionType === 'single' ? handleCustomizationChange(addon, item, true, false) : (!selectedCustomizations[addon._id]?.[item.name] ? handleCustomizationChange(addon, item, true, false) : null)"
+                      class="flex items-center justify-between p-4 border rounded-xl transition-all cursor-pointer select-none"
+                      :class="selectedCustomizations[addon._id]?.[item.name] ? 'border-parentPrimary bg-parentPrimary/5 shadow-sm ring-1 ring-parentPrimary/20' : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50/50'"
+                    >
                       <div class="flex flex-col">
-                        <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
-                        <span v-if="(item.priceDelta || item.price) > 0" class="text-xs text-gray-500">+₦{{ (item.priceDelta || item.price).toLocaleString() }}</span>
+                        <span class="text-sm font-medium text-gray-700" :class="selectedCustomizations[addon._id]?.[item.name] ? 'text-gray-900 font-bold' : ''">{{ item.name }}</span>
+                        <span v-if="(item.priceDelta || item.price) > 0" class="text-xs mt-0.5" :class="selectedCustomizations[addon._id]?.[item.name] ? 'text-parentPrimary font-bold' : 'text-gray-500'">+₦{{ (item.priceDelta || item.price).toLocaleString() }}</span>
                       </div>
                       
-                      <div class="flex items-center gap-3">
-                        <button v-if="selectedCustomizations[addon._id]?.[item.name]" @click="handleCustomizationChange(addon, item, false, false)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                      <!-- Single Select Radio -->
+                      <div v-if="addon.selectionType === 'single'" class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors shrink-0" :class="selectedCustomizations[addon._id]?.[item.name] ? 'border-parentPrimary' : 'border-gray-200'">
+                        <div v-if="selectedCustomizations[addon._id]?.[item.name]" class="w-2.5 h-2.5 bg-parentPrimary rounded-full"></div>
+                      </div>
+
+                      <!-- Multi Select Controls -->
+                      <div v-else class="flex items-center gap-3 shrink-0">
+                        <button v-if="selectedCustomizations[addon._id]?.[item.name]" @click.stop="handleCustomizationChange(addon, item, false, false)" class="w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-600 shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors active:scale-95">
                           <Minus class="w-4 h-4" />
                         </button>
                         
-                        <span v-if="selectedCustomizations[addon._id]?.[item.name]" class="text-sm font-semibold w-4 text-center">
+                        <span v-if="selectedCustomizations[addon._id]?.[item.name]" class="text-sm font-bold w-5 text-center text-gray-900">
                           {{ selectedCustomizations[addon._id][item.name].quantity }}
                         </span>
                         
-                        <button @click="handleCustomizationChange(addon, item, true, false)" class="w-7 h-7 flex items-center justify-center rounded-full bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white transition-colors">
+                        <button @click.stop="handleCustomizationChange(addon, item, true, false)" class="w-8 h-8 flex items-center justify-center rounded-full transition-colors active:scale-95 shadow-sm" :class="selectedCustomizations[addon._id]?.[item.name] ? 'bg-parentPrimary text-white shadow-parentPrimary/30' : 'bg-parentPrimary/10 text-parentPrimary hover:bg-parentPrimary hover:text-white'">
                           <Plus class="w-4 h-4" />
                         </button>
                       </div>
@@ -1373,7 +1396,7 @@
                   class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-base focus:outline-none focus:ring-1 focus:ring-parentPrimary focus:bg-white transition-all resize-none placeholder-gray-400"
                   :placeholder="isFoodVendor ? 'E.g. No onions, extra spicy...' : 'E.g. Specific color, custom message...'"
                 ></textarea>
-                <p class="text-[10px] text-gray-400 mt-1">Special requests are subject to the vendor's approval and may incur extra charges.</p>
+                <p class="text-xs text-gray-600 mt-1">Special requests are subject to the vendor's approval and may incur extra charges.</p>
               </div>
 
               <!-- Quantity & Add -->
@@ -1457,7 +1480,7 @@
                 
                 <button 
                   @click="saveVendorNote"
-                  class="w-full h-14 mt-4 bg-[#005030] text-white rounded-[14px] font-bold text-base hover:bg-[#004020] transition-colors flex items-center justify-center active:scale-[0.98]"
+                  class="w-full h-14 mt-4 bg-[#FF5C1A] text-white rounded-[14px] font-bold text-base hover:bg-[#004020] transition-colors flex items-center justify-center active:scale-[0.98]"
                 >
                   Add instructions
                 </button>
@@ -1945,6 +1968,20 @@ const quickAddToCart = (product: any) => {
   if (isGroupOrderActiveForThisVendor.value) {
     setTimeout(() => syncWithCart(vendor.value._id), 100);
   }
+};
+
+const getGroupedCustomizations = (customizations: any[]) => {
+  if (!customizations) return [];
+  const grouped: Record<string, any> = {};
+  customizations.forEach(c => {
+    if (grouped[c.name]) {
+      grouped[c.name].quantity += 1;
+      grouped[c.name].price += c.price;
+    } else {
+      grouped[c.name] = { ...c, quantity: 1 };
+    }
+  });
+  return Object.values(grouped);
 };
 
 const editCartItem = (vendorId: string, packId: string, itemIndex: number, item: any) => {

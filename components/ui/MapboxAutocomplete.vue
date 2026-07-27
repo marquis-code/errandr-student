@@ -1,6 +1,6 @@
 <template>
   <div class="relative w-full z-[9999]">
-    <div class="relative">
+    <div class="relative z-[95]">
       <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
         <MapPin class="h-5 w-5 text-gray-400" />
       </div>
@@ -30,6 +30,7 @@
             v-for="suggestion in suggestions" 
             :key="suggestion.id"
             @click="selectSuggestion(suggestion)"
+            @touchstart.passive="selectSuggestion(suggestion)"
             class="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-start gap-3 transition-colors border-b border-gray-50 last:border-0"
           >
             <MapPin class="h-5 w-5 text-gray-400 shrink-0 mt-0.5" />
