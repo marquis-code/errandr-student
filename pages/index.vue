@@ -716,14 +716,18 @@ const fetchBookAgain = async () => {
   if (!user.value) return;
   try {
     const res = await orders_api.getOrders();
-    const orders = res.data?.data || res.data || [];
-    const map = new Map();
-    orders.forEach((o: any) => {
-      if (o.vendor && !map.has(o.vendor._id)) {
-        map.set(o.vendor._id, o.vendor);
-      }
-    });
-    bookAgainVendors.value = Array.from(map.values()).slice(0, 10);
+    const payload = res.data?.data || res.data;
+    const orders = Array.isArray(payload) ? payload : (Array.isArray(payload?.orders) ? payload.orders : (Array.isArray(payload?.docs) ? payload.docs : []));
+    
+    if (Array.isArray(orders)) {
+      const map = new Map();
+      orders.forEach((o: any) => {
+        if (o.vendor && !map.has(o.vendor._id || o.vendor)) {
+          map.set(o.vendor._id || o.vendor, o.vendor);
+        }
+      });
+      bookAgainVendors.value = Array.from(map.values()).slice(0, 10);
+    }
   } catch (e) {
     console.error('Failed to fetch book again vendors:', e);
   }
@@ -1015,13 +1019,22 @@ const handlePromoClick = async (promo: any) => {
 }
 
 const navigateToVendor = (vendor: any) => {
-  if (!vendor.isOpen && vendor.statusMessage !== 'open') {
+  const vendorId = typeof vendor === 'string' ? vendor : vendor?._id || vendor?.id;
+  if (!vendorId) return;
+
+  if (typeof vendor === 'object' && vendor.isOpen === false && vendor.statusMessage !== 'open') {
     selectedVendorForModal.value = vendor;
     isClosedModalOpen.value = true;
     return;
   }
-  addRecent(vendor);
-  router.push(`/vendors/${vendor._id}`);
+  
+  if (typeof vendor === 'object') {
+    addRecent(vendor);
+  } else {
+    addRecent({ _id: vendorId });
+  }
+  
+  router.push(`/vendors/${vendorId}`);
 };
 
 const handleShareVendor = (vendor: any) => {

@@ -433,12 +433,16 @@ const handleNotifyVendor = (vendor: any) => {
 }
 
 const handleVendorClick = (vendor: any) => {
-  if (!vendor.isOpen) {
+  const vendorId = typeof vendor === 'string' ? vendor : vendor?._id || vendor?.id;
+  if (!vendorId) return;
+
+  if (typeof vendor === 'object' && vendor.isOpen === false && vendor.statusMessage !== 'open') {
     selectedVendorForModal.value = vendor;
     isClosedModalOpen.value = true;
     return;
   }
-  navigateTo(`/vendors/${vendor._id}`);
+  
+  navigateTo(`/vendors/${vendorId}`);
 };
 
 const isShareModalOpen = ref(false);
