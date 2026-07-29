@@ -16,6 +16,7 @@ export const useAuth = () => {
     const route = useRoute();
     loading.value = true;
     try {
+      payload.role = 'student';
       const res = await auth_api.login(payload);
       
       const responseData = res.data?.data || res.data;

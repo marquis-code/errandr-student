@@ -431,7 +431,11 @@ onMounted(async () => {
  try {
   const orderRes = await orders_api.getOrder(route.params.id as string);
   order.value = orderRes.data;
-  const messagesRes = await orders_api.getOrderChat(route.params.id as string);
+  
+  const receiverId = getReceiverId();
+  const currentUserId = user.value?._id;
+  
+  const messagesRes = await orders_api.getOrderChat(route.params.id as string, currentUserId, receiverId);
   messages.value = messagesRes.data;
   scrollToBottom();
  } catch (e) {
@@ -439,7 +443,16 @@ onMounted(async () => {
  }
 
  connect();
- emit('joinOrder', { orderId: route.params.id });
+ 
+ const receiverId = getReceiverId();
+ const currentUserId = user.value?._id;
+ let pairKey: string | undefined;
+ if (currentUserId && receiverId) {
+   const ids = [currentUserId.toString(), receiverId.toString()].sort();
+   pairKey = `${ids[0]}_${ids[1]}`;
+ }
+ 
+ emit('joinOrder', { orderId: route.params.id, pairKey });
 
  on('newMessage', (msg: any) => {
   const msgOrderId = msg.orderId || msg.order;

@@ -31,76 +31,8 @@
       </div>
 
       <!-- Content Area -->
+        <!-- Content Area -->
       <div class="flex-1 overflow-y-auto bg-gray-50/50 p-4 sm:p-6 no-scrollbar">
-        <!-- Write Review Section -->
-        <div v-if="user && !showWriteReview" class="mb-6 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
-          <p class="text-sm text-gray-600 mb-3 font-medium">Have you ordered from here before?</p>
-          <button 
-            @click="showWriteReview = true"
-            class="w-full py-2.5 bg-parentPrimary text-white rounded-xl font-bold text-sm hover:bg-parentPrimary/90 transition-colors shadow-md shadow-parentPrimary/20"
-          >
-            Write a Review
-          </button>
-        </div>
-        <div v-else-if="!user" class="mb-6 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
-          <p class="text-sm text-gray-500 font-medium">Log in to write a review</p>
-        </div>
-
-        <!-- Write Review Form -->
-        <div v-if="showWriteReview" class="mb-6 bg-white p-5 rounded-2xl border border-parentPrimary/20 shadow-lg shadow-parentPrimary/5 relative overflow-hidden">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-parentPrimary to-indigo-400"></div>
-          
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-gray-900">Your Review</h3>
-            <button @click="showWriteReview = false" class="text-xs font-medium text-gray-400 hover:text-gray-600">Cancel</button>
-          </div>
-
-          <form @submit.prevent="submitReview" class="space-y-4">
-            <!-- Star Rating Input -->
-            <div class="flex flex-col items-center gap-2 mb-2">
-              <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tap to rate</span>
-              <div class="flex items-center gap-2">
-                <button 
-                  v-for="star in 5" 
-                  :key="star"
-                  type="button"
-                  @click="newReview.rating = star"
-                  class="p-1 hover:scale-110 transition-transform active:scale-95"
-                >
-                  <Star 
-                    class="w-8 h-8 transition-colors" 
-                    :class="newReview.rating >= star ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-100'"
-                  />
-                </button>
-              </div>
-            </div>
-
-            <!-- Review Text -->
-            <div>
-              <textarea
-                v-model="newReview.comment"
-                rows="3"
-                placeholder="What did you like? What could be better?"
-                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-base focus:bg-white focus:border-parentPrimary focus:ring-4 focus:ring-parentPrimary/10 transition-all outline-none resize-none placeholder:text-gray-400"
-                required
-              ></textarea>
-            </div>
-
-            <div v-if="submitError" class="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-medium text-rose-600 flex items-start gap-2">
-              <AlertCircle class="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{{ submitError }}</span>
-            </div>
-
-            <button 
-              type="submit"
-              :disabled="submitting || newReview.rating === 0 || !newReview.comment.trim()"
-              class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              <Loader2 v-if="submitting" class="w-4 h-4 animate-spin" />
-              <span>{{ submitting ? 'Submitting...' : 'Post Review' }}</span>
-            </button>
-          </form>
-        </div>
 
         <!-- Reviews List -->
         <div class="space-y-4">
@@ -162,19 +94,8 @@ const { user } = useUser();
 
 const loading = ref(false);
 const reviews = ref<any[]>([]);
-const showWriteReview = ref(false);
-const submitting = ref(false);
-const submitError = ref('');
-
-const newReview = ref({
-  rating: 0,
-  comment: ''
-});
 
 const close = () => {
-  showWriteReview.value = false;
-  submitError.value = '';
-  newReview.value = { rating: 0, comment: '' };
   emit('close');
 };
 
@@ -212,25 +133,6 @@ const fetchReviews = async () => {
   }
 };
 
-const submitReview = async () => {
-  if (!props.vendor?._id) return;
-  submitting.value = true;
-  submitError.value = '';
-  
-  try {
-    await reviews_api.createReview(props.vendor._id, newReview.value);
-    
-    // Success
-    showWriteReview.value = false;
-    newReview.value = { rating: 0, comment: '' };
-    await fetchReviews();
-    emit('review-added');
-  } catch (err: any) {
-    submitError.value = err.response?.data?.message || 'You must have completed an order from this vendor to leave a review.';
-  } finally {
-    submitting.value = false;
-  }
-};
 
 watch(() => props.isOpen, (newVal) => {
   if (newVal) {

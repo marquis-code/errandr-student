@@ -167,36 +167,59 @@
  </div>
 
  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
- <div v-for="item in pack.items" :key="item.product" class="flex items-center gap-3 p-3 rounded-xl border border-gray-50 hover:bg-gray-50/50 transition-colors">
- <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-50 border border-gray-100">
+ <div v-for="item in pack.items" :key="item.product" class="flex items-start gap-3 p-3 rounded-xl border border-gray-50 hover:bg-gray-50/50 transition-colors">
+ <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
  <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
  </div>
  <div class="flex-1 min-w-0">
- <p class="text-sm font-bold text-gray-900 truncate tracking-tight ">{{ item.name }}</p>
- <p class="text-sm font-bold text-gray-400 mt-0.5">Qty: {{ item.quantity }}</p>
+ <div class="flex justify-between items-start mb-1">
+   <div>
+     <p class="text-sm font-bold text-gray-900 truncate tracking-tight">{{ item.name }}</p>
+     <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-400 mt-0.5">Base: ₦{{ item.price?.toLocaleString() }}</p>
+   </div>
+   <p class="text-xs font-bold text-gray-900 shrink-0">₦{{ item.price?.toLocaleString() }} <span class="text-gray-400 ml-0.5">×{{ item.quantity }}</span></p>
  </div>
- <div class="text-right">
- <p class="text-sm font-medium text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
- <p class="text-[8px] font-medium text-gray-400 ">₦{{ item.price?.toLocaleString() }}/unit</p>
+ 
+ <div v-if="item.customizations?.length" class="mt-1.5 mb-2 pl-2 border-l-2 border-gray-100 space-y-1">
+   <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[10px] font-medium text-gray-500 flex justify-between">
+     <span class="truncate pr-2">{{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}</span>
+     <span v-if="c.price > 0" class="text-gray-400 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+   </p>
+ </div>
+ 
+ <div class="flex justify-end mt-1">
+   <span class="text-xs font-bold text-parentPrimary">Total: ₦{{ (item.subtotal || (item.price * item.quantity)).toLocaleString() }}</span>
+ </div>
  </div>
  </div>
  </div>
  </div>
  </div>
 
- <!-- Fallback to plain items -->
  <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3">
- <div v-for="item in order.items" :key="item.product" class="flex items-center gap-3 p-3 rounded-xl border border-gray-50 hover:bg-gray-50/50 transition-colors">
- <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-50 border border-gray-100">
+ <div v-for="item in order.items" :key="item.product" class="flex items-start gap-3 p-3 rounded-xl border border-gray-50 hover:bg-gray-50/50 transition-colors">
+ <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
  <img :src="item.image || '/placeholder-food.jpg'" class="w-full h-full object-cover" />
  </div>
  <div class="flex-1 min-w-0">
- <p class="text-sm font-bold text-gray-900 truncate tracking-tight ">{{ item.name }}</p>
- <p class="text-sm font-bold text-gray-400 mt-0.5">Qty: {{ item.quantity }}</p>
+ <div class="flex justify-between items-start mb-1">
+   <div>
+     <p class="text-sm font-bold text-gray-900 truncate tracking-tight">{{ item.name }}</p>
+     <p v-if="item.customizations?.length" class="text-[10px] font-medium text-gray-400 mt-0.5">Base: ₦{{ item.price?.toLocaleString() }}</p>
+   </div>
+   <p class="text-xs font-bold text-gray-900 shrink-0">₦{{ item.price?.toLocaleString() }} <span class="text-gray-400 ml-0.5">×{{ item.quantity }}</span></p>
  </div>
- <div class="text-right">
- <p class="text-sm font-medium text-gray-900">₦{{ item.subtotal?.toLocaleString() }}</p>
- <p class="text-[8px] font-medium text-gray-400 ">₦{{ item.price?.toLocaleString() }}/unit</p>
+ 
+ <div v-if="item.customizations?.length" class="mt-1.5 mb-2 pl-2 border-l-2 border-gray-100 space-y-1">
+   <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[10px] font-medium text-gray-500 flex justify-between">
+     <span class="truncate pr-2">{{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}</span>
+     <span v-if="c.price > 0" class="text-gray-400 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+   </p>
+ </div>
+ 
+ <div class="flex justify-end mt-1">
+   <span class="text-xs font-bold text-parentPrimary">Total: ₦{{ (item.subtotal || (item.price * item.quantity)).toLocaleString() }}</span>
+ </div>
  </div>
  </div>
  </div>
@@ -338,11 +361,7 @@
  </div>
  <div class="flex justify-between items-center text-sm font-bold text-gray-500 r">
  <span>Service Charge</span>
- <span class="text-gray-900">₦{{ order.serviceFee?.toLocaleString() }}</span>
- </div>
- <div v-if="order.platformProcessingFee" class="flex justify-between items-center text-sm font-bold text-gray-500 r">
- <span>Platform Fee</span>
- <span class="text-gray-900">₦{{ order.platformProcessingFee?.toLocaleString() }}</span>
+ <span class="text-gray-900">₦{{ ((order.serviceFee || 0) + (order.platformProcessingFee || 0)).toLocaleString() }}</span>
  </div>
  <div v-if="order.discount > 0" class="flex justify-between items-center text-sm font-bold text-parentPrimary r">
  <span>Discount Applied</span>
@@ -365,55 +384,24 @@
  </div>
  </div>
 
- <!-- Rating Section -->
- <div v-if="order.status === 'delivered' && !order.rating" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6 relative">
- <div class="text-center mb-4">
- <h3 class="text-base font-medium text-gray-900 tracking-tight">How was your delivery?</h3>
- <p class="text-sm font-bold text-gray-400 r mt-0.5">Rate your experience</p>
- </div>
- 
- <!-- Star Rating -->
- <div class="flex justify-center gap-1.5 mb-5" @mouseleave="hoverRating = 0">
- <button 
- v-for="star in 5" 
- :key="star"
- @click="rating = star"
- @mouseover="hoverRating = star"
- class="p-1.5 transition-transform hover:scale-110 focus:outline-none"
- >
- <Star 
- class="w-8 h-8 transition-colors"
- :class="(hoverRating || rating) >= star ? 'text-yellow-400 fill-yellow-400' : 'text-gray-100 fill-gray-100 hover:text-gray-200'"
- />
- </button>
- </div>
-
- <div v-if="rating > 0" class="space-y-4 animate-fade-in relative z-10">
- <textarea
- v-model="reviewText"
- rows="3"
- placeholder="Tell us what you loved (or what needs improvement)..."
- class="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-base font-medium focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
- ></textarea>
-
- <button 
- @click="submitRating"
- :disabled="submittingRating"
- class="w-full py-4 bg-gray-900 text-white rounded-2xl text-[11px] font-medium tracking-[0.2em] hover:bg-parentPrimary active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-50"
- >
- <div v-if="submittingRating" class="w-4 h-4 border border-white/20 border-t-white rounded-full animate-spin" />
- <span v-else>Submit Review</span>
- </button>
- </div>
- </div>
- 
- <!-- Already Rated State -->
- <div v-else-if="order.status === 'delivered' && order.rating" class="bg-emerald-50 rounded-[2rem] border border-emerald-100 shadow-sm p-8 text-center">
- <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
- <Star class="w-6 h-6 text-yellow-400 fill-yellow-400" />
- </div>
- <p class="text-[11px] font-medium text-emerald-600 ">You rated this delivery {{ order.rating }} stars</p>
- <p v-if="order.review" class="text-sm font-bold text-gray-400  mt-2">"{{ order.review }}"</p>
+ <!-- Already Rated State / Rate Button -->
+ <div v-if="order.status === 'delivered'" class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6 text-center">
+   <div v-if="order.rating">
+     <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
+       <Star class="w-6 h-6 text-yellow-400 fill-yellow-400" />
+     </div>
+     <p class="text-[11px] font-medium text-emerald-600 ">You rated this delivery {{ order.rating }} stars</p>
+     <p v-if="order.review" class="text-sm font-bold text-gray-400 mt-2">"{{ order.review }}"</p>
+   </div>
+   <div v-else>
+     <h3 class="text-base font-medium text-gray-900 tracking-tight mb-4">How was your delivery?</h3>
+     <button 
+       @click="showRatingModal = true"
+       class="w-full py-4 bg-gray-900 text-white rounded-2xl text-[11px] font-medium tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/10"
+     >
+       RATE YOUR EXPERIENCE
+     </button>
+   </div>
  </div>
 
  <!-- Help Section -->
@@ -521,6 +509,137 @@
     </div>
   </UiModal>
 
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showSupportModal" class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center px-4 pb-4 sm:p-0">
+          <div class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" @click="showSupportModal = false" />
+          
+          <div class="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl overflow-hidden transform transition-all animate-slide-up sm:animate-fade-in">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-6">
+                <div>
+                  <h3 class="text-xl font-medium text-gray-900 tracking-tight">Support</h3>
+                  <p class="text-[13px] text-gray-400 mt-1">How can we help you today?</p>
+                </div>
+                <button 
+                  @click="showSupportModal = false"
+                  class="w-10 h-10 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-400 transition-colors"
+                >
+                  <X class="w-5 h-5" />
+                </button>
+              </div>
+
+              <div class="space-y-3">
+                <a :href="'tel:' + (order?.errander?.phoneNumber || '')" class="w-full flex items-center gap-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-colors group">
+                  <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors">
+                    <Phone class="w-5 h-5" />
+                  </div>
+                  <div class="text-left flex-1">
+                    <span class="block text-sm font-medium text-gray-900">Call Dispatcher</span>
+                    <span class="block text-[11px] text-gray-400 mt-0.5">Speak with your rider</span>
+                  </div>
+                  <ChevronRight class="w-5 h-5 text-gray-300 group-hover:translate-x-1 transition-transform" />
+                </a>
+
+                <a href="tel:+2348000000000" class="w-full flex items-center gap-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-colors group">
+                  <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-400 group-hover:text-parentPrimary transition-colors">
+                    <HeadphonesIcon class="w-5 h-5" />
+                  </div>
+                  <div class="text-left flex-1">
+                    <span class="block text-sm font-medium text-gray-900">Contact Support</span>
+                    <span class="block text-[11px] text-gray-400 mt-0.5">Get help from our team</span>
+                  </div>
+                  <ChevronRight class="w-5 h-5 text-gray-300 group-hover:translate-x-1 transition-transform" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+      
+      <Transition name="fade">
+        <div v-if="showRatingModal" class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center px-4 pb-4 sm:p-0">
+          <div class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" @click="showRatingModal = false" />
+          
+          <div class="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl overflow-hidden transform transition-all animate-slide-up sm:animate-fade-in">
+            <div class="p-8 relative">
+              <button 
+                @click="showRatingModal = false"
+                class="absolute top-4 right-4 w-10 h-10 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-400 transition-colors z-10"
+              >
+                <X class="w-5 h-5" />
+              </button>
+              
+              <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-parentPrimary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Star class="w-8 h-8 text-parentPrimary fill-parentPrimary" />
+                </div>
+                <h3 class="text-xl font-medium text-gray-900 tracking-tight">Rate your experience</h3>
+                <p class="text-[13px] text-gray-500 mt-2">How was your delivery with Erranders?</p>
+              </div>
+
+              <div class="flex justify-center gap-2 mb-6" @mouseleave="hoverRating = 0">
+                <button 
+                  v-for="star in 5" 
+                  :key="star"
+                  @click="rating = star"
+                  @mouseover="hoverRating = star"
+                  class="p-2 transition-transform hover:scale-110 focus:outline-none"
+                >
+                  <Star 
+                    class="w-10 h-10 transition-colors"
+                    :class="(hoverRating || rating) >= star ? 'text-yellow-400 fill-yellow-400' : 'text-gray-100 fill-gray-100 hover:text-gray-200'"
+                  />
+                </button>
+              </div>
+
+              <div class="space-y-4">
+                <textarea
+                  v-model="reviewText"
+                  rows="3"
+                  placeholder="Tell us what you loved (or what needs improvement)..."
+                  class="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm font-medium focus:border-parentPrimary focus:ring-1 focus:ring-parentPrimary transition-all outline-none resize-none placeholder:text-gray-400 shadow-inner"
+                ></textarea>
+
+                <button 
+                  @click="submitRating"
+                  :disabled="submittingRating || rating === 0"
+                  class="w-full py-4 bg-gray-900 text-white rounded-2xl text-[11px] font-medium tracking-[0.2em] hover:bg-parentPrimary active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  <div v-if="submittingRating" class="w-4 h-4 border border-white/20 border-t-white rounded-full animate-spin" />
+                  <span v-else>SUBMIT REVIEW</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+      
+      <Transition name="fade">
+        <div v-if="showThankYouModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showThankYouModal = false" />
+          
+          <div class="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl overflow-hidden p-8 text-center transform transition-all animate-fade-in scale-in">
+            <div class="w-20 h-20 bg-emerald-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+              <Heart class="w-10 h-10 text-emerald-500 fill-emerald-500 animate-pulse" />
+            </div>
+            
+            <h3 class="text-2xl font-medium text-gray-900 tracking-tight mb-2">Thank You!</h3>
+            <p class="text-sm text-gray-500 mb-8 leading-relaxed">
+              Your feedback is incredibly valuable. It helps our vendors and riders provide the best experience possible.
+            </p>
+            
+            <button 
+              @click="showThankYouModal = false"
+              class="w-full py-4 bg-gray-100 text-gray-900 rounded-2xl text-[11px] font-medium tracking-[0.2em] hover:bg-gray-200 active:scale-95 transition-all"
+            >
+              CLOSE
+            </button>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
  </div>
 </template>
 
@@ -528,10 +647,10 @@
 import { 
   ArrowLeft, Phone, MapPin, Truck, ShoppingBag, 
   Package, CheckCircle2, AlertCircle, RefreshCw,
-  Search, CreditCard, MessageSquare, Clock, LayoutGrid, Star, Inbox, LifeBuoy, Store, ShieldCheck, User
+  Search, CreditCard, MessageSquare, Clock, LayoutGrid, Star, Inbox, LifeBuoy, Store, ShieldCheck, User, X, ChevronRight, HeadphonesIcon, Heart
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from '#imports';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { orders_api } from '@/api_factory/modules/orders';
 import OrderChat from '@/components/core/OrderChat.vue';
 import UiModal from '@/components/ui/UiModal.vue';
@@ -539,6 +658,20 @@ import { useUser } from '@/composables/modules/auth/user';
 
 const route = useRoute();
 const router = useRouter();
+
+const getGroupedCustomizations = (customizations: any[]) => {
+  if (!customizations) return [];
+  const grouped: Record<string, any> = {};
+  customizations.forEach(c => {
+    if (grouped[c.name]) {
+      grouped[c.name].quantity += 1;
+      grouped[c.name].price += c.price;
+    } else {
+      grouped[c.name] = { ...c, quantity: 1 };
+    }
+  });
+  return Object.values(grouped);
+};
 const order = ref<any>(null);
 const loading = ref(true);
 const reordering = ref(false);
@@ -555,6 +688,8 @@ const reviewText = ref('');
 const submittingRating = ref(false);
 const cancelling = ref(false);
 const approvingReconciliation = ref(false);
+const showRatingModal = ref(false);
+const showThankYouModal = ref(false);
 
 const approveReconciliation = async () => {
   approvingReconciliation.value = true;
@@ -613,6 +748,8 @@ const submitRating = async () => {
   }
   const res = await orders_api.rateOrder(route.params.id as string, payload);
   order.value = res.data;
+  showRatingModal.value = false;
+  showThankYouModal.value = true;
  } catch (error) {
   console.error('Failed to submit rating', error);
  } finally {
@@ -647,13 +784,22 @@ const fetchOrder = async () => {
 
 import { useSocket } from '@/composables/useSocket';
 
-const { connect, on } = useSocket('notifications');
+const { connect, on, emit } = useSocket('realtime');
 
 const checkAutoOpenChat = () => {
   if (route.query.openChat && order.value) {
     const targetId = route.query.openChat as string;
     
     // Check if it's the vendor
+    if (order.value.vendorRating) {
+      rating.value = order.value.vendorRating;
+    }
+    
+    // Automatically show rating modal if order is delivered and unrated
+    if (order.value.status === 'delivered' && !order.value.rating && !order.value.hasRatedVendor) {
+      showRatingModal.value = true;
+    }
+
     if (order.value.vendor && (targetId === order.value.vendor.owner || targetId === order.value.vendor._id)) {
       openChat(targetId, order.value.vendor.storeName || 'Vendor', order.value.vendor.logo);
     } 
@@ -676,10 +822,22 @@ const checkAutoOpenChat = () => {
 onMounted(() => {
  fetchOrder();
  connect();
- on('notification', (payload: any) => {
- if (payload.data?.orderId === route.params.id || payload.type === 'ORDER_STATUS_UPDATE') {
- fetchOrder();
+ 
+ // Explicitly register user with the realtime gateway for targeted notifications
+ if (user.value?._id) {
+   emit('register', { userId: user.value._id });
  }
+
+ on('notification:new', (payload: any) => {
+   if (payload.data?.orderId === route.params.id || ['ORDER_STATUS_UPDATE', 'NEW_ORDER'].includes(payload.type)) {
+     fetchOrder();
+   }
+ });
+ 
+ on('notification:order-status-update', (payload: any) => {
+   if (!payload.orderId || payload.orderId === route.params.id) {
+     fetchOrder();
+   }
  });
 });
 

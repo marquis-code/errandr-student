@@ -36,5 +36,4 @@ export const products_api = {
   getPacks: (vendorId: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get(`/products/vendor/${vendorId}/packs`);
   },
-
 };

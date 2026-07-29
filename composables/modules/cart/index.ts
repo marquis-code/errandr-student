@@ -16,6 +16,7 @@ interface CartItem {
 interface Pack {
   id: string;
   name?: string;
+  packType?: { name: string; price: number };
   items: CartItem[];
 }
 
@@ -145,7 +146,7 @@ export const useCart = () => {
 
     const newId = generatePackId();
     const clonedItems = JSON.parse(JSON.stringify(sourcePack.items));
-    vCart.packs.push({ id: newId, items: clonedItems });
+    vCart.packs.push({ id: newId, items: clonedItems, name: sourcePack.name, packType: sourcePack.packType ? { ...sourcePack.packType } : undefined });
     vCart.activePackId = newId;
     saveToStorage();
   };
@@ -175,6 +176,18 @@ export const useCart = () => {
     const pack = vCart.packs.find(p => p.id === packId);
     if (!pack) return;
     pack.name = name;
+    saveToStorage();
+  };
+
+  const setPackType = (vendorId: string, packId: string, packType: { name: string; price: number }) => {
+    const vCart = carts.value[vendorId];
+    if (!vCart) return;
+    const pack = vCart.packs.find(p => p.id === packId);
+    if (!pack) return;
+    pack.packType = packType;
+    pack.name = packType.name;
+    // Force reactivity update
+    carts.value = { ...carts.value };
     saveToStorage();
   };
 
@@ -235,11 +248,12 @@ export const useCart = () => {
     if (!vCart) return { subtotal: 0, itemCount: 0, packs: [], packagingFee: 0, serviceFee: 0 };
     const items = vCart.packs.flatMap(p => p.items);
     const sub = items.reduce((sum, item) => sum + item.subtotal, 0);
+    const pFee = vCart.packs.reduce((sum, p) => sum + (p.packType?.price || 0), 0);
     return {
       subtotal: sub,
       itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
       packs: vCart.packs,
-      packagingFee: vCart.packs.length > 0 ? 0 : 0 as number,
+      packagingFee: pFee,
       serviceFee: Math.round(sub * 0.05) as number,
     };
   };
@@ -279,6 +293,7 @@ export const useCart = () => {
     duplicatePack,
     removePack,
     renamePack,
+    setPackType,
     setActivePack,
     removeItemFromPack,
     updateItemQuantity,

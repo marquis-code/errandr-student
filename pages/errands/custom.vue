@@ -16,10 +16,10 @@
       <div class="relative z-10 px-10 max-w-md">
         <div class="inline-flex items-center gap-2 border-2 border-dashed border-[#FF5C1A] text-[#FF5C1A] rounded-full px-4 py-1.5 -rotate-[6deg] mb-8">
           <Stamp class="w-3.5 h-3.5" />
-          <span class="font-mono text-sm font-bold  tracking-[0.15em]">You Set The Price</span>
+          <span class="font-sans text-sm font-bold  tracking-[0.15em]">You Set The Price</span>
         </div>
 
-        <h1 class="font-mono font-bold text-4xl leading-[1.15] tracking-tight text-[#F7F4EC] mb-5">
+        <h1 class="font-sans font-bold text-4xl leading-[1.15] tracking-tight text-[#F7F4EC] mb-5">
           Write the job.<br />
           <span class="text-[#FF5C1A]">Name your fee.</span><br />
           Broadcast it.
@@ -31,12 +31,12 @@
         <!-- Decorative waybill stubs -->
         <div class="mt-10 space-y-3">
           <div class="rotate-[-2deg] rounded-sm px-4 py-3 shadow-lg bg-[#F7F4EC]">
-            <p class="font-mono text-sm  tracking-wider text-[#766A61]">Faculty of Medicine → Block hostel</p>
-            <p class="font-mono text-sm font-bold mt-0.5 text-[#170D08]">Print 40pg thesis draft — ₦800</p>
+            <p class="font-sans text-sm  tracking-wider text-[#766A61]">Faculty of Medicine → Block hostel</p>
+            <p class="font-sans text-sm font-bold mt-0.5 text-[#170D08]">Print 40pg thesis draft — ₦800</p>
           </div>
           <div class="rotate-[1.5deg] rounded-sm px-4 py-3 shadow-lg ml-6 bg-[#F3C9D2]">
-            <p class="font-mono text-sm  tracking-wider text-[#766A61]">Yaba Market → OPH hostel</p>
-            <p class="font-mono text-sm font-bold mt-0.5 text-[#170D08]">3 yards black velvet — ₦2,000</p>
+            <p class="font-sans text-sm  tracking-wider text-[#766A61]">Yaba Market → OPH hostel</p>
+            <p class="font-sans text-sm font-bold mt-0.5 text-[#170D08]">3 yards black velvet — ₦2,000</p>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
         <div class="border-2 border-dashed border-[#F7F4EC]/20 rounded-sm p-4 flex items-start gap-3">
           <ShieldCheck class="w-5 h-5 shrink-0 mt-0.5 text-[#FF5C1A]" />
           <div>
-            <p class="font-mono text-sm font-bold  tracking-wider text-[#F7F4EC]">Escrow held, not spent</p>
+            <p class="font-sans text-sm font-bold  tracking-wider text-[#F7F4EC]">Escrow held, not spent</p>
             <p class="text-sm mt-1 leading-relaxed text-[#F7F4EC]/50">Your runner fee sits in escrow until you tap confirm. No confirm, no payout.</p>
           </div>
         </div>
@@ -87,12 +87,12 @@
               <!-- Waybill header -->
               <div class="flex justify-between items-start pb-5 border-b-2 border-dashed border-[#D8D2C4]">
                 <div>
-                  <p class="font-mono text-sm  tracking-[0.2em] text-[#766A61]">Erranders Dispatch</p>
-                  <h2 class="font-mono text-xl font-bold tracking-tight text-[#170D08]">Errand Waybill</h2>
+                  <p class="font-sans text-sm  tracking-[0.2em] text-[#766A61]">Erranders Dispatch</p>
+                  <h2 class="font-sans text-xl font-bold tracking-tight text-[#170D08]">Errand Waybill</h2>
                 </div>
                 <div class="text-right">
-                  <p class="font-mono text-sm  tracking-wider text-[#766A61]">Slip No.</p>
-                  <p class="font-mono text-sm font-bold text-[#FF5C1A]">{{ waybillNumber || '——————' }}</p>
+                  <p class="font-sans text-sm  tracking-wider text-[#766A61]">Slip No.</p>
+                  <p class="font-sans text-sm font-bold text-[#FF5C1A]">{{ waybillNumber || '——————' }}</p>
                 </div>
               </div>
 
@@ -100,7 +100,7 @@
               <div class="flex gap-2 mt-6">
                 <div
                   v-for="n in 3" :key="n"
-                  class="flex-1 flex items-center justify-center gap-2 py-3 rounded-md font-mono transition-all"
+                  class="flex-1 flex items-center justify-center gap-2 py-3 rounded-md font-sans transition-all"
                   :class="step === n ? 'bg-[#170D08] text-[#F7F4EC] shadow-sm' : 'bg-[#170D08]/5 text-[#766A61]'"
                 >
                   <span class="text-sm font-bold">{{ n }}/3</span>
@@ -116,14 +116,14 @@
                 <div class="flex gap-3">
                   <button
                     @click="errandType = 'custom'"
-                    class="flex-1 font-mono text-sm  tracking-wider py-3 rounded-sm border-[1.5px] transition-all"
+                    class="flex-1 font-sans text-sm  tracking-wider py-3 rounded-sm border-[1.5px] transition-all"
                     :class="errandType === 'custom' ? 'bg-[#170D08] text-[#F7F4EC] border-[#170D08]' : 'bg-transparent text-[#766A61] border-[#D8D2C4]'"
                   >
                     Any Work?
                   </button>
                   <button
                     @click="errandType = 'market'"
-                    class="flex-1 font-mono text-sm  tracking-wider py-3 rounded-sm border-[1.5px] transition-all"
+                    class="flex-1 font-sans text-sm  tracking-wider py-3 rounded-sm border-[1.5px] transition-all"
                     :class="errandType === 'market' ? 'bg-[#170D08] text-[#F7F4EC] border-[#170D08]' : 'bg-transparent text-[#766A61] border-[#D8D2C4]'"
                   >
                     Market Run
@@ -131,21 +131,22 @@
                 </div>
 
                 <template v-if="errandType === 'custom'">
-                  <div class="flex flex-wrap gap-1.5">
+                  <div class="flex flex-wrap gap-2">
                     <button
                       v-for="tmpl in errandTemplates" :key="tmpl" @click="applyTemplate(tmpl)"
-                      class="font-mono text-sm  tracking-wide px-3 py-1.5 rounded-sm border border-dashed border-[#170D08]/30 text-[#766A61] hover:border-[#FF5C1A] hover:text-[#FF5C1A] transition-colors"
+                      class="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-sm font-semibold rounded-full transition-colors flex items-center gap-2 shadow-sm"
                     >
+                      <ListChecks class="w-4 h-4 text-gray-400" />
                       {{ tmpl }}
                     </button>
                   </div>
 
                   <div class="space-y-2.5">
-                    <label class="block font-mono text-sm  tracking-[0.15em] text-[#766A61]">What do you need done?</label>
+                    <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">What do you need done?</label>
                     <textarea
                       v-model="form.description"
                       rows="3"
-                      placeholder="e.g. Pick up my food from Chijoke and drop it at Block hostel"
+                      placeholder="e.g. Pick up my food from the market and drop it at Block hostel"
                       class="w-full bg-transparent outline-none resize-none py-3 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] placeholder:font-normal placeholder:text-[#766A61]/50 transition-colors"
                     ></textarea>
 
@@ -157,7 +158,7 @@
                     </div>
 
                     <div class="flex items-center gap-2 pt-1">
-                      <span v-if="isRecording" class="font-mono text-sm font-bold animate-pulse rounded-sm px-2 py-1 text-[#FF5C1A] bg-[#FF5C1A]/8">
+                      <span v-if="isRecording" class="font-sans text-sm font-bold animate-pulse rounded-sm px-2 py-1 text-[#FF5C1A] bg-[#FF5C1A]/8">
                         REC {{ Math.floor(recordingTime / 60) }}:{{ (recordingTime % 60).toString().padStart(2, '0') }} / 2:00
                       </span>
                       <button
@@ -173,7 +174,7 @@
                         <input type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
                         <ImageIcon class="w-4 h-4" />
                       </label>
-                      <span class="font-mono text-sm  tracking-wide text-[#766A61]">attach evidence (optional)</span>
+                      <span class="font-sans text-sm  tracking-wide text-[#766A61]">attach evidence (optional)</span>
                     </div>
 
                     <div v-if="attachedImageBase64" class="relative inline-block mt-1">
@@ -185,7 +186,7 @@
                   </div>
 
                   <div class="space-y-2.5">
-                    <label class="block font-mono text-sm  tracking-[0.15em] text-[#766A61]">Task location (optional)</label>
+                    <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Task location (optional)</label>
                     <div class="relative flex items-center gap-2">
                       <MapPin class="w-4 h-4 shrink-0 text-[#766A61]" />
                       <input
@@ -201,7 +202,7 @@
                 <template v-else>
                   <div class="space-y-5 rounded-sm p-4 bg-[#170D08]/5">
                     <div class="space-y-2.5">
-                      <label class="block font-mono text-sm  tracking-[0.15em] text-[#766A61]">Which market?</label>
+                      <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Which market?</label>
                       <div class="flex items-center gap-2">
                         <MapPin class="w-4 h-4 shrink-0 text-[#766A61]" />
                         <input
@@ -213,7 +214,7 @@
                       </div>
                     </div>
                     <div class="space-y-2.5">
-                      <label class="block font-mono text-sm  tracking-[0.15em] text-[#766A61]">Shopping list</label>
+                      <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Shopping list</label>
                       <textarea
                         v-model="marketForm.itemsList"
                         rows="4"
@@ -226,11 +227,11 @@
 
                 <div class="space-y-2">
                   <div class="flex justify-between items-end">
-                    <label class="block font-mono text-sm  tracking-[0.15em] text-[#766A61]">Drop-off location</label>
+                    <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Drop-off location</label>
                     <div v-if="recentDropoffs.length > 0" class="flex gap-1.5">
                       <button
                         v-for="loc in recentDropoffs" :key="loc" @click="form.dropoffLocation = loc"
-                        class="font-mono text-xs  px-1.5 py-0.5 rounded-sm bg-[#170D08]/5 text-[#766A61] hover:bg-[#FF5C1A]/10 hover:text-[#FF5C1A] transition-colors"
+                        class="font-sans text-xs  px-1.5 py-0.5 rounded-sm bg-[#170D08]/5 text-[#766A61] hover:bg-[#FF5C1A]/10 hover:text-[#FF5C1A] transition-colors"
                       >{{ loc }}</button>
                     </div>
                   </div>
@@ -252,7 +253,7 @@
                 <button
                   @click="step = 2"
                   :disabled="!isStep1Valid"
-                  class="w-full font-mono  tracking-wider text-[13px] font-bold py-4 px-6 rounded-sm transition-colors flex justify-between items-center group bg-[#170D08] text-[#F7F4EC] hover:bg-[#FF5C1A] disabled:opacity-25 disabled:hover:bg-[#170D08]"
+                  class="w-full font-sans  tracking-wider text-[13px] font-bold py-4 px-6 rounded-sm transition-colors flex justify-between items-center group bg-[#170D08] text-[#F7F4EC] hover:bg-[#FF5C1A] disabled:opacity-25 disabled:hover:bg-[#170D08]"
                 >
                   <span>Continue → Pricing</span>
                   <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -273,52 +274,52 @@
                 <div class="space-y-6">
                   <div class="space-y-1.5">
                     <div class="flex justify-between items-baseline">
-                      <label class="block font-mono text-sm  tracking-[0.15em] text-[#766A61]">Estimated item cost</label>
-                      <span class="font-mono text-sm text-[#766A61]">0 if just a pickup</span>
+                      <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Estimated item cost</label>
+                      <span class="font-sans text-sm text-[#766A61]">0 if just a pickup</span>
                     </div>
                     <div class="flex items-center gap-2">
-                      <span class="font-mono text-lg font-bold text-[#766A61]">₦</span>
+                      <span class="font-sans text-lg font-bold text-[#766A61]">₦</span>
                       <input
                         v-model="formattedItemCost"
                         type="text"
                         placeholder="0"
-                        class="w-full bg-transparent outline-none py-2 text-xl font-mono font-bold border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
+                        class="w-full bg-transparent outline-none py-2 text-xl font-sans font-bold border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
                       />
                     </div>
                   </div>
 
                   <div class="space-y-1.5">
                     <div class="flex justify-between items-baseline">
-                      <label class="block font-mono text-sm  tracking-[0.15em] text-[#766A61]">Runner fee (labor)</label>
-                      <span class="font-mono text-sm text-[#766A61]">min ₦200</span>
+                      <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Runner fee (labor)</label>
+                      <span class="font-sans text-sm text-[#766A61]">min ₦200</span>
                     </div>
                     <div class="flex items-center gap-2">
-                      <span class="font-mono text-lg font-bold text-[#766A61]">₦</span>
+                      <span class="font-sans text-lg font-bold text-[#766A61]">₦</span>
                       <input
                         v-model="formattedRunnerFee"
                         type="text"
                         placeholder="1,000"
-                        class="w-full bg-transparent outline-none py-2 text-xl font-mono font-bold border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
+                        class="w-full bg-transparent outline-none py-2 text-xl font-sans font-bold border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
                       />
                     </div>
-                    <p v-if="form.runnerFee > 0 && form.runnerFee < 200" class="font-mono text-sm font-bold text-[#FF5C1A]">Minimum runner fee is ₦200</p>
+                    <p v-if="form.runnerFee > 0 && form.runnerFee < 200" class="font-sans text-sm font-bold text-[#FF5C1A]">Minimum runner fee is ₦200</p>
 
                     <div class="flex flex-wrap gap-1.5 pt-2">
                       <button v-for="amt in [500,1000,2000,3500]" :key="amt" @click="form.runnerFee = amt"
-                        class="font-mono text-sm font-bold px-4 py-2 rounded-sm border border-[#170D08]/15 text-[#766A61] hover:border-[#170D08] hover:text-[#170D08] transition-colors"
+                        class="font-sans text-sm font-bold px-4 py-2 rounded-sm border border-[#170D08]/15 text-[#766A61] hover:border-[#170D08] hover:text-[#170D08] transition-colors"
                       >₦{{ amt.toLocaleString('en-NG') }}</button>
                     </div>
                   </div>
                 </div>
 
                 <div class="flex gap-3">
-                  <button @click="step = 1" class="px-5 py-4 rounded-sm font-mono text-sm font-bold  tracking-wider shrink-0 border-[1.5px] border-[#170D08]/15 text-[#766A61] hover:border-[#170D08] hover:text-[#170D08] transition-colors">
+                  <button @click="step = 1" class="px-5 py-4 rounded-sm font-sans text-sm font-bold  tracking-wider shrink-0 border-[1.5px] border-[#170D08]/15 text-[#766A61] hover:border-[#170D08] hover:text-[#170D08] transition-colors">
                     Back
                   </button>
                   <button
                     @click="step = 3"
                     :disabled="!isStep2Valid"
-                    class="flex-1 font-mono  tracking-wider text-[13px] font-bold py-4 px-6 rounded-sm transition-colors flex justify-between items-center group bg-[#170D08] text-[#F7F4EC] hover:bg-[#FF5C1A] disabled:opacity-25 disabled:hover:bg-[#170D08]"
+                    class="flex-1 font-sans  tracking-wider text-[13px] font-bold py-4 px-6 rounded-sm transition-colors flex justify-between items-center group bg-[#170D08] text-[#F7F4EC] hover:bg-[#FF5C1A] disabled:opacity-25 disabled:hover:bg-[#170D08]"
                   >
                     <span>Review Slip</span>
                     <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -330,7 +331,7 @@
               <div v-if="step === 3" class="animate-fade-in space-y-7 pt-8">
                 <p class="text-sm text-[#766A61]">Card charges once. Item cost lands straight in the rider's bank.</p>
 
-                <div class="space-y-3 font-mono text-sm">
+                <div class="space-y-3 font-sans text-sm">
                   <div v-if="form.estimatedItemCost > 0" class="flex justify-between items-baseline">
                     <span class="flex items-center gap-2 text-[#766A61]"><Package class="w-3.5 h-3.5" /> Item Cost</span>
                     <span class="flex-1 mx-2 border-b border-dashed border-[#D8D2C4]"></span>
@@ -355,10 +356,10 @@
 
                 <div class="rounded-sm p-4 flex justify-between items-center -rotate-[0.6deg] border-[3px] border-[#FF5C1A]">
                   <div>
-                    <p class="font-mono text-sm font-bold  tracking-widest text-[#FF5C1A]">Amount Due</p>
+                    <p class="font-sans text-sm font-bold  tracking-widest text-[#FF5C1A]">Amount Due</p>
                     <p class="text-sm mt-0.5 text-[#766A61]">Paid securely via Paystack</p>
                   </div>
-                  <span class="font-mono text-3xl font-bold tracking-tight text-[#FF5C1A]">₦{{ formatMoney(grandTotal) }}</span>
+                  <span class="font-sans text-3xl font-bold tracking-tight text-[#FF5C1A]">₦{{ formatMoney(grandTotal) }}</span>
                 </div>
 
                 <div class="rounded-sm p-4 flex gap-3 text-[13px] leading-relaxed bg-[#3E6B52]/6 border border-dashed border-[#3E6B52]/35 text-[#170D08]">
@@ -369,7 +370,7 @@
                 <div v-if="justAuthenticated" class="rounded-sm p-4 flex items-start gap-3 bg-[#3E6B52]/8 border border-dashed border-[#3E6B52]">
                   <ShieldCheck class="w-4 h-4 mt-0.5 shrink-0 text-[#3E6B52]" />
                   <div>
-                    <p class="font-mono text-sm font-bold  tracking-wide text-[#3E6B52]">Verified</p>
+                    <p class="font-sans text-sm font-bold  tracking-wide text-[#3E6B52]">Verified</p>
                     <p class="text-[13px] mt-0.5 text-[#170D08]">Your details are saved. Pay below to broadcast the errand.</p>
                   </div>
                 </div>
@@ -378,13 +379,13 @@
                   <button
                     @click="submitErrand"
                     :disabled="isSubmitting"
-                    class="w-full font-mono text-[13px] font-bold  tracking-wider py-4 px-6 rounded-sm transition-all flex justify-center items-center gap-3 bg-[#FF5C1A] text-[#F7F4EC] hover:bg-[#C7460F] disabled:opacity-60 active:scale-[0.98]"
+                    class="w-full font-sans text-[13px] font-bold  tracking-wider py-4 px-6 rounded-sm transition-all flex justify-center items-center gap-3 bg-[#FF5C1A] text-[#F7F4EC] hover:bg-[#C7460F] disabled:opacity-60 active:scale-[0.98]"
                   >
                     <Loader2 v-if="isSubmitting" class="animate-spin w-4 h-4" />
                     <CreditCard v-else class="w-4 h-4" />
                     <span>{{ isSubmitting ? 'Processing…' : (failedPaymentReference ? 'Retry Publishing Errand' : `Pay ₦${formatMoney(grandTotal)} & Broadcast`) }}</span>
                   </button>
-                  <button @click="step = 2" :disabled="isSubmitting" class="w-full font-mono text-sm font-bold  tracking-wider py-2.5 text-[#766A61] hover:text-[#170D08] transition-colors">
+                  <button @click="step = 2" :disabled="isSubmitting" class="w-full font-sans text-sm font-bold  tracking-wider py-2.5 text-[#766A61] hover:text-[#170D08] transition-colors">
                     ← Go back and edit
                   </button>
                 </div>
@@ -410,7 +411,7 @@ import { usePayments } from '@/composables/modules/payments'
 import {
   ShieldCheck, MapPin, Navigation, CreditCard,
   ArrowRight, X, CircleDollarSign, Package, Target, Layers, Loader2,
-  Mic, ImageIcon, Stamp
+  Mic, ImageIcon, Stamp, ListChecks
 } from 'lucide-vue-next'
 
 definePageMeta({ layout: false })
@@ -483,10 +484,13 @@ const predefinedLocations = [
 ]
 
 const errandTemplates = [
-  "Get Food from Chijoke",
-  "Get essentials from Yem Yem",
-  "Get essentials from Iya Itunu",
-  "Get ewa goyin from aunty iyabo"
+  "Buy groceries from",
+  "Print documents at",
+  "Pick up a package from",
+  "Get food from",
+  "Pay a bill at",
+  "Drop off a parcel at",
+  "Buy textbooks from"
 ]
 
 onMounted(() => {
@@ -781,11 +785,7 @@ const handleAuthSuccess = () => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
-/* For production, move this @import into nuxt.config app.head.link instead of a component-level @import.
-   font-mono is remapped below to Space Mono; font-sans uses your project's existing Tailwind sans stack. */
-
-.font-mono { font-family: 'Space Mono', ui-monospace, monospace; }
+/* Remove custom font to let standard Tailwind sans handle text */
 
 .animate-fade-in {
   animation: slideFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);

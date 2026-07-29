@@ -53,8 +53,12 @@ export const orders_api = {
     return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${id}/reorder`);
   },
 
-  getOrderChat: (orderId: string) => {
-    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/chat/order/${orderId}`);
+  getOrderChat: (orderId: string, userA?: string, userB?: string) => {
+    let url = `/chat/order/${orderId}`;
+    if (userA && userB) {
+      url += `?userA=${userA}&userB=${userB}`;
+    }
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(url);
   },
 
   getCustomErrandSettings: () => {

@@ -751,6 +751,30 @@
                         </button>
                       </div>
                     </div>
+                    <!-- Desktop Pack Size Selector -->
+                    <div v-if="vendor.packs && vendor.packs.length > 0 && vendor.requiresTakeawayPack" class="mt-2 relative">
+                      <div
+                        @click="openPackDropdowns[pack.id + 'desktop'] = !openPackDropdowns[pack.id + 'desktop']"
+                        class="w-full bg-gray-50/50 text-[10px] py-1.5 px-2 rounded-lg border border-gray-200 cursor-pointer flex items-center justify-between hover:border-parentPrimary/50 transition-colors"
+                      >
+                        <span class="font-medium text-gray-700">
+                          {{ pack.packType?.name || pack.name }} · ₦{{ pack.packType?.price?.toLocaleString() || vendor.packs.find((p: any) => p.name === (pack.packType?.name || pack.name))?.price?.toLocaleString() }}
+                        </span>
+                        <ChevronDown class="w-3 h-3 text-gray-400" />
+                      </div>
+                      <div v-if="openPackDropdowns[pack.id + 'desktop']" class="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden">
+                        <div
+                          v-for="(vp, vpIdx) in vendor.packs.filter((p: any) => p.isActive !== false)"
+                          :key="vpIdx"
+                          @click="cart.setPackType(vendor._id, pack.id, { name: vp.name, price: vp.price }); openPackDropdowns[pack.id + 'desktop'] = false"
+                          class="px-2 py-1.5 text-[10px] font-medium text-gray-700 hover:bg-gray-50 cursor-pointer flex justify-between items-center"
+                          :class="{ 'bg-parentPrimary/5 text-parentPrimary': (pack.packType?.name || pack.name) === vp.name }"
+                        >
+                          <span>{{ vp.name }}</span>
+                          <span class="text-gray-400">₦{{ vp.price?.toLocaleString() }}</span>
+                        </div>
+                      </div>
+                    </div>
                     <!-- Pack Items -->
                     <div class="space-y-2">
                       <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-center gap-3">
@@ -799,7 +823,7 @@
                   <div class="pt-4 border-t border-gray-100 space-y-4 mt-4">
                     <div class="flex justify-between items-center">
                       <span class="text-xs font-medium text-gray-400 tracking-wider">Subtotal</span>
-                      <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
+                      <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ (cart.getVendorStats(vendor._id).subtotal + cart.getVendorStats(vendor._id).packagingFee).toLocaleString() }}</span>
                     </div>
                     <NuxtLink 
                       v-if="!isVendorClosed"
@@ -910,6 +934,32 @@
                     </button>
                   </div>
                   
+                  <!-- Pack Size Selector -->
+                  <div v-if="vendor.packs && vendor.packs.length > 0 && vendor.requiresTakeawayPack" class="px-5 py-3 bg-amber-50/60 border-b border-amber-100/50 relative z-10">
+                    <label class="block text-[10px] font-bold text-amber-700 tracking-wider mb-2 uppercase">Pack Size</label>
+                    <div
+                      @click="openPackDropdowns[pack.id + 'mobile'] = !openPackDropdowns[pack.id + 'mobile']"
+                      class="w-full bg-white text-xs p-2.5 rounded-xl border border-amber-200 cursor-pointer flex items-center justify-between hover:border-parentPrimary/50 transition-colors shadow-sm"
+                    >
+                      <span class="font-medium text-gray-700">
+                        {{ pack.packType?.name || pack.name }} · ₦{{ pack.packType?.price?.toLocaleString() || vendor.packs.find((p: any) => p.name === (pack.packType?.name || pack.name))?.price?.toLocaleString() }}
+                      </span>
+                      <ChevronDown class="w-4 h-4 text-gray-400" />
+                    </div>
+                    <div v-if="openPackDropdowns[pack.id + 'mobile']" class="absolute z-20 left-5 right-5 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden">
+                      <div
+                        v-for="(vp, vpIdx) in vendor.packs.filter((p: any) => p.isActive !== false)"
+                        :key="vpIdx"
+                        @click="cart.setPackType(vendor._id, pack.id, { name: vp.name, price: vp.price }); openPackDropdowns[pack.id + 'mobile'] = false"
+                        class="px-4 py-3 text-xs font-medium text-gray-700 hover:bg-gray-50 cursor-pointer flex justify-between items-center border-b border-gray-50 last:border-0"
+                        :class="{ 'bg-parentPrimary/5 text-parentPrimary': (pack.packType?.name || pack.name) === vp.name }"
+                      >
+                        <span>{{ vp.name }}</span>
+                        <span class="text-gray-400 font-bold">₦{{ vp.price?.toLocaleString() }}</span>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Items inside Pack -->
                   <div class="p-5 space-y-6 flex-1">
                     <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex gap-4 border-b border-gray-50 pb-5 last:border-0 last:pb-0">
@@ -917,7 +967,6 @@
                         <div class="flex justify-between items-start gap-2 mb-1.5">
                           <div>
                             <p class="text-[15px] font-bold text-gray-900 leading-tight">{{ toTitleCase(item.name) }}</p>
-                            <p v-if="item.customizations && item.customizations.length > 0" class="text-[12px] font-medium text-gray-400 mt-0.5">Base price: ₦{{ item.price.toLocaleString() }}</p>
                           </div>
                           <div class="text-right">
                             <p class="text-[15px] font-bold text-gray-900 shrink-0">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
@@ -988,7 +1037,7 @@
               <div class="p-5 bg-white space-y-4 sticky bottom-0 border-t border-gray-50 z-40 shadow-[0_-10px_20px_rgba(255,255,255,0.9)]">
                 <div class="flex justify-between items-center px-1 mb-2">
                   <span class="text-[15px] font-medium text-gray-900">Subtotal</span>
-                  <span class="text-lg font-bold text-gray-900 tracking-tight">₦{{ cart.getVendorStats(vendor._id).subtotal.toLocaleString() }}</span>
+                  <span class="text-lg font-bold text-gray-900 tracking-tight">₦{{ (cart.getVendorStats(vendor._id).subtotal + cart.getVendorStats(vendor._id).packagingFee).toLocaleString() }}</span>
                 </div>
                 <NuxtLink 
                   v-if="!isVendorClosed"
@@ -1052,7 +1101,7 @@
               ₦{{ 
                 groupOrder 
                   ? (groupOrder.participants?.reduce((sum, p) => sum + (p.total || 0), 0) || 0).toLocaleString() 
-                  : cart.getVendorStats(vendor._id).subtotal.toLocaleString() 
+                  : (cart.getVendorStats(vendor._id).subtotal + cart.getVendorStats(vendor._id).packagingFee).toLocaleString() 
               }}
             </p>
           </div>
@@ -1506,6 +1555,9 @@ import {
   Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, ChevronDown, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText, RefreshCw
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+
+const openPackDropdowns = ref<Record<string, boolean>>({});
+
 import { useRoute, useHead, navigateTo, useRouter } from '#imports';
 import { useNow, onClickOutside } from '@vueuse/core';
 import { useCart } from '@/composables/modules/cart';

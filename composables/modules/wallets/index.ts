@@ -13,13 +13,21 @@ export const useWallet = () => {
   const fetchWallet = async () => {
     try {
       const res = await wallets_api.getWallet();
-      // res.data is the axios response body
-      // The backend returns { status: 'success', data: { balance: ... } } (or just the object depending on factory)
-      // Let's be safe and handle both
-      const data = res.data?.data || res.data;
+      console.log('[Wallet] Raw response:', JSON.stringify(res.data));
+      // Handle various response shapes:
+      // 1. { data: { balance: N } }  (NestJS wrapper)
+      // 2. { balance: N }            (direct document)
+      // 3. { data: { data: { balance: N } } }  (double wrapped)
+      const raw = res.data;
+      const data = raw?.data?.balance !== undefined ? raw.data 
+                 : raw?.balance !== undefined ? raw 
+                 : raw?.data || raw;
       wallet.value = data;
-      balance.value = data?.balance || 0;
-    } catch (e) { /* Error handled by axios */ }
+      balance.value = typeof data?.balance === 'number' ? data.balance : 0;
+      console.log('[Wallet] Parsed balance:', balance.value);
+    } catch (e) { 
+      console.error('[Wallet] Fetch error:', e);
+    }
   };
 
   const withdrawFunds = async (amount: number) => {

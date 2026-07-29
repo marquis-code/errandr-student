@@ -186,7 +186,8 @@
               </div>
             </div>
 
-            <!-- Add-ons -->
+            <!-- Add-ons (Hidden for now) -->
+            <!-- 
             <div v-if="hasFoodVendor" class="bg-white rounded-2xl border border-gray-100 overflow-visible">
               <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100 rounded-t-2xl">
                 <div class="w-8 h-8 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
@@ -229,16 +230,17 @@
                 </label>
               </div>
             </div>
+            -->
 
             <!-- Step 2: Payment -->
             <div class="bg-white rounded-2xl border border-gray-100 overflow-visible">
               <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100 rounded-t-2xl">
-                <div class="w-8 h-8 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500">
-                  <CreditCard class="w-4 h-4" />
+                <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500">
+                  <CreditCard class="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-medium text-gray-900 tracking-tight">Payment Method</h3>
-                  <p class="text-[10px] font-bold text-gray-400">Choose how to pay</p>
+                  <h3 class="text-sm font-semibold text-gray-900 tracking-tight">Payment Method</h3>
+                  <p class="text-xs font-medium text-gray-400">Choose how to pay</p>
                 </div>
               </div>
               <div class="p-3">
@@ -249,16 +251,16 @@
                     class="p-3 rounded-xl border transition-all text-left flex items-center justify-between w-full active:scale-[0.98]"
                   >
                     <div class="flex items-center gap-3">
-                      <div class="w-8 h-6 flex items-center justify-center bg-white rounded border border-gray-100">
-                        <img src="~/assets/img/paystack.png" class="h-3 object-contain" alt="Paystack" />
+                      <div class="w-9 h-7 flex items-center justify-center bg-white rounded border border-gray-100">
+                        <img src="~/assets/img/paystack.png" class="h-4 object-contain" alt="Paystack" />
                       </div>
                       <div>
-                        <p class="text-xs font-medium text-gray-900 leading-none mb-0.5">Pay with Card</p>
-                        <p class="text-[9px] font-medium text-gray-400">Instant & Secure</p>
+                        <p class="text-sm font-medium text-gray-900 leading-none mb-0.5">Pay with Card</p>
+                        <p class="text-xs font-medium text-gray-400">Instant & Secure</p>
                       </div>
                     </div>
-                    <div class="w-4 h-4 rounded-full border flex items-center justify-center" :class="paymentMethod === 'card' ? 'border-parentPrimary bg-parentPrimary text-white' : 'border-gray-300'">
-                      <div v-if="paymentMethod === 'card'" class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center" :class="paymentMethod === 'card' ? 'border-parentPrimary bg-parentPrimary text-white' : 'border-gray-300'">
+                      <div v-if="paymentMethod === 'card'" class="w-2 h-2 rounded-full bg-white"></div>
                     </div>
                   </button>
 
@@ -268,21 +270,21 @@
                     class="p-3 rounded-xl border transition-all text-left flex items-center justify-between w-full active:scale-[0.98]"
                   >
                     <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center border border-gray-100">
-                        <Wallet :class="paymentMethod === 'wallet' ? 'text-emerald-500' : 'text-gray-300'" class="w-4 h-4 transition-colors" />
+                      <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center border border-gray-100">
+                        <Wallet :class="paymentMethod === 'wallet' ? 'text-emerald-500' : 'text-gray-300'" class="w-5 h-5 transition-colors" />
                       </div>
                       <div>
-                        <p class="text-xs font-medium text-gray-900 leading-none mb-0.5">My Wallet</p>
-                        <p :class="balance < finalTotal ? 'text-rose-500' : 'text-emerald-600'" class="text-[10px] font-medium flex items-center gap-1">
+                        <p class="text-sm font-medium text-gray-900 leading-none mb-1">My Wallet</p>
+                        <p :class="balance < finalTotal ? 'text-rose-500' : 'text-emerald-600'" class="text-xs font-semibold flex items-center gap-1">
                           ₦{{ (balance || 0).toLocaleString() }}
                           <span @click.stop="fetchWallet" class="p-0.5 hover:bg-emerald-100 rounded transition-colors inline-block ml-1 cursor-pointer">
-                            <RefreshCw :class="loadingPayment ? 'animate-spin' : ''" class="w-2.5 h-2.5 text-emerald-500" />
+                            <RefreshCw :class="loadingPayment ? 'animate-spin' : ''" class="w-3 h-3 text-emerald-500" />
                           </span>
                         </p>
                       </div>
                     </div>
-                    <div class="w-4 h-4 rounded-full border flex items-center justify-center" :class="paymentMethod === 'wallet' ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300'">
-                      <div v-if="paymentMethod === 'wallet'" class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center" :class="paymentMethod === 'wallet' ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300'">
+                      <div v-if="paymentMethod === 'wallet'" class="w-2 h-2 rounded-full bg-white"></div>
                     </div>
                   </button>
                 </div>
@@ -321,27 +323,29 @@
               </div>
             </div>
 
+
+
             <!-- MOBILE: Order Summary -->
             <div class="lg:hidden bg-white rounded-2xl border border-gray-100 overflow-hidden">
               <div class="px-5 py-4 bg-gray-50/50 border-b border-gray-100">
-                <h3 class="text-xs font-medium text-gray-900 tracking-tight">Order Summary</h3>
+                <h3 class="text-sm font-medium text-gray-900 tracking-tight">Order Summary</h3>
               </div>
               <div class="p-5 space-y-3">
-                <div class="flex justify-between items-center text-xs font-bold text-gray-500">
+                <div class="flex justify-between items-center text-sm font-medium text-gray-500">
                   <span>Subtotal</span>
-                  <span class="text-gray-900 font-medium">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
+                  <span class="text-gray-900 font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
                 </div>
-                <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
+                <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500">
                   <span>Delivery</span>
-                  <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-medium'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
+                  <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-bold'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
                 </div>
-                <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
-                  <span>Packaging Fee</span>
-                  <span class="text-gray-900 font-medium">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
+                <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500">
+                  <span>Pack</span>
+                  <span class="text-gray-900 font-bold">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
                 </div>
-                <div class="flex justify-between items-center text-xs font-bold text-gray-500">
-                  <span>Service Fee</span>
-                  <span class="text-gray-900 font-medium">₦{{ computedTotalServiceFee.toLocaleString() }}</span>
+                <div class="flex justify-between items-center text-sm font-medium text-gray-500">
+                  <span>Service Charge</span>
+                  <span class="text-gray-900 font-bold">₦{{ (computedTotalServiceFee + computedPaystackFee).toLocaleString() }}</span>
                 </div>
                 <div v-if="isBirthday" class="flex justify-between items-center text-xs font-bold text-[#008950]">
                   <span class="flex items-center gap-1">🎂 Birthday Treat</span>
@@ -350,10 +354,6 @@
                 <div v-if="computedTokenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-orange-500">
                   <span class="flex items-center gap-1">🎟 Streak Free Delivery</span>
                   <span class="font-bold">-₦{{ computedTokenDiscount.toLocaleString() }}</span>
-                </div>
-                <div v-if="computedPaystackFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
-                  <span>Processing Fee</span>
-                  <span class="text-gray-900 font-medium">₦{{ computedPaystackFee.toLocaleString() }}</span>
                 </div>
                 <div v-if="computedBrethrenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-parentPrimary">
                   <span class="flex items-center gap-1"><Users class="w-3 h-3" /> Brethren Split</span>
@@ -428,6 +428,14 @@
                       <Trash2 class="w-4 h-4" />
                     </button>
                   </div>
+                  <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0" class="pl-4 border-l-2 border-gray-50 space-y-1">
+                    <label class="block text-[10px] font-bold text-gray-400">Packaging Type</label>
+                    <select v-model="selectedPacks[vendorId]" class="w-full bg-white text-xs p-2 rounded-lg border border-gray-200 focus:outline-none focus:border-parentPrimary text-gray-700 font-medium">
+                      <option v-for="(packOption, idx) in vendorsMetadata[vendorId].packs" :key="idx" :value="packOption">
+                        {{ packOption.name }} (₦{{ packOption.price }})
+                      </option>
+                    </select>
+                  </div>
                   <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="pack.id" class="pl-4 border-l-2 border-gray-50 space-y-3">
                     <span class="text-[9px] font-medium bg-gray-900 text-white px-2.5 py-1 rounded-md">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
                     <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex items-start gap-3">
@@ -478,24 +486,24 @@
               </div>
               <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
                 <div class="px-5 py-4 bg-gray-50/50 border-b border-gray-100">
-                  <h3 class="text-xs font-medium text-gray-900 tracking-tight">Order Summary</h3>
+                  <h3 class="text-sm font-medium text-gray-900 tracking-tight">Order Summary</h3>
                 </div>
                 <div class="p-5 space-y-3">
-                  <div class="flex justify-between items-center text-xs font-bold text-gray-500">
+                  <div class="flex justify-between items-center text-sm font-medium text-gray-500">
                     <span>Subtotal</span>
-                    <span class="text-gray-900 font-medium">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
+                    <span class="text-gray-900 font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
                   </div>
-                  <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
+                  <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500">
                     <span>Delivery</span>
-                    <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-medium'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
+                    <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-bold'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
                   </div>
-                  <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
+                  <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500">
                     <span>Packaging Fee</span>
-                    <span class="text-gray-900 font-medium">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
+                    <span class="text-gray-900 font-bold">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
                   </div>
-                  <div class="flex justify-between items-center text-xs font-bold text-gray-500">
-                    <span>Service Fee</span>
-                    <span class="text-gray-900 font-medium">₦{{ computedTotalServiceFee.toLocaleString() }}</span>
+                  <div class="flex justify-between items-center text-sm font-medium text-gray-500">
+                    <span>Service Charge</span>
+                    <span class="text-gray-900 font-bold">₦{{ (computedTotalServiceFee + computedPaystackFee).toLocaleString() }}</span>
                   </div>
                   <div v-if="isBirthday" class="flex justify-between items-center text-xs font-bold text-[#008950]">
                     <span class="flex items-center gap-1">🎂 Birthday Treat</span>
@@ -504,10 +512,6 @@
                   <div v-if="computedTokenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-orange-500">
                     <span class="flex items-center gap-1">🎟 Streak Free Delivery</span>
                     <span class="font-bold">-₦{{ computedTokenDiscount.toLocaleString() }}</span>
-                  </div>
-                  <div v-if="computedPaystackFee > 0" class="flex justify-between items-center text-xs font-bold text-gray-500">
-                    <span>Processing Fee</span>
-                    <span class="text-gray-900 font-medium">₦{{ computedPaystackFee.toLocaleString() }}</span>
                   </div>
                   <div v-if="computedBrethrenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-parentPrimary">
                     <span class="flex items-center gap-1"><Users class="w-3 h-3" /> Brethren Split</span>
@@ -647,6 +651,14 @@
                 <h4 class="text-xs font-medium text-gray-900">{{ toTitleCase(vendorsMetadata[vendorId]?.storeName || '') }}</h4>
               </div>
               
+              <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0" class="pl-3 border-l-2 border-gray-50 space-y-1">
+                <label class="block text-[10px] font-bold text-gray-400">Packaging Type</label>
+                <select v-model="selectedPacks[vendorId]" class="w-full bg-white text-xs p-2 rounded-lg border border-gray-200 focus:outline-none focus:border-parentPrimary text-gray-700 font-medium">
+                  <option v-for="(packOption, idx) in vendorsMetadata[vendorId].packs" :key="idx" :value="packOption">
+                    {{ packOption.name }} (₦{{ packOption.price }})
+                  </option>
+                </select>
+              </div>
               <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="'mb-pack-' + pack.id" class="pl-3 border-l-2 border-gray-50 space-y-3">
                 <div class="flex items-center justify-between">
                   <span class="text-[9px] font-medium bg-gray-900 text-white px-2.5 py-1 rounded-md">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
@@ -826,7 +838,7 @@
 </template>
 
 <script setup lang="ts">
-import { ShoppingCart, ArrowLeft, Moon, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users } from 'lucide-vue-next';
+import { ShoppingCart, ArrowLeft, Moon, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users, Package } from 'lucide-vue-next';
 import AnimatedInput from '@/components/ui/AnimatedInput.vue';
 import SelectInput from '@/components/ui/SelectInput.vue';
 import CheckoutAuthModal from '@/components/CheckoutAuthModal.vue';
@@ -927,24 +939,28 @@ const getGroupedCustomizations = (customizations: any[]) => {
   return Object.values(grouped);
 };
 
-const platformProcessingFee = ref(500);
+const platformProcessingFee = ref(0);
 const platformServiceFeePercentage = ref(5);
 
 const fetchPlatformSettings = async () => {
   try {
-    const [res, brethrenRes] = await Promise.all([
-      orders_api.getCustomErrandSettings(),
-      settings_api.getExamBrethrenSettings()
-    ]);
+    const res = await orders_api.getCustomErrandSettings();
     if (res?.data) {
-      platformProcessingFee.value = res.data.platformProcessingFee ?? 500;
+      platformProcessingFee.value = res.data.platformProcessingFee ?? 0;
       platformServiceFeePercentage.value = res.data.platformServiceFeePercentage ?? 5;
     }
-    if (brethrenRes?.data) {
-      examBrethrenActive.value = brethrenRes.data.isActive ?? false;
+    
+    try {
+      const brethrenRes = await settings_api.getExamBrethrenSettings();
+      if (brethrenRes?.data) {
+        examBrethrenActive.value = brethrenRes.data.isActive ?? false;
+      }
+    } catch (e) {
+      console.warn('Failed to fetch exam brethren settings (might not be deployed yet)', e);
+      examBrethrenActive.value = false;
     }
-  } catch (e) {
-    console.error('Failed to fetch platform settings', e);
+  } catch (error) {
+    console.error('Failed to fetch platform settings:', error);
   }
 };
 
@@ -1110,8 +1126,19 @@ const computedTotalDeliveryFee = computed(() => {
 const computedTotalPackagingFee = computed(() => {
   let total = 0;
   cartStore.allVendorIds.value.forEach(vId => {
-    const selected = selectedPacks.value[vId];
-    total += selected ? selected.price : (vendorsMetadata.value[vId]?.packagingFee ?? 0);
+    const stats = cartStore.getVendorStats(vId);
+    const vendorMeta = vendorsMetadata.value[vId];
+    const fallbackPack = selectedPacks.value[vId];
+    const fallbackPrice = fallbackPack ? fallbackPack.price : (vendorMeta?.packagingFee ?? 0);
+    
+    // Sum per-pack pricing: each pack can have its own packType
+    if (stats.packs.length > 0) {
+      stats.packs.forEach((pack: any) => {
+        total += pack.packType?.price ?? fallbackPrice;
+      });
+    } else {
+      total += fallbackPrice;
+    }
   });
   if (groupOrder.value && groupOrder.value.status === 'locked' && groupOrder.value.splitType === 'split_bill') {
      const activeParticipants = groupOrder.value.participants.filter((p: any) => p.items.length > 0).length || 1;
@@ -1187,7 +1214,10 @@ const handleAuthenticated = async () => {
 onMounted(async () => {
   cartStore.initCart();
   if (cartStore.isEmpty.value) fetchPopularVendors();
-  if (user.value) fetchWallet();
+  
+  watch(() => user.value, (u) => {
+    if (u) fetchWallet();
+  }, { immediate: true });
 
   if (route.query.group) {
     try { await fetchGroupOrder(route.query.group as string); } catch (e) { console.error(e); }
@@ -1241,6 +1271,15 @@ onMounted(async () => {
   }
 
   await fetchBulkMetadata(cartStore.allVendorIds.value);
+
+  // Initialize selected packs
+  cartStore.allVendorIds.value.forEach(vId => {
+    const vendor = vendorsMetadata.value[vId];
+    if (vendor?.packs?.length > 0 && !selectedPacks.value[vId]) {
+      const activePack = vendor.packs.find((p: any) => p.isActive) || vendor.packs[0];
+      selectedPacks.value[vId] = activePack;
+    }
+  });
 
   const cachedData = localStorage.getItem('errandr_checkout_data');
   if (cachedData) {
@@ -1431,7 +1470,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const sFee = Math.round(stats.subtotal * (platformServiceFeePercentage.value / 100));
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const res = await createOrder({
-        vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal, customizations: item.customizations || [] })) })),
+        vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, packType: p.packType, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal, customizations: item.customizations || [] })) })),
         subtotal: stats.subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: vendor?.packagingFee ?? 0, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: vendor?.packagingFee ?? 0 },
         isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value,

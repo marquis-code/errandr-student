@@ -6,6 +6,6 @@ export const reviews_api = {
   },
 
   getVendorReviews: (vendorId: string, params?: { page?: number; limit?: number }) => {
-    return GATEWAY_ENDPOINT.get(`/reviews/vendor/${vendorId}`, { params });
+    return GATEWAY_ENDPOINT.get(`/vendors/${vendorId}/reviews`, { params });
   },
 };

@@ -1,12 +1,17 @@
 import { GATEWAY_ENDPOINT, GATEWAY_ENDPOINT_WITH_AUTH } from '../axios.config';
 
+const applyVendorMarkup = async (promise: Promise<any>) => {
+  const res = await promise;
+  return res;
+};
+
 export const vendors_api = {
   getOnline: () => {
-    return GATEWAY_ENDPOINT.get('/vendors/online');
+    return applyVendorMarkup(GATEWAY_ENDPOINT.get('/vendors/online'));
   },
 
   getAll: (params?: any) => {
-    return GATEWAY_ENDPOINT.get('/vendors', { params });
+    return applyVendorMarkup(GATEWAY_ENDPOINT.get('/vendors', { params }));
   },
 
   getStatistics: () => {
@@ -30,19 +35,19 @@ export const vendors_api = {
   },
 
   getById: (id: string) => {
-    return GATEWAY_ENDPOINT.get(`/vendors/${id}`);
+    return applyVendorMarkup(GATEWAY_ENDPOINT.get(`/vendors/${id}`));
   },
 
   getBatch: (ids: string[]) => {
-    return GATEWAY_ENDPOINT.post('/vendors/batch', { ids });
+    return applyVendorMarkup(GATEWAY_ENDPOINT.post('/vendors/batch', { ids }));
   },
 
   getBySubdomain: (subdomain: string) => {
-    return GATEWAY_ENDPOINT.get(`/vendors/subdomain/${subdomain}`);
+    return applyVendorMarkup(GATEWAY_ENDPOINT.get(`/vendors/subdomain/${subdomain}`));
   },
 
   getPopular: () => {
-    return GATEWAY_ENDPOINT.get('/vendors/popular');
+    return applyVendorMarkup(GATEWAY_ENDPOINT.get('/vendors/popular'));
   },
 
   notifyWhenOnline: (id: string, email: string, pushSubscription?: any) => {

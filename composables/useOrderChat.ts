@@ -37,9 +37,17 @@ export const useOrderChat = (
   const fetchMessages = async () => {
     loading.value = true;
     const orderId = toValue(orderIdArg);
+    const currentUserId = toValue(currentUserIdArg);
+    const targetUserId = toValue(targetUserIdArg);
     try {
-      const res = await api.get(`/chat/order/${orderId}`);
-      // Show ALL messages for this order — no client-side filtering
+      // Request only messages between this specific pair of users
+      let url = `/chat/order/${orderId}`;
+      if (currentUserId && targetUserId) {
+        const cleanCurrent = extractObjectId(currentUserId);
+        const cleanTarget = extractObjectId(targetUserId);
+        url += `?userA=${cleanCurrent}&userB=${cleanTarget}`;
+      }
+      const res = await api.get(url);
       messages.value = res.data || [];
     } catch (e) {
       console.error('Failed to fetch messages', e);
@@ -120,14 +128,24 @@ export const useOrderChat = (
     const sock = getSocket();
     const orderId = toValue(orderIdArg);
     const currentUserId = toValue(currentUserIdArg);
+    const targetUserId = toValue(targetUserIdArg);
 
-    console.log(`[useOrderChat] Setting up listeners for order:${orderId}, currentUser:${currentUserId}`);
-    emit('joinOrder', { orderId });
+    // Compute a deterministic pairKey for this conversation
+    let pairKey: string | undefined;
+    if (currentUserId && targetUserId) {
+      const cleanCurrent = extractObjectId(currentUserId);
+      const cleanTarget = extractObjectId(targetUserId);
+      const ids = [cleanCurrent, cleanTarget].sort();
+      pairKey = `${ids[0]}_${ids[1]}`;
+    }
+
+    console.log(`[useOrderChat] Setting up listeners for order:${orderId}, currentUser:${currentUserId}, pairKey:${pairKey}`);
+    emit('joinOrder', { orderId, pairKey });
 
     if (sock) {
       const reconnectHandler = () => {
         console.log(`[useOrderChat] Reconnected, rejoining order:${orderId}`);
-        emit('joinOrder', { orderId: toValue(orderIdArg) });
+        emit('joinOrder', { orderId: toValue(orderIdArg), pairKey });
       };
       sock.on('connect', reconnectHandler);
     }
