@@ -19,6 +19,17 @@ export default defineNuxtConfig({
     },
     // ⬇ ensures the built/preview server also binds to 3001 (devServer.port only covers `nuxt dev`)
     devProxy: undefined,
+    routeRules: {
+      '/**': {
+        cors: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+          'Access-Control-Allow-Credentials': 'true',
+          'Access-Control-Allow-Headers': '*',
+        },
+      },
+    },
   },
 
   devServer: {
