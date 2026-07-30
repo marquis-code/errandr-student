@@ -1,11 +1,11 @@
 <template>
-  <div class="space-y-6 animate-fade-in pb-32">
-    <div class="mb-8 px-2 md:px-0">
-      <h1 class="text-2xl font-bold text-gray-900 mb-1">Forms</h1>
-      <p class="text-sm text-gray-500">Consultation forms and waivers from your venues.</p>
+  <div class="space-y-6 pb-24 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary">
+    <div class="mb-8 px-0 md:px-0">
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Forms & Waivers</h1>
+      <p class="text-sm text-gray-500">Manage your consultation forms, waivers, and documents.</p>
     </div>
 
-    <div class="px-2 md:px-0">
+    <div class="px-0 md:px-0">
       <div class="bg-white rounded-3xl text-center p-16 border border-gray-100 shadow-sm animate-fade-in">
         <div class="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 mx-auto">
           <ClipboardList class="w-8 h-8 text-gray-300" />

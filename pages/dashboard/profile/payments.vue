@@ -1,5 +1,5 @@
 <template>
- <div class="max-w-xl mx-auto space-y-6 pb-20 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary pt-8 px-4">
+ <div class="max-w-xl mx-auto space-y-6 pb-20 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary pt-8 px-0">
  <div class="flex items-center gap-4">
  <NuxtLink to="/dashboard/profile" class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-900 hover:text-white transition-all ">
  <ArrowLeft class="w-5 h-5" />

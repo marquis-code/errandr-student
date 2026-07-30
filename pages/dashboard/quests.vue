@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6 animate-fade-in pb-32 px-0 sm:px-4 md:px-6">
     <!-- Header -->
-    <header class="pt-6 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 sm:px-0">
+    <header class="pt-6 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-0 sm:px-0">
       <div>
         <h1 class="text-2xl md:text-3xl font-medium text-gray-900 tracking-tight leading-none mb-1">Campus Quests</h1>
         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Missions & Rewards Program</p>

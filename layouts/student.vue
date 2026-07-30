@@ -227,7 +227,7 @@
     </Teleport>
 
     <!-- Main Content -->
-    <main class="flex-1 w-full lg:w-auto lg:ml-64 transition-all duration-700 p-2.5 sm:p-4 lg:p-10 pb-16 lg:pb-32 overflow-x-hidden">
+    <main class="flex-1 w-full lg:w-auto lg:ml-64 transition-all duration-700 py-2.5 px-0 sm:p-4 lg:p-10 pb-16 lg:pb-32 overflow-x-hidden">
       <!-- Adaptive Header (Desktop Only) -->
       <div v-if="!route.path.startsWith('/vendors')" class="hidden lg:block mb-8 animate-fade-in">
         <div class="flex items-center justify-between bg-white rounded-3xl px-8 py-6 border border-gray-100">
