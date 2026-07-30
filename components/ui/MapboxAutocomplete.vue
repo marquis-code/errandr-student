@@ -1,7 +1,7 @@
 <template>
-  <div class="relative w-full z-[9999]">
+  <div class="relative w-full z-[9999] md:px-0 -mx-4 md:mx-0 px-4">
     <div class="relative z-[95] group">
-      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-300" :class="isOpen ? 'text-parentPrimary' : 'text-gray-400'">
+      <div class="absolute inset-y-0 left-0 pl-4 md:pl-4 flex items-center pointer-events-none transition-colors duration-300" :class="isOpen ? 'text-parentPrimary' : 'text-gray-400'">
         <MapPin class="h-4 w-4" />
       </div>
       <input
@@ -12,9 +12,9 @@
         @focus="handleFocus"
         :placeholder="placeholder"
         :required="required"
-        class="w-full pl-11 pr-12 py-3.5 bg-gray-50/50 hover:bg-gray-100 focus:bg-gray-100 rounded-2xl text-xs md:text-sm font-medium text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400"
+        class="w-full pl-11 pr-12 py-3.5 bg-gray-50 md:bg-gray-50/50 hover:bg-gray-100 focus:bg-gray-100 md:rounded-2xl text-[10px] md:text-xs font-medium text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400 border-none rounded-none shadow-none"
       />
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
+      <div class="absolute inset-y-0 right-0 pr-3 md:pr-3 flex items-center gap-2">
         <button 
           v-if="modelValue && !loading" 
           @click="clearInput" 
@@ -32,7 +32,7 @@
     <Transition name="slide-fade">
       <div 
         v-if="isOpen && (suggestions.length > 0 || loading || error || (!loading && modelValue.length > 2 && suggestions.length === 0))" 
-        class="absolute z-[99999] w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-100 overflow-hidden"
+        class="absolute z-[99999] w-full mt-2 bg-white/95 backdrop-blur-md md:rounded-2xl rounded-none md:border border-gray-100 overflow-hidden shadow-none border-none"
       >
         <div class="p-2">
           <!-- Loading State inside dropdown -->
