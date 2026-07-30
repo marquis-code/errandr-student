@@ -2,7 +2,7 @@
   <div class="relative w-full z-[9999]">
     <div class="relative z-[95] group">
       <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-300" :class="isOpen ? 'text-parentPrimary' : 'text-gray-400'">
-        <MapPin class="h-5 w-5" />
+        <MapPin class="h-4 w-4" />
       </div>
       <input
         ref="inputRef"
@@ -12,7 +12,7 @@
         @focus="handleFocus"
         :placeholder="placeholder"
         :required="required"
-        class="w-full pl-11 pr-12 py-3.5 bg-gray-50/50 hover:bg-gray-100 focus:bg-gray-100 rounded-2xl text-sm md:text-base font-bold text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400"
+        class="w-full pl-11 pr-12 py-3.5 bg-gray-50/50 hover:bg-gray-100 focus:bg-gray-100 rounded-2xl text-xs md:text-sm font-medium text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400"
       />
       <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
         <button 
