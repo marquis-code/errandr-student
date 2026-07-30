@@ -220,7 +220,7 @@
               <div class="relative" ref="categoryDropdownRef">
                 <div 
                   @click="showCategoryDropdown = !showCategoryDropdown"
-                  class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full px-4 py-2 shadow-sm flex items-center gap-2 hover:border-parentPrimary/50 hover:bg-white cursor-pointer transition-all h-10"
+                  class="bg-white/80 backdrop-blur-sm border border-gray-100 rounded-full px-4 py-2 shadow-sm flex items-center gap-2 hover:border-parentPrimary/50 hover:bg-white cursor-pointer transition-all h-10"
                 >
                   <Filter class="w-4 h-4" :class="globalFilter ? 'text-parentPrimary' : 'text-gray-400'" />
                   <span class="text-xs md:text-sm font-medium" :class="globalFilter ? 'text-gray-900' : 'text-gray-600'">
@@ -254,7 +254,8 @@
                 </Transition>
               </div>
 
-              <!-- Location Pill -->
+              <!-- Location Pill (Commented out as per request) -->
+              <!--
               <div class="relative" ref="locationDropdownRef">
                 <div class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full px-4 py-2 shadow-sm flex items-center gap-2 hover:border-parentPrimary/50 hover:bg-white transition-all h-10 group/loc cursor-pointer" @click="showLocationDropdown = !showLocationDropdown">
                   <MapPin class="w-4 h-4 text-gray-400" />
@@ -270,7 +271,6 @@
                   <ChevronDown class="w-3.5 h-3.5 text-gray-400 transition-transform ml-0.5" :class="{ 'rotate-180': showLocationDropdown }" />
                 </div>
                 
-                <!-- Location Dropdown -->
                 <Transition name="fade-up">
                   <div v-if="showLocationDropdown" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden py-2 w-56">
                     <div class="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Popular Locations</div>
@@ -298,8 +298,10 @@
                   </div>
                 </Transition>
               </div>
+              -->
 
-              <!-- Time Pill -->
+              <!-- Time Pill (Commented out as per request) -->
+              <!--
               <div class="relative" ref="timeDropdownRef">
                 <div 
                   @click="showTimeDropdown = !showTimeDropdown"
@@ -312,7 +314,6 @@
                   <ChevronDown class="w-3.5 h-3.5 text-gray-400 transition-transform ml-0.5" :class="{ 'rotate-180': showTimeDropdown }" />
                 </div>
                 
-                <!-- Time Dropdown -->
                 <Transition name="fade-up">
                   <div v-if="showTimeDropdown" class="absolute top-full right-0 sm:left-1/2 sm:-translate-x-1/2 mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] z-[80] overflow-hidden w-48">
                     <button 
@@ -339,6 +340,7 @@
                   </div>
                 </Transition>
               </div>
+              -->
             </div>
 
 
