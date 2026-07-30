@@ -573,7 +573,8 @@ const startRecording = async () => {
     })
 
     mediaRecorder.addEventListener('stop', () => {
-      recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' })
+      const mimeType = mediaRecorder?.mimeType || 'audio/webm'
+      recordedAudioBlob = new Blob(audioChunks, { type: mimeType })
       const reader = new FileReader()
       reader.readAsDataURL(recordedAudioBlob)
       reader.onloadend = () => {
@@ -693,11 +694,17 @@ const buildErrandPayload = async () => {
 
   if (recordedAudioBlob) {
     const formData = new FormData()
-    formData.append('file', recordedAudioBlob, 'voicenote.webm')
+    const ext = recordedAudioBlob.type.includes('mp4') ? 'mp4' : (recordedAudioBlob.type.includes('ogg') ? 'ogg' : 'webm')
+    formData.append('file', recordedAudioBlob, `voicenote.${ext}`)
     const uploadRes = await api.post('/upload?resourceType=video', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
-    uploadedVoiceNoteUrl = uploadRes.data.url
+    
+    let finalUrl = uploadRes.data.url
+    if (finalUrl.endsWith('.webm')) {
+      finalUrl = finalUrl.replace(/\.webm$/i, '.mp4')
+    }
+    uploadedVoiceNoteUrl = finalUrl
   }
 
   return {
