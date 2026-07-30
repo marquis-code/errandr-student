@@ -25,10 +25,10 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
+import { useScriptTag } from '@vueuse/core'
 
 const props = defineProps<{
   modelValue: any,
-  apiKey: string,
   placeholder?: string
 }>()
 const emit = defineEmits(['update:modelValue'])
@@ -40,21 +40,18 @@ const inputRef = ref<HTMLInputElement | null>(null)
 let autocompleteService: any = null
 let geocoder: any = null
 
-onMounted(() => {
-  if (!window.google) {
-    const script = document.createElement('script')
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_API_KEY}&libraries=places`
-    script.async = true
-    script.onload = () => {
-      autocompleteService = new window.google.maps.places.AutocompleteService()
-      geocoder = new window.google.maps.Geocoder()
-    }
-    document.head.appendChild(script)
-  } else {
+const config = useRuntimeConfig()
+const apiKey = config.public.googleMapsApiKey || import.meta.env.VITE_GOOGLE_API_KEY
+const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
+
+useScriptTag(
+  scriptUrl,
+  () => {
     autocompleteService = new window.google.maps.places.AutocompleteService()
     geocoder = new window.google.maps.Geocoder()
-  }
-})
+  },
+  { async: true, defer: true }
+)
 
 watch(() => props.modelValue, (val) => {
   if (val && val.address) {

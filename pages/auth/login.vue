@@ -72,7 +72,7 @@ const password = ref('')
 const error = ref('')
 const handleLogin = async () => {
   error.value = ''
-  try { await login({ email: email.value, password: password.value }) }
+  try { await login({ email: email.value.trim().toLowerCase(), password: password.value.trim() }) }
   catch (e: any) { error.value = e.data?.message || 'Invalid credentials' }
 }
 useHead({ title: 'Sign In - Errandr' })

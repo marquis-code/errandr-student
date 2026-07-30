@@ -69,7 +69,7 @@
                 <Star v-for="s in 5" :key="s" class="w-3 h-3" :class="s <= review.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'" />
               </div>
             </div>
-            <p class="text-sm text-gray-600 leading-relaxed">{{ review.comment }}</p>
+            <p v-if="review.comment" class="text-sm text-gray-600 leading-relaxed">{{ review.comment }}</p>
           </div>
         </div>
       </div>

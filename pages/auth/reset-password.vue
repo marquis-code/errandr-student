@@ -69,9 +69,9 @@ const handleReset = async () => {
   }
   try {
     await resetPassword({
-      email: email.value,
+      email: email.value.trim().toLowerCase(),
       otp: (route.query.otp as string).trim(),
-      newPassword: newPassword.value
+      newPassword: newPassword.value.trim()
     })
   } catch (e: any) {
     error.value = e.data?.message || 'Invalid code or it has expired. Please try requesting a new one.'

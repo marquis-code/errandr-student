@@ -19,6 +19,10 @@ export const useAuth = () => {
       payload.role = 'student';
       const res = await auth_api.login(payload);
       
+      if (res.type === 'ERROR') {
+        throw { data: res.data || { message: 'Login failed' } };
+      }
+      
       const responseData = res.data?.data || res.data;
       const userData = responseData?.user;
       const tokenValue = responseData?.token;
@@ -73,6 +77,10 @@ export const useAuth = () => {
 
       const res = await auth_api.firebaseLogin({ idToken });
       
+      if (res.type === 'ERROR') {
+        throw { data: res.data || { message: 'Firebase login failed' } };
+      }
+      
       const responseData = res.data?.data || res.data;
       const userData = responseData?.user;
       const tokenValue = responseData?.token;
@@ -118,6 +126,10 @@ export const useAuth = () => {
     loading.value = true;
     try {
       const res = await auth_api.guestCheckout(payload);
+      
+      if (res.type === 'ERROR') {
+        throw { data: res.data || { message: 'Guest checkout failed' } };
+      }
       
       const responseData = res.data?.data || res.data;
       const userData = responseData?.user;

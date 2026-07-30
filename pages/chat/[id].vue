@@ -16,9 +16,15 @@
    </p>
  </div>
  <div class="flex items-center gap-5 ml-2 shrink-0">
- <Video class="w-5 h-5 text-white cursor-pointer hover:opacity-80 transition-opacity" />
- <Phone class="w-4 h-4 text-white cursor-pointer hover:opacity-80 transition-opacity fill-current" />
- <MoreVertical class="w-5 h-5 text-white cursor-pointer hover:opacity-80 transition-opacity" />
+ <button @click="startVideoCall" class="p-1 hover:bg-white/10 rounded-full transition-colors">
+  <Video class="w-5 h-5 text-white" />
+ </button>
+ <button @click="startAudioCall" class="p-1 hover:bg-white/10 rounded-full transition-colors">
+  <Phone class="w-4 h-4 text-white fill-current" />
+ </button>
+ <button class="p-1 hover:bg-white/10 rounded-full transition-colors">
+  <MoreVertical class="w-5 h-5 text-white" />
+ </button>
  </div>
  </div>
 
@@ -194,6 +200,7 @@ import { orders_api } from '@/api_factory/modules/orders';
 import { upload_api } from '@/api_factory/modules/upload';
 import { useUser } from '@/composables/modules/auth/user';
 import { useSocket } from '@/composables/useSocket';
+import { useWebRTC } from '@/composables/useWebRTC';
 
 const route = useRoute();
 const router = useRouter();
@@ -235,6 +242,18 @@ const chatTargetAvatar = computed(() => {
 });
 const chatContainer = ref<HTMLElement | null>(null);
 let typingTimeout: any = null;
+
+const { initiateCall } = useWebRTC();
+
+const startVideoCall = () => {
+  const receiverId = getReceiverId();
+  if (receiverId) initiateCall(receiverId, chatTargetName.value, chatTargetAvatar.value, true);
+};
+
+const startAudioCall = () => {
+  const receiverId = getReceiverId();
+  if (receiverId) initiateCall(receiverId, chatTargetName.value, chatTargetAvatar.value, false);
+};
 
 const getSenderId = (msg: any) => msg.sender?._id || msg.sender;
 const isMe = (msg: any) => getSenderId(msg) === user.value?._id;

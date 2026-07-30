@@ -11,6 +11,7 @@
     <CoreGlobalAdModal />
     <ChatWidget />
     <CorePushNotificationPrompt />
+    <CoreCallOverlay />
     
     <!-- Background Audio - Bottom Left -->
     <!-- <ClientOnly>
@@ -34,16 +35,19 @@ import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifica
 import { useCart } from '@/composables/modules/cart'
 import { useStudentNotifications } from '@/composables/useStudentNotifications'
 import { useUser } from '@/composables/modules/auth/user'
+import { useWebRTC } from '@/composables/useWebRTC'
 
 const { initCart } = useCart()
 const { isLoggedIn } = useUser()
 const { requestPermissionAndRegister, listenForNotifications } = useStudentNotifications()
+const { initSocketListeners } = useWebRTC()
 
 initCart()
 useRealtimeNotifications()
 
 onMounted(() => {
   listenForNotifications()
+  initSocketListeners()
   if (isLoggedIn.value && 'Notification' in window && Notification.permission === 'granted') {
     requestPermissionAndRegister()
   }

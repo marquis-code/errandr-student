@@ -51,7 +51,7 @@ const error = ref('')
 const handleForgot = async () => {
   error.value = ''
   try {
-    await forgotPassword(email.value)
+    await forgotPassword(email.value.trim().toLowerCase())
   } catch (e: any) {
     error.value = e.data?.message || 'failed to send reset code'
   }

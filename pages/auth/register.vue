@@ -21,7 +21,7 @@
         <UiAnimatedInput v-model="form.phone" type="tel" label="phone number" placeholder="" />
         <UiAnimatedInput v-model="form.matricNumber" type="text" label="matric number" placeholder="" />
         <UiAnimatedInput v-model="form.password" type="password" label="password" required minlength="6" placeholder="" />
-        <BirthdayPicker v-model="form.dateOfBirth" />
+        <UiAnimatedInput v-model="form.dateOfBirth" type="date" label="birthday" placeholder="" />
         <UiAnimatedInput v-model="form.referredBy" type="text" label="referral code (optional)" @input="formatReferralCode" />
 
         <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
@@ -49,7 +49,6 @@
 <script setup lang="ts">
 import { Loader2, ShoppingBag } from 'lucide-vue-next'
 import { ref, reactive, watch } from 'vue'
-import BirthdayPicker from '@/components/BirthdayPicker.vue'
 import { GATEWAY_ENDPOINT } from '@/api_factory/axios.config'
 import { useAuth } from '@/composables/modules/auth'
 definePageMeta({ layout: false })

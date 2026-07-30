@@ -827,8 +827,10 @@
                     </div>
                     <NuxtLink 
                       v-if="!isVendorClosed"
-                      :to="isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart'" 
-                      class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-medium tracking-wider hover:bg-parentPrimary/90 transition-all shadow-xl shadow-parentPrimary/20 active:scale-[0.98]"
+                      :to="canProceedToCheckout ? (isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart') : ''" 
+                      @click="!canProceedToCheckout ? $event.preventDefault() : null"
+                      :class="!canProceedToCheckout ? 'opacity-50 cursor-not-allowed' : 'hover:bg-parentPrimary/90 active:scale-[0.98] shadow-xl shadow-parentPrimary/20'"
+                      class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-medium tracking-wider transition-all"
                     >
                       {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Proceed to Checkout' }}
                     </NuxtLink>
@@ -1041,8 +1043,10 @@
                 </div>
                 <NuxtLink 
                   v-if="!isVendorClosed"
-                  :to="isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart'" 
-                  class="w-full h-14 bg-parentPrimary text-white rounded-[14px] font-bold text-base hover:bg-[#FF5C1A] transition-colors flex items-center justify-center active:scale-[0.98]"
+                  :to="canProceedToCheckout ? (isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart') : ''"
+                  @click="!canProceedToCheckout ? $event.preventDefault() : null"
+                  :class="!canProceedToCheckout ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#FF5C1A] active:scale-[0.98]'"
+                  class="w-full h-14 bg-parentPrimary text-white rounded-[14px] font-bold text-base transition-colors flex items-center justify-center"
                 >
                   {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Continue to checkout' }}
                 </NuxtLink>
@@ -1496,26 +1500,25 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <div v-if="showVendorNoteModal" class="fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm flex flex-col items-center justify-end md:justify-center p-0 md:p-4" @click.self="showVendorNoteModal = false">
+        <div v-if="showVendorNoteModal" class="fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm flex flex-col items-center justify-end sm:justify-center sm:p-4" @click.self="showVendorNoteModal = false">
           <div 
-            class="bg-white w-full max-w-[28rem] rounded-t-[2rem] md:rounded-[2rem] overflow-hidden shadow-2xl transform transition-all animate-slide-up-mobile md:animate-zoom-in relative"
+            class="bg-white w-full h-full sm:h-auto sm:max-w-md rounded-none sm:rounded-[2rem] shadow-2xl flex flex-col animate-slide-up-mobile sm:animate-zoom-in relative"
           >
             <!-- Close button floating -->
-            <button @click="showVendorNoteModal = false" class="absolute top-4 right-4 w-10 h-10 bg-gray-50 hover:bg-gray-100 transition-colors rounded-full flex items-center justify-center text-emerald-600 shadow-sm z-10 active:scale-95">
+            <button @click="showVendorNoteModal = false" class="absolute top-4 right-4 w-10 h-10 bg-gray-50 hover:bg-gray-100 transition-colors rounded-full flex items-center justify-center text-gray-500 hover:text-gray-900 shadow-sm z-10 active:scale-95">
               <X class="w-5 h-5" />
             </button>
             
-            <div class="p-6 md:p-8 pt-8">
+            <div class="p-6 md:p-8 pt-16 sm:pt-8 flex-1 flex flex-col">
               <h3 class="text-[22px] font-bold text-gray-900 text-center mb-6">Vendor Instruction</h3>
               
-              <div class="space-y-4">
-                <div>
+              <div class="space-y-4 flex-1 flex flex-col">
+                <div class="flex-1 flex flex-col">
                   <p class="text-xs font-bold text-gray-900 tracking-widest uppercase mb-3">INSTRUCTIONS FOR VENDOR</p>
                   <textarea 
                     v-model="tempVendorNote"
-                    rows="5"
                     placeholder="Example: Please I want extra pepper"
-                    class="w-full bg-[#f9f9f9] border-none focus:ring-0 rounded-2xl px-5 py-4 text-[15px] font-medium text-gray-900 outline-none transition-all resize-none placeholder:text-gray-400"
+                    class="w-full flex-1 bg-[#f9f9f9] border-none focus:ring-0 rounded-2xl px-5 py-4 text-[15px] font-medium text-gray-900 outline-none transition-all resize-none placeholder:text-gray-400"
                   ></textarea>
                 </div>
                 
@@ -1835,6 +1838,29 @@ const canCheckout = computed(() => {
   if (!groupOrder.value) return false;
   return groupOrder.value.participants?.some((p: any) => (p.items?.length || 0) > 0) || false;
 });
+
+const canProceedToCheckout = computed(() => {
+  if (!vendor.value) return false;
+  const stats = cart.getVendorStats(vendor.value._id);
+  if (stats.itemCount === 0) return false;
+  if (vendor.value.requiresTakeawayPack && vendor.value.packs && vendor.value.packs.length > 0) {
+    return stats.packs.every((p: any) => p.packType && p.packType.name);
+  }
+  return true;
+});
+
+watch(() => vendor.value ? cart.getVendorStats(vendor.value._id)?.packs : null, (packs) => {
+  if (vendor.value?.packs?.length > 0 && vendor.value.requiresTakeawayPack && packs) {
+    packs.forEach((pack: any) => {
+      if (!pack.packType || (!pack.packType.name && !pack.name)) {
+        const defaultPack = vendor.value.packs[0];
+        if (defaultPack) {
+          cart.setPackType(vendor.value._id, pack.id, { name: defaultPack.name, price: defaultPack.price });
+        }
+      }
+    });
+  }
+}, { deep: true, immediate: true });
 
 const getVendorColor = (name: string) => {
   if (!name) return 'bg-gray-400';

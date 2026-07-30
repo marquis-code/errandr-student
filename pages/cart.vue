@@ -295,10 +295,10 @@
                   <p class="text-xs font-bold text-rose-500 mb-3">Your balance is too low for this order</p>
                   <div class="flex flex-col gap-2">
                     <input 
-                      v-model="topupAmount"
-                      type="number"
-                      placeholder="Amount to add"
-                      class="w-full px-4 py-3 bg-white border border-rose-200 rounded-xl text-base font-medium text-gray-900 outline-none focus:border-parentPrimary transition-all placeholder:text-gray-300"
+                      v-model="formattedTopupAmount"
+                      type="text"
+                      placeholder="e.g. 5,000"
+                      class="w-full px-5 py-4 bg-white border border-rose-200 rounded-xl text-xl font-bold text-gray-900 outline-none focus:border-parentPrimary transition-all placeholder:text-gray-300"
                     />
                     <button 
                       @click="startTopup"
@@ -729,10 +729,10 @@
               <div class="text-left">
                 <p class="text-[10px] font-medium text-gray-400 tracking-wider mb-2 pl-1">Amount (NGN)</p>
                 <input 
-                  v-model="topupAmount" 
-                  type="number"
-                  placeholder="e.g. 5000"
-                  class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-emerald-500/20 rounded-xl text-base font-medium text-gray-900 outline-none transition-all"
+                  v-model="formattedTopupAmount" 
+                  type="text"
+                  placeholder="e.g. 5,000"
+                  class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-emerald-500/20 rounded-xl text-xl font-bold text-gray-900 outline-none transition-all"
                 />
               </div>
               <button 
@@ -910,6 +910,18 @@ const showAuthModal = ref(false);
 const showOrderBreakdown = ref(false);
 const showTopupModal = ref(false);
 const topupAmount = ref<number>(0);
+
+const formattedTopupAmount = computed({
+  get: () => {
+    if (!topupAmount.value) return '';
+    return topupAmount.value.toLocaleString('en-US');
+  },
+  set: (val: string) => {
+    const raw = val.replace(/[^0-9]/g, '');
+    const num = Number(raw);
+    topupAmount.value = isNaN(num) ? 0 : num;
+  }
+});
 const paymentError = ref('');
 
 const promoCodeInput = ref('');
@@ -1198,8 +1210,13 @@ const computedPaystackFee = computed(() => {
 const finalTotal = computed(() => subtotalBeforeFee.value + computedPaystackFee.value);
 
 const goBack = () => {
-  const lastVendorId = cartStore.allVendorIds.value[cartStore.allVendorIds.value.length - 1];
-  navigateTo(lastVendorId ? `/vendors/${lastVendorId}` : '/vendors');
+  const router = useRouter();
+  if (typeof window !== 'undefined' && window.history.length > 1) {
+    router.back();
+  } else {
+    const lastVendorId = cartStore.allVendorIds.value[cartStore.allVendorIds.value.length - 1];
+    navigateTo(lastVendorId ? `/vendors/${lastVendorId}` : '/');
+  }
 };
 
 const handleAuthenticated = async () => {

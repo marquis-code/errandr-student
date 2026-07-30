@@ -327,7 +327,7 @@ const formattedAmount = computed({
     return amount.value.toLocaleString('en-US');
   },
   set(val) {
-    const clean = val.replace(/[^0-9.]/g, '');
+    const clean = val.replace(/[^0-9]/g, '');
     amount.value = clean ? Number(clean) : 0;
   }
 });
