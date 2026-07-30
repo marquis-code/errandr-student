@@ -44,14 +44,14 @@
           v-for="item in results"
           :key="item._id"
           class="bg-white rounded-2xl p-2.5 md:p-3 border border-gray-100 hover:border-parentPrimary/30 hover:shadow-lg transition-all duration-300 group cursor-pointer relative overflow-hidden flex flex-col h-full justify-between"
-          @click="router.push(`/vendors/${item.vendor?._id}`)"
+          @click="router.push(`/vendors/${item.vendor?._id || item._id}`)"
         >
           <div>
             <div class="relative aspect-square rounded-xl overflow-hidden mb-3 md:mb-4 bg-gray-50">
-              <img :src="item.image || 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=400&h=400&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <img :src="item.image || item.logo || item.banner || 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=400&h=400&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               
               <!-- Price Badge -->
-              <div class="absolute bottom-2 left-2">
+              <div v-if="item.price !== undefined" class="absolute bottom-2 left-2">
                 <span class="px-2.5 py-1 bg-white/95 backdrop-blur-md rounded-lg text-xs font-bold text-gray-900 border border-gray-100 shadow-sm">
                   ₦{{ item.price?.toLocaleString() }}
                 </span>
@@ -59,14 +59,14 @@
             </div>
             
             <div class="space-y-1">
-              <h4 class="font-semibold text-gray-900 text-[13px] tracking-tight leading-tight line-clamp-2 group-hover:text-parentPrimary transition-colors">{{ item.name }}</h4>
+              <h4 class="font-semibold text-gray-900 text-[13px] tracking-tight leading-tight line-clamp-2 group-hover:text-parentPrimary transition-colors">{{ item.name || item.storeName }}</h4>
             </div>
           </div>
 
           <div class="flex items-center gap-1.5 pt-3 mt-3 border-t border-gray-50">
-            <div :class="item.vendor?.isOnline ? 'bg-emerald-500' : 'bg-gray-300'" class="w-1.5 h-1.5 rounded-full shrink-0" />
-            <p class="text-[10px] font-medium text-gray-500 truncate">
-              {{ item.vendor?.storeName }}
+            <div :class="(item.vendor?.isOnline || item.isOnline) ? 'bg-emerald-500' : 'bg-gray-300'" class="w-1.5 h-1.5 rounded-full shrink-0" />
+            <p class="text-[10px] font-medium text-gray-500 truncate capitalize">
+              {{ item.vendor?.storeName || item.category || 'Vendor' }}
             </p>
           </div>
         </div>
@@ -119,7 +119,9 @@ const performSearch = async () => {
     const searchData = (res.data as any)?.data || res.data || {};
     results.value = [
       ...(searchData.products || []),
-      ...(searchData.services || [])
+      ...(searchData.services || []),
+      ...(searchData.menuItems || []),
+      ...(searchData.vendors || [])
     ];
   } catch (e) { 
     console.error(e); 
