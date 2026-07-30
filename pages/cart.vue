@@ -90,14 +90,14 @@
       </header>
 
       <!-- Main Content -->
-      <div class="flex-1 max-w-[1200px] mx-auto w-full px-4 md:px-6 py-6 pb-40 lg:pb-10">
+      <div class="flex-1 max-w-[1200px] mx-auto w-full px-0 sm:px-4 md:px-6 py-6 pb-40 lg:pb-10">
         <div class="flex flex-col lg:flex-row gap-6">
 
           <!-- LEFT: Delivery + Payment -->
           <div class="flex-1 space-y-5">
             
             <!-- Split Bill Payment Progress -->
-            <div v-if="groupOrder && groupOrder.status === 'locked' && groupOrder.splitType === 'split_bill'" class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div v-if="groupOrder && groupOrder.status === 'locked' && groupOrder.splitType === 'split_bill'" class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-hidden">
               <div class="flex items-center gap-3 px-5 py-4 bg-indigo-50/50 border-b border-indigo-100">
                 <div class="w-8 h-8 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
                   <Users class="w-4 h-4" />
@@ -134,8 +134,8 @@
             </div>
 
             <!-- Step 1: Delivery Details -->
-            <div class="bg-white rounded-2xl border border-gray-100 overflow-visible">
-              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100 rounded-t-2xl">
+            <div class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-visible">
+              <div class="flex items-center gap-3 px-4 sm:px-5 py-4 bg-gray-50/50 border-b border-gray-100 sm:rounded-t-2xl">
                 <div class="w-8 h-8 bg-parentPrimary/10 rounded-xl flex items-center justify-center text-parentPrimary">
                   <MapPin class="w-4 h-4" />
                 </div>
@@ -144,7 +144,7 @@
                   <p class="text-[10px] font-bold text-gray-400">Where should we drop it?</p>
                 </div>
               </div>
-              <div class="p-5 space-y-4">
+              <div class="p-4 sm:p-5 space-y-4">
                 <AnimatedInput v-model="recipientName" label="Full Name"  />
                 <AnimatedInput v-model="recipientPhone" label="Phone Number" type="tel" />
                 <SelectInput v-model="deliveryOption" label="Delivery Policy" :options="[{label: isFetchingFees ? 'Use an Errander (Calculating...)' : (computedTotalDeliveryFee > 0 && deliveryOption === 'use_an_errander' ? `Use an Errander (₦${computedTotalDeliveryFee.toLocaleString()})` : 'Use an Errander (Calculated at checkout)'), value: 'use_an_errander'}, {label: 'Batch Delivery (Wait up to 3 hours) - ₦150', value: 'batch_run'}, {label: 'I\'ll pick it up myself', value: 'pickup'}]" />
@@ -161,8 +161,8 @@
             </div>
 
             <!-- Step 1.5: Pre-order Schedule -->
-            <div v-if="isPreOrderCart" class="bg-white rounded-2xl border border-gray-100 overflow-visible animate-fade-in">
-              <div class="flex items-center gap-3 px-5 py-4 bg-purple-50/50 border-b border-purple-100 rounded-t-2xl">
+            <div v-if="isPreOrderCart" class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-visible animate-fade-in">
+              <div class="flex items-center gap-3 px-4 sm:px-5 py-4 bg-purple-50/50 border-b border-purple-100 sm:rounded-t-2xl">
                 <div class="w-8 h-8 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
                   <Calendar class="w-4 h-4" />
                 </div>
@@ -171,7 +171,7 @@
                   <p class="text-[10px] font-bold text-gray-400">When do you want this pre-order?</p>
                 </div>
               </div>
-              <div class="p-5">
+              <div class="p-4 sm:p-5">
                 <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Select Delivery Date</label>
                 <input 
                   v-model="scheduledDate"
@@ -186,55 +186,9 @@
               </div>
             </div>
 
-            <!-- Add-ons (Hidden for now) -->
-            <!-- 
-            <div v-if="hasFoodVendor" class="bg-white rounded-2xl border border-gray-100 overflow-visible">
-              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100 rounded-t-2xl">
-                <div class="w-8 h-8 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
-                  <span class="text-base">✨</span>
-                </div>
-                <h3 class="text-sm font-medium text-gray-900 tracking-tight">Extras</h3>
-              </div>
-              <div class="p-4 space-y-1">
-                <label class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group">
-                  <div class="flex items-center gap-3">
-                    <span class="text-lg">🎁</span>
-                    <div>
-                      <p class="text-xs font-medium text-gray-900 leading-none mb-0.5">Mystery Box</p>
-                      <p class="text-[10px] font-bold text-gray-400">Random item for ₦800</p>
-                    </div>
-                  </div>
-                  <input type="checkbox" v-model="isMysteryBox" class="w-5 h-5 accent-parentPrimary cursor-pointer rounded">
-                </label>
-                <label class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group">
-                  <div class="flex items-center gap-3">
-                    <span class="text-lg">🏢</span>
-                    <div>
-                      <p class="text-xs font-medium text-gray-900 leading-none mb-0.5">Priority Dorm Delivery</p>
-                      <p class="text-[10px] font-bold text-gray-400">Fast-tracked delivery to your room</p>
-                    </div>
-                  </div>
-                  <input type="checkbox" v-model="isDormDelivery" class="w-5 h-5 accent-emerald-500 cursor-pointer rounded">
-                </label>
-                <label v-if="examBrethrenActive" class="flex items-center justify-between p-3 rounded-xl transition-colors group" :class="isNightOwl ? 'bg-indigo-50 border border-indigo-100' : 'hover:bg-gray-50 border border-transparent'">
-                  <div class="flex items-center gap-3">
-                    <span class="text-lg">🦉</span>
-                    <div>
-                      <p class="text-xs font-medium text-gray-900 leading-none mb-0.5">Night Owl Delivery</p>
-                      <p class="text-[10px] font-bold text-gray-400">Free delivery between 10 PM and 2 AM</p>
-                    </div>
-                  </div>
-                  <div v-if="isNightOwl" class="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center">
-                    <Check class="w-3 h-3 text-white" />
-                  </div>
-                </label>
-              </div>
-            </div>
-            -->
-
             <!-- Step 2: Payment -->
-            <div class="bg-white rounded-2xl border border-gray-100 overflow-visible">
-              <div class="flex items-center gap-3 px-5 py-4 bg-gray-50/50 border-b border-gray-100 rounded-t-2xl">
+            <div class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-visible">
+              <div class="flex items-center gap-3 px-4 sm:px-5 py-4 bg-gray-50/50 border-b border-gray-100 sm:rounded-t-2xl">
                 <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500">
                   <CreditCard class="w-4.5 h-4.5" />
                 </div>
@@ -313,7 +267,7 @@
             </div>
 
             <!-- MOBILE: Group Order Banner -->
-            <div v-if="!groupOrder" class="lg:hidden bg-indigo-50 border border-indigo-100 rounded-2xl p-4 mb-4 flex items-center justify-between cursor-pointer hover:bg-indigo-100 transition-colors" @click="router.push('/dashboard/group-orders')">
+            <div v-if="!groupOrder" class="lg:hidden bg-indigo-50 border-y sm:border-x sm:border-y sm:border-indigo-100 border-indigo-100 sm:rounded-2xl p-4 mb-4 flex items-center justify-between cursor-pointer hover:bg-indigo-100 transition-colors" @click="router.push('/dashboard/group-orders')">
               <div class="flex-1">
                 <h4 class="text-xs font-bold text-indigo-900 mb-1">Want to save on delivery?</h4>
                 <p class="text-[10px] text-indigo-700 leading-tight">Invite your roommates to this order and split the delivery fee!</p>
@@ -326,11 +280,11 @@
 
 
             <!-- MOBILE: Order Summary -->
-            <div class="lg:hidden bg-white rounded-2xl border border-gray-100 overflow-hidden">
-              <div class="px-5 py-4 bg-gray-50/50 border-b border-gray-100">
+            <div class="lg:hidden bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-hidden">
+              <div class="px-4 sm:px-5 py-4 bg-gray-50/50 border-b border-gray-100">
                 <h3 class="text-sm font-medium text-gray-900 tracking-tight">Order Summary</h3>
               </div>
-              <div class="p-5 space-y-3">
+              <div class="p-4 sm:p-5 space-y-3">
                 <div class="flex justify-between items-center text-sm font-medium text-gray-500">
                   <span>Subtotal</span>
                   <span class="text-gray-900 font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
@@ -364,7 +318,7 @@
                   <span class="font-bold">-₦{{ computedPromoDiscount.toLocaleString() }}</span>
                 </div>
               </div>
-              <div class="px-5 pb-5 pt-3 border-t border-dashed border-gray-100 space-y-5">
+              <div class="px-4 sm:px-5 pb-5 pt-3 border-t border-dashed border-gray-100 space-y-5">
                 <div v-if="isNightOwl" class="p-3 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-3">
                   <span class="text-lg">🦉</span>
                   <div>

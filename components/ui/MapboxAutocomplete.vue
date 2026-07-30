@@ -12,7 +12,7 @@
         @focus="handleFocus"
         :placeholder="placeholder"
         :required="required"
-        class="w-full pl-11 pr-12 py-3.5 bg-gray-50/50 backdrop-blur-sm border-2 border-gray-100 hover:border-gray-200 focus:bg-white focus:border-parentPrimary/30 rounded-2xl text-sm md:text-base font-bold text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400"
+        class="w-full pl-11 pr-12 py-3.5 bg-gray-50/50 hover:bg-gray-100 focus:bg-gray-100 rounded-2xl text-sm md:text-base font-bold text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400"
       />
       <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
         <button 
