@@ -1086,6 +1086,21 @@ const computedTotalDeliveryFee = computed(() => {
      const activeParticipants = groupOrder.value.participants.filter((p: any) => p.items.length > 0).length || 1;
      total = total / activeParticipants;
   }
+  
+  const addrLower = (specificAddress.value || '').toLowerCase();
+  if (
+    addrLower.includes('college of medicine') || 
+    addrLower.includes('luth') || 
+    addrLower.includes('idi araba') || 
+    addrLower.includes('idi-araba') ||
+    addrLower.includes('cmul') ||
+    addrLower.includes('unilag') // Assuming Idi Araba campus check
+  ) {
+    // If it's a CMUL/LUTH delivery, it should strictly be 300 flat
+    // regardless of the number of vendors to simplify the experience.
+    total = 300;
+  }
+
   return isDormDelivery.value ? Math.round(total * 0.5) : Math.round(total);
 });
 
