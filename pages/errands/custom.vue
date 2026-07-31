@@ -415,7 +415,18 @@ import {
 } from 'lucide-vue-next'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Request Custom Errand | Erranders' })
+useSeoMeta({
+  title: 'Request Custom Errand | Erranders',
+  description: 'Need something specific? Request a custom errand and let us get it delivered right to your hostel.',
+  ogTitle: 'Request Custom Errand | Erranders',
+  ogDescription: 'Need something specific? Request a custom errand and let us get it delivered right to your hostel.',
+  ogImage: 'https://res.cloudinary.com/marquis/image/upload/v1784062203/logo-light_pyjwmn-removebg-preview_y3jvvg.png',
+  ogUrl: 'https://www.erranders.org/errands/custom',
+  twitterTitle: 'Request Custom Errand | Erranders',
+  twitterDescription: 'Need something specific? Request a custom errand and let us get it delivered right to your hostel.',
+  twitterImage: 'https://res.cloudinary.com/marquis/image/upload/v1784062203/logo-light_pyjwmn-removebg-preview_y3jvvg.png',
+  twitterCard: 'summary_large_image'
+})
 
 const router = useRouter()
 const route = useRoute()
