@@ -10,7 +10,7 @@
         <!-- Brand row -->
         <div class="px-5 pt-5 pb-4 flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <img src="@/assets/img/logo-light.png" class="h-16 w-auto" />
+            <img src="@/assets/img/logo-light.png" class="h-10 w-auto" />
             <!-- <div class="w-7 h-7 rounded-md bg-[#171310] flex items-center justify-center shrink-0">
               <span class="ff-mono text-[#FF5C1A] text-[11px] font-bold">E</span>
             </div>
@@ -158,7 +158,7 @@
           <!-- Brand row -->
           <div class="px-5 pt-5 pb-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <img src="@/assets/img/logo-light.png" class="h-16 w-auto" />
+              <img src="@/assets/img/logo-light.png" class="h-10 w-auto" />
               <!-- <div class="w-7 h-7 rounded-md bg-[#171310] flex items-center justify-center shrink-0">
                 <span class="ff-mono text-[#FF5C1A] text-[11px] font-bold">E</span>
               </div>

@@ -2,8 +2,8 @@
   <div class="space-y-8 pb-24 animate-fade-in selection:bg-[#FF5C1A]/15 selection:text-[#FF5C1A] px-0 md:px-6">
 
     <!-- Header -->
-    <header class="pt-6 pb-2">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
+    <header class="pt-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <p class="ff-mono text-[10px] font-bold text-[#9C968E] uppercase tracking-[0.15em] flex items-center gap-1.5 mb-2">
             <ShieldCheck class="w-3.5 h-3.5 text-[#FF5C1A]" />
