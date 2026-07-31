@@ -64,4 +64,28 @@ export const orders_api = {
   getCustomErrandSettings: () => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get('/settings/errands/custom');
   },
+
+  getOpenPools: () => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/orders/pool/open');
+  },
+
+  createPool: (orderId: string, payload: { title: string, maxParticipants?: number }) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${orderId}/pool/create`, payload);
+  },
+
+  joinPool: (orderId: string, poolId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${orderId}/pool/${poolId}/join`);
+  },
+
+  updateErrandFee: (orderId: string, newFee: number) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/custom/fee`, { newFee });
+  },
+
+  acceptBid: (orderId: string, bidId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/custom/bid/${bidId}/accept`);
+  },
+
+  rejectBid: (orderId: string, bidId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/custom/bid/${bidId}/reject`);
+  },
 };

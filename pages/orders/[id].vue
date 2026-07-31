@@ -283,7 +283,7 @@
  </div>
  <div class="flex-1 min-w-0">
  <p class="text-[8px] font-medium text-emerald-600 r mb-0.5 truncate">Delivery PIN</p>
- <p class="text-lg font-medium text-gray-900  truncate">{{ order.deliveryPin || order.uniqueCode }}</p>
+ <p class="text-lg font-medium text-gray-900  truncate">{{ order.deliveryPin || '....' }}</p>
  </div>
  <div class="text-[8px] font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded border border-emerald-100 shadow-sm flex-shrink-0">Give to Rider</div>
  </div>

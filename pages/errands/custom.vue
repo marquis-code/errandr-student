@@ -131,6 +131,38 @@
                 </div>
 
                 <template v-if="errandType === 'custom'">
+                  
+                  <!-- Open Errand Pools Section -->
+                  <div v-if="openPools.length > 0 && !fetchingPools" class="bg-[#FF5C1A]/10 border-2 border-dashed border-[#FF5C1A] rounded-sm p-4 relative overflow-hidden">
+                    <div class="absolute -right-5 -top-5 opacity-10">
+                      <Layers class="w-20 h-20 text-[#FF5C1A]" />
+                    </div>
+                    <h3 class="font-sans font-bold text-[#170D08] mb-1 flex items-center gap-2">
+                      <Layers class="w-4 h-4 text-[#FF5C1A]" />
+                      Join an Errand Pool (Split Fee)
+                    </h3>
+                    <p class="text-xs text-[#766A61] mb-4">Someone in your area is already requesting an errand. Join their pool to split the delivery fee!</p>
+                    
+                    <div class="space-y-2 relative z-10">
+                      <div v-for="pool in openPools" :key="pool._id" 
+                           @click="selectPool(pool)"
+                           class="bg-white border cursor-pointer transition-all p-3 rounded-sm flex items-center justify-between"
+                           :class="selectedPoolId === pool._id ? 'border-[#FF5C1A] ring-1 ring-[#FF5C1A]' : 'border-[#170D08]/15 hover:border-[#170D08]/30'">
+                        <div>
+                          <p class="font-sans font-bold text-sm text-[#170D08]">{{ pool.title }}</p>
+                          <p class="text-xs text-[#766A61] mt-0.5">{{ pool.orders?.length || 1 }} of {{ pool.maxParticipants }} spots filled</p>
+                        </div>
+                        <div class="text-right">
+                          <p class="text-xs text-[#766A61] line-through">₦{{ pool.baseDeliveryFee }}</p>
+                          <p class="font-bold text-[#FF5C1A] text-sm">₦{{ Math.floor(pool.baseDeliveryFee / ((pool.orders?.length || 1) + 1)) }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <button v-if="selectedPoolId" @click="selectedPoolId = null" class="mt-3 text-xs font-bold text-[#FF5C1A] hover:underline">
+                      Cancel Pool Selection
+                    </button>
+                  </div>
                   <div class="flex flex-wrap gap-2">
                     <button
                       v-for="tmpl in errandTemplates" :key="tmpl" @click="applyTemplate(tmpl)"
@@ -291,24 +323,51 @@
                   <div class="space-y-1.5">
                     <div class="flex justify-between items-baseline">
                       <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Runner fee (labor)</label>
-                      <span class="font-sans text-sm text-[#766A61]">min ₦200</span>
+                      <span v-if="!selectedPoolId" class="font-sans text-sm text-[#766A61]">min ₦200</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                      <span class="font-sans text-lg font-bold text-[#766A61]">₦</span>
-                      <input
-                        v-model="formattedRunnerFee"
-                        type="text"
-                        placeholder="1,000"
-                        class="w-full bg-transparent outline-none py-2 text-xl font-sans font-bold border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
-                      />
+                    
+                    <div v-if="selectedPoolId" class="bg-[#FF5C1A]/10 border border-dashed border-[#FF5C1A] p-4 rounded-sm flex items-center justify-between">
+                      <div>
+                        <p class="font-bold text-sm text-[#170D08]">Locked to Pool Split Fee</p>
+                        <p class="text-xs text-[#766A61]">You are joining an existing pool.</p>
+                      </div>
+                      <span class="font-sans text-xl font-bold text-[#FF5C1A]">₦{{ formatMoney(form.runnerFee) }}</span>
                     </div>
-                    <p v-if="form.runnerFee > 0 && form.runnerFee < 200" class="font-sans text-sm font-bold text-[#FF5C1A]">Minimum runner fee is ₦200</p>
 
-                    <div class="flex flex-wrap gap-1.5 pt-2">
-                      <button v-for="amt in [500,1000,2000,3500]" :key="amt" @click="form.runnerFee = amt"
-                        class="font-sans text-sm font-bold px-4 py-2 rounded-sm border border-[#170D08]/15 text-[#766A61] hover:border-[#170D08] hover:text-[#170D08] transition-colors"
-                      >₦{{ amt.toLocaleString('en-NG') }}</button>
-                    </div>
+                    <template v-else>
+                      <div class="flex items-center gap-2">
+                        <span class="font-sans text-lg font-bold text-[#766A61]">₦</span>
+                        <input
+                          v-model="formattedRunnerFee"
+                          type="text"
+                          placeholder="1,000"
+                          class="w-full bg-transparent outline-none py-2 text-xl font-sans font-bold border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
+                        />
+                      </div>
+                      <p v-if="form.runnerFee > 0 && form.runnerFee < 200" class="font-sans text-sm font-bold text-[#FF5C1A]">Minimum runner fee is ₦200</p>
+
+                      <div class="flex flex-wrap gap-1.5 pt-2">
+                        <button v-for="amt in [500,1000,2000,3500]" :key="amt" @click="form.runnerFee = amt"
+                          class="font-sans text-sm font-bold px-4 py-2 rounded-sm border border-[#170D08]/15 text-[#766A61] hover:border-[#170D08] hover:text-[#170D08] transition-colors"
+                        >₦{{ amt.toLocaleString('en-NG') }}</button>
+                      </div>
+
+                      <div class="mt-6 pt-4 border-t-2 border-dashed border-[#D8D2C4]">
+                        <label class="flex items-start gap-3 cursor-pointer group">
+                          <div class="mt-0.5 relative flex items-center justify-center w-5 h-5 rounded border-2 transition-colors"
+                               :class="allowPoolJoin ? 'bg-[#FF5C1A] border-[#FF5C1A]' : 'border-[#170D08]/30 group-hover:border-[#FF5C1A]'">
+                            <input type="checkbox" v-model="allowPoolJoin" class="sr-only" />
+                            <svg v-if="allowPoolJoin" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p class="font-sans font-bold text-sm text-[#170D08]">Turn this into an Errand Pool</p>
+                            <p class="text-[13px] text-[#766A61] mt-0.5 leading-relaxed">Allow others to join this errand. If someone joins, you'll split the runner fee and receive a refund for their portion.</p>
+                          </div>
+                        </label>
+                      </div>
+                    </template>
                   </div>
                 </div>
 
@@ -446,6 +505,42 @@ const recentDropoffs = ref<string[]>([])
 const attachedImageBase64 = ref('')
 const waybillNumber = ref('')
 
+// Pooling feature state
+import { orders_api } from '@/api_factory/modules/orders'
+const openPools = ref<any[]>([])
+const selectedPoolId = ref<string | null>(null)
+const allowPoolJoin = ref(false)
+const fetchingPools = ref(true)
+
+const fetchPools = async () => {
+  fetchingPools.value = true
+  try {
+    const res = await orders_api.getOpenPools()
+    openPools.value = res.data || []
+  } catch (error) {
+    console.error('Failed to fetch open pools:', error)
+  } finally {
+    fetchingPools.value = false
+  }
+}
+
+const selectPool = (pool: any) => {
+  if (selectedPoolId.value === pool._id) {
+    selectedPoolId.value = null
+    form.value.runnerFee = 0 // reset so user can enter a fee again
+  } else {
+    selectedPoolId.value = pool._id
+    allowPoolJoin.value = false
+    // Lock the runner fee to the split fee calculated
+    const newCount = (pool.orders?.length || 1) + 1
+    form.value.runnerFee = Math.floor(pool.baseDeliveryFee / newCount)
+  }
+}
+
+onMounted(() => {
+  fetchPools()
+})
+
 const form = ref({
   description: '',
   pickupLocation: '',
@@ -523,11 +618,11 @@ onMounted(async () => {
     step.value = 3
     const refStr = route.query.reference as string
     
-    // Restore state to prevent 0 values on UI
     const savedPayloadStr = sessionStorage.getItem('pendingErrandPayload')
     if (savedPayloadStr) {
       try {
-        const payload = JSON.parse(savedPayloadStr)
+        const parsed = JSON.parse(savedPayloadStr)
+        const payload = parsed.payload || parsed // Fallback for old sessions
         form.value.estimatedItemCost = payload.estimatedItemCost || 0
         form.value.runnerFee = payload.runnerFee || 0
       } catch (e) {}
@@ -545,12 +640,29 @@ onMounted(async () => {
           return
         }
         
-        const payload = JSON.parse(savedPayloadStr)
+        const parsed = JSON.parse(savedPayloadStr)
+        const payload = parsed.payload || parsed
         payload.paymentReference = refStr
 
         // Create the order with payment reference
         const response = await api.post('/orders', payload)
         
+        if (response.data) {
+          const orderId = response.data._id || response.data.id
+          try {
+            if (parsed.selectedPoolId) {
+              await orders_api.joinPool(orderId, parsed.selectedPoolId)
+              showToast({ title: 'Pool Joined!', message: 'You have joined the errand pool. The fee difference will be refunded to your wallet shortly.', toastType: 'success' })
+            } else if (parsed.allowPoolJoin) {
+              await orders_api.createPool(orderId, { title: payload.description.substring(0, 50) || 'Custom Errand Pool' })
+              showToast({ title: 'Pool Created!', message: 'Others can now join your errand to split the fee.', toastType: 'success' })
+            }
+          } catch(e) {
+            console.error('Pooling failed:', e)
+            showToast({ title: 'Warning', message: 'Errand created, but failed to join/create pool.', toastType: 'error' })
+          }
+        }
+
         // Clear on success
         sessionStorage.removeItem('pendingErrandPayload')
         failedPaymentReference.value = ''
@@ -590,6 +702,11 @@ let selectedImageFile: File | null = null
 
 const startRecording = async () => {
   try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      showToast({ title: 'Not Supported', message: 'Microphone requires a secure connection (HTTPS/localhost).', toastType: 'error' })
+      return
+    }
+    
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
     mediaRecorder = new MediaRecorder(stream)
     audioChunks = []
@@ -622,8 +739,13 @@ const startRecording = async () => {
         stopRecording()
       }
     }, 1000)
-  } catch (error) {
-    showToast({ title: 'Error', message: 'Microphone access denied.', toastType: 'error' })
+  } catch (error: any) {
+    console.error('Mic error:', error)
+    if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
+      showToast({ title: 'Error', message: 'Microphone access denied by browser.', toastType: 'error' })
+    } else {
+      showToast({ title: 'Error', message: 'Could not access microphone.', toastType: 'error' })
+    }
   }
 }
 
@@ -771,7 +893,11 @@ const submitErrand = async () => {
     }
 
     // Save payload to sessionStorage so we can recover it after Paystack redirect
-    sessionStorage.setItem('pendingErrandPayload', JSON.stringify(payload))
+    sessionStorage.setItem('pendingErrandPayload', JSON.stringify({
+      payload,
+      selectedPoolId: selectedPoolId.value,
+      allowPoolJoin: allowPoolJoin.value
+    }))
 
     // Initialize Paystack payment
     const amount = grandTotal.value

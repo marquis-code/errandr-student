@@ -10,6 +10,28 @@
       </p>
     </header>
 
+    <!-- Reschedule Requests Section -->
+    <div v-if="rescheduleRequests.length > 0" class="bg-amber-50 rounded-2xl p-4 border border-amber-200 shadow-sm space-y-3">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-xl">📅</span>
+        <h3 class="font-bold text-amber-900 text-sm">Action Required: Reschedule Requests</h3>
+      </div>
+      <div v-for="req in rescheduleRequests" :key="req._id" class="bg-white rounded-xl p-3 border border-amber-100 flex flex-col sm:flex-row gap-3 justify-between sm:items-center">
+        <div>
+          <p class="text-xs text-gray-900 font-medium">Order #{{ req.orderId?.orderNumber || '...' }} from <span class="font-bold">{{ req.orderId?.vendor?.storeName || 'Vendor' }}</span></p>
+          <p class="text-[11px] text-gray-500 mt-0.5">They are away in Exam Mode and suggested delivery on: <span class="font-bold text-gray-900">{{ formatDate(req.suggestedDate) }}</span></p>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button @click="resolveRequest(req._id, 'reject')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-500 hover:bg-gray-100 transition-colors border border-gray-200">
+            Cancel Order
+          </button>
+          <button @click="resolveRequest(req._id, 'accept')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-white hover:bg-amber-600 transition-colors">
+            Accept Date
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Filters & Search -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
@@ -183,6 +205,8 @@
 <script setup lang="ts">
 import { ClipboardList, ChevronRight, Search, ArrowRight, X } from 'lucide-vue-next';
 import { useStudentOrders } from '@/composables/modules/orders';
+import { exam_mode_api } from '@/api_factory/modules/exam-mode';
+import { useCustomToast } from '@/composables/core/useCustomToast';
 import { ref, computed, onMounted } from 'vue';
 
 definePageMeta({
@@ -190,10 +214,40 @@ definePageMeta({
 })
 
 const { loading, orders, fetchOrders, cancelOrder } = useStudentOrders();
+const { pushToast } = useCustomToast();
 
 const searchQuery = ref('');
 const activeFilter = ref('all');
 const selectedOrder = ref<any>(null);
+
+const rescheduleRequests = ref<any[]>([]);
+
+const fetchRescheduleRequests = async () => {
+  try {
+    const res = await exam_mode_api.getCustomerRescheduleRequests();
+    if (res?.data) rescheduleRequests.value = res.data;
+  } catch (error) {
+    console.error('Failed to fetch reschedule requests', error);
+  }
+};
+
+const resolveRequest = async (id: string, action: 'accept' | 'reject') => {
+  try {
+    await exam_mode_api.resolveRescheduleRequest(id, action);
+    pushToast('Success', action === 'accept' ? 'Delivery date updated.' : 'Order cancelled.', 'SUCCESS');
+    rescheduleRequests.value = rescheduleRequests.value.filter(r => r._id !== id);
+    fetchOrders(); // Refresh orders to see the updated date or cancelled status
+  } catch (error) {
+    console.error(error);
+    pushToast('Error', 'Failed to process request.', 'ERROR');
+  }
+};
+
+const formatDate = (dateStr: string) => {
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric'
+  });
+};
 
 const filters = [
   { key: 'all', label: 'All' },
@@ -252,7 +306,10 @@ const handleReorder = (order: any) => {
   navigateTo(`/vendors/${order.vendor?._id}`);
 };
 
-onMounted(fetchOrders);
+onMounted(() => {
+  fetchOrders();
+  fetchRescheduleRequests();
+});
 useHead({ title: 'My Errands - Errandr' });
 </script>
 
