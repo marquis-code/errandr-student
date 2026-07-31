@@ -588,7 +588,10 @@ const startRecording = async () => {
     })
 
     mediaRecorder.addEventListener('stop', () => {
-      const mimeType = mediaRecorder?.mimeType || 'audio/webm'
+      let mimeType = mediaRecorder?.mimeType;
+      if (!mimeType) {
+        mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
+      }
       recordedAudioBlob = new Blob(audioChunks, { type: mimeType })
       const reader = new FileReader()
       reader.readAsDataURL(recordedAudioBlob)
