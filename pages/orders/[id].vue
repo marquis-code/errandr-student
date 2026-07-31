@@ -282,12 +282,12 @@
  <ShieldCheck class="w-4 h-4" />
  </div>
  <div class="flex-1 min-w-0">
- <p class="text-[8px] font-medium text-emerald-600 r mb-0.5 truncate">Verification Code</p>
- <p class="text-lg font-medium text-gray-900  truncate">{{ order.uniqueCode }}</p>
+ <p class="text-[8px] font-medium text-emerald-600 r mb-0.5 truncate">Delivery PIN</p>
+ <p class="text-lg font-medium text-gray-900  truncate">{{ order.deliveryPin || order.uniqueCode }}</p>
  </div>
  <div class="text-[8px] font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded border border-emerald-100 shadow-sm flex-shrink-0">Give to Rider</div>
  </div>
- <p class="text-sm font-medium text-gray-400 mt-3 relative z-10">Share this code with the rider upon delivery to confirm receipt.</p>
+ <p class="text-sm font-medium text-gray-400 mt-3 relative z-10">Share this PIN with the rider upon delivery to confirm receipt.</p>
  </div>
 
  <!-- Service Provider Info -->
@@ -303,7 +303,8 @@
  <Store v-else class="w-8 h-8 text-gray-300" />
  </template>
  <template v-else>
- <img v-if="order.errander?.user?.avatar" :src="order.errander.user.avatar" class="w-full h-full object-cover" />
+ <img v-if="order.errander?.user?.avatar || order.errander?.avatar" :src="order.errander?.user?.avatar || order.errander?.avatar" class="w-full h-full object-cover" />
+ <img v-else-if="order.errander?.firstName || order.errander?.user?.firstName" :src="`https://ui-avatars.com/api/?name=${order.errander?.user?.firstName || order.errander?.firstName}+${order.errander?.user?.lastName || order.errander?.lastName || ''}&background=F3F4F6&color=9CA3AF&bold=true`" class="w-full h-full object-cover" />
  <User v-else class="w-8 h-8 text-gray-300" />
  </template>
  </div>
