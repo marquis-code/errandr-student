@@ -51,10 +51,11 @@
                 <div 
                   v-for="service in filteredServices" 
                   :key="service._id"
-                  class="bg-white p-4 rounded-xl border border-gray-100/80 transition-all flex justify-between gap-4"
+                  @click="handleAddClick(service)"
+                  class="bg-white p-4 rounded-xl border border-gray-100/80 transition-all flex justify-between gap-4 cursor-pointer hover:border-gray-300 hover:shadow-sm text-left group"
                 >
                   <div>
-                    <h3 class="font-bold text-gray-900 text-sm">{{ service.name }}</h3>
+                    <h3 class="font-bold text-gray-900 text-sm group-hover:text-parentPrimary transition-colors">{{ service.name }}</h3>
                     <p class="text-xs text-gray-400 mt-0.5">
                       {{ service.variants?.length ? `${service.durationInMinutes} – ${Math.max(...service.variants.map((v:any)=>v.durationInMinutes))} mins` : `${service.durationInMinutes} mins` }}
                     </p>
@@ -63,12 +64,11 @@
                       {{ service.variants?.length ? 'from ' : '' }}NGN {{ service.price.toLocaleString() }}
                     </p>
                   </div>
-                  <button 
-                    @click="handleAddClick(service)"
-                    class="w-9 h-9 rounded-full border border-gray-200/80 flex items-center justify-center hover:bg-gray-50 transition-colors shrink-0 self-center"
+                  <div 
+                    class="w-9 h-9 rounded-full border border-gray-200/80 flex items-center justify-center group-hover:bg-gray-50 group-hover:border-gray-300 transition-colors shrink-0 self-center"
                   >
-                    <Plus class="w-4 h-4 text-gray-600" />
-                  </button>
+                    <Plus class="w-4 h-4 text-gray-600 group-hover:text-gray-900" />
+                  </div>
                 </div>
               </div>
 
@@ -120,9 +120,10 @@
                       <div v-for="blank in blankDays" :key="'blank-'+blank" class="h-8"></div>
                       <button 
                         v-for="day in daysInMonth" :key="day"
-                        @click="selectDateFromCalendar(day)"
+                        @click="isCalendarDayClosed(day) ? null : selectDateFromCalendar(day)"
                         class="h-8 w-full rounded-full flex items-center justify-center text-xs font-bold transition-all"
                         :class="getCalendarDayClass(day)"
+                        :disabled="isCalendarDayClosed(day)"
                       >
                         {{ day }}
                       </button>
@@ -143,9 +144,12 @@
                     v-for="date in availableDates" 
                     :key="date.iso"
                     @click="selectedDate = date.iso"
-                    class="min-w-[60px] h-[70px] rounded-full flex flex-col items-center justify-center border-[0.5px] transition-all shrink-0"
+                    class="relative min-w-[60px] h-[70px] rounded-full flex flex-col items-center justify-center border-[0.5px] transition-all shrink-0 overflow-hidden"
                     :class="selectedDate === date.iso ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200/60 hover:border-gray-300'"
                   >
+                    <div v-if="selectedDate === date.iso && fetchingAvailability" class="absolute inset-0 z-10 flex items-center justify-center bg-gray-900/80 rounded-full">
+                      <Loader2 class="w-5 h-5 text-white animate-spin" />
+                    </div>
                     <span class="text-[10px] font-medium opacity-70">{{ date.dayStr }}</span>
                     <span class="text-lg font-bold mt-0.5">{{ date.dayNum }}</span>
                     <span class="text-[9px] font-medium opacity-70">{{ date.monthStr }}</span>
@@ -153,21 +157,39 @@
                 </div>
               </div>
 
-              <div class="space-y-3">
+              <div class="space-y-3 relative min-h-[200px] mt-4">
                 <h3 class="font-semibold text-gray-900 text-sm">Pick a time</h3>
-                <div v-if="availableTimes.length" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[350px] overflow-y-auto pr-1">
+                
+                <div v-if="fetchingAvailability" class="absolute inset-0 z-10 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-xl">
+                  <Loader2 class="w-8 h-8 text-parentPrimary animate-spin mb-2" />
+                  <span class="text-xs font-bold text-gray-600">Loading availability...</span>
+                </div>
+
+                <div v-if="availableTimes.length" class="flex flex-col space-y-2 max-h-[350px] overflow-y-auto pr-2">
                   <button 
                     v-for="time in availableTimes" 
                     :key="time"
-                    @click="selectedTime = time"
-                    class="text-center px-3 py-2.5 rounded-full border-[0.5px] transition-all text-sm font-semibold"
-                    :class="selectedTime === time ? 'bg-gray-900 border-gray-900 text-white' : 'bg-white border-gray-200/60 text-gray-700 hover:border-gray-300'"
+                    @click="handleTimeSelection(time)"
+                    :disabled="!selectedDate || isTimeBooked(time)"
+                    class="text-left px-4 py-3.5 rounded-xl border transition-all text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
+                    :class="[
+                      selectedTime === time 
+                        ? 'bg-parentPrimary border-parentPrimary text-white shadow-sm' 
+                        : (isTimeBooked(time) 
+                            ? 'bg-gray-50 border-gray-100 text-gray-400 line-through' 
+                            : 'bg-white border-gray-200 text-gray-900 hover:border-gray-300')
+                    ]"
                   >
                     {{ time }}
+                    <span v-if="isTimeBooked(time) && selectedTime === time" class="block text-[10px] mt-0.5">Waitlist</span>
                   </button>
                 </div>
-                <div v-else class="text-sm text-gray-400 py-6 text-center bg-white rounded-full border-[0.5px] border-gray-100/80">
-                  No availability on this date.
+                <div v-else class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50/50 rounded-[2rem] border border-gray-100/80 border-dashed">
+                  <div class="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3">
+                    <CalendarX class="w-6 h-6 text-gray-400" />
+                  </div>
+                  <h4 class="text-gray-900 font-semibold text-sm mb-1">Fully Booked</h4>
+                  <p class="text-xs text-gray-500 max-w-[200px]">There are no available time slots on this date. Please try selecting another day.</p>
                 </div>
               </div>
             </div>
@@ -203,9 +225,19 @@
                     <span class="text-xs font-bold text-gray-900 ml-3">₦{{ getItemTotal(item).toLocaleString() }}</span>
                   </div>
                 </div>
-                <div class="px-4 py-3 border-t border-gray-50 bg-gray-50/50 flex justify-between items-center">
-                  <span class="text-sm font-bold text-gray-900">Total</span>
-                  <span class="text-sm font-bold text-parentPrimary">NGN {{ cartTotal.toLocaleString() }}</span>
+                <div class="px-4 py-3 border-t border-gray-50 bg-gray-50/50 flex flex-col gap-2">
+                  <div class="flex justify-between items-center text-gray-500">
+                    <span class="text-sm">Total Price</span>
+                    <span class="text-sm font-semibold">NGN {{ cartTotal.toLocaleString() }}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm font-bold text-gray-900">Commitment Fee (To Pay Now)</span>
+                    <span class="text-sm font-bold text-parentPrimary">NGN {{ commitmentFee.toLocaleString() }}</span>
+                  </div>
+                  <div class="flex justify-between items-center text-gray-500">
+                    <span class="text-sm font-medium">Balance to Pay in Person</span>
+                    <span class="text-sm font-medium">NGN {{ pendingBalance.toLocaleString() }}</span>
+                  </div>
                 </div>
               </div>
 
@@ -293,9 +325,17 @@
 
               <!-- Footer -->
               <div class="p-4 border-t border-gray-100 bg-white shrink-0">
-                <div class="flex justify-between items-center mb-4">
-                  <span class="font-bold text-gray-900">Total</span>
-                  <span class="font-bold text-gray-900 text-lg">{{ cart.length ? `NGN ${cartTotal.toLocaleString()}` : 'free' }}</span>
+                <div class="flex justify-between items-center mb-1 text-gray-500">
+                  <span class="text-sm">Total Price</span>
+                  <span class="text-sm font-semibold text-gray-900">{{ cart.length ? `NGN ${cartTotal.toLocaleString()}` : 'free' }}</span>
+                </div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-bold text-gray-900">Commitment Fee (Pay Now)</span>
+                  <span class="font-bold text-parentPrimary text-lg">{{ cart.length ? `NGN ${commitmentFee.toLocaleString()}` : 'free' }}</span>
+                </div>
+                <div class="flex justify-between items-center mb-4 text-gray-500">
+                  <span class="text-xs font-medium">Balance (Pay in Person)</span>
+                  <span class="text-xs font-medium text-gray-900">{{ cart.length ? `NGN ${pendingBalance.toLocaleString()}` : 'free' }}</span>
                 </div>
                 <button 
                   @click="handleContinue"
@@ -303,6 +343,7 @@
                   class="w-full py-3 bg-[#1a1a1a] text-white rounded-xl font-bold text-sm shadow-md hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
+                  <template v-else-if="step === 'time' && isTimeBooked(selectedTime)">Join Waitlist <ArrowRight class="w-4 h-4" /></template>
                   <template v-else>Continue <ArrowRight class="w-4 h-4" /></template>
                 </button>
               </div>
@@ -313,21 +354,79 @@
         </div>
       </main>
 
-      <!-- Mobile Footer (Always visible on mobile) -->
-      <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100/60 px-4 py-3 z-50 flex flex-col gap-1.5">
-        <div v-if="cart.length && step !== 'confirm'" class="flex justify-between items-center px-1 pb-0.5">
-          <span class="text-[11px] font-semibold text-gray-400">{{ cart.length }} service(s)</span>
-          <span class="text-sm font-bold text-gray-900">NGN {{ cartTotal.toLocaleString() }}</span>
+      <!-- Mobile Footer (Bottom Sheet) -->
+      <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100/60 z-50 flex flex-col rounded-t-[24px] shadow-[0_-4px_30px_rgba(0,0,0,0.06)] transition-all duration-300 transform translate-y-0">
+        
+        <!-- Pull tab / Handle -->
+        <div v-if="cart.length" @click="showMobileSummary = !showMobileSummary" class="w-full flex justify-center pt-3 pb-2 cursor-pointer active:bg-gray-50/50 rounded-t-[24px]">
+          <div class="w-10 h-1.5 bg-gray-200 rounded-full"></div>
         </div>
-        <button 
-          @click="handleContinue"
-          :disabled="!canContinue"
-          class="w-full py-3 bg-[#1a1a1a] text-white rounded-xl font-bold text-sm hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
-          <template v-else-if="step === 'confirm'">Pay NGN {{ cartTotal.toLocaleString() }} <ArrowRight class="w-4 h-4" /></template>
-          <template v-else>Continue <ArrowRight class="w-4 h-4" /></template>
-        </button>
+
+        <div class="px-5 pb-6 pt-1 flex flex-col gap-3">
+          <!-- Expanded Cart Summary -->
+          <div v-show="showMobileSummary && cart.length" class="animate-slide-up border-b border-gray-100 pb-4 mb-2 max-h-[50vh] overflow-y-auto pr-2">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-bold text-gray-900 text-[15px]">Booking Summary</h3>
+            </div>
+            
+            <div class="space-y-4">
+              <div v-for="(item, idx) in cart" :key="idx" class="flex justify-between items-start gap-4 bg-gray-50/50 p-3 rounded-xl border border-gray-50">
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-900">{{ item.variantName ? item.variantName : item.service.name }}</p>
+                  <p class="text-[11px] text-gray-500 font-medium mt-0.5">{{ item.durationInMinutes }} mins {{ item.variantName ? `with ${item.service.name}` : '' }}</p>
+                  
+                  <!-- Extras -->
+                  <div v-if="item.extras?.length" class="mt-2 space-y-1 bg-white p-2 rounded-lg border border-gray-100">
+                    <div v-for="ext in item.extras" :key="ext.name" class="flex justify-between text-[11px] text-gray-500">
+                      <span>+ {{ ext.name }}</span>
+                      <span class="font-semibold text-gray-700">₦{{ ext.price.toLocaleString() }}</span>
+                    </div>
+                  </div>
+                  <button @click="removeFromCart(idx)" class="text-[10px] font-bold text-rose-500 bg-rose-50 px-2 py-1 rounded-md mt-2">Remove</button>
+                </div>
+                <span class="text-sm font-bold text-gray-900">₦{{ getItemTotal(item).toLocaleString() }}</span>
+              </div>
+            </div>
+            
+            <div class="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2.5">
+              <div class="flex justify-between items-center text-gray-500 text-sm">
+                <span>Total Service Price</span>
+                <span class="font-bold text-gray-700">₦{{ cartTotal.toLocaleString() }}</span>
+              </div>
+              <div class="flex justify-between items-center font-bold text-gray-900 text-sm bg-parentPrimary/5 p-2 rounded-lg">
+                <span>Commitment Fee (Pay Now)</span>
+                <span class="text-parentPrimary">₦{{ commitmentFee.toLocaleString() }}</span>
+              </div>
+              <div class="flex justify-between items-center text-gray-500 text-xs">
+                <span>Balance (Pay in Person)</span>
+                <span class="font-bold text-gray-600">₦{{ pendingBalance.toLocaleString() }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collapsed view / Always visible action row -->
+          <div class="flex items-center gap-4">
+            <div v-if="cart.length && step !== 'confirm'" class="flex-1 cursor-pointer select-none" @click="showMobileSummary = !showMobileSummary">
+              <p class="text-[11px] font-bold text-gray-400 mb-0.5 flex items-center gap-1">
+                {{ cart.length }} service(s) 
+                <ChevronUp class="w-3.5 h-3.5 text-gray-400 transition-transform duration-300" :class="{'rotate-180': showMobileSummary}" />
+              </p>
+              <p class="text-lg font-black text-gray-900 leading-none">₦{{ commitmentFee.toLocaleString() }} <span class="text-[10px] font-semibold text-gray-400 ml-0.5">fee</span></p>
+            </div>
+            
+            <button 
+              @click="handleContinue"
+              :disabled="!canContinue"
+              class="py-3.5 bg-[#1a1a1a] text-white rounded-2xl font-bold text-[15px] hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-black/10"
+              :class="cart.length && step !== 'confirm' ? 'flex-[1.2]' : 'w-full'"
+            >
+              <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
+              <template v-else-if="step === 'confirm'">Pay ₦{{ commitmentFee.toLocaleString() }} <ArrowRight class="w-4 h-4" /></template>
+              <template v-else-if="step === 'time' && isTimeBooked(selectedTime)">Waitlist <ArrowRight class="w-4 h-4" /></template>
+              <template v-else>Continue <ArrowRight class="w-4 h-4" /></template>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Full Screen Loading Overlay -->
@@ -363,17 +462,28 @@
         @authenticated="processBooking"
         @guest-checkout="processGuestBooking"
       />
+
+      <WaitlistModal
+        v-if="showWaitlistModal"
+        :vendor="vendor"
+        :date="selectedDate"
+        :time="selectedTime"
+        :service="cart[0]?.service"
+        @close="showWaitlistModal = false"
+        @joined="showWaitlistModal = false; emit('close')"
+      />
     </div>
   </Teleport>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { ArrowLeft, ChevronLeft, ChevronRight, X, Calendar, Plus, Clock, MapPin, Star, ArrowRight, Loader2, CreditCard } from 'lucide-vue-next';
+import { ArrowLeft, ChevronLeft, ChevronRight, ChevronUp, X, Calendar, Plus, Clock, MapPin, Star, ArrowRight, Loader2, CreditCard, CalendarX } from 'lucide-vue-next';
 import { appointments_api } from '@/api_factory/modules/appointments';
 import VariantSelectionModal from './VariantSelectionModal.vue';
 import ExtraServiceModal from './ExtraServiceModal.vue';
 import CheckoutAuthModal from '@/components/CheckoutAuthModal.vue';
+import WaitlistModal from './WaitlistModal.vue';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 import { useUser } from '@/composables/modules/auth/user';
 
@@ -392,6 +502,8 @@ const loading = ref(false);
 const showFullLoadingOverlay = ref(false);
 const activeCategory = ref('Featured');
 const bookingNotes = ref('');
+const commitmentFeePercentage = ref(30);
+const showMobileSummary = ref(false);
 
 // Cart State
 const cart = ref<any[]>([]);
@@ -405,6 +517,11 @@ const showAuthModal = ref(false);
 // Date/Time State
 const selectedDate = ref('');
 const selectedTime = ref('');
+const bookedTimes = ref<string[]>([]);
+const fetchingAvailability = ref(false);
+
+// Waitlist State
+const showWaitlistModal = ref(false);
 
 // Guest State
 const guestData = ref<any>(null);
@@ -425,6 +542,14 @@ const filteredServices = computed(() => {
 
 const cartTotal = computed(() => {
   return cart.value.reduce((sum, item) => sum + getItemTotal(item), 0);
+});
+
+const commitmentFee = computed(() => {
+  return Math.round(cartTotal.value * (commitmentFeePercentage.value / 100));
+});
+
+const pendingBalance = computed(() => {
+  return cartTotal.value - commitmentFee.value;
 });
 
 const totalDurationMins = computed(() => {
@@ -498,6 +623,13 @@ const getItemTotal = (item: any) => {
   return total;
 };
 
+const isDayClosed = (dateObj: Date) => {
+  if (!props.vendor?.businessHours || props.vendor.businessHours.length === 0) return false;
+  const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  const schedule = props.vendor.businessHours.find((b: any) => b.day.toLowerCase() === dayName);
+  return schedule?.isClosed || false;
+};
+
 // Date Generation
 const availableDates = computed(() => {
   const dates = [];
@@ -508,20 +640,24 @@ const availableDates = computed(() => {
     baseDate = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
   }
 
-  for(let i=0; i<14; i++) {
+  let i = 0;
+  while (dates.length < 14 && i < 60) {
     const d = new Date(baseDate);
     d.setDate(d.getDate() + i);
     
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    
-    dates.push({
-      iso: `${year}-${month}-${day}`,
-      dayStr: d.toLocaleDateString('en-US', { weekday: 'short' }),
-      dayNum: d.getDate(),
-      monthStr: d.toLocaleDateString('en-US', { month: 'short' })
-    });
+    if (!isDayClosed(d)) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      
+      dates.push({
+        iso: `${year}-${month}-${day}`,
+        dayStr: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        dayNum: d.getDate(),
+        monthStr: d.toLocaleDateString('en-US', { month: 'short' })
+      });
+    }
+    i++;
   }
   return dates;
 });
@@ -569,8 +705,15 @@ const selectDateFromCalendar = (day: number, month?: number, year?: number) => {
   showCalendar.value = false;
 };
 
+const isCalendarDayClosed = (day: number) => {
+  const d = new Date(calendarDate.value.getFullYear(), calendarDate.value.getMonth(), day);
+  return isDayClosed(d);
+};
+
 const getCalendarDayClass = (day: number) => {
   const d = new Date(calendarDate.value.getFullYear(), calendarDate.value.getMonth(), day);
+  if (isDayClosed(d)) return 'text-gray-300 bg-gray-50/50 cursor-not-allowed opacity-50';
+
   const isoYear = d.getFullYear();
   const isoMonth = String(d.getMonth() + 1).padStart(2, '0');
   const isoDay = String(d.getDate()).padStart(2, '0');
@@ -585,16 +728,118 @@ const getCalendarDayClass = (day: number) => {
 };
 
 const availableTimes = computed(() => {
-  // Mock times between 9am and 5pm
-  const times = [];
-  for(let i=9; i<=17; i++) {
-    times.push(`${i > 12 ? i-12 : i}:00 ${i >= 12 ? 'pm' : 'am'}`);
-    if (i !== 17) {
-      times.push(`${i > 12 ? i-12 : i}:30 ${i >= 12 ? 'pm' : 'am'}`);
+  try {
+    if (!selectedDate.value) return [];
+    const dateObj = new Date(selectedDate.value);
+    const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+
+    let schedule = undefined;
+    if (Array.isArray(props.vendor?.businessHours)) {
+      schedule = props.vendor.businessHours.find((b: any) => b.day?.trim().toLowerCase() === dayName);
     }
+    
+    if (!schedule) {
+      schedule = { day: dayName, open: '00:00', close: '23:59', isClosed: false };
+    }
+    
+    if (schedule.isClosed) return [];
+
+    const openTime = String(schedule.open || '00:00');
+    const closeTime = String(schedule.close || '23:59');
+
+    const [openHourStr, openMinStr] = openTime.split(':');
+    const [closeHourStr, closeMinStr] = closeTime.split(':');
+
+    const openHour = parseInt(openHourStr || '0', 10);
+    const openMin = parseInt(openMinStr || '0', 10);
+    const closeHour = parseInt(closeHourStr || '23', 10);
+    const closeMin = parseInt(closeMinStr || '59', 10);
+
+    const startTotalMins = (isNaN(openHour) ? 0 : openHour) * 60 + (isNaN(openMin) ? 0 : openMin);
+    let endTotalMins = (isNaN(closeHour) ? 23 : closeHour) * 60 + (isNaN(closeMin) ? 59 : closeMin);
+    
+    if (endTotalMins < startTotalMins) {
+      endTotalMins = 1439; // Fallback if close time is somehow before open time
+    }
+
+    const interval = 10; // Split times by 10 minutes as requested
+
+    const times = [];
+    for (let mins = startTotalMins; mins + interval <= endTotalMins; mins += interval) {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      
+      const modifier = h >= 12 ? 'pm' : 'am';
+      let displayHour = h > 12 ? h - 12 : h;
+      if (displayHour === 0) displayHour = 12;
+      const displayMin = String(m).padStart(2, '0');
+
+      times.push(`${displayHour}:${displayMin} ${modifier}`);
+    }
+
+    if (times.length === 0) {
+      // If for some reason we generated 0 times (e.g. interval > difference between open and close)
+      // let's push at least one fallback time so it's not totally empty if they are technically open.
+      times.push('12:00 pm');
+    }
+
+    return times;
+  } catch (err) {
+    console.error('Error computing availableTimes:', err);
+    return ['09:00 am', '10:00 am', '11:00 am', '12:00 pm', '01:00 pm', '02:00 pm']; // Emergency fallback
   }
-  return times;
 });
+
+const isTimeBooked = (timeStr: string) => {
+  if (!selectedDate.value || !timeStr) return false;
+  const parts = timeStr.split(' ');
+  if (parts.length < 1) return false;
+  const time = parts[0];
+  const modifier = parts[1];
+  
+  const timeParts = time.split(':');
+  if (timeParts.length < 2) return false;
+  
+  let [hours, minutes] = timeParts.map(Number);
+  if (isNaN(hours) || isNaN(minutes)) return false;
+
+  if (modifier === 'pm' && hours !== 12) hours += 12;
+  if (modifier === 'am' && hours === 12) hours = 0;
+  const startTime24 = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  return bookedTimes.value.includes(startTime24);
+};
+
+import { watch } from 'vue';
+
+watch(selectedDate, async (newDate) => {
+  selectedTime.value = '';
+  if (!newDate) {
+    bookedTimes.value = [];
+    return;
+  }
+  
+  fetchingAvailability.value = true;
+  try {
+    const [res] = await Promise.all([
+      appointments_api.getVendorAvailability(props.vendor._id, newDate),
+      new Promise(resolve => setTimeout(resolve, 800)) // Ensure spinner is visible for at least 800ms
+    ]);
+    bookedTimes.value = res.data?.data || res.data || [];
+  } catch (err) {
+    console.error('Failed to fetch availability', err);
+    bookedTimes.value = [];
+  } finally {
+    fetchingAvailability.value = false;
+  }
+}, { immediate: true });
+
+const handleTimeSelection = (time: string) => {
+  if (!selectedDate.value) {
+    showToast({ title: 'Notice', message: 'Please select a date first.', toastType: 'warning' });
+    return;
+  }
+  selectedTime.value = time;
+};
 
 const formatDate = (iso: string) => {
   if (!iso) return '';
@@ -607,6 +852,10 @@ const handleContinue = async () => {
   if (step.value === 'services') {
     step.value = 'time';
   } else if (step.value === 'time') {
+    if (isTimeBooked(selectedTime.value)) {
+      showWaitlistModal.value = true;
+      return;
+    }
     step.value = 'confirm';
   } else if (step.value === 'confirm') {
     if (!user.value) {
@@ -622,8 +871,14 @@ const processBooking = async () => {
   showFullLoadingOverlay.value = true;
   try {
     // Calculate end time
-    const [timeStr, modifier] = selectedTime.value.split(' ');
-    let [hours, minutes] = timeStr.split(':').map(Number);
+    const parts = (selectedTime.value || '12:00 am').split(' ');
+    const timeStr = parts[0];
+    const modifier = parts[1];
+    
+    const timeParts = timeStr.split(':');
+    let hours = parseInt(timeParts[0] || '12', 10);
+    let minutes = parseInt(timeParts[1] || '0', 10);
+
     if (modifier === 'pm' && hours !== 12) hours += 12;
     if (modifier === 'am' && hours === 12) hours = 0;
     
@@ -670,8 +925,14 @@ const processGuestBooking = async (guestDetails: any) => {
   showAuthModal.value = false;
   try {
     // Calculate end time
-    const [timeStr, modifier] = selectedTime.value.split(' ');
-    let [hours, minutes] = timeStr.split(':').map(Number);
+    const parts = (selectedTime.value || '12:00 am').split(' ');
+    const timeStr = parts[0];
+    const modifier = parts[1];
+    
+    const timeParts = timeStr.split(':');
+    let hours = parseInt(timeParts[0] || '12', 10);
+    let minutes = parseInt(timeParts[1] || '0', 10);
+
     if (modifier === 'pm' && hours !== 12) hours += 12;
     if (modifier === 'am' && hours === 12) hours = 0;
     
@@ -712,9 +973,24 @@ const processGuestBooking = async (guestDetails: any) => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   if (props.initialService) {
     handleAddClick(props.initialService);
+  }
+
+  // By default, select today's date
+  if (!selectedDate.value) {
+    const today = new Date();
+    selectedDate.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  }
+
+  try {
+    const { data } = await appointments_api.getSettings();
+    if (data?.commitmentFeePercentage) {
+      commitmentFeePercentage.value = data.commitmentFeePercentage;
+    }
+  } catch (error) {
+    console.error('Failed to load appointment settings', error);
   }
 });
 </script>
@@ -726,4 +1002,6 @@ onMounted(() => {
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 .animate-fade-in { animation: fadeIn 0.4s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-slide-up-fast { animation: slideUpFast 0.2s ease-out; }
+@keyframes slideUpFast { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>

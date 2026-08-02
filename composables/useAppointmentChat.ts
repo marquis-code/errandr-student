@@ -29,17 +29,11 @@ export const useAppointmentChat = (appointmentId: string, currentUserId?: string
     loading.value = true;
     try {
       const res = await api.get(`/chat/appointment/${appointmentId}`);
-      if (currentUserId && targetUserId) {
-        messages.value = (res.data || []).filter((m: any) => {
-          const sId = String(m.senderId || m.sender?._id || m.sender || '');
-          const rId = String(m.receiverId || m.receiver?._id || m.receiver || '');
-          const cId = String(currentUserId);
-          const tId = String(targetUserId);
-          return (sId === cId && rId === tId) || (sId === tId && rId === cId);
-        });
-      } else {
-        messages.value = res.data || [];
-      }
+      messages.value = (res.data || []).map((m: any) => ({
+        ...m,
+        senderId: m.senderId || m.sender?._id || m.sender,
+        receiverId: m.receiverId || m.receiver?._id || m.receiver,
+      }));
     } catch (e) {
       console.error('Failed to fetch messages', e);
     } finally {
@@ -78,14 +72,7 @@ export const useAppointmentChat = (appointmentId: string, currentUserId?: string
     on('newMessage', (message: any) => {
       const msgAppointmentId = message.appointmentId || message.appointment;
       if (msgAppointmentId === appointmentId) {
-        if (currentUserId && targetUserId) {
-          const sId = String(message.senderId || message.sender?._id || message.sender || '');
-          const rId = String(message.receiverId || message.receiver?._id || message.receiver || '');
-          const cId = String(currentUserId);
-          const tId = String(targetUserId);
-          const isRelevant = (sId === cId && rId === tId) || (sId === tId && rId === cId);
-          if (!isRelevant) return;
-        }
+        // Removed overly restrictive user filter; appointmentId is enough.
 
         if (!message._id || !messages.value.some(m => m._id === message._id)) {
           messages.value.push(message);

@@ -148,7 +148,8 @@ const messageVendor = (service: any) => {
     router.push({
       path: '/dashboard/chat',
       query: {
-        vendorId: vendor.value.owner,
+        vendorId: vendor.value.owner?._id || vendor.value.owner, // This is the user ID
+        vendorDocId: vendor.value._id, // This is the vendor doc ID
         prefill: `Hi, I have a question about the service: ${service.name}.`
       }
     });

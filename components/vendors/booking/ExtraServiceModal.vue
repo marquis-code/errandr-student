@@ -13,10 +13,11 @@
 
         <!-- Scrollable Options -->
         <div class="p-4 overflow-y-auto space-y-3 flex-1">
-          <div 
+          <button 
             v-for="(extra, idx) in service.extras" 
             :key="idx"
-            class="flex items-center justify-between p-4 rounded-xl border-[0.5px] border-gray-100 hover:border-gray-300 transition-all bg-white"
+            @click="$emit('add', extra)"
+            class="w-full flex items-center text-left justify-between p-4 rounded-xl border-[0.5px] border-gray-100 hover:border-gray-300 transition-all bg-white group cursor-pointer"
           >
             <div>
               <p class="font-bold text-gray-900">{{ extra.name }}</p>
@@ -29,13 +30,12 @@
                 </span>
               </div>
             </div>
-            <button 
-              @click="$emit('add', extra)"
-              class="w-10 h-10 rounded-full border-[0.5px] border-gray-100 flex items-center justify-center hover:bg-gray-50 hover:border-gray-300 transition-all"
+            <div 
+              class="w-10 h-10 rounded-full border-[0.5px] border-gray-100 flex items-center justify-center group-hover:bg-gray-50 group-hover:border-gray-300 transition-all shrink-0"
             >
               <Plus class="w-5 h-5 text-gray-900" />
-            </button>
-          </div>
+            </div>
+          </button>
         </div>
 
         <!-- Footer -->

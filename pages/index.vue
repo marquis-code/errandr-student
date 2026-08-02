@@ -169,7 +169,7 @@
           <div
             v-for="product in timeOfDaySuggestions.slice(0, 3)"
             :key="'tod-' + product._id"
-            @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
+            @click="router.push(`/vendors/${typeof product.vendor === 'string' ? product.vendor : product.vendor?._id}`)"
             class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-all group"
           >
             <div class="w-9 h-9 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100 flex items-center justify-center">
@@ -190,7 +190,7 @@
         <div
           v-for="product in timeOfDaySuggestions"
           :key="'focus-' + product._id"
-          @click="router.push(`/vendors/${product.vendor?._id || product.vendor}`)"
+          @click="router.push(`/vendors/${typeof product.vendor === 'string' ? product.vendor : product.vendor?._id}`)"
           class="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
         >
           <div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden relative border border-gray-100 flex-shrink-0">

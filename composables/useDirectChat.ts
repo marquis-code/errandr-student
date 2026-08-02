@@ -33,7 +33,11 @@ export const useDirectChat = (currentUserId: string, targetUserId: string) => {
     loading.value = true;
     try {
       const res = await api.get(`/chat/direct/${targetUserId}`);
-      messages.value = res.data || [];
+      messages.value = Array.isArray(res.data) ? res.data.map((m: any) => ({
+        ...m,
+        senderId: m.senderId || m.sender?._id || m.sender,
+        receiverId: m.receiverId || m.receiver?._id || m.receiver,
+      })) : [];
     } catch (e) {
       console.error('Failed to fetch direct messages', e);
     } finally {

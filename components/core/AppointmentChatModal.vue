@@ -1,79 +1,85 @@
 <template>
-  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" @click="close"></div>
+  
     
-    <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl flex flex-col h-[80vh] max-h-[800px] overflow-hidden">
-      <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b-[0.5px] border-gray-100 bg-white">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden border-[0.5px] border-gray-200">
-            <img v-if="vendorAvatar" :src="vendorAvatar" class="w-full h-full object-cover" />
-            <span v-else class="text-xl font-bold text-gray-400">{{ vendorInitials }}</span>
-          </div>
-          <div>
-            <h3 class="font-bold text-gray-900 text-lg leading-tight">{{ vendorName }}</h3>
-            <p class="text-xs text-gray-500 font-medium">Vendor</p>
-          </div>
-        </div>
-        <button @click="close" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
-          <X class="w-6 h-6 text-gray-400" />
-        </button>
-      </div>
-
-      <!-- Messages Area -->
-      <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50" ref="messagesContainer">
-        <div v-if="loading" class="flex justify-center py-8">
-          <Loader2 class="w-8 h-8 text-gray-400 animate-spin" />
-        </div>
+      <div v-if="isOpen" class="fixed inset-0 z-[200] flex justify-end animate-fade-in font-sans pb-10 sm:pb-0">
+        <!-- Backdrop -->
+        <div @click="close" class="absolute inset-0 bg-black/20 backdrop-blur-[2px] transition-opacity"></div>
         
-        <template v-else-if="messages.length > 0">
-          <div 
-            v-for="msg in messages" 
-            :key="msg._id"
-            class="flex flex-col max-w-[85%]"
-            :class="msg.senderId === currentUserId ? 'ml-auto items-end' : 'mr-auto items-start'"
-          >
-            <div 
-              class="px-5 py-3 rounded-2xl text-sm"
-              :class="msg.senderId === currentUserId 
-                ? 'bg-gray-900 text-white rounded-br-sm' 
-                : 'bg-white text-gray-900 border-[0.5px] border-gray-200 rounded-bl-sm shadow-sm'"
-            >
-              {{ msg.message }}
-            </div>
-            <span class="text-[10px] text-gray-400 mt-1.5 font-medium px-1">{{ formatTime(msg.createdAt) }}</span>
+        <!-- Chat Panel -->
+        <div class="relative w-full max-w-md bg-[#E5DDD5] h-full flex flex-col animate-slide-left overflow-hidden min-h-0">
+          <!-- WhatsApp Green Header -->
+          <div class="px-4 py-3 bg-[#075E54] text-white flex items-center gap-3 sticky top-0 z-20 shadow-sm">
+            <button @click="close" class="p-1 hover:bg-white/10 rounded-md transition-colors mr-1">
+              <X class="w-5 h-5 text-white" />
+            </button>
+          <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold overflow-hidden border border-white/10">
+            <img v-if="vendorAvatar" :src="vendorAvatar" class="w-full h-full object-cover" />
+            <span v-else class="text-white">{{ vendorInitials }}</span>
           </div>
-        </template>
-
-        <div v-else class="h-full flex flex-col items-center justify-center text-gray-400 space-y-4">
-          <MessageSquare class="w-12 h-12 text-gray-300" />
-          <p class="text-sm font-medium">Send a message to start the conversation.</p>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-base font-bold truncate leading-tight">{{ vendorName }}</h3>
+            <p class="text-[11px] text-white/70 font-medium truncate">
+              Vendor
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- Input Area -->
-      <div class="p-4 bg-white border-t-[0.5px] border-gray-100">
-        <form @submit.prevent="submitMessage" class="flex items-end gap-3 relative">
-          <textarea
-            v-model="newMessage"
-            rows="1"
-            placeholder="Type a message..."
-            class="w-full bg-gray-50 border-[0.5px] border-gray-200 rounded-2xl px-5 py-3.5 pr-14 text-base focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 resize-none max-h-32"
-            @keydown.enter.prevent="handleEnter"
-            ref="inputRef"
-            @input="adjustHeight"
-          ></textarea>
+        <!-- Messages Area (WhatsApp patterned background) -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4" style="background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; opacity: 0.95" ref="messagesContainer">
+          <div v-if="loading" class="flex justify-center py-8">
+            <Loader2 class="w-8 h-8 text-gray-500 animate-spin" />
+          </div>
+          
+          <template v-else-if="messages.length > 0">
+            <div 
+              v-for="msg in messages" 
+              :key="msg._id"
+              class="flex flex-col max-w-[85%]"
+              :class="msg.senderId === currentUserId ? 'ml-auto items-end' : 'mr-auto items-start'"
+            >
+              <div 
+                class="px-3 py-2 rounded-lg text-sm shadow-[0_1px_0.5px_rgba(0,0,0,0.13)] relative"
+                :class="msg.senderId === currentUserId 
+                  ? 'bg-[#dcf8c6] text-[#303030] rounded-tr-none' 
+                  : 'bg-white text-[#303030] rounded-tl-none'"
+              >
+                <div class="break-words pr-12">{{ msg.message }}</div>
+                <span class="text-[10px] text-gray-500 absolute bottom-1 right-2">{{ formatTime(msg.createdAt) }}</span>
+              </div>
+            </div>
+          </template>
+
+          <div v-else class="h-full flex flex-col items-center justify-center text-gray-500 space-y-3 bg-white/60 mx-4 p-4 rounded-xl shadow-sm backdrop-blur-sm">
+            <MessageSquare class="w-8 h-8 text-gray-400" />
+            <p class="text-sm font-medium text-center">Send a message to start the conversation.</p>
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="px-2 py-2 bg-[#f0f0f0] flex items-end gap-2 border-t border-gray-200">
+          <div class="flex-1 bg-white rounded-2xl flex items-end shadow-sm">
+            <textarea
+              v-model="newMessage"
+              rows="1"
+              placeholder="Type a message"
+              class="w-full bg-transparent border-0 px-4 py-3 text-[15px] focus:outline-none resize-none max-h-32 text-gray-800 placeholder-gray-500"
+              @keydown.enter.prevent="handleEnter"
+              ref="inputRef"
+              @input="adjustHeight"
+            ></textarea>
+          </div>
           <button 
-            type="submit"
+            @click.prevent="submitMessage"
             :disabled="!newMessage.trim() || sending"
-            class="absolute right-2 bottom-2 p-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            class="w-12 h-12 bg-[#00a884] text-white rounded-full flex items-center justify-center flex-shrink-0 hover:bg-[#008f6f] disabled:opacity-50 transition-colors shadow-sm"
           >
-            <Send class="w-4 h-4" />
+            <Send class="w-5 h-5 ml-1" />
           </button>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
+    
+  
 </template>
 
 <script setup lang="ts">
@@ -86,7 +92,7 @@ const props = defineProps({
   isOpen: { type: Boolean, required: true },
   appointmentId: { type: String, required: true },
   vendorId: { type: String, required: true },
-  vendorOwnerId: { type: String, required: true },
+  vendorOwnerId: { type: String, required: false },
   vendorName: { type: String, default: 'Vendor' },
   vendorAvatar: { type: String, default: '' },
 });
@@ -168,3 +174,37 @@ const close = () => {
   emit('close');
 };
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.animate-slide-left {
+  animation: slideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideLeft {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.25);
+}
+</style>

@@ -21,5 +21,11 @@ export const appointments_api = {
   },
   rescheduleAppointment: (id: string, payload: { scheduledDate: string, startTime: string, endTime: string }) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/appointments/${id}/client-reschedule`, payload);
+  },
+  getVendorAvailability: (vendorId: string, date: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/appointments/availability/${vendorId}`, { params: { date } });
+  },
+  getSettings: () => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/appointments/settings');
   }
 };

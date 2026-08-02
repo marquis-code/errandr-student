@@ -255,18 +255,19 @@ onMounted(async () => {
   // Handle auto-start chat
   if (route.query.vendorId) {
     const vendorId = route.query.vendorId as string;
+    const vendorDocId = route.query.vendorDocId as string || vendorId;
     let existingConv = conversations.value.find((c: any) => c.user?._id === vendorId);
     
     if (!existingConv) {
       try {
-        const vendorRes = await api.get(`/vendors/${vendorId}`);
+        const vendorRes = await api.get(`/vendors/${vendorDocId}`);
         const vendorData = vendorRes.data;
         if (vendorData) {
           existingConv = {
             user: {
               _id: vendorId,
-              firstName: vendorData.firstName || '',
-              lastName: vendorData.lastName || '',
+              firstName: vendorData.firstName || vendorData.owner?.firstName || '',
+              lastName: vendorData.lastName || vendorData.owner?.lastName || '',
               storeName: vendorData.businessName || 'Vendor',
               avatar: vendorData.profilePicture || ''
             },
