@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-none sm:rounded-2xl border-0 sm:border border-gray-100 p-4 sm:p-6 shadow-none sm:shadow-sm">
+  <div class="bg-white rounded-none sm:rounded-2xl border-0 sm:border border-gray-100 p-4 sm:p-4 shadow-none sm:shadow-sm">
     <div class="flex items-center justify-between mb-6">
       <div>
         <h3 class="text-lg font-medium text-gray-900 tracking-tight">Active Quests</h3>
@@ -62,7 +62,7 @@
 
         <!-- Completion Overlay -->
         <div v-if="quest.isCompleted" class="absolute inset-0 bg-white/70 backdrop-blur-[1px] rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div class="px-4 py-1.5 bg-emerald-500 text-white text-[10px] font-medium uppercase tracking-wider rounded-lg shadow-md">
+          <div class="px-4 py-1.5 bg-emerald-500 text-white text-[10px] font-medium uppercase tracking-wider rounded-lg shadow-sm border border-gray-100">
             ✓ Accomplished
           </div>
         </div>

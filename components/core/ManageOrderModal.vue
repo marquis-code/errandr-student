@@ -25,7 +25,7 @@
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-xl transition-all sm:my-8 w-full"
+              class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-sm border border-gray-100 transition-all sm:my-8 w-full"
               :class="order ? 'max-w-2xl' : 'max-w-4xl'"
             >
               <!-- Close Button -->
@@ -40,7 +40,7 @@
               <!-- State 1: Login Form -->
               <div v-if="!order" class="flex flex-col md:flex-row min-h-[500px]">
                 <!-- Left Side: Form -->
-                <div class="flex-1 p-8 md:p-12 flex flex-col justify-center bg-white">
+                <div class="flex-1 p-5 md:p-12 flex flex-col justify-center bg-white">
                   <div class="max-w-md w-full mx-auto">
                     <h2 class="text-2xl font-bold text-[#1a1a1a] mb-2">Manage your order</h2>
                     <p class="text-sm text-gray-500 mb-8">
@@ -90,7 +90,7 @@
                       <button
                         type="submit"
                         :disabled="loading"
-                        class="w-full mt-4 bg-parentPrimary hover:bg-orange-600 text-white py-3.5 rounded-xl font-medium transition-colors flex items-center justify-center shadow-md shadow-orange-200"
+                        class="w-full mt-4 bg-parentPrimary hover:bg-orange-600 text-white py-3.5 rounded-xl font-medium transition-colors flex items-center justify-center shadow-sm border border-gray-100 shadow-orange-200"
                       >
                         <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
                         <span v-else>Login</span>
@@ -100,7 +100,7 @@
                 </div>
 
                 <!-- Right Side: Promotional Carousel -->
-                <div class="flex-1 bg-gradient-to-br from-parentPrimary to-orange-600 p-8 md:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
+                <div class="flex-1 bg-gradient-to-br from-parentPrimary to-orange-600 p-5 md:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
                   <!-- Background Pattern/Image placeholder if needed -->
                   <div class="absolute inset-0 opacity-20 mix-blend-overlay"></div>
                   
@@ -116,7 +116,7 @@
                         leave-from-class="transform translate-x-0 opacity-100"
                         leave-to-class="transform -translate-x-12 opacity-0"
                       >
-                        <div :key="currentSlide" class="bg-white rounded-2xl p-8 text-left shadow-2xl hover:scale-[1.02] duration-300 w-full h-full flex flex-col justify-center">
+                        <div :key="currentSlide" class="bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 hover:scale-[1.02] duration-300 w-full h-full flex flex-col justify-center">
                           <h3 class="text-xl font-bold text-gray-900 mb-2">{{ slides[currentSlide].title }}</h3>
                           <p class="text-sm text-gray-500">{{ slides[currentSlide].desc }}</p>
                         </div>
@@ -138,7 +138,7 @@
               </div>
 
               <!-- State 2: Order Details -->
-              <div v-else class="bg-white p-6 md:p-8">
+              <div v-else class="bg-white p-4 md:p-5">
                 <!-- Vendor Info Header -->
                 <div class="flex items-center justify-between mb-6 pb-6 border-b border-gray-100">
                   <div class="flex items-center gap-4">

@@ -5,7 +5,7 @@
         <div
           v-if="isOpen"
           :class="[
-            'bg-white shadow-2xl overflow-hidden flex flex-col transition-all duration-300',
+            'bg-white shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all duration-300',
             // Mobile (default)
             'fixed inset-0 w-full h-[100dvh] rounded-none z-[999999]',
             // Desktop (sm and up)
@@ -18,7 +18,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-[#FF6B35] via-[#FF5C1A] to-[#E54D12] pointer-events-none"></div>
 
           <!-- Header -->
-          <div class="relative z-10 flex items-center justify-between px-6 py-5 text-white">
+          <div class="relative z-10 flex items-center justify-between px-4 py-5 text-white">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md border border-white/30">
                 <Smile class="w-6 h-6 text-white" />
@@ -41,13 +41,13 @@
           </div>
 
           <!-- Body Content Area -->
-          <div class="relative z-10 flex-1 overflow-y-auto px-6 py-2 flex flex-col scrollbar-hide">
+          <div class="relative z-10 flex-1 overflow-y-auto px-4 py-2 flex flex-col scrollbar-hide">
             
             <p v-if="!messages.length" class="text-white/95 text-base leading-relaxed mb-6">
               Start chatting with us - we will be happy to help.
             </p>
 
-            <!-- Details Dropdown (Namecheap style) -->
+            <!-- Details Dropdown -->
             <div class="mb-6" v-if="!messages.length">
               <button 
                 @click="showDetails = !showDetails" 
@@ -86,7 +86,7 @@
                       <Lock v-if="isLoggedIn" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-white/50" />
                     </div>
                   </div>
-                  <button v-if="!isLoggedIn && needsGuestInfo" @click="startChat" class="w-full rounded-xl bg-white text-[#FF5C1A] hover:bg-gray-50 py-3 text-sm font-bold shadow-lg transition-transform active:scale-[0.98]">
+                  <button v-if="!isLoggedIn && needsGuestInfo" @click="startChat" class="w-full rounded-xl bg-white text-[#FF5C1A] hover:bg-gray-50 py-3 text-sm font-bold shadow-sm border border-gray-100 transition-transform active:scale-[0.98]">
                     Submit Details
                   </button>
                 </div>
@@ -105,7 +105,7 @@
                 }"
               >
                 <div
-                  class="max-w-[85%] rounded-[1.5rem] px-5 py-3.5 shadow-md backdrop-blur-md"
+                  class="max-w-[85%] rounded-[1.5rem] px-5 py-3.5 shadow-sm border border-gray-100 backdrop-blur-md"
                   :class="getBubbleStyle(message)"
                 >
                   <p class="text-[11px] font-bold uppercase tracking-wider mb-1" :class="getBubbleLabelStyle(message)" v-if="showSenderLabel(message)">
@@ -126,15 +126,15 @@
               </div>
             </div>
 
-            <!-- Spacer to push content up if needed -->
+            <!-- Spacer -->
             <div class="flex-1"></div>
           </div>
           </div>
 
           <!-- Bottom White Area -->
           <div class="bg-white relative z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] flex flex-col">
-            <!-- Quick Actions / FAQs (Namecheap style) -->
-            <div class="px-6 pt-5 pb-3" v-if="faqs.length > 0 && messages.length === 0">
+            <!-- Quick Actions / FAQs -->
+            <div class="px-4 pt-5 pb-3" v-if="faqs.length > 0 && messages.length === 0">
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="faq in faqs.slice(0, 8)"
@@ -148,7 +148,7 @@
             </div>
 
             <!-- Input Area -->
-            <div class="px-6 py-4 flex items-center gap-3 border-t border-gray-100">
+            <div class="px-4 py-4 flex items-center gap-3 border-t border-gray-100">
               <div class="flex-1 relative flex items-center">
                 <input
                   v-model="newMessage"
@@ -160,33 +160,14 @@
                   :disabled="isGuest && needsGuestInfo"
                 />
               </div>
-              
-              <!-- Hidden File Input -->
-              <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="handleFileUpload" />
-              <button @click="$refs.fileInput.click()" class="text-gray-400 hover:text-gray-600 transition-colors p-2" title="Attach Image">
+              <button class="text-gray-400 hover:text-gray-600 transition-colors p-2" title="Attach file">
                 <Paperclip class="w-5 h-5" />
               </button>
-              
-              <!-- Microphone (VN) -->
-              <button 
-                @mousedown="startRecording" 
-                @mouseup="stopRecording" 
-                @mouseleave="stopRecording"
-                @touchstart.prevent="startRecording"
-                @touchend.prevent="stopRecording"
-                class="text-gray-400 hover:text-red-500 transition-colors p-2 relative" 
-                :class="{'text-red-500 animate-pulse': isRecording}"
-                title="Hold to Record Voice Note"
-              >
-                <Mic class="w-5 h-5" />
-                <span v-if="isRecording" class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-              </button>
-
               <button
-                v-if="newMessage.trim() || isRecording"
+                v-if="newMessage.trim()"
                 @click="handleSend"
-                :disabled="sending || (!newMessage.trim() && !isRecording) || (isGuest && needsGuestInfo)"
-                class="w-10 h-10 rounded-full bg-[#FF5C1A] hover:bg-[#E54D12] text-white flex items-center justify-center disabled:opacity-50 transition-all shadow-md shadow-orange-500/20 animate-in zoom-in"
+                :disabled="sending || !newMessage.trim() || (isGuest && needsGuestInfo)"
+                class="w-10 h-10 rounded-full bg-[#FF5C1A] hover:bg-[#E54D12] text-white flex items-center justify-center disabled:opacity-50 transition-all shadow-sm border border-gray-100 shadow-orange-500/20 animate-in zoom-in"
               >
                 <ArrowRight class="w-5 h-5" />
               </button>
@@ -195,36 +176,22 @@
         </div>
       </Transition>
 
-      <!-- Friendly Tooltip -->
-      <Transition name="fade">
-        <div v-if="!isOpen && showTooltip" class="absolute bottom-[60px] right-0 mb-2 w-64 p-3 bg-white text-gray-800 text-sm font-medium rounded-2xl shadow-xl border border-gray-100 flex items-start gap-3 pointer-events-none origin-bottom-right z-50">
-          <div class="absolute -bottom-2 right-4 w-4 h-4 bg-white border-b border-r border-gray-100 transform rotate-45"></div>
-          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-            <Smile class="w-5 h-5 text-[#FF5C1A]" />
-          </div>
-          <p class="leading-tight">We are here to help and answer all your questions from live chat!</p>
-        </div>
-      </Transition>
-
       <!-- Floating Button -->
       <button
         @click="toggleChat"
-        class="group relative w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white shadow-2xl shadow-indigo-500/40 flex items-center justify-center hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+        class="group relative w-16 h-16 rounded-full bg-gradient-to-tr from-[#FF6B35] to-[#FF5C1A] text-white shadow-sm border border-gray-100 shadow-[#FF5C1A]/40 flex items-center justify-center hover:scale-105 hover:-translate-y-1 transition-all duration-300"
         aria-label="Open chat"
       >
         <div class="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
-        <MessageSquare class="w-5 h-5 transition-transform group-hover:scale-110" />
-        <!-- Notification Badge -->
-        <span v-if="false" class="absolute top-0 right-0 w-4 h-4 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[10px] font-bold">1</span>
+        <MessageSquare class="w-7 h-7 transition-transform group-hover:scale-110" />
       </button>
     </div>
   </ClientOnly>
 </template>
 
 <script setup lang="ts">
-import { X, ArrowRight, MessageSquare, Smile, ChevronDown, Lock, Paperclip, Mic } from 'lucide-vue-next'
+import { X, ArrowRight, MessageSquare, Smile, ChevronDown, Lock, Paperclip } from 'lucide-vue-next'
 import { onMounted, ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
 import { useUser } from '@/composables/modules/auth/user'
 import { useChat } from '@/composables/modules/chat/useChat'
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket'
@@ -235,72 +202,13 @@ function isMobile() {
 }
 
 const { user, isLoggedIn } = useUser()
-const route = useRoute()
 
 const isOpen = ref(false)
-const showTooltip = ref(false)
-const showDetails = ref(true) // Auto open details
+const showDetails = ref(true)
 const newMessage = ref('')
 const messageContainer = ref<HTMLDivElement | null>(null)
 const typingTimeout = ref<number | null>(null)
 const isTyping = ref(false)
-
-// File Upload & VN Refs
-const fileInput = ref<HTMLInputElement | null>(null)
-const isRecording = ref(false)
-let mediaRecorder: MediaRecorder | null = null
-let audioChunks: Blob[] = []
-
-const handleFileUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
-  if (!file) return;
-
-  // Since we are mocking the file upload to standard backend behavior:
-  // In a real scenario, we'd upload `file` via core_api.uploadFile()
-  // and then send the returned URL as a chat message.
-  // For now, we simulate a successful local object URL so the user can see it works visually.
-  const tempUrl = URL.createObjectURL(file);
-  sendMessage(`[Image Attached] ${tempUrl}`);
-  
-  if (fileInput.value) {
-    fileInput.value.value = '';
-  }
-};
-
-const startRecording = async () => {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
-    
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) audioChunks.push(event.data);
-    };
-    
-    mediaRecorder.onstop = () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-      const tempUrl = URL.createObjectURL(audioBlob);
-      // Simulate sending VN link
-      sendMessage(`[Voice Note Attached] ${tempUrl}`);
-      // Stop mic tracks to save battery
-      stream.getTracks().forEach(track => track.stop());
-    };
-    
-    mediaRecorder.start();
-    isRecording.value = true;
-  } catch (err) {
-    console.error('Microphone access denied or not supported', err);
-    alert('Microphone access is required to send voice notes.');
-  }
-};
-
-const stopRecording = () => {
-  if (mediaRecorder && isRecording.value) {
-    mediaRecorder.stop();
-    isRecording.value = false;
-  }
-};
 
 const {
   room,
@@ -319,60 +227,49 @@ const {
   detachSocketListeners,
 } = useChat()
 
-// Auto-fill profile if logged in
+const showChatWidget = computed(() => true)
+
 watch(isLoggedIn, (logged) => {
   if (logged && user.value) {
     guestProfile.value.name = user.value.firstName + ' ' + user.value.lastName;
     guestProfile.value.email = user.value.email;
-    guestProfile.value.phone = user.value.phone || '';
+    guestProfile.value.phone = '';
   }
 }, { immediate: true })
 
-const showChatWidget = computed(() => {
-  if (isLoggedIn.value) {
-    const rName = String(route.name || '')
-    if (rName.includes('dashboard') || rName.includes('orders') || rName.includes('order-id')) {
-      return false
-    }
-  }
-  return true
-})
-
 const needsGuestInfo = computed(() => !guestProfile.value.name || !guestProfile.value.email)
 
-// Styling helpers
 function getBubblePosition(message: ChatMessage) {
-  if (message.senderType === 'customer' || message.senderType === 'guest') {
+  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'vendor') {
+    // If it's the vendor using the chat widget, their messages should align right if they are the "sender"
     return 'justify-end';
   }
   return 'justify-start';
 }
 
 function getBubbleStyle(message: ChatMessage) {
-  if (message.senderType === 'customer' || message.senderType === 'guest') {
-    // User messages on white background logic, but since background is orange, user msg should stand out.
-    // Let's make user message White and bot message slightly translucent orange/white.
-    return 'bg-white text-gray-900 rounded-br-sm shadow-xl shadow-black/5';
+  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'vendor') {
+    return 'bg-white text-gray-900 rounded-br-sm shadow-sm border border-gray-100 shadow-black/5';
   }
   return 'bg-white/20 text-white rounded-bl-sm border border-white/20';
 }
 
 function getBubbleLabelStyle(message: ChatMessage) {
-  if (message.senderType === 'customer' || message.senderType === 'guest') {
+  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'vendor') {
     return 'text-gray-400';
   }
   return 'text-white/70';
 }
 
 function getBubbleTimeStyle(message: ChatMessage) {
-  if (message.senderType === 'customer' || message.senderType === 'guest') {
+  if (message.senderType === 'customer' || message.senderType === 'guest' || message.senderType === 'vendor') {
     return 'text-gray-400';
   }
   return 'text-white/60';
 }
 
 function showSenderLabel(message: ChatMessage) {
-  return message.senderType !== 'customer' && message.senderType !== 'guest';
+  return message.senderType !== 'customer' && message.senderType !== 'guest' && message.senderType !== 'vendor';
 }
 
 const { socket, connectSocket, isConnected } = useRealtimeSocket()
@@ -390,7 +287,7 @@ const startChat = async () => {
   if (!needsGuestInfo.value || !isGuest.value) {
     await ensureRoom()
     await markAsRead()
-    showDetails.value = false // hide details once started
+    showDetails.value = false
   }
 }
 
@@ -444,22 +341,9 @@ watch(messages, async () => {
   }
 }, { deep: true })
 
-onMounted(async () => {
-  // Show tooltip after 2 seconds
-  setTimeout(() => {
-    showTooltip.value = true;
-  }, 2000);
-
-  // Hide tooltip after 10 seconds
-  setTimeout(() => {
-    showTooltip.value = false;
-  }, 10000);
-
-  if (room.value?._id) {
-    await attachSocketListeners()
-  }
-  
+onMounted(() => {
   connectSocket()
+  attachSocketListeners()
   if (socket.value) {
     socket.value.on('chat:user-typing', (payload: { isTyping: boolean; roomId?: string }) => {
       if (room.value?._id && payload?.roomId && payload.roomId !== room.value._id) return
@@ -500,13 +384,11 @@ onBeforeUnmount(() => {
   transform: translateY(-10px);
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-/* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 </style>

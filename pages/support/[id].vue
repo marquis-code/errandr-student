@@ -30,7 +30,7 @@
 
       <!-- Chat Thread with Admin -->
       <div class="flex-1 min-h-[300px] flex flex-col bg-white border-0 sm:border border-gray-100 rounded-none sm:rounded-[2rem] overflow-hidden shadow-none sm:shadow-sm">
-        <div ref="threadContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+        <div ref="threadContainer" class="flex-1 overflow-y-auto p-4 sm:p-4 space-y-4">
           <div 
             v-for="msg in report?.thread" 
             :key="msg.timestamp" 

@@ -36,19 +36,19 @@
       >
         <div class="p-2">
           <!-- Loading State inside dropdown -->
-          <div v-if="loading && suggestions.length === 0" class="flex flex-col items-center justify-center py-6 gap-2 text-gray-400">
+          <div v-if="loading && suggestions.length === 0" class="flex flex-col items-center justify-center py-4 gap-2 text-gray-400">
             <Loader2 class="h-6 w-6 text-parentPrimary/50 animate-spin" />
             <p class="text-xs font-medium">Searching map...</p>
           </div>
 
           <!-- Error State -->
-          <div v-else-if="error" class="flex flex-col items-center justify-center py-6 gap-2 text-rose-400">
+          <div v-else-if="error" class="flex flex-col items-center justify-center py-4 gap-2 text-rose-400">
             <AlertCircle class="h-6 w-6" />
             <p class="text-xs font-medium">{{ error }}</p>
           </div>
 
           <!-- Empty State -->
-          <div v-else-if="!loading && modelValue.length > 2 && suggestions.length === 0" class="flex flex-col items-center justify-center py-6 gap-2 text-gray-400">
+          <div v-else-if="!loading && modelValue.length > 2 && suggestions.length === 0" class="flex flex-col items-center justify-center py-4 gap-2 text-gray-400">
             <Map class="h-6 w-6 opacity-50" />
             <p class="text-xs font-medium">No locations found</p>
           </div>

@@ -50,7 +50,7 @@
       <button 
         @click="submitBooking"
         :disabled="!isValid || loading"
-        class="w-full py-3.5 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-parentPrimary hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+        class="w-full py-3.5 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-sm border border-gray-100 hover:bg-parentPrimary hover:shadow-sm border border-gray-100 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
       >
         <span v-if="loading" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
         <span v-else>Confirm Booking</span>

@@ -3,7 +3,7 @@
     <div class="fixed inset-0 z-[100] bg-[#fafafa] flex flex-col overflow-hidden animate-slide-up">
       <!-- Header -->
       <header class="bg-white border-b border-gray-100/60 shrink-0">
-        <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+        <div class="max-w-[1400px] mx-auto px-4 md:px-5 py-3 flex items-center justify-between">
           <button @click="handleBack" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
             <ArrowLeft class="w-5 h-5 text-gray-700" />
           </button>
@@ -24,7 +24,7 @@
 
       <!-- Main Content -->
       <main class="flex-1 overflow-y-auto">
-        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-5 lg:py-8 flex flex-col lg:flex-row gap-6 lg:gap-16 pb-44 lg:pb-8">
+        <div class="max-w-[1400px] mx-auto px-4 md:px-4 py-5 lg:py-5 flex flex-col lg:flex-row gap-6 lg:gap-16 pb-44 lg:pb-8">
           
           <!-- LEFT COLUMN (Dynamic steps) -->
           <div class="flex-1 max-w-3xl">
@@ -272,7 +272,7 @@
             <div class="sticky top-8 bg-white rounded-2xl overflow-hidden flex flex-col h-[calc(100vh-8rem)] border border-gray-100/80">
               
               <!-- Vendor Info -->
-              <div class="p-6 border-b border-gray-50 flex gap-4 items-center shrink-0">
+              <div class="p-4 border-b border-gray-50 flex gap-4 items-center shrink-0">
                 <div class="w-14 h-14 rounded-xl bg-gray-100 overflow-hidden shrink-0">
                   <video v-if="vendor.logo && vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
                   <img v-else :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
@@ -288,7 +288,7 @@
               </div>
 
               <!-- Selected Time (if Time step passed) -->
-              <div v-if="selectedDate && selectedTime && step !== 'services'" class="p-6 border-b border-gray-50 bg-gray-50/50 shrink-0 space-y-2">
+              <div v-if="selectedDate && selectedTime && step !== 'services'" class="p-4 border-b border-gray-50 bg-gray-50/50 shrink-0 space-y-2">
                 <div class="flex items-center gap-3 text-sm text-gray-900 font-medium">
                   <Calendar class="w-4 h-4 text-gray-400" />
                   {{ formatDate(selectedDate) }}
@@ -300,7 +300,7 @@
               </div>
 
               <!-- Cart Items -->
-              <div class="flex-1 overflow-y-auto p-6 space-y-4">
+              <div class="flex-1 overflow-y-auto p-4 space-y-4">
                 <template v-if="cart.length">
                   <div v-for="(item, idx) in cart" :key="idx" class="flex justify-between items-start gap-4">
                     <div class="flex-1">
@@ -340,7 +340,7 @@
                 <button 
                   @click="handleContinue"
                   :disabled="!canContinue"
-                  class="w-full py-3 bg-[#1a1a1a] text-white rounded-xl font-bold text-sm shadow-md hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full py-3 bg-[#1a1a1a] text-white rounded-xl font-bold text-sm shadow-sm border border-gray-100 hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
                   <template v-else-if="step === 'time' && isTimeBooked(selectedTime)">Join Waitlist <ArrowRight class="w-4 h-4" /></template>
@@ -417,7 +417,7 @@
             <button 
               @click="handleContinue"
               :disabled="!canContinue"
-              class="py-3.5 bg-[#1a1a1a] text-white rounded-2xl font-bold text-[15px] hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-black/10"
+              class="py-3.5 bg-[#1a1a1a] text-white rounded-2xl font-bold text-[15px] hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm border border-gray-100 shadow-black/10"
               :class="cart.length && step !== 'confirm' ? 'flex-[1.2]' : 'w-full'"
             >
               <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
@@ -722,7 +722,7 @@ const getCalendarDayClass = (day: number) => {
   const today = new Date();
   const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   
-  if (selectedDate.value === iso) return 'bg-parentPrimary text-white shadow-md font-bold';
+  if (selectedDate.value === iso) return 'bg-parentPrimary text-white shadow-sm border border-gray-100 font-bold';
   if (todayIso === iso) return 'bg-gray-100 text-gray-900 font-bold border border-gray-200';
   return 'text-gray-600 hover:bg-gray-50 border border-transparent';
 };

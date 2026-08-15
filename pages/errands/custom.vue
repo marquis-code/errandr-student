@@ -30,11 +30,11 @@
 
         <!-- Decorative waybill stubs -->
         <div class="mt-10 space-y-3">
-          <div class="rotate-[-2deg] rounded-sm px-4 py-3 shadow-lg bg-[#F7F4EC]">
+          <div class="rotate-[-2deg] rounded-sm px-4 py-3 shadow-sm border border-gray-100 bg-[#F7F4EC]">
             <p class="font-sans text-sm  tracking-wider text-[#766A61]">Faculty of Medicine → Block hostel</p>
             <p class="font-sans text-sm font-bold mt-0.5 text-[#170D08]">Print 40pg thesis draft — ₦800</p>
           </div>
-          <div class="rotate-[1.5deg] rounded-sm px-4 py-3 shadow-lg ml-6 bg-[#F3C9D2]">
+          <div class="rotate-[1.5deg] rounded-sm px-4 py-3 shadow-sm border border-gray-100 ml-6 bg-[#F3C9D2]">
             <p class="font-sans text-sm  tracking-wider text-[#766A61]">Yaba Market → OPH hostel</p>
             <p class="font-sans text-sm font-bold mt-0.5 text-[#170D08]">3 yards black velvet — ₦2,000</p>
           </div>
@@ -79,10 +79,10 @@
 
           <!-- The waybill card, with duplicate/triplicate sheets peeking behind -->
           <div class="relative">
-            <div class="hidden sm:block absolute inset-0 translate-x-2.5 translate-y-3.5 rotate-[2deg] rounded-sm shadow-md bg-[#F6DE8C]"></div>
-            <div class="hidden sm:block absolute inset-0 translate-x-1 translate-y-1.5 rotate-[1deg] rounded-sm shadow-md bg-[#F3C9D2]"></div>
+            <div class="hidden sm:block absolute inset-0 translate-x-2.5 translate-y-3.5 rotate-[2deg] rounded-sm shadow-sm border border-gray-100 bg-[#F6DE8C]"></div>
+            <div class="hidden sm:block absolute inset-0 translate-x-1 translate-y-1.5 rotate-[1deg] rounded-sm shadow-sm border border-gray-100 bg-[#F3C9D2]"></div>
 
-            <div class="relative sm:rounded-sm shadow-2xl p-5 sm:p-10 bg-[#F7F4EC] sm:border border-[#170D08]/15">
+            <div class="relative sm:rounded-sm shadow-sm border border-gray-100 p-5 sm:p-10 bg-[#F7F4EC] sm:border border-[#170D08]/15">
 
               <!-- Waybill header -->
               <div class="flex justify-between items-start pb-5 border-b-2 border-dashed border-[#D8D2C4]">
@@ -285,7 +285,7 @@
                 <button
                   @click="step = 2"
                   :disabled="!isStep1Valid"
-                  class="w-full font-sans  tracking-wider text-[13px] font-bold py-4 px-6 rounded-sm transition-colors flex justify-between items-center group bg-[#170D08] text-[#F7F4EC] hover:bg-[#FF5C1A] disabled:opacity-25 disabled:hover:bg-[#170D08]"
+                  class="w-full font-sans  tracking-wider text-[13px] font-bold py-4 px-4 rounded-sm transition-colors flex justify-between items-center group bg-[#170D08] text-[#F7F4EC] hover:bg-[#FF5C1A] disabled:opacity-25 disabled:hover:bg-[#170D08]"
                 >
                   <span>Continue → Pricing</span>
                   <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -378,7 +378,7 @@
                   <button
                     @click="step = 3"
                     :disabled="!isStep2Valid"
-                    class="flex-1 font-sans  tracking-wider text-[13px] font-bold py-4 px-6 rounded-sm transition-colors flex justify-between items-center group bg-[#170D08] text-[#F7F4EC] hover:bg-[#FF5C1A] disabled:opacity-25 disabled:hover:bg-[#170D08]"
+                    class="flex-1 font-sans  tracking-wider text-[13px] font-bold py-4 px-4 rounded-sm transition-colors flex justify-between items-center group bg-[#170D08] text-[#F7F4EC] hover:bg-[#FF5C1A] disabled:opacity-25 disabled:hover:bg-[#170D08]"
                   >
                     <span>Review Slip</span>
                     <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -438,7 +438,7 @@
                   <button
                     @click="submitErrand"
                     :disabled="isSubmitting"
-                    class="w-full font-sans text-[13px] font-bold  tracking-wider py-4 px-6 rounded-sm transition-all flex justify-center items-center gap-3 bg-[#FF5C1A] text-[#F7F4EC] hover:bg-[#C7460F] disabled:opacity-60 active:scale-[0.98]"
+                    class="w-full font-sans text-[13px] font-bold  tracking-wider py-4 px-4 rounded-sm transition-all flex justify-center items-center gap-3 bg-[#FF5C1A] text-[#F7F4EC] hover:bg-[#C7460F] disabled:opacity-60 active:scale-[0.98]"
                   >
                     <Loader2 v-if="isSubmitting" class="animate-spin w-4 h-4" />
                     <CreditCard v-else class="w-4 h-4" />

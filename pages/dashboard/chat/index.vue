@@ -3,7 +3,7 @@
     
     <!-- Left Panel: Conversations List -->
     <div class="w-full md:w-[350px] lg:w-[400px] border-r border-gray-50 flex flex-col bg-white shrink-0">
-      <div class="p-6 pb-4 border-b border-gray-50">
+      <div class="p-4 pb-4 border-b border-gray-50">
         <h1 class="text-2xl font-bold text-gray-900 mb-4">Messages</h1>
         
         <!-- Search -->
@@ -23,7 +23,7 @@
           <div v-for="i in 4" :key="i" class="h-20 bg-gray-50 rounded-2xl animate-pulse"></div>
         </div>
 
-        <div v-else-if="conversations.length === 0" class="h-full flex flex-col items-center justify-center text-center p-6">
+        <div v-else-if="conversations.length === 0" class="h-full flex flex-col items-center justify-center text-center p-4">
           <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
             <MessageSquareOff class="w-8 h-8 text-gray-300" />
           </div>
@@ -63,7 +63,7 @@
 
     <!-- Right Panel: Active Conversation -->
     <div class="flex-1 bg-white hidden md:flex flex-col relative">
-      <div v-if="!activeConversation" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 bg-gray-50/50">
+      <div v-if="!activeConversation" class="absolute inset-0 flex flex-col items-center justify-center text-center p-5 bg-gray-50/50">
         <div class="w-20 h-20 bg-white rounded-3xl shadow-sm border border-gray-100 flex items-center justify-center mb-6">
           <MessageCircle class="w-10 h-10 text-gray-300" />
         </div>
@@ -88,7 +88,7 @@
         </div>
 
         <!-- Chat Area -->
-        <div class="flex-1 overflow-y-auto hide-scrollbar p-6 bg-gray-50/30" ref="chatAreaRef">
+        <div class="flex-1 overflow-y-auto hide-scrollbar p-4 bg-gray-50/30" ref="chatAreaRef">
           <div v-if="isMessagesLoading" class="flex justify-center my-4">
             <div class="w-6 h-6 border-2 border-parentPrimary border-t-transparent rounded-full animate-spin"></div>
           </div>

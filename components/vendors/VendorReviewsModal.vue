@@ -8,10 +8,10 @@
 
     <!-- Modal Content -->
     <div 
-      class="relative bg-white w-full sm:w-[500px] h-[90vh] sm:h-[80vh] sm:max-h-[800px] sm:rounded-3xl rounded-t-3xl shadow-2xl flex flex-col overflow-hidden transition-transform animate-slide-up sm:animate-scale-in"
+      class="relative bg-white w-full sm:w-[500px] h-[90vh] sm:h-[80vh] sm:max-h-[800px] sm:rounded-3xl rounded-t-3xl shadow-sm border border-gray-100 flex flex-col overflow-hidden transition-transform animate-slide-up sm:animate-scale-in"
     >
       <!-- Header -->
-      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
+      <div class="px-4 py-4 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
         <div>
           <h2 class="text-xl font-bold text-gray-900">Reviews</h2>
           <div class="flex items-center gap-2 mt-1">
@@ -32,7 +32,7 @@
 
       <!-- Content Area -->
         <!-- Content Area -->
-      <div class="flex-1 overflow-y-auto bg-gray-50/50 p-4 sm:p-6 no-scrollbar">
+      <div class="flex-1 overflow-y-auto bg-gray-50/50 p-4 sm:p-4 no-scrollbar">
 
         <!-- Reviews List -->
         <div class="space-y-4">

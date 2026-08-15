@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-white">
     <CoreAppNavbar />
 
-    <div class="max-w-[1400px] mx-auto px-4 md:px-6 pt-6 pb-32 animate-fade-in">
+    <div class="max-w-[1400px] mx-auto px-4 md:px-4 pt-6 pb-32 animate-fade-in">
       
       <!-- Top Header Row -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -161,7 +161,7 @@
                   </div>
                   <button
                     @click.stop="handleNotifyVendor(vendor)"
-                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-[11px] font-bold transition-all shadow-md"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-[11px] font-bold transition-all shadow-sm border border-gray-100"
                   >
                     <Bell class="w-3 h-3" /> Notify me
                   </button>
@@ -185,16 +185,16 @@
 
               <!-- TOP LEFT BADGES -->
               <div class="absolute top-3 left-3 flex flex-col gap-2">
-                <span v-if="vendor.isFeatured" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-gray-900 text-[10px] font-extrabold tracking-wide uppercase">
+                <span v-if="vendor.isFeatured" class="px-2.5 py-1 bg-white shadow-sm border border-gray-100 rounded-lg text-gray-900 text-[10px] font-extrabold tracking-wide uppercase">
                   Featured
                 </span>
-                <span v-else-if="vendor.businessType === 'service_provider'" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-purple-700 text-[10px] font-extrabold tracking-wide uppercase">
+                <span v-else-if="vendor.businessType === 'service_provider'" class="px-2.5 py-1 bg-white shadow-sm border border-gray-100 rounded-lg text-purple-700 text-[10px] font-extrabold tracking-wide uppercase">
                   Service
                 </span>
-                <span v-else-if="vendor.businessType === 'hybrid'" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-indigo-700 text-[10px] font-extrabold tracking-wide uppercase">
+                <span v-else-if="vendor.businessType === 'hybrid'" class="px-2.5 py-1 bg-white shadow-sm border border-gray-100 rounded-lg text-indigo-700 text-[10px] font-extrabold tracking-wide uppercase">
                   Hybrid
                 </span>
-                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-rose-600 text-[10px] font-extrabold tracking-wide uppercase">
+                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 bg-white shadow-sm border border-gray-100 rounded-lg text-rose-600 text-[10px] font-extrabold tracking-wide uppercase">
                   Pre-order
                 </span>
               </div>
@@ -237,13 +237,13 @@
       </div>
 
       <!-- Empty State: No filter results -->
-      <div v-else class="relative w-full overflow-hidden rounded-2xl border border-dashed border-gray-200 py-20 px-6 text-center">
+      <div v-else class="relative w-full overflow-hidden rounded-2xl border border-dashed border-gray-200 py-20 px-4 text-center">
         <!-- Background layers -->
         <div class="absolute inset-0 bg-gradient-to-b from-slate-50/80 to-white pointer-events-none"></div>
         <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-64 h-64 bg-parentPrimary/5 rounded-full blur-[80px] pointer-events-none"></div>
 
         <!-- Emoji icon -->
-        <div class="relative z-10 w-16 h-16 bg-white rounded-2xl shadow-md border border-gray-100 flex items-center justify-center text-3xl mx-auto mb-5" style="animation: float 3s ease-in-out infinite;">
+        <div class="relative z-10 w-16 h-16 bg-white rounded-2xl shadow-sm border border-gray-100 border border-gray-100 flex items-center justify-center text-3xl mx-auto mb-5" style="animation: float 3s ease-in-out infinite;">
           🔍
         </div>
 
@@ -275,13 +275,13 @@
         <div class="relative z-10 flex items-center justify-center gap-3">
           <button
             @click="resetAllFilters"
-            class="inline-flex items-center gap-2 px-6 py-2.5 bg-parentPrimary text-white rounded-xl text-xs font-medium hover:scale-105 transition-transform shadow-md shadow-parentPrimary/20 active:scale-95"
+            class="inline-flex items-center gap-2 px-4 py-2.5 bg-parentPrimary text-white rounded-xl text-xs font-medium hover:scale-105 transition-transform shadow-sm border border-gray-100 shadow-parentPrimary/20 active:scale-95"
           >
             Reset Filters
           </button>
           <NuxtLink
             to="/dashboard"
-            class="inline-flex items-center px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-xs font-medium hover:bg-gray-200 transition-colors active:scale-95"
+            class="inline-flex items-center px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-xs font-medium hover:bg-gray-200 transition-colors active:scale-95"
           >
             Go Home
           </NuxtLink>
@@ -316,7 +316,7 @@
         leave-to-class="opacity-0"
       >
         <div v-if="showMobileFilters" class="fixed inset-0 z-[110] flex justify-end bg-black/50 backdrop-blur-sm" @click.self="showMobileFilters = false">
-          <div class="bg-white w-full max-w-sm h-full overflow-y-auto shadow-2xl animate-slide-in-right p-6 space-y-6 flex flex-col">
+          <div class="bg-white w-full max-w-sm h-full overflow-y-auto shadow-sm border border-gray-100 animate-slide-in-right p-4 space-y-6 flex flex-col">
             
             <div class="flex items-center justify-between pb-2 border-b border-gray-100">
               <h3 class="text-lg font-medium text-gray-900 tracking-tight">Refine Options</h3>
@@ -332,7 +332,7 @@
                 <button
                   @click="showOnlyOffers = !showOnlyOffers"
                   class="flex items-center justify-center gap-2 px-3 py-3 rounded-xl border transition-all text-xs font-medium"
-                  :class="showOnlyOffers ? 'bg-parentPrimary text-white border-parentPrimary shadow-md' : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'"
+                  :class="showOnlyOffers ? 'bg-parentPrimary text-white border-parentPrimary shadow-sm border border-gray-100' : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'"
                 >
                   <Tag class="w-3.5 h-3.5" />
                   Special Offers
@@ -341,7 +341,7 @@
                 <button
                   @click="showQuickDelivery = !showQuickDelivery"
                   class="flex items-center justify-center gap-2 px-3 py-3 rounded-xl border transition-all text-xs font-medium"
-                  :class="showQuickDelivery ? 'bg-parentPrimary text-white border-parentPrimary shadow-md' : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'"
+                  :class="showQuickDelivery ? 'bg-parentPrimary text-white border-parentPrimary shadow-sm border border-gray-100' : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'"
                 >
                   <Clock class="w-3.5 h-3.5" />
                   Under 30 min
@@ -384,7 +384,7 @@
               </button>
               <button 
                 @click="showMobileFilters = false" 
-                class="flex-1 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium uppercase tracking-wider hover:bg-parentPrimary/90 active:scale-95 shadow-md shadow-parentPrimary/10"
+                class="flex-1 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium uppercase tracking-wider hover:bg-parentPrimary/90 active:scale-95 shadow-sm border border-gray-100 shadow-parentPrimary/10"
               >
                 Apply
               </button>

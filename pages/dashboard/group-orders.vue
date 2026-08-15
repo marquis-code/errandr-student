@@ -22,14 +22,14 @@
       <p class="text-sm text-gray-500 max-w-sm mx-auto mb-8">
         You haven't hosted or joined any group orders yet. Start one from a vendor's page to shop together with friends!
       </p>
-      <NuxtLink to="/dashboard/search" class="inline-flex items-center justify-center px-6 py-3 bg-parentPrimary text-white text-sm font-bold rounded-xl shadow-lg hover:bg-parentPrimary/90 transition-all">
+      <NuxtLink to="/dashboard/search" class="inline-flex items-center justify-center px-4 py-3 bg-parentPrimary text-white text-sm font-bold rounded-xl shadow-sm border border-gray-100 hover:bg-parentPrimary/90 transition-all">
         Find a Vendor
       </NuxtLink>
     </div>
 
     <!-- History List -->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div v-for="order in history" :key="order._id" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all flex flex-col">
+      <div v-for="order in history" :key="order._id" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-sm border border-gray-100 transition-all flex flex-col">
         
         <div class="p-5 flex-1">
           <div class="flex justify-between items-start mb-4">
@@ -89,7 +89,7 @@
         <div class="px-5 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center gap-3">
           <button 
             @click="handleReuse(order)"
-            class="flex-1 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-bold shadow-md hover:bg-parentPrimary hover:shadow-lg transition-all flex items-center justify-center gap-2"
+            class="flex-1 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-bold shadow-sm border border-gray-100 hover:bg-parentPrimary hover:shadow-sm border border-gray-100 transition-all flex items-center justify-center gap-2"
           >
             <RefreshCw class="w-3.5 h-3.5" /> Re-use Order
           </button>

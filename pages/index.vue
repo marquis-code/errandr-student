@@ -3,7 +3,7 @@
  <BatchDeliveryBanner />
  
  <!-- Birthday Banner -->
- <div v-if="isBirthday" class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] text-white py-3 px-4 text-center shadow-lg relative z-[51]">
+ <div v-if="isBirthday" class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] text-white py-3 px-4 text-center shadow-sm border border-gray-100 relative z-[51]">
    <div class="max-w-7xl mx-auto flex items-center justify-center gap-2 animate-bounce">
      <span class="text-xl">🎂</span>
      <p class="text-sm md:text-base font-bold tracking-wide">
@@ -32,7 +32,7 @@
       <!-- Soft Minimalist Grid Dot Overlay -->
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
 
-      <div class="max-w-7xl mx-auto sm:px-6  relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
+      <div class="max-w-7xl mx-auto sm:px-4  relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
         <div class="max-w-3xl mx-auto space-y-6">
           <!-- Badge -->
           <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-medium -[0.2em]  animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
@@ -88,7 +88,7 @@
               />
               <button 
                 @click="handleHeroSearch"
-                class="h-12 md:h-14 px-6 md:px-8 bg-gray-900 text-white rounded-full text-sm md:text-base font-semibold hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 shrink-0 relative z-10 shadow-md"
+                class="h-12 md:h-14 px-4 md:px-5 bg-gray-900 text-white rounded-full text-sm md:text-base font-semibold hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 shrink-0 relative z-10 shadow-sm border border-gray-100"
               >
                 <span>Search</span>
               </button>
@@ -99,7 +99,7 @@
     v-if="showSuggestions && (heroSearchSuggestions.length > 0 || isSearching || hasSearched || timeOfDaySuggestions.length > 0)"
     class="absolute top-full left-0 right-0 mt-4 bg-white border border-gray-200 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden z-[75] p-2"
   >
-    <div class="px-6 py-4 border-b border-gray-50 flex justify-between items-center">
+    <div class="px-4 py-4 border-b border-gray-50 flex justify-between items-center">
       <span class="text-sm font-medium text-gray-400 tracking-tight">
         {{ heroSearchQuery ? 'Matching Results' : `Suggested for ${suggestionTimeText}` }}
       </span>
@@ -358,7 +358,7 @@
 
  <!-- Active Promotions -->
  <section v-if="activePromotions.length > 0" class="py-12 bg-white overflow-hidden border-t border-gray-100">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+ <div class="max-w-7xl mx-auto px-4 sm:px-4 lg:px-5 mb-8">
  <div class="flex items-end justify-between">
  <div>
  <div class="inline-flex items-center gap-2 text-rose-500 font-bold text-sm mb-2 text-center">
@@ -394,7 +394,7 @@
  <span class="text-sm font-bold text-gray-900 flex items-center gap-2">
  <Store class="w-3.5 h-3.5 text-gray-400" /> {{ promo.vendorName }}
  </span>
- <span class="text-sm font-medium text-rose-500   bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-md">Claim Offer &rarr;</span>
+ <span class="text-sm font-medium text-rose-500   bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-sm border border-gray-100">Claim Offer &rarr;</span>
  </div>
  </div>
  </div>
@@ -522,7 +522,7 @@
 
   <!-- How it works (Redesigned & Condensed) -->
   <section id="how-it-works" class="py-20 bg-white overflow-hidden border-t border-slate-100">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="max-w-7xl mx-auto px-4 lg:px-10">
       <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
         <p class="text-sm font-medium -[0.2em]  text-parentPrimary">How It Works</p>
         <h2 class="text-3xl md:text-5xl font-medium text-slate-900 -tighter leading-tight">
@@ -536,7 +536,7 @@
           { title: 'Search & Select', desc: 'Find your favorite campus spot and browse their menu.', icon: '🔍', color: 'bg-emerald-50 text-emerald-600' },
           { title: 'Order & Pay', desc: 'Securely place your order with a few taps.', icon: '💳', color: 'bg-blue-50 text-blue-600' },
           { title: 'Receive', desc: 'Your Errander delivers directly to your hostel door.', icon: '📦', color: 'bg-parentPrimary/10 text-parentPrimary' }
-        ]" :key="i" class="text-center space-y-4 bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:-translate-y-1 transition-transform group">
+        ]" :key="i" class="text-center space-y-4 bg-white rounded-[2rem] p-5 border border-slate-100 shadow-sm hover:-translate-y-1 transition-transform group">
           <div :class="`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm border border-slate-50 ${step.color} group-hover:scale-110 transition-transform`">
             {{ step.icon }}
           </div>
@@ -549,7 +549,7 @@
 
   <!-- Custom Errands + Why Choose Us (Merged & Condensed) -->
   <section class="py-20 bg-slate-50 overflow-hidden border-t border-slate-100">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <div class="max-w-7xl mx-auto px-4 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <!-- Left: Errands Pitch -->
       <div class="space-y-6 max-w-xl">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-sm font-bold shadow-sm">
@@ -562,7 +562,7 @@
           Don't just order food. Send an Errander to pick up your laundry, deliver documents to class, or buy groceries. Set the fee you want to pay, let riders accept, and chat with them instantly!
         </p>
         <div class="pt-4 flex flex-col sm:flex-row gap-4">
-          <NuxtLink to="/errands/custom" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm -wide hover:bg-parentPrimary transition-colors shadow-lg shadow-slate-900/10 active:scale-95">
+          <NuxtLink to="/errands/custom" class="inline-flex items-center justify-center gap-2 px-5 py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm -wide hover:bg-parentPrimary transition-colors shadow-sm border border-gray-100 shadow-slate-900/10 active:scale-95">
             Request an Errand <ArrowRight class="w-4 h-4" />
           </NuxtLink>
         </div>
@@ -575,7 +575,7 @@
           { title: 'Student Riders', desc: 'Dispatchers who know every corner of your campus.', icon: 'Target', color: 'text-parentPrimary bg-parentPrimary/10' },
           { title: 'Escrow Protected', desc: 'We hold the fee safely until a rider accepts your errand.', icon: 'ShieldCheck', color: 'text-blue-500 bg-blue-50' },
           { title: 'Real-time Chat', desc: 'Directly chat with your dispatcher to arrange details.', icon: 'MessageCircle', color: 'text-purple-500 bg-purple-50' }
-        ]" :key="feat.title" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group">
+        ]" :key="feat.title" class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm hover:shadow-sm border border-gray-100 hover:-translate-y-1 transition-all group">
           <div :class="`w-10 h-10 mb-4 rounded-xl flex items-center justify-center ${feat.color}`">
             <component :is="feat.icon === 'CircleDollarSign' ? CircleDollarSign : feat.icon === 'Target' ? Target : feat.icon === 'ShieldCheck' ? ShieldCheck : MessageCircle" class="w-5 h-5 group-hover:scale-110 transition-transform" />
           </div>
@@ -589,7 +589,7 @@
   <!-- CTA Section — Light Theme -->
   <section class="relative py-20 overflow-hidden bg-gradient-to-b from-slate-50/80 via-white to-white border-t border-slate-100">
     <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
-    <div class="max-w-3xl mx-auto px-6 lg:px-10 relative z-10 text-center space-y-6">
+    <div class="max-w-3xl mx-auto px-4 lg:px-10 relative z-10 text-center space-y-6">
       <h2 class="text-4xl md:text-5xl font-medium text-slate-900 -tighter leading-tight">
         Ready to <span class="text-parentPrimary">chop?</span>
       </h2>
@@ -597,10 +597,10 @@
         Join thousands of students who trust Errander for their daily meals and hostel runs. Zero stress, 100% vibes.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-        <NuxtLink to="/auth/register" class="px-8 py-4 bg-parentPrimary text-white rounded-2xl font-medium text-sm  -wide shadow-lg shadow-parentPrimary/20 hover:scale-105 active:scale-95 transition-all">
+        <NuxtLink to="/auth/register" class="px-5 py-4 bg-parentPrimary text-white rounded-2xl font-medium text-sm  -wide shadow-sm border border-gray-100 shadow-parentPrimary/20 hover:scale-105 active:scale-95 transition-all">
           Join Errander Now
         </NuxtLink>
-        <NuxtLink to="/auth/login" class="px-8 py-4 bg-white text-slate-600 rounded-2xl font-medium text-sm  -wide border border-slate-200 hover:border-parentPrimary hover:text-parentPrimary transition-all">
+        <NuxtLink to="/auth/login" class="px-5 py-4 bg-white text-slate-600 rounded-2xl font-medium text-sm  -wide border border-slate-200 hover:border-parentPrimary hover:text-parentPrimary transition-all">
           Login
         </NuxtLink>
       </div>

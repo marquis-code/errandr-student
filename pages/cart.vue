@@ -5,9 +5,9 @@
     <div v-if="cartStore.isEmpty.value" class="min-h-screen flex flex-col">
       <!-- Header -->
       <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-gray-50">
-        <div class="max-w-5xl mx-auto flex items-center justify-between px-4 md:px-6 py-4">
+        <div class="max-w-5xl mx-auto flex items-center justify-between px-4 md:px-4 py-4">
           <NuxtLink to="/" class="flex items-center gap-2.5 group">
-            <!-- <div class="w-9 h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:bg-parentPrimary transition-all">
+            <!-- <div class="w-9 h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-sm border border-gray-100 group-hover:bg-parentPrimary transition-all">
               <ShoppingBag class="w-4 h-4" />
             </div>
             <span class="text-lg font-bold text-gray-900 tracking-tighter">Errandr</span> -->
@@ -16,17 +16,17 @@
         </div>
       </header>
 
-      <div class="flex-1 flex flex-col items-center justify-center p-6 max-w-lg mx-auto text-center">
+      <div class="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto text-center">
         <div class="w-24 h-24 bg-gray-50 rounded-[2rem] flex items-center justify-center text-5xl mb-8 animate-float">🛒</div>
         <h2 class="text-3xl font-medium text-gray-900 mb-3 tracking-tight">Your cart is empty</h2>
         <p class="text-sm font-medium text-gray-400 mb-8 leading-relaxed">Discover your favorite campus meals and start building your order.</p>
-        <NuxtLink to="/vendors" class="px-8 py-4 bg-gray-900 text-white rounded-2xl font-medium text-xs tracking-wider hover:bg-parentPrimary transition-all active:scale-95 flex items-center gap-2 shadow-lg">
+        <NuxtLink to="/vendors" class="px-5 py-4 bg-gray-900 text-white rounded-2xl font-medium text-xs tracking-wider hover:bg-parentPrimary transition-all active:scale-95 flex items-center gap-2 shadow-sm border border-gray-100">
           <ShoppingBag class="w-4 h-4" /> Browse Vendors
         </NuxtLink>
       </div>
 
       <!-- Campus Favorites -->
-      <div class="max-w-5xl mx-auto w-full px-4 md:px-6 pb-12">
+      <div class="max-w-5xl mx-auto w-full px-4 md:px-4 pb-12">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-lg font-medium text-gray-900 tracking-tight">Campus Favorites 🔥</h3>
           <NuxtLink to="/vendors" class="text-xs font-medium text-parentPrimary hover:underline px-3 py-1.5 rounded-lg bg-parentPrimary/5">See all</NuxtLink>
@@ -39,7 +39,7 @@
             v-for="vendor in popularVendors.slice(0, 6)"
             :key="vendor._id"
             :to="`/vendors/${vendor._id}`"
-            class="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all group hover:-translate-y-0.5 hover:shadow-md block"
+            class="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all group hover:-translate-y-0.5 hover:shadow-sm border border-gray-100 block"
           >
             <div class="h-28 w-full bg-gray-50 relative overflow-hidden">
               <video v-if="(vendor.banner || vendor.logo) && (vendor.banner || vendor.logo).match(/\\.(mp4|webm|ogg|mov)/i)" :src="vendor.banner || vendor.logo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" autoplay loop muted playsinline></video>
@@ -69,7 +69,7 @@
       
       <!-- Sticky Header -->
       <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-gray-50">
-        <div class="max-w-[1200px] mx-auto flex items-center justify-between px-4 md:px-6 py-3">
+        <div class="max-w-[1200px] mx-auto flex items-center justify-between px-4 md:px-4 py-3">
           <div class="flex items-center gap-3">
             <button @click="goBack" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all active:scale-95">
               <ArrowLeft class="w-4 h-4 text-gray-900" />
@@ -90,7 +90,7 @@
       </header>
 
       <!-- Main Content -->
-      <div class="flex-1 max-w-[1200px] mx-auto w-full px-0 sm:px-4 md:px-6 py-6 pb-40 lg:pb-10">
+      <div class="flex-1 max-w-[1200px] mx-auto w-full px-0 sm:px-4 md:px-4 py-4 pb-40 lg:pb-10">
         <div class="flex flex-col lg:flex-row gap-6">
 
           <!-- LEFT: Delivery + Payment -->
@@ -522,7 +522,7 @@
                     v-if="canCheckout"
                     @click="startPayment"
                     :disabled="placing || (paymentMethod === 'wallet' && balance < finalTotal)"
-                    class="w-full py-4 bg-parentPrimary text-white rounded-2xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 transition-all disabled:opacity-40 flex items-center justify-center gap-2 shadow-xl shadow-parentPrimary/20 active:scale-[0.98]"
+                    class="w-full py-4 bg-parentPrimary text-white rounded-2xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 transition-all disabled:opacity-40 flex items-center justify-center gap-2 shadow-sm border border-gray-100 shadow-parentPrimary/20 active:scale-[0.98]"
                   >
                     <Loader2 v-if="placing" class="w-4 h-4 animate-spin" />
                     <span>{{ placing ? 'Processing...' : 'Complete Checkout' }}</span>
@@ -540,7 +540,7 @@
 
       <!-- ===== MOBILE FLOATING CHECKOUT BAR ===== -->
       <div class="fixed bottom-6 left-4 right-4 z-40 lg:hidden">
-        <div class="bg-gray-900 rounded-2xl px-5 py-4 text-white flex items-center justify-between shadow-2xl shadow-black/30">
+        <div class="bg-gray-900 rounded-2xl px-5 py-4 text-white flex items-center justify-between shadow-sm border border-gray-100 shadow-black/30">
           <div>
             <p class="text-[9px] font-bold text-white/40 tracking-wider mb-0.5">Total</p>
             <h3 class="text-xl font-medium text-white tracking-tighter leading-none">₦{{ finalTotal.toLocaleString() }}</h3>
@@ -549,13 +549,13 @@
             v-if="canCheckout"
             @click="startPayment"
             :disabled="placing || (paymentMethod === 'wallet' && balance < finalTotal)"
-            class="px-6 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:scale-105 active:scale-95 transition-all disabled:opacity-30 flex items-center gap-2 shadow-lg shadow-parentPrimary/30"
+            class="px-4 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:scale-105 active:scale-95 transition-all disabled:opacity-30 flex items-center gap-2 shadow-sm border border-gray-100 shadow-parentPrimary/30"
           >
             <div v-if="placing" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
             <span v-else>Pay Now</span>
             <ArrowRight v-if="!placing" class="w-3.5 h-3.5" />
           </button>
-          <div v-else class="px-6 py-3.5 bg-gray-100 text-gray-500 rounded-xl text-xs font-medium tracking-wider text-center flex items-center justify-center">
+          <div v-else class="px-4 py-3.5 bg-gray-100 text-gray-500 rounded-xl text-xs font-medium tracking-wider text-center flex items-center justify-center">
             {{ groupOrder?.status === 'open' ? 'Waiting for Host' : (getMyStatus?.hasPaid ? 'Paid' : 'Waiting for Sponsor') }}
           </div>
         </div>
@@ -582,7 +582,7 @@
         leave-from-class="translate-y-0"
         leave-to-class="translate-y-full"
       >
-        <div v-if="showOrderBreakdown" class="fixed inset-x-0 bottom-0 z-[101] bg-white rounded-t-[2rem] max-h-[85vh] overflow-hidden flex flex-col lg:hidden shadow-2xl">
+        <div v-if="showOrderBreakdown" class="fixed inset-x-0 bottom-0 z-[101] bg-white rounded-t-[2rem] max-h-[85vh] overflow-hidden flex flex-col lg:hidden shadow-sm border border-gray-100">
           <div class="sticky top-0 bg-white pt-3 pb-2 px-5 border-b border-gray-50 z-10 rounded-t-[2rem]">
             <div class="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3"></div>
             <div class="flex items-center justify-between">
@@ -673,7 +673,7 @@
         leave-to-class="opacity-0"
       >
         <div v-if="showTopupModal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" @click.self="showTopupModal = false">
-          <div class="bg-white rounded-[2rem] w-full max-w-sm p-8 text-center animate-zoom-in">
+          <div class="bg-white rounded-[2rem] w-full max-w-sm p-5 text-center animate-zoom-in">
             <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-100">
               <Wallet class="w-7 h-7" />
             </div>
@@ -715,7 +715,7 @@
         leave-to-class="opacity-0"
       >
         <div v-if="showSplitModeModal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" @click.self="showSplitModeModal = false">
-          <div class="bg-white rounded-[2rem] w-full max-w-md p-8 animate-zoom-in">
+          <div class="bg-white rounded-[2rem] w-full max-w-md p-5 animate-zoom-in">
             <h2 class="text-xl font-medium text-gray-900 mb-2 tracking-tight text-center">How would you like to pay?</h2>
             <p class="text-xs font-medium text-gray-400 mb-6 text-center">Decide who is paying for the group order.</p>
             <div class="space-y-4">
@@ -772,7 +772,7 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <div v-if="placing" class="fixed inset-0 z-[200] bg-gray-900/95 backdrop-blur-xl flex flex-col items-center justify-center text-center p-6 text-white">
+        <div v-if="placing" class="fixed inset-0 z-[200] bg-gray-900/95 backdrop-blur-xl flex flex-col items-center justify-center text-center p-4 text-white">
           <div class="w-20 h-20 mb-8 relative">
             <div class="absolute inset-0 border-4 border-white/10 rounded-full"></div>
             <div class="absolute inset-0 border-4 border-t-parentPrimary rounded-full animate-spin"></div>

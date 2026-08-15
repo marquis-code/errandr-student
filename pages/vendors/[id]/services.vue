@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 text-gray-900 font-sans pb-12">
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 md:px-8 py-3 flex items-center justify-between">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 md:px-5 py-3 flex items-center justify-between">
       <div class="flex items-center gap-4">
         <button @click="$router.back()" class="w-9 h-9 rounded-full bg-white flex items-center justify-center hover:bg-gray-50 transition-colors border border-gray-200">
           <ArrowLeft class="w-4 h-4 text-gray-700" />
@@ -10,7 +10,7 @@
       </div>
     </header>
 
-    <main class="max-w-3xl mx-auto px-4 py-8">
+    <main class="max-w-3xl mx-auto px-4 py-5">
       <div v-if="loading" class="flex justify-center py-12">
         <Loader2 class="w-8 h-8 animate-spin text-parentPrimary" />
       </div>

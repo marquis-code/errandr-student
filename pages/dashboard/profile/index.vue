@@ -8,10 +8,10 @@
     <!-- Main Profile Card -->
     <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
       <!-- Header / Avatar Area -->
-      <div class="p-8 border-b border-gray-50 flex flex-col md:flex-row items-center gap-8">
+      <div class="p-5 border-b border-gray-50 flex flex-col md:flex-row items-center gap-8">
         <div class="relative group cursor-pointer" @click="triggerFileInput">
-          <img v-if="formData.avatar" :src="formData.avatar" class="w-24 h-24 rounded-full object-cover shadow-lg" alt="Avatar" />
-          <div v-else class="w-24 h-24 rounded-full bg-gray-900 text-white flex items-center justify-center text-3xl font-bold uppercase shadow-lg">
+          <img v-if="formData.avatar" :src="formData.avatar" class="w-24 h-24 rounded-full object-cover shadow-sm border border-gray-100" alt="Avatar" />
+          <div v-else class="w-24 h-24 rounded-full bg-gray-900 text-white flex items-center justify-center text-3xl font-bold uppercase shadow-sm border border-gray-100">
             {{ userInitials }}
           </div>
           <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -37,7 +37,7 @@
           <button 
             @click="handleSave"
             :disabled="saving"
-            class="px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            class="px-4 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             <Loader2 v-if="saving" class="w-4 h-4 animate-spin" />
             <span>{{ saving ? 'Saving...' : 'Save Changes' }}</span>
@@ -46,7 +46,7 @@
       </div>
 
       <!-- Form Area -->
-      <div class="p-8">
+      <div class="p-5">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
             <label class="text-sm font-bold text-gray-700">First name</label>
@@ -113,7 +113,7 @@
 
     <!-- Addresses Section -->
     <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
-      <div class="p-6 border-b border-gray-50 flex items-center justify-between">
+      <div class="p-4 border-b border-gray-50 flex items-center justify-between">
         <div>
           <h2 class="text-lg font-bold text-gray-900">My addresses</h2>
           <p class="text-sm text-gray-500 mt-0.5">Manage your saved locations</p>
@@ -123,7 +123,7 @@
         </button>
       </div>
       
-      <div class="p-6">
+      <div class="p-4">
         <div class="flex flex-col gap-3">
           <label class="text-sm font-bold text-gray-700">Home Address</label>
           <div class="flex items-center gap-4 p-4 border border-gray-100 rounded-2xl hover:border-parentPrimary/30 transition-colors group relative bg-white">

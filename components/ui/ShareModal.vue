@@ -9,7 +9,7 @@
       leave-to-class="opacity-0"
     >
       <div v-if="isOpen" class="fixed inset-0 z-[120] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="close">
-        <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-[2rem] shadow-2xl p-6 md:p-8 animate-slide-up-mobile md:animate-zoom-in">
+        <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-[2rem] shadow-sm border border-gray-100 p-4 md:p-5 animate-slide-up-mobile md:animate-zoom-in">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-medium text-gray-900 tracking-tight">Share {{ vendor?.storeName || 'Vendor' }}</h3>
             <button @click="close" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-all">

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-fade-in pb-32 px-0 md:px-6">
+  <div class="space-y-6 animate-fade-in pb-32 px-0 md:px-4">
     <!-- Header -->
     <header class="pt-6 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
@@ -49,7 +49,7 @@
 
       <!-- Rewards Info Side -->
       <div class="lg:col-span-4 space-y-6">
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm relative overflow-hidden group">
+        <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm relative overflow-hidden group">
           <div class="absolute -right-10 -top-10 w-40 h-40 bg-parentPrimary/5 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700"></div>
           
           <div class="relative z-10">
@@ -66,7 +66,7 @@
           </div>
         </div>
 
-        <div class="bg-parentPrimary/5 border border-parentPrimary/10 rounded-2xl p-6">
+        <div class="bg-parentPrimary/5 border border-parentPrimary/10 rounded-2xl p-4">
            <p class="text-[10px] font-medium uppercase tracking-wider text-gray-500 leading-relaxed">
              The Hall of Fame resets every 30 days. Top earners within each faculty receive a specialized badge and a digital certificate of accomplishment as an Errandr Top Performer.
            </p>

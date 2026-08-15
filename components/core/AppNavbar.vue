@@ -1,6 +1,6 @@
 <template>
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-50 flex-shrink-0">
-    <div class="max-w-[1400px] mx-auto flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between px-4 sm:px-4 py-2.5 sm:py-3">
       <!-- Left Side -->
       <div class="flex items-center gap-3">
         <button v-if="showBack" @click="router.back()" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all">
@@ -19,7 +19,7 @@
         <!-- Static Links for Visitors -->
         <div v-if="!user" class="hidden sm:flex items-center gap-4 mr-2">
           <NuxtLink to="/auth/login" class="text-sm font-medium text-gray-400 uppercase  hover:text-gray-900 transition-colors">Log in</NuxtLink>
-          <NuxtLink to="/auth/register" class="px-5 py-2.5 bg-gray-900 text-white text-sm font-medium uppercase  rounded-xl shadow-lg shadow-black/5 hover:bg-parentPrimary transition-all">Join</NuxtLink>
+          <NuxtLink to="/auth/register" class="px-5 py-2.5 bg-gray-900 text-white text-sm font-medium uppercase  rounded-xl shadow-sm border border-gray-100 shadow-black/5 hover:bg-parentPrimary transition-all">Join</NuxtLink>
         </div>
 
         <!-- Notification Bell -->
@@ -105,7 +105,7 @@
       leave-to-class="opacity-0"
     >
       <div v-if="showNotificationsDrawer" class="fixed inset-0 z-[110] flex justify-end bg-black/55 backdrop-blur-sm" @click.self="showNotificationsDrawer = false">
-        <div class="bg-white w-full max-w-md h-full overflow-hidden shadow-2xl animate-slide-in-right p-6 flex flex-col justify-between">
+        <div class="bg-white w-full max-w-md h-full overflow-hidden shadow-sm border border-gray-100 animate-slide-in-right p-4 flex flex-col justify-between">
           <!-- Header -->
           <div class="flex items-center justify-between pb-4 border-b border-gray-100 shrink-0">
             <div>
@@ -189,7 +189,7 @@
             <NuxtLink 
               to="/notifications" 
               @click="showNotificationsDrawer = false"
-              class="flex items-center justify-center w-full py-3 bg-gray-950 text-white rounded-xl text-xs font-bold hover:bg-gray-900 transition-colors uppercase tracking-wider shadow-md active:scale-98"
+              class="flex items-center justify-center w-full py-3 bg-gray-950 text-white rounded-xl text-xs font-bold hover:bg-gray-900 transition-colors uppercase tracking-wider shadow-sm border border-gray-100 active:scale-98"
             >
               go to notification center
             </NuxtLink>

@@ -20,7 +20,7 @@
       <!-- Dropdown for Month/Day Selection -->
       <div 
         v-if="isOpen"
-        class="absolute top-full left-0 mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-100 p-4 z-50 animate-fade-in-up"
+        class="absolute top-full left-0 mt-2 w-full bg-white rounded-xl shadow-sm border border-gray-100 border border-gray-100 p-4 z-50 animate-fade-in-up"
       >
         <div class="flex gap-3">
           <div class="flex-1">

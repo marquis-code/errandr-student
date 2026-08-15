@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm relative overflow-hidden">
+  <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm relative overflow-hidden">
     <!-- Background Accents -->
     <div class="absolute -right-24 -top-24 w-64 h-64 bg-parentPrimary/5 rounded-full blur-[100px]"></div>
 

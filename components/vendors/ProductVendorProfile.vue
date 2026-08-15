@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-white" v-if="vendor" :style="vendor.brandColor ? { '--color-parent-primary': vendor.brandColor } : {}">
     <!-- MINI MART LAYOUT -->
     <template v-if="isMiniMart">
-      <div class="max-w-2xl mx-auto p-4 md:p-6 pb-8 pt-8">
+      <div class="max-w-2xl mx-auto p-4 md:p-4 pb-8 pt-8">
         <!-- Header -->
         <div class="flex items-center gap-3 mb-6">
           <button @click="router.back()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all">
@@ -147,7 +147,7 @@
       class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 transition-all duration-500"
       :class="scrolled ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'"
     >
-      <div class="max-w-[1400px] mx-auto flex items-center justify-between px-4 md:px-6 py-3">
+      <div class="max-w-[1400px] mx-auto flex items-center justify-between px-4 md:px-4 py-3">
         <div class="flex items-center gap-3">
           <button @click="router.back()" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all">
             <ArrowLeft class="w-4 h-4 text-gray-900" />
@@ -171,7 +171,7 @@
           <button 
             v-if="cart.getVendorStats(vendor._id).itemCount > 0"
             @click="showMobileCartDrawer = true" 
-            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-medium transition-all shadow-md"
+            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-medium transition-all shadow-sm border border-gray-100"
           >
             <ShoppingBag class="w-3.5 h-3.5" />
             <span class="bg-parentPrimary px-1.5 py-0.5 rounded-md text-[10px]">{{ cart.getVendorStats(vendor._id).itemCount }}</span>
@@ -209,7 +209,7 @@
         <div class="absolute inset-0 bg-gradient-to-r from-gray-900/30 to-transparent"></div>
         
         <!-- Top Navigation -->
-        <div class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 pt-safe-top pb-4 md:pb-6 mt-4 md:mt-6">
+        <div class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-5 pt-safe-top pb-4 md:pb-6 mt-4 md:mt-6">
           <button @click="router.back()" class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 text-white hover:bg-white/20 transition-all active:scale-95">
             <ArrowLeft class="w-4 h-4" />
           </button>
@@ -234,10 +234,10 @@
         </div>
 
         <!-- Hero Content -->
-        <div class="absolute bottom-0 left-0 right-0 z-10 px-4 md:px-8 pb-6 md:pb-8">
+        <div class="absolute bottom-0 left-0 right-0 z-10 px-4 md:px-5 pb-6 md:pb-8">
           <div class="max-w-[1400px] mx-auto flex items-end gap-4">
             <!-- Vendor Logo -->
-            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-2 border-white/30 shadow-2xl overflow-hidden bg-white shrink-0">
+            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-2 border-white/30 shadow-sm border border-gray-100 overflow-hidden bg-white shrink-0">
               <video v-if="vendor.logo && vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
               <img v-else :src="vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
             </div>
@@ -290,12 +290,12 @@
       <!-- ============================================ -->
       <!-- ACTION CHIPS BAR                             -->
       <!-- ============================================ -->
-      <div class="max-w-[1400px] mx-auto px-4 md:px-6 -mt-4 relative z-20">
+      <div class="max-w-[1400px] mx-auto px-4 md:px-4 -mt-4 relative z-20">
         <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
           <button 
             @click="handleStartGroupOrder"
-            class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-medium transition-all whitespace-nowrap shrink-0 shadow-lg active:scale-95"
-            :class="isGroupOrderActiveForThisVendor ? 'bg-emerald-500 text-white' : 'bg-white text-gray-900 border border-gray-100 shadow-md'"
+            class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-medium transition-all whitespace-nowrap shrink-0 shadow-sm border border-gray-100 active:scale-95"
+            :class="isGroupOrderActiveForThisVendor ? 'bg-emerald-500 text-white' : 'bg-white text-gray-900 border border-gray-100 shadow-sm border border-gray-100'"
           >
             <Users class="w-3.5 h-3.5" />
             {{ isGroupOrderActiveForThisVendor ? `Group: ${activeCode}` : 'Group Order' }}
@@ -303,7 +303,7 @@
           
           <button 
             @click="showMobileCartDrawer = true" 
-            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white text-gray-900 rounded-2xl text-xs font-medium transition-all whitespace-nowrap shadow-md border border-gray-100 shrink-0 active:scale-95"
+            class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white text-gray-900 rounded-2xl text-xs font-medium transition-all whitespace-nowrap shadow-sm border border-gray-100 border border-gray-100 shrink-0 active:scale-95"
           >
             <ShoppingBag class="w-3.5 h-3.5" />
             <span v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="bg-parentPrimary text-white px-1.5 py-0.5 rounded-md text-[10px]">{{ cart.getVendorStats(vendor._id).itemCount }}</span>
@@ -315,7 +315,7 @@
       <!-- ============================================ -->
       <!-- PROMO BANNERS (Horizontal Scroll)            -->
       <!-- ============================================ -->
-      <div v-if="activeBanners.length" class="max-w-[1400px] mx-auto px-4 md:px-6 mt-6">
+      <div v-if="activeBanners.length" class="max-w-[1400px] mx-auto px-4 md:px-4 mt-6">
         <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x">
           <div 
             v-for="(banner, idx) in activeBanners" 
@@ -339,13 +339,13 @@
       </div>
 
       <!-- Pre-Order Batch Banner -->
-      <div v-if="activeBatch" class="max-w-[1400px] mx-auto px-4 md:px-6 mt-6">
-        <div class="bg-gray-900 rounded-2xl p-5 md:p-6 relative overflow-hidden group shadow-xl">
+      <div v-if="activeBatch" class="max-w-[1400px] mx-auto px-4 md:px-4 mt-6">
+        <div class="bg-gray-900 rounded-2xl p-5 md:p-4 relative overflow-hidden group shadow-sm border border-gray-100">
           <div class="absolute -right-10 -top-10 w-40 h-40 bg-parentPrimary/20 rounded-full blur-[80px]"></div>
           <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="space-y-3">
               <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-xl bg-parentPrimary text-white flex items-center justify-center shadow-lg">
+                <div class="w-8 h-8 rounded-xl bg-parentPrimary text-white flex items-center justify-center shadow-sm border border-gray-100">
                   <Calendar class="w-4 h-4" />
                 </div>
                 <h3 class="text-xs font-medium text-white tracking-wider">{{ activeBatch.windowName }}</h3>
@@ -373,7 +373,7 @@
         class="sticky z-30 bg-white/95 backdrop-blur-xl border-b border-gray-50 transition-all duration-300"
         :class="scrolled ? 'top-[57px]' : 'top-0'"
       >
-        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-2.5 flex flex-col md:flex-row items-center gap-3">
+        <div class="max-w-[1400px] mx-auto px-4 md:px-4 py-2.5 flex flex-col md:flex-row items-center gap-3">
           <!-- Search Bar -->
           <div class="relative w-full md:w-1/2 lg:max-w-md">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -413,7 +413,7 @@
       <!-- ============================================ -->
       <!-- MAIN CONTENT AREA                            -->
       <!-- ============================================ -->
-      <div class="max-w-[1400px] mx-auto px-4 md:px-6 mt-6">
+      <div class="max-w-[1400px] mx-auto px-4 md:px-4 mt-6">
         
         <!-- LOADING SPINNER -->
         <div v-if="menuLoading" class="flex flex-col items-center justify-center py-24 min-h-[300px]">
@@ -434,7 +434,7 @@
               v-for="product in topPicks" 
               :key="'top-' + product._id"
               @click="openProductModal(product)"
-              class="w-[140px] md:w-[160px] shrink-0 snap-start bg-white rounded-2xl border border-gray-100 p-3 hover:border-parentPrimary/30 hover:shadow-md transition-all cursor-pointer relative"
+              class="w-[140px] md:w-[160px] shrink-0 snap-start bg-white rounded-2xl border border-gray-100 p-3 hover:border-parentPrimary/30 hover:shadow-sm border border-gray-100 transition-all cursor-pointer relative"
             >
               <div class="w-full aspect-square rounded-xl bg-gray-50 mb-3 overflow-hidden">
                 <img :src="getMediaItems(product)[0]?.url || '/placeholder-store.jpg'" class="w-full h-full object-cover" />
@@ -485,7 +485,7 @@
                   v-for="product in (isMiniMart && !expandedCategories[cat] ? groupedProducts[cat].slice(0, 10) : groupedProducts[cat])" 
                   :key="product._id"
                   @click="openProductModal(product)"
-                  class="group flex items-center gap-3 p-2.5 bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-md transition-all cursor-pointer active:scale-[0.98]"
+                  class="group flex items-center gap-3 p-2.5 bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-sm border border-gray-100 transition-all cursor-pointer active:scale-[0.98]"
                 >
                   <!-- Square Image / Mini Carousel -->
                   <div class="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0 relative" @click.stop="getMediaItems(product).length ? openLightbox(getMediaItems(product), 0) : null">
@@ -539,7 +539,7 @@
                   <button 
                     v-else
                     @click.stop="handleListAdd(product)"
-                    class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary active:scale-90 transition-all shadow-md shrink-0"
+                    class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary active:scale-90 transition-all shadow-sm border border-gray-100 shrink-0"
                   >
                     <Plus class="w-4 h-4" />
                   </button>
@@ -552,7 +552,7 @@
                   v-for="product in (isMiniMart && !expandedCategories[cat] ? groupedProducts[cat].slice(0, 10) : groupedProducts[cat])" 
                   :key="product._id"
                   @click="openProductModal(product)"
-                  class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
+                  class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-sm border border-gray-100 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
                 >
                   <!-- Media Carousel -->
                   <MediaCarousel 
@@ -565,7 +565,7 @@
                   >
                     <template #overlay="{ item }">
                       <!-- Item Count overlay -->
-                      <div v-if="getProductCount(product._id) > 0" class="absolute top-3 right-3 flex items-center gap-1.5 bg-parentPrimary text-white px-2.5 py-1 rounded-lg text-xs font-medium shadow-lg z-20">
+                      <div v-if="getProductCount(product._id) > 0" class="absolute top-3 right-3 flex items-center gap-1.5 bg-parentPrimary text-white px-2.5 py-1 rounded-lg text-xs font-medium shadow-sm border border-gray-100 z-20">
                         <ShoppingBag class="w-3 h-3" />
                         {{ getProductCount(product._id) }}
                       </div>
@@ -611,7 +611,7 @@
                       <button 
                         v-else
                         @click.stop="handleListAdd(product)"
-                        class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-parentPrimary/30 shadow-black/5 shrink-0"
+                        class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-parentPrimary hover:scale-105 active:scale-95 transition-all shadow-sm border border-gray-100 hover:shadow-parentPrimary/30 shadow-black/5 shrink-0"
                       >
                         <Plus class="w-4.5 h-4.5" />
                       </button>
@@ -648,7 +648,7 @@
                 <div 
                   v-for="service in vendorServices" 
                   :key="service._id"
-                  class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-lg transition-all cursor-pointer overflow-hidden flex flex-col"
+                  class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-sm border border-gray-100 transition-all cursor-pointer overflow-hidden flex flex-col"
                 >
                   <div class="w-full aspect-[4/3] overflow-hidden bg-gray-50 relative">
                     <img :src="service.image || '/placeholder-service.jpg'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -665,7 +665,7 @@
                       </div>
                       <button 
                         @click.stop="openBookingModal(service)"
-                        class="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-parentPrimary transition-all shadow-md"
+                        class="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-parentPrimary transition-all shadow-sm border border-gray-100"
                       >
                         Book
                       </button>
@@ -719,7 +719,7 @@
                       v-if="isHost && groupOrder.status === 'open'"
                       @click="handleCheckoutGroupOrder"
                       :disabled="!canCheckout"
-                      class="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50"
+                      class="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-parentPrimary transition-all shadow-sm border border-gray-100 disabled:opacity-50"
                     >
                       Checkout Everything
                     </button>
@@ -762,7 +762,7 @@
                         </span>
                         <ChevronDown class="w-3 h-3 text-gray-400" />
                       </div>
-                      <div v-if="openPackDropdowns[pack.id + 'desktop']" class="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden">
+                      <div v-if="openPackDropdowns[pack.id + 'desktop']" class="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-sm border border-gray-100 overflow-hidden">
                         <div
                           v-for="(vp, vpIdx) in vendor.packs.filter((p: any) => p.isActive !== false)"
                           :key="vpIdx"
@@ -829,7 +829,7 @@
                       v-if="!isVendorClosed"
                       :to="canProceedToCheckout ? (isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart') : ''" 
                       @click="!canProceedToCheckout ? $event.preventDefault() : null"
-                      :class="!canProceedToCheckout ? 'opacity-50 cursor-not-allowed' : 'hover:bg-parentPrimary/90 active:scale-[0.98] shadow-xl shadow-parentPrimary/20'"
+                      :class="!canProceedToCheckout ? 'opacity-50 cursor-not-allowed' : 'hover:bg-parentPrimary/90 active:scale-[0.98] shadow-sm border border-gray-100 shadow-parentPrimary/20'"
                       class="block w-full py-4 bg-parentPrimary text-white rounded-2xl text-center text-xs font-medium tracking-wider transition-all"
                     >
                       {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Proceed to Checkout' }}
@@ -838,7 +838,7 @@
                 </div>
                 
                 <!-- Empty Cart -->
-                <div v-else class="p-8 text-center">
+                <div v-else class="p-5 text-center">
                   <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">🛒</div>
                   <p class="text-sm font-medium text-gray-900 mb-1">Your cart is empty</p>
                   <p class="text-xs font-medium text-gray-400">Tap + on any item to start your order</p>
@@ -912,7 +912,7 @@
                 >
                   {{ getMyStatus?.isReady ? 'You are Ready' : 'Mark as Ready' }}
                 </button>
-                <button v-if="isHost && groupOrder.status === 'open'" @click="handleCheckoutGroupOrder" :disabled="!canCheckout" class="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-parentPrimary transition-all shadow-lg disabled:opacity-50">
+                <button v-if="isHost && groupOrder.status === 'open'" @click="handleCheckoutGroupOrder" :disabled="!canCheckout" class="w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-parentPrimary transition-all shadow-sm border border-gray-100 disabled:opacity-50">
                   Checkout Everything
                 </button>
                 <button @click="showLeaveConfirmationModal = true; showMobileCartDrawer = false" class="w-full py-2 text-[10px] font-medium text-rose-400">Leave Group</button>
@@ -948,7 +948,7 @@
                       </span>
                       <ChevronDown class="w-4 h-4 text-gray-400" />
                     </div>
-                    <div v-if="openPackDropdowns[pack.id + 'mobile']" class="absolute z-20 left-5 right-5 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden">
+                    <div v-if="openPackDropdowns[pack.id + 'mobile']" class="absolute z-20 left-5 right-5 mt-1 bg-white border border-gray-100 rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                       <div
                         v-for="(vp, vpIdx) in vendor.packs.filter((p: any) => p.isActive !== false)"
                         :key="vpIdx"
@@ -1053,11 +1053,11 @@
               </div>
             </div>
             
-            <div v-else class="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[50vh]">
+            <div v-else class="flex-1 flex flex-col items-center justify-center p-5 text-center min-h-[50vh]">
               <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🛒</div>
               <p class="text-lg font-bold text-gray-900 mb-2">Your cart is empty</p>
               <p class="text-[15px] font-medium text-gray-400 mb-8 max-w-[220px]">Tap + on any item to start building your order.</p>
-              <button @click="showMobileCartDrawer = false" class="px-8 h-12 bg-parentPrimary text-white rounded-[14px] font-bold text-[15px] hover:bg-parentPrimary/90 transition-all active:scale-[0.98]">
+              <button @click="showMobileCartDrawer = false" class="px-5 h-12 bg-parentPrimary text-white rounded-[14px] font-bold text-[15px] hover:bg-parentPrimary/90 transition-all active:scale-[0.98]">
                 Browse Menu
               </button>
             </div>
@@ -1084,7 +1084,7 @@
       >
         <button 
           @click="showMobileCartDrawer = true"
-          class="w-full flex items-center justify-between bg-parentPrimary text-white rounded-2xl pl-5 pr-[72px] py-4 shadow-2xl shadow-parentPrimary/30 active:scale-[0.97] transition-all"
+          class="w-full flex items-center justify-between bg-parentPrimary text-white rounded-2xl pl-5 pr-[72px] py-4 shadow-sm border border-gray-100 shadow-parentPrimary/30 active:scale-[0.97] transition-all"
         >
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white text-sm font-medium">
@@ -1126,7 +1126,7 @@
         leave-to-class="opacity-0"
       >
         <div v-if="showStoreInfo" class="fixed inset-0 z-[110] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="showStoreInfo = false">
-          <div class="bg-white w-full md:max-w-lg rounded-t-[2rem] md:rounded-[2rem] shadow-2xl overflow-hidden animate-slide-up-mobile md:animate-zoom-in">
+          <div class="bg-white w-full md:max-w-lg rounded-t-[2rem] md:rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-slide-up-mobile md:animate-zoom-in">
             <!-- Banner -->
             <div class="relative h-44">
               <video v-if="(vendor.banner || vendor.logo) && (vendor.banner || vendor.logo).match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.banner || vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
@@ -1141,7 +1141,7 @@
               </div>
             </div>
             <!-- Info -->
-            <div class="p-6 md:p-8 space-y-6 max-h-[50vh] overflow-y-auto">
+            <div class="p-4 md:p-5 space-y-6 max-h-[50vh] overflow-y-auto">
               <div>
                 <h3 class="text-[10px] font-medium text-gray-400 tracking-widest mb-2">About</h3>
                 <p class="text-sm text-gray-600 leading-relaxed font-medium">{{ vendor.description || 'No description available.' }}</p>
@@ -1165,7 +1165,7 @@
                   <p class="text-xs font-bold text-gray-900 leading-relaxed">{{ vendor.address || 'University Main Campus' }}</p>
                 </div>
               </div>
-              <button @click="showStoreInfo = false" class="w-full py-3.5 bg-gray-900 text-white rounded-2xl font-medium text-xs hover:bg-parentPrimary transition-all shadow-lg active:scale-[0.98]">
+              <button @click="showStoreInfo = false" class="w-full py-3.5 bg-gray-900 text-white rounded-2xl font-medium text-xs hover:bg-parentPrimary transition-all shadow-sm border border-gray-100 active:scale-[0.98]">
                 Got it
               </button>
             </div>
@@ -1195,7 +1195,7 @@
         <button 
           @click="confirmStartGroupOrder"
           :disabled="!groupName.trim() || groupLoading"
-          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-parentPrimary hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-sm border border-gray-100 hover:bg-parentPrimary hover:shadow-sm border border-gray-100 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <Loader2 v-if="groupLoading" class="w-4 h-4 animate-spin" />
           <span v-else>Create Group Order</span>
@@ -1228,7 +1228,7 @@
         </div>
         <button 
           @click="showHostInstructionsModal = false"
-          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-parentPrimary hover:shadow-lg transition-all"
+          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-sm border border-gray-100 hover:bg-parentPrimary hover:shadow-sm border border-gray-100 transition-all"
         >
           Start Adding Items
         </button>
@@ -1251,7 +1251,7 @@
         </div>
         <button 
           @click="showGuestInstructionsModal = false"
-          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-parentPrimary hover:shadow-lg transition-all"
+          class="w-full py-4 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-sm border border-gray-100 hover:bg-parentPrimary hover:shadow-sm border border-gray-100 transition-all"
         >
           START SHOPPING
         </button>
@@ -1283,7 +1283,7 @@
           <button 
             @click="confirmLeaveGroup"
             :disabled="isLeaving"
-            class="flex-1 py-3.5 bg-rose-500 text-white rounded-xl text-sm font-bold shadow-md hover:bg-rose-600 hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            class="flex-1 py-3.5 bg-rose-500 text-white rounded-xl text-sm font-bold shadow-sm border border-gray-100 hover:bg-rose-600 hover:shadow-sm border border-gray-100 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <span v-if="isLeaving" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
             {{ isLeaving ? 'Leaving...' : 'Leave Group' }}
@@ -1318,7 +1318,7 @@
         leave-to-class="opacity-0"
       >
         <div v-if="selectedProduct" class="fixed inset-0 z-[110] flex flex-col md:items-center md:justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="selectedProduct = null; editingCartItem = null">
-          <div class="bg-white flex-1 md:flex-initial md:rounded-[2rem] w-full md:max-w-sm overflow-y-auto shadow-2xl animate-slide-up-mobile md:animate-zoom-in flex flex-col">
+          <div class="bg-white flex-1 md:flex-initial md:rounded-[2rem] w-full md:max-w-sm overflow-y-auto shadow-sm border border-gray-100 animate-slide-up-mobile md:animate-zoom-in flex flex-col">
             <!-- Product Media Carousel -->
             <div class="h-56 md:h-64 relative group">
               <div 
@@ -1343,13 +1343,13 @@
                 <img v-else :src="isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg'" class="w-full h-full object-cover" />
               </div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
-              <button @click="selectedProduct = null; editingCartItem = null" class="absolute top-4 right-4 w-9 h-9 bg-black/30 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-black/50 transition-all border border-white/10 shadow-lg z-10">
+              <button @click="selectedProduct = null; editingCartItem = null" class="absolute top-4 right-4 w-9 h-9 bg-black/30 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-black/50 transition-all border border-white/10 shadow-sm border border-gray-100 z-10">
                 <X class="w-5 h-5" />
               </button>
             </div>
 
             <!-- Content -->
-            <div class="p-6 space-y-5 pb-8">
+            <div class="p-4 space-y-5 pb-8">
               <!-- Chowdeck style header -->
               <div class="flex flex-col space-y-1 pb-4 border-b border-gray-100">
                 <h2 class="text-xl font-bold text-gray-900">{{ selectedProduct.name }}</h2>
@@ -1478,7 +1478,7 @@
                   v-else
                   :disabled="!isProductModalValid"
                   @click="addToCart(selectedProduct)"
-                  class="h-12 px-8 bg-gray-900 hover:bg-parentPrimary text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="h-12 px-5 bg-gray-900 hover:bg-parentPrimary text-white rounded-xl font-bold transition-all shadow-sm border border-gray-100 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Plus class="w-5 h-5" /> {{ editingCartItem ? 'Update Cart' : 'Add to cart' }}
                 </button>
@@ -1502,14 +1502,14 @@
       >
         <div v-if="showVendorNoteModal" class="fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm flex flex-col items-center justify-end sm:justify-center sm:p-4" @click.self="showVendorNoteModal = false">
           <div 
-            class="bg-white w-full h-full sm:h-auto sm:max-w-md rounded-none sm:rounded-[2rem] shadow-2xl flex flex-col animate-slide-up-mobile sm:animate-zoom-in relative"
+            class="bg-white w-full h-full sm:h-auto sm:max-w-md rounded-none sm:rounded-[2rem] shadow-sm border border-gray-100 flex flex-col animate-slide-up-mobile sm:animate-zoom-in relative"
           >
             <!-- Close button floating -->
             <button @click="showVendorNoteModal = false" class="absolute top-4 right-4 w-10 h-10 bg-gray-50 hover:bg-gray-100 transition-colors rounded-full flex items-center justify-center text-gray-500 hover:text-gray-900 shadow-sm z-10 active:scale-95">
               <X class="w-5 h-5" />
             </button>
             
-            <div class="p-6 md:p-8 pt-16 sm:pt-8 flex-1 flex flex-col">
+            <div class="p-4 md:p-5 pt-16 sm:pt-8 flex-1 flex flex-col">
               <h3 class="text-[22px] font-bold text-gray-900 text-center mb-6">Vendor Instruction</h3>
               
               <div class="space-y-4 flex-1 flex flex-col">

@@ -14,7 +14,7 @@
         <div class="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6">❤️</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">No favorites yet</h2>
         <p class="text-sm text-gray-500 mb-8 max-w-sm mx-auto">Tap the heart icon on any venue or service to save it here for quick access.</p>
-        <NuxtLink to="/dashboard/search" class="inline-flex px-8 py-3.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-all shadow-sm">Explore Services</NuxtLink>
+        <NuxtLink to="/dashboard/search" class="inline-flex px-5 py-3.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-all shadow-sm">Explore Services</NuxtLink>
       </div>
     </div>
 
@@ -22,7 +22,7 @@
       <div 
         v-for="fav in favorites" 
         :key="fav._id" 
-        class="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all cursor-pointer overflow-hidden flex flex-col relative"
+        class="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-sm border border-gray-100 hover:border-gray-200 transition-all cursor-pointer overflow-hidden flex flex-col relative"
         @click="router.push(`/vendors/${fav.vendor?._id}`)"
       >
         <button

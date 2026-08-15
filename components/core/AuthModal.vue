@@ -31,7 +31,7 @@
             leave-from="opacity-100 scale-100 translate-y-0"
             leave-to="opacity-0 scale-95 translate-y-4"
           >
-            <DialogPanel class="w-full max-w-md flex flex-col justify-center px-4 sm:px-6 py-12 bg-white relative z-10 my-8 mx-auto transform transition-all text-left">
+            <DialogPanel class="w-full max-w-md flex flex-col justify-center px-4 sm:px-4 py-12 bg-white relative z-10 my-8 mx-auto transform transition-all text-left">
               
               <div class="mb-10 text-center flex flex-col items-center">
                 <NuxtLink to="/" class="flex items-center gap-2 mb-8 inline-block group" @click="closeModal">
@@ -55,7 +55,7 @@
                 <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
 
                 <button type="submit" :disabled="loading"
-                  class="w-full py-3 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#FF5C1A]/20">
+                  class="w-full py-3 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm border border-gray-100 shadow-[#FF5C1A]/20">
                   <Loader2 v-if="loading" class="animate-spin w-6 h-6" />
                   {{ loading ? 'signing in...' : 'sign in' }}
                 </button>

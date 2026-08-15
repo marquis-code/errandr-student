@@ -7,7 +7,7 @@
 
     <!-- Notification Settings -->
     <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
-      <div class="p-6 border-b border-gray-50 flex items-center gap-4">
+      <div class="p-4 border-b border-gray-50 flex items-center gap-4">
         <div class="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-gray-900 shrink-0">
           <Bell class="w-6 h-6" />
         </div>
@@ -17,7 +17,7 @@
         </div>
       </div>
       
-      <div class="p-6">
+      <div class="p-4">
         <div class="space-y-6">
           <div class="flex items-center justify-between">
             <div>
@@ -68,7 +68,7 @@
     
     <!-- Security Settings -->
     <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
-      <div class="p-6 border-b border-gray-50 flex items-center gap-4">
+      <div class="p-4 border-b border-gray-50 flex items-center gap-4">
         <div class="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-gray-900 shrink-0">
           <Shield class="w-6 h-6" />
         </div>
@@ -78,7 +78,7 @@
         </div>
       </div>
       
-      <div class="p-6">
+      <div class="p-4">
         <button 
           @click="showChangePasswordModal = true"
           class="w-full flex items-center justify-between p-4 border border-gray-100 rounded-2xl hover:border-gray-900 hover:bg-gray-50 transition-all group"
@@ -97,7 +97,7 @@
     
     <!-- Danger Zone -->
     <div class="bg-white rounded-3xl border border-red-100 shadow-sm overflow-hidden mb-8">
-      <div class="p-6">
+      <div class="p-4">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 class="text-lg font-bold text-red-600 mb-1">Delete Account</h3>
@@ -105,7 +105,7 @@
           </div>
           <button 
             @click="showDeleteAccountModal = true"
-            class="px-6 py-3 bg-red-50 text-red-600 font-bold text-sm rounded-xl hover:bg-red-600 hover:text-white transition-colors border border-red-100 w-full md:w-auto text-center shrink-0"
+            class="px-4 py-3 bg-red-50 text-red-600 font-bold text-sm rounded-xl hover:bg-red-600 hover:text-white transition-colors border border-red-100 w-full md:w-auto text-center shrink-0"
           >
             Delete Account
           </button>

@@ -25,7 +25,7 @@
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-xl transition-all sm:my-8 w-full"
+              class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-sm border border-gray-100 transition-all sm:my-8 w-full"
               :class="appointment ? 'max-w-2xl' : 'max-w-4xl'"
             >
               <!-- Close Button -->
@@ -40,7 +40,7 @@
               <!-- State 1: Login Form -->
               <div v-if="!appointment" class="flex flex-col md:flex-row min-h-[500px]">
                 <!-- Left Side: Form -->
-                <div class="flex-1 p-8 md:p-12 flex flex-col justify-center bg-white">
+                <div class="flex-1 p-5 md:p-12 flex flex-col justify-center bg-white">
                   <div class="max-w-md w-full mx-auto">
                     <h2 class="text-2xl font-bold text-[#1a1a1a] mb-2">Manage your booking</h2>
                     <p class="text-sm text-gray-500 mb-8">
@@ -90,7 +90,7 @@
                       <button
                         type="submit"
                         :disabled="loading"
-                        class="w-full mt-4 bg-parentPrimary hover:bg-parentPrimary/90 text-white py-3.5 rounded-xl font-medium transition-colors flex items-center justify-center shadow-md shadow-parentPrimary/20"
+                        class="w-full mt-4 bg-parentPrimary hover:bg-parentPrimary/90 text-white py-3.5 rounded-xl font-medium transition-colors flex items-center justify-center shadow-sm border border-gray-100 shadow-parentPrimary/20"
                       >
                         <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
                         <span v-else>Login</span>
@@ -100,14 +100,14 @@
                 </div>
 
                 <!-- Right Side: Promotional Carousel -->
-                <div class="flex-1 bg-gradient-to-br from-[#6f7ea2] to-[#a292aa] p-8 md:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
+                <div class="flex-1 bg-gradient-to-br from-[#6f7ea2] to-[#a292aa] p-5 md:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
                   <!-- Background Pattern/Image placeholder if needed -->
                   <div class="absolute inset-0 opacity-20 mix-blend-overlay"></div>
                   
                   <div class="relative z-10 w-full max-w-sm text-center">
                     <p class="text-sm font-medium mb-6">Benefits of manage my booking</p>
 
-                    <div class="bg-white rounded-2xl p-8 text-left shadow-2xl transform transition-transform hover:scale-105 duration-300">
+                    <div class="bg-white rounded-2xl p-5 text-left shadow-sm border border-gray-100 transform transition-transform hover:scale-105 duration-300">
                       <h3 class="text-xl font-bold text-gray-900 mb-2">Your invoice</h3>
                       <p class="text-sm text-gray-500">View, download and print your invoice</p>
                     </div>
@@ -124,7 +124,7 @@
               </div>
 
               <!-- State 2: Booking Details -->
-              <div v-else class="bg-white p-6 md:p-8">
+              <div v-else class="bg-white p-4 md:p-5">
                 <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
                   <div class="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 overflow-hidden shrink-0">
                     <img :src="appointment.vendor?.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover" />

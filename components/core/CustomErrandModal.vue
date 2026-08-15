@@ -24,10 +24,10 @@
             leave-from="opacity-100 scale-100 translate-y-0"
             leave-to="opacity-0 scale-95 translate-y-4"
           >
-            <DialogPanel class="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-2xl transition-all">
+            <DialogPanel class="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-sm border border-gray-100 transition-all">
               
               <!-- Header -->
-              <div class="bg-gradient-to-r from-orange-50 to-white px-6 py-4 border-b border-orange-100 flex justify-between items-center">
+              <div class="bg-gradient-to-r from-orange-50 to-white px-4 py-4 border-b border-orange-100 flex justify-between items-center">
                 <div>
                   <DialogTitle as="h3" class="text-xl font-bold text-gray-900 leading-tight">
                     Request a Custom Errand
@@ -41,7 +41,7 @@
                 </button>
               </div>
 
-              <div class="px-6 py-6 max-h-[70vh] overflow-y-auto">
+              <div class="px-4 py-4 max-h-[70vh] overflow-y-auto">
                 
                 <!-- Step 1: Details -->
                 <div v-if="step === 1" class="space-y-5 animate-fade-in">
@@ -80,7 +80,7 @@
                     <button 
                       @click="step = 2" 
                       :disabled="!isStep1Valid"
-                      class="bg-parentPrimary text-white font-bold py-3 px-8 rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="bg-parentPrimary text-white font-bold py-3 px-5 rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Next: Set Your Price
                     </button>
@@ -139,7 +139,7 @@
                     <button 
                       @click="step = 3" 
                       :disabled="!isStep2Valid"
-                      class="bg-parentPrimary text-white font-bold py-3 px-8 rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="bg-parentPrimary text-white font-bold py-3 px-5 rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Review & Pay
                     </button>
@@ -149,7 +149,7 @@
                 <!-- Step 3: Summary -->
                 <div v-if="step === 3" class="space-y-6 animate-fade-in">
                   
-                  <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                  <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
                     <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Request Summary</h4>
                     
                     <div class="space-y-3">
@@ -190,7 +190,7 @@
                     <button 
                       @click="submitErrand" 
                       :disabled="isSubmitting"
-                      class="w-full bg-parentPrimary text-white font-bold py-3.5 px-6 rounded-full hover:bg-orange-600 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      class="w-full bg-parentPrimary text-white font-bold py-3.5 px-4 rounded-full hover:bg-orange-600 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       <svg v-if="isSubmitting" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

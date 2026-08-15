@@ -1,6 +1,6 @@
 <template>
   <section class="py-16 lg:py-24 bg-white overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="max-w-7xl mx-auto px-4 lg:px-10">
       <div class="mb-12 text-center lg:text-left">
         <h2 class="text-2xl lg:text-4xl font-medium text-gray-900 tracking-tighter mb-3">
           Campus delivery, <span class="text-parentPrimary ">redefined.</span>
@@ -57,7 +57,7 @@
 
           <!-- Expanded State: Full Content -->
           <div 
-            class="absolute inset-0 flex flex-col justify-end p-6 lg:p-10 transition-all duration-700"
+            class="absolute inset-0 flex flex-col justify-end p-4 lg:p-10 transition-all duration-700"
             :class="activeCard === index ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'"
           >
             <div class="w-12 h-12 lg:w-14 lg:h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 mb-4">

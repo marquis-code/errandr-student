@@ -14,7 +14,7 @@
           <X class="w-6 h-6 sm:w-5 sm:h-5" />
         </button>
 
-        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
           <!-- Header -->
           <div class="text-center mb-6">
             <div class="w-12 h-12 bg-parentPrimary/10 text-parentPrimary rounded-xl flex items-center justify-center mx-auto mb-4">

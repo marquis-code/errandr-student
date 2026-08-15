@@ -157,7 +157,7 @@
         leave-from-class="translate-x-0"
         leave-to-class="-translate-x-full"
       >
-        <div v-if="isMobileSidebarOpen" class="lg:hidden fixed inset-y-0 left-0 w-[85%] max-w-sm z-[101] bg-[#FAF8F5] shadow-2xl flex flex-col overflow-hidden">
+        <div v-if="isMobileSidebarOpen" class="lg:hidden fixed inset-y-0 left-0 w-[85%] max-w-sm z-[101] bg-[#FAF8F5] shadow-sm border border-gray-100 flex flex-col overflow-hidden">
 
           <!-- Brand row -->
           <div class="px-5 pt-5 pb-4 flex items-center justify-between">
@@ -273,7 +273,7 @@
 
       <!-- Desktop manifest header -->
       <div v-if="!route.path.startsWith('/vendors')" class="hidden lg:block mb-8 animate-fade-in">
-        <div class="flex items-center justify-between bg-white rounded-2xl px-8 py-6 border border-[#E7E2DA]">
+        <div class="flex items-center justify-between bg-white rounded-2xl px-5 py-4 border border-[#E7E2DA]">
           <div class="flex items-center gap-5">
             <button v-if="!isDashboard" @click="router.back()" class="w-10 h-10 rounded-lg bg-[#FAF8F5] flex items-center justify-center border border-[#E7E2DA] hover:bg-[#171310] hover:text-white hover:border-[#171310] transition-all group">
               <ArrowLeft class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></ArrowLeft>
@@ -316,7 +316,7 @@
         class="fixed inset-0 z-[110] flex items-center justify-center bg-[#171310]/50 backdrop-blur-sm px-4"
         @click.self="logoutModalOpen = false"
       >
-        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 flex flex-col items-center text-center space-y-6 border border-[#E7E2DA]">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 max-w-sm w-full p-5 flex flex-col items-center text-center space-y-6 border border-[#E7E2DA]">
           <div class="w-14 h-14 rounded-xl bg-rose-50 flex items-center justify-center">
             <LogOut class="w-6 h-6 text-rose-500"></LogOut>
           </div>
@@ -329,7 +329,7 @@
           </div>
           <div class="flex gap-3 w-full">
             <button @click="logoutModalOpen = false" class="flex-1 py-3.5 rounded-xl text-sm font-bold text-[#171310] bg-[#FAF8F5] border border-[#E7E2DA] hover:bg-[#F0ECE5] transition-all">Stay</button>
-            <button @click="confirmLogout" class="flex-1 py-3.5 rounded-xl text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 transition-all shadow-lg shadow-rose-200">Log out</button>
+            <button @click="confirmLogout" class="flex-1 py-3.5 rounded-xl text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 transition-all shadow-sm border border-gray-100 shadow-rose-200">Log out</button>
           </div>
         </div>
       </div>

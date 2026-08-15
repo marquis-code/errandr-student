@@ -22,7 +22,7 @@
             v-for="report in reports"
             :key="report._id"
             :to="`/support/${report._id}`"
-            class="block bg-white border border-gray-100 hover:border-parentPrimary/30 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all group relative overflow-hidden"
+            class="block bg-white border border-gray-100 hover:border-parentPrimary/30 p-5 rounded-2xl shadow-sm hover:shadow-sm border border-gray-100 transition-all group relative overflow-hidden"
           >
             <div class="flex justify-between items-start gap-4 mb-3">
               <div class="space-y-2">
@@ -59,8 +59,8 @@
 
       <!-- New Report Form Card -->
       <div class="px-0 sm:px-4">
-        <div class="bg-white p-6 sm:p-8 rounded-none sm:rounded-[2.5rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group">
-          <div class="absolute -right-6 -top-6 p-8 opacity-5 text-gray-900 pointer-events-none">
+        <div class="bg-white p-4 sm:p-5 rounded-none sm:rounded-[2.5rem] border-0 sm:border border-gray-100 shadow-none sm:shadow-sm relative overflow-hidden group">
+          <div class="absolute -right-6 -top-6 p-5 opacity-5 text-gray-900 pointer-events-none">
             <MessageSquare class="w-24 h-24" />
           </div>
           
@@ -113,7 +113,7 @@
             <button 
               type="submit" 
               :disabled="submitting || !form.category || !form.title || !form.description" 
-              class="w-full py-4 bg-parentPrimary text-white rounded-xl text-xs font-medium hover:bg-parentPrimary/90 active:scale-[0.98] transition-all shadow-lg shadow-parentPrimary/20 disabled:opacity-50 flex items-center justify-center gap-2"
+              class="w-full py-4 bg-parentPrimary text-white rounded-xl text-xs font-medium hover:bg-parentPrimary/90 active:scale-[0.98] transition-all shadow-sm border border-gray-100 shadow-parentPrimary/20 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <Send class="w-3.5 h-3.5" />
               {{ submitting ? 'submitting ticket...' : 'submit support ticket' }}

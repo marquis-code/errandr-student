@@ -13,7 +13,7 @@
       <div class="absolute inset-0 bg-gradient-to-b from-[#0B0906]/50 via-transparent to-transparent"></div>
 
       <!-- Floating Navigation -->
-      <div class="absolute top-0 inset-x-0 z-30 px-4 md:px-8 py-4 flex items-center justify-between">
+      <div class="absolute top-0 inset-x-0 z-30 px-4 md:px-5 py-4 flex items-center justify-between">
         <button @click="$router.back()" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors border border-white/15 active:scale-90">
           <ArrowLeft class="w-4.5 h-4.5 text-white" />
         </button>
@@ -31,7 +31,7 @@
       </div>
 
       <!-- Store Identity -->
-      <div class="absolute bottom-0 inset-x-0 p-6 md:p-8 max-w-7xl mx-auto animate-hero-in">
+      <div class="absolute bottom-0 inset-x-0 p-4 md:p-5 max-w-7xl mx-auto animate-hero-in">
         <div class="flex items-center gap-2 mb-3">
           <span class="w-1.5 h-1.5 rounded-full" :class="vendor.isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'"></span>
           <span class="text-[11px] font-bold uppercase tracking-[0.14em]" :class="vendor.isOnline ? 'text-emerald-300' : 'text-rose-300'">
@@ -65,7 +65,7 @@
       </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-0 md:px-8 relative z-10">
+    <main class="max-w-7xl mx-auto px-0 md:px-5 relative z-10">
 
       <!-- Identity strip: bridges hero and content, standard marketplace pattern -->
       <div class="flex items-end gap-4 -mt-10 md:-mt-12 mb-6 relative z-20 px-4 md:px-0">
@@ -85,7 +85,7 @@
       <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 relative">
 
         <!-- Left Content Column -->
-        <div ref="aboutSectionRef" class="flex-1 min-w-0 space-y-8 bg-[#FDFBF8] rounded-none md:rounded-3xl px-4 py-6 md:p-8 border-y md:border border-[#ECE6DC]">
+        <div ref="aboutSectionRef" class="flex-1 min-w-0 space-y-8 bg-[#FDFBF8] rounded-none md:rounded-3xl px-4 py-4 md:p-5 border-y md:border border-[#ECE6DC]">
 
           <!-- About Section -->
           <section v-if="vendor.description">
@@ -181,7 +181,7 @@
         <div class="hidden lg:block w-[320px] shrink-0">
           <div class="sticky top-8 bg-[#FDFBF8] border border-[#ECE6DC] rounded-3xl overflow-hidden">
 
-            <div class="p-6 pb-5">
+            <div class="p-4 pb-5">
               <button 
                 @click="openBookingFlow()"
                 class="w-full py-3.5 bg-parentPrimary text-white rounded-xl font-bold text-sm hover:brightness-105 active:scale-[0.98] transition-all flex justify-center items-center gap-2"
@@ -191,13 +191,13 @@
             </div>
 
             <!-- Ticket perforation -->
-            <div class="relative px-6">
+            <div class="relative px-4">
               <div class="border-t border-dashed border-[#D8D0C2]"></div>
               <span class="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-white border border-[#ECE6DC]"></span>
               <span class="absolute -right-3 -top-3 w-6 h-6 rounded-full bg-white border border-[#ECE6DC]"></span>
             </div>
 
-            <div class="p-6 space-y-5">
+            <div class="p-4 space-y-5">
               <div class="flex items-start gap-3">
                 <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
                   <Clock class="w-4 h-4 text-emerald-500" />
@@ -235,13 +235,13 @@
             </div>
 
             <!-- Ticket perforation -->
-            <div class="relative px-6">
+            <div class="relative px-4">
               <div class="border-t border-dashed border-[#D8D0C2]"></div>
               <span class="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-white border border-[#ECE6DC]"></span>
               <span class="absolute -right-3 -top-3 w-6 h-6 rounded-full bg-white border border-[#ECE6DC]"></span>
             </div>
 
-            <div class="p-6 pt-5">
+            <div class="p-4 pt-5">
               <p class="text-[10px] font-bold text-[#9A9284] uppercase tracking-wider mb-3">Share this vendor</p>
               <div class="flex items-center gap-2">
                 <a :href="whatsappShareUrl" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-[#25D366]/10 flex items-center justify-center hover:bg-[#25D366]/20 transition-colors" title="Share on WhatsApp">

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-fade-in pb-32 selection:bg-parentPrimary/10 selection:text-parentPrimary px-4 md:px-6">
+  <div class="space-y-6 animate-fade-in pb-32 selection:bg-parentPrimary/10 selection:text-parentPrimary px-4 md:px-4">
     <!-- Header -->
     <header class="pt-6 pb-2">
       <h1 class="text-2xl md:text-3xl font-medium text-gray-900 tracking-tight leading-none mb-1">
@@ -40,7 +40,7 @@
           :key="status.key" 
           @click="activeFilter = status.key"
           class="px-4 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap active:scale-95"
-          :class="activeFilter === status.key ? 'bg-parentPrimary text-white shadow-md shadow-parentPrimary/20' : 'text-gray-500 bg-white border border-gray-100 hover:border-parentPrimary/30'"
+          :class="activeFilter === status.key ? 'bg-parentPrimary text-white shadow-sm border border-gray-100 shadow-parentPrimary/20' : 'text-gray-500 bg-white border border-gray-100 hover:border-parentPrimary/30'"
         >
           {{ status.label }}
         </button>
@@ -64,11 +64,11 @@
 
     <!-- Empty State -->
     <div v-else-if="filteredOrders.length === 0">
-      <div class="bg-white rounded-[2rem] text-center py-20 px-6 border border-dashed border-gray-200">
+      <div class="bg-white rounded-[2rem] text-center py-20 px-4 border border-dashed border-gray-200">
         <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-gray-100">📋</div>
         <h2 class="text-xl font-medium text-gray-900 mb-1 tracking-tight">No orders found</h2>
         <p class="text-xs font-medium text-gray-500 mb-8 max-w-xs mx-auto">You haven't placed any orders matching this criteria yet.</p>
-        <NuxtLink to="/vendors" class="inline-flex px-8 py-3.5 bg-gray-900 text-white rounded-xl font-medium text-xs uppercase tracking-wider hover:bg-parentPrimary transition-colors shadow-xl active:scale-95">
+        <NuxtLink to="/vendors" class="inline-flex px-5 py-3.5 bg-gray-900 text-white rounded-xl font-medium text-xs uppercase tracking-wider hover:bg-parentPrimary transition-colors shadow-sm border border-gray-100 active:scale-95">
           Start Shopping
         </NuxtLink>
       </div>
@@ -124,10 +124,10 @@
         leave-to-class="opacity-0"
       >
         <div v-if="selectedOrder" class="fixed inset-0 z-[110] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="selectedOrder = null">
-          <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-2xl overflow-hidden shadow-2xl animate-slide-up-mobile md:animate-zoom-in">
+          <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-slide-up-mobile md:animate-zoom-in">
             
             <!-- Premium Header -->
-            <div class="relative bg-gray-900 px-6 py-6 md:py-8 text-center overflow-hidden">
+            <div class="relative bg-gray-900 px-4 py-4 md:py-5 text-center overflow-hidden">
               <div class="absolute top-0 right-0 w-40 h-40 bg-parentPrimary/20 rounded-full blur-[60px] -mr-16 -mt-16"></div>
               
               <!-- Mobile handle -->
@@ -149,7 +149,7 @@
             </div>
 
             <!-- Body -->
-            <div class="p-6 space-y-6 max-h-[60vh] md:max-h-none overflow-y-auto">
+            <div class="p-4 space-y-6 max-h-[60vh] md:max-h-none overflow-y-auto">
               <div class="bg-gray-50 rounded-2xl p-5 space-y-4 border border-gray-100">
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-sm shrink-0">🏪</div>
@@ -174,7 +174,7 @@
                 
                 <button 
                   @click="navigateTo(`/dashboard/orders/${selectedOrder._id}`)" 
-                  class="w-full py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium uppercase tracking-wider hover:bg-parentPrimary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-parentPrimary/20 active:scale-95"
+                  class="w-full py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium uppercase tracking-wider hover:bg-parentPrimary/90 transition-all flex items-center justify-center gap-2 shadow-sm border border-gray-100 shadow-parentPrimary/20 active:scale-95"
                 >
                   Track Errand <ArrowRight class="w-3.5 h-3.5" />
                 </button>

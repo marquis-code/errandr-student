@@ -26,7 +26,7 @@
 
         <!-- Messages Area (WhatsApp patterned background) -->
         <div class="flex-1 overflow-y-auto p-4 space-y-4" style="background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; opacity: 0.95" ref="messagesContainer">
-          <div v-if="loading" class="flex justify-center py-8">
+          <div v-if="loading" class="flex justify-center py-5">
             <Loader2 class="w-8 h-8 text-gray-500 animate-spin" />
           </div>
           

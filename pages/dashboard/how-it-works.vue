@@ -11,7 +11,7 @@
 
     <!-- Core Steps -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-       <div v-for="(step, i) in mainSteps" :key="i" class="bg-white border border-gray-100 p-8 rounded-[3rem]  hover: transition-all group relative overflow-hidden">
+       <div v-for="(step, i) in mainSteps" :key="i" class="bg-white border border-gray-100 p-5 rounded-[3rem]  hover: transition-all group relative overflow-hidden">
           <div class="absolute -right-10 -top-10 w-32 h-32 bg-gray-50 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
           <div class="relative z-10">
              <div class="w-14 h-14 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-3xl mb-8  group-hover:rotate-12 group-hover:bg-parentPrimary transition-all">
@@ -44,7 +44,7 @@
           </div>
           <div class="flex-1 min-h-[300px] rounded-[2rem] overflow-hidden bg-gray-100 relative group">
              <img :src="module.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-             <div class="absolute inset-0 bg-gradient-to-t from-black/20 text-white p-8 flex items-end">
+             <div class="absolute inset-0 bg-gradient-to-t from-black/20 text-white p-5 flex items-end">
                 <span class="text-sm font-medium uppercase tracking-[0.3em] bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">Pro Tip Inside</span>
              </div>
           </div>
@@ -58,8 +58,8 @@
           <h2 class="text-3xl font-medium tracking-tight leading-none ">Still got questions?</h2>
           <p class="text-white/80 text-sm font-bold max-w-sm mx-auto leading-relaxed">Our support team is here for you 24/7. Whether it's a refund issue or a vendor request, we've got you covered.</p>
           <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
-             <NuxtLink to="/support" class="bg-white text-parentPrimary px-8 py-4 rounded-2xl font-medium text-sm uppercase  hover:scale-105 active:scale-95 transition-all ">Contact Support</NuxtLink>
-             <NuxtLink to="/dashboard" class="bg-parentPrimary/20 backdrop-blur-md border border-white/20 px-8 py-4 rounded-2xl font-medium text-sm uppercase  hover:bg-white/10 transition-all">Go to Dashboard</NuxtLink>
+             <NuxtLink to="/support" class="bg-white text-parentPrimary px-5 py-4 rounded-2xl font-medium text-sm uppercase  hover:scale-105 active:scale-95 transition-all ">Contact Support</NuxtLink>
+             <NuxtLink to="/dashboard" class="bg-parentPrimary/20 backdrop-blur-md border border-white/20 px-5 py-4 rounded-2xl font-medium text-sm uppercase  hover:bg-white/10 transition-all">Go to Dashboard</NuxtLink>
           </div>
        </div>
     </div>

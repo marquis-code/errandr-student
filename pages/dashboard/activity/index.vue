@@ -10,7 +10,7 @@
 
       <!-- Left Panel: Appointment List -->
       <div class="w-1/2 md:w-[350px] lg:w-[400px] shrink-0 border-r-[0.5px] border-gray-50 flex flex-col bg-white h-full overflow-hidden">
-        <div class="p-6 pb-0 border-b-[0.5px] border-gray-50">
+        <div class="p-4 pb-0 border-b-[0.5px] border-gray-50">
           <h1 class="text-2xl font-bold text-gray-900 mb-4">Activity</h1>
 
           <!-- Activity Categories -->
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Upcoming / Past Toggle -->
-        <div class="px-6 py-4 border-b-[0.5px] border-gray-50">
+        <div class="px-4 py-4 border-b-[0.5px] border-gray-50">
           <div class="bg-gray-50 p-1 rounded-xl flex">
             <button 
               @click="timeFilter = 'upcoming'"
@@ -54,7 +54,7 @@
             <div v-for="i in 3" :key="i" class="h-24 bg-gray-50 rounded-2xl animate-pulse border-[0.5px] border-gray-100"></div>
           </div>
 
-          <div v-else-if="filteredAppointments.length === 0" class="h-full flex flex-col items-center justify-center text-center p-6">
+          <div v-else-if="filteredAppointments.length === 0" class="h-full flex flex-col items-center justify-center text-center p-4">
             <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
               <Calendar class="w-8 h-8 text-gray-300" />
             </div>
@@ -99,7 +99,7 @@
         @touchend="onTouchEnd"
         @touchcancel="onTouchEnd"
       >
-        <div v-if="!selectedAppointment" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+        <div v-if="!selectedAppointment" class="absolute inset-0 flex flex-col items-center justify-center text-center p-5">
           <div class="w-20 h-20 bg-white rounded-3xl border-[0.5px] border-gray-100 flex items-center justify-center mb-6">
             <CalendarSearch class="w-10 h-10 text-gray-300" />
           </div>
@@ -125,7 +125,7 @@
             </div>
           </div>
 
-          <div class="p-8 max-w-3xl mx-auto w-full flex-1">
+          <div class="p-5 max-w-3xl mx-auto w-full flex-1">
             <!-- Date & Time -->
             <div class="flex items-center gap-4 bg-white p-5 rounded-2xl border-[0.5px] border-gray-100 mb-6">
               <div class="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center text-white shrink-0">
@@ -214,7 +214,7 @@
 
   <!-- Cancel Confirmation Modal -->
   <div v-if="showCancelModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm animate-fade-in">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 border-[0.5px] border-gray-100 animate-slide-up-modal">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-4 border-[0.5px] border-gray-100 animate-slide-up-modal">
       <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
         <XCircle class="w-6 h-6 text-red-500" />
       </div>

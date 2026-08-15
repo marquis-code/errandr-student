@@ -1,5 +1,5 @@
 <template>
-  <section id="faq" class="py-24 px-6 lg:px-10 bg-gray-50/30 overflow-hidden">
+  <section id="faq" class="py-24 px-4 lg:px-10 bg-gray-50/30 overflow-hidden">
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
       <!-- Left side: content -->
       <div class="space-y-8 text-center lg:text-left">
@@ -21,12 +21,12 @@
         <div 
           v-for="(faq, i) in faqs" 
           :key="i"
-          class="group bg-white rounded-[2rem] border border-gray-100 overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-parentPrimary/20"
-          :class="{ 'ring-1 ring-parentPrimary/10 shadow-lg': openIndex === i }"
+          class="group bg-white rounded-[2rem] border border-gray-100 overflow-hidden transition-all duration-500 hover:shadow-sm border border-gray-100 hover:border-parentPrimary/20"
+          :class="{ 'ring-1 ring-parentPrimary/10 shadow-sm border border-gray-100': openIndex === i }"
         >
           <button 
             @click="openIndex = openIndex === i ? -1 : i"
-            class="w-full flex items-center justify-between p-8 text-left"
+            class="w-full flex items-center justify-between p-5 text-left"
           >
             <span 
               class="text-lg font-medium text-gray-900 tracking-tight transition-colors"
@@ -45,7 +45,7 @@
           
           <div 
             v-show="openIndex === i"
-            class="px-8 pb-8 text-gray-500 font-bold text-sm leading-relaxed tracking-tight animate-fade-in"
+            class="px-5 pb-8 text-gray-500 font-bold text-sm leading-relaxed tracking-tight animate-fade-in"
           >
             {{ faq.a }}
           </div>

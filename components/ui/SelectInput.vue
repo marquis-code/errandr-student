@@ -53,7 +53,7 @@
           >
             <div
               v-if="showDropdown"
-              class="fixed z-[9999] mt-1 bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-100 animate-fade-in"
+              class="fixed z-[9999] mt-1 bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden border border-gray-100 animate-fade-in"
               :style="{
                 top: `${y + height + 4}px`,
                 left: `${x}px`,
@@ -98,7 +98,7 @@
                 <!-- No results message -->
                 <div 
                   v-if="filteredOptions.length === 0" 
-                  class="p-8 text-center text-sm text-gray-400 font-medium"
+                  class="p-5 text-center text-sm text-gray-400 font-medium"
                 >
                   No results found
                 </div>

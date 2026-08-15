@@ -1,5 +1,5 @@
 <template>
-  <div class="animate-fade-in pb-32 selection:bg-parentPrimary/10 selection:text-parentPrimary px-4 md:px-6">
+  <div class="animate-fade-in pb-32 selection:bg-parentPrimary/10 selection:text-parentPrimary px-4 md:px-4">
     <!-- Header -->
     <header class="pt-6 pb-4">
       <h1 class="text-2xl md:text-3xl font-medium text-gray-900 tracking-tight leading-none mb-1">
@@ -12,7 +12,7 @@
 
     <!-- Search Section -->
     <div class="relative group z-30 max-w-3xl mb-6">
-      <div class="relative shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl">
+      <div class="relative shadow-sm hover:shadow-sm border border-gray-100 transition-shadow duration-300 rounded-2xl">
         <input
           v-model="query"
           type="text"
@@ -43,7 +43,7 @@
         <div
           v-for="item in results"
           :key="item._id"
-          class="bg-white rounded-2xl p-2.5 md:p-3 border border-gray-100 hover:border-parentPrimary/30 hover:shadow-lg transition-all duration-300 group cursor-pointer relative overflow-hidden flex flex-col h-full justify-between"
+          class="bg-white rounded-2xl p-2.5 md:p-3 border border-gray-100 hover:border-parentPrimary/30 hover:shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer relative overflow-hidden flex flex-col h-full justify-between"
           @click="router.push(`/vendors/${item.vendor?._id || item._id}`)"
         >
           <div>

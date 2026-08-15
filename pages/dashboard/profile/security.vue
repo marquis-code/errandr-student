@@ -10,7 +10,7 @@
  </div>
  </div>
 
- <div class="bg-white p-6 md:p-8 rounded-3xl border border-gray-100  space-y-6 relative overflow-hidden group">
+ <div class="bg-white p-4 md:p-5 rounded-3xl border border-gray-100  space-y-6 relative overflow-hidden group">
  <div class="absolute inset-0 bg-gradient-to-br from-parentPrimary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
  <div class="space-y-4 relative z-10">
  <div class="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl border border-gray-100/50 hover:bg-white transition-all duration-300">

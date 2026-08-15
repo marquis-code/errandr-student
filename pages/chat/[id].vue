@@ -1,7 +1,7 @@
 <template>
  <div class="h-screen flex flex-col bg-[#E5DDD5] font-sans selection:bg-[#00A884]/30">
  <!-- WhatsApp Green Header -->
- <div class="bg-[#075E54] text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-20 shadow-md">
+ <div class="bg-[#075E54] text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-20 shadow-sm border border-gray-100">
  <button @click="router.back()" class="p-2 -ml-2 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center">
  <ArrowLeft class="w-6 h-6 text-white" />
  </button>
@@ -30,7 +30,7 @@
 
  <!-- Messages Area with WhatsApp Doodle Background -->
  <div 
- class="flex-1 overflow-y-auto px-2 sm:px-4 py-6 space-y-2 scroll-smooth bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat opacity-95"
+ class="flex-1 overflow-y-auto px-2 sm:px-4 py-4 space-y-2 scroll-smooth bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat opacity-95"
  ref="chatContainer"
  >
  <!-- Date Marker -->
@@ -102,7 +102,7 @@
     </div>
     
     <!-- Reply Button (visible on hover) -->
-    <button @click="setReply(msg)" class="absolute top-1/2 -translate-y-1/2 p-1.5 bg-white shadow-md rounded-full text-gray-500 hover:text-[#00A884] opacity-0 group-hover/msg:opacity-100 transition-opacity" :class="isMe(msg) ? '-left-10' : '-right-10'">
+    <button @click="setReply(msg)" class="absolute top-1/2 -translate-y-1/2 p-1.5 bg-white shadow-sm border border-gray-100 rounded-full text-gray-500 hover:text-[#00A884] opacity-0 group-hover/msg:opacity-100 transition-opacity" :class="isMe(msg) ? '-left-10' : '-right-10'">
       <Reply class="w-4 h-4" />
     </button>
   </div>
@@ -123,7 +123,7 @@
  </div>
 
   <!-- Emoji Picker -->
-  <div v-if="showEmojiPicker" class="absolute bottom-[70px] left-2 bg-white rounded-lg shadow-lg border border-gray-100 p-2 max-w-[300px] animate-fade-in z-30">
+  <div v-if="showEmojiPicker" class="absolute bottom-[70px] left-2 bg-white rounded-lg shadow-sm border border-gray-100 border border-gray-100 p-2 max-w-[300px] animate-fade-in z-30">
     <div class="grid grid-cols-6 gap-2 text-2xl">
       <button v-for="emoji in emojis" :key="emoji" @click="selectEmoji(emoji)" class="hover:bg-gray-100 rounded p-1 transition-colors">
         {{ emoji }}
@@ -179,7 +179,7 @@
         @mouseleave="stopRecording"
         @touchend="stopRecording"
         :class="[
-          'w-[48px] h-[48px] text-white rounded-full flex items-center justify-center transition-all shadow-md shrink-0 mb-0.5',
+          'w-[48px] h-[48px] text-white rounded-full flex items-center justify-center transition-all shadow-sm border border-gray-100 shrink-0 mb-0.5',
           newMessage.trim() ? 'bg-[#00A884] hover:bg-[#008f6f] hover:scale-105 active:scale-95' : 
           isRecording ? 'bg-red-500 scale-125 animate-pulse' : 'bg-[#00A884] hover:bg-[#008f6f]'
         ]"

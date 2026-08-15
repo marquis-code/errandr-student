@@ -5,7 +5,7 @@
       <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" @click="closeModal"></div>
       
       <!-- Modal Content -->
-      <div class="relative bg-white w-full max-w-sm rounded-3xl shadow-lg border border-gray-100 flex flex-col overflow-hidden animate-zoom-in">
+      <div class="relative bg-white w-full max-w-sm rounded-3xl shadow-sm border border-gray-100 border border-gray-100 flex flex-col overflow-hidden animate-zoom-in">
         <!-- Close Button -->
         <button 
           @click="closeModal"
@@ -14,7 +14,7 @@
           <X class="w-5 h-5" />
         </button>
 
-        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
           <!-- Header -->
           <div class="text-center mb-6">
             <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center mx-auto mb-4">

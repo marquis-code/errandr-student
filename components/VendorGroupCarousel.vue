@@ -1,6 +1,6 @@
 <template>
   <section class="py-12 bg-white overflow-hidden border-t border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-4 lg:px-5 mb-8">
       <div class="flex items-end justify-between">
         <div>
           <div class="inline-flex items-center gap-2 text-parentPrimary font-bold text-sm mb-2 text-center">
@@ -32,7 +32,7 @@
         </template>
 
         <!-- NO VENDORS (Only for all vendors block, else hide section?) We just show empty text -->
-        <div v-else-if="vendors.length === 0" class="min-w-full px-8 py-10 flex items-center justify-center text-gray-400 font-medium">
+        <div v-else-if="vendors.length === 0" class="min-w-full px-5 py-10 flex items-center justify-center text-gray-400 font-medium">
           No vendors found for this section.
         </div>
 
@@ -67,7 +67,7 @@
                   </div>
                   <button
                     @click.stop="$emit('notify', vendor)"
-                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-[11px] font-bold transition-all shadow-md"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-[11px] font-bold transition-all shadow-sm border border-gray-100"
                   >
                     <Bell class="w-3 h-3" /> Notify me
                   </button>
@@ -93,16 +93,16 @@
 
               <!-- TOP LEFT BADGES -->
               <div class="absolute top-3 left-3 flex flex-col gap-2">
-                <span v-if="vendor.isFeatured" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-gray-900 text-[10px] font-extrabold tracking-wide uppercase">
+                <span v-if="vendor.isFeatured" class="px-2.5 py-1 bg-white shadow-sm border border-gray-100 rounded-lg text-gray-900 text-[10px] font-extrabold tracking-wide uppercase">
                   Featured
                 </span>
-                <span v-else-if="vendor.businessType === 'service_provider'" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-purple-700 text-[10px] font-extrabold tracking-wide uppercase">
+                <span v-else-if="vendor.businessType === 'service_provider'" class="px-2.5 py-1 bg-white shadow-sm border border-gray-100 rounded-lg text-purple-700 text-[10px] font-extrabold tracking-wide uppercase">
                   Service
                 </span>
-                <span v-else-if="vendor.businessType === 'hybrid'" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-indigo-700 text-[10px] font-extrabold tracking-wide uppercase">
+                <span v-else-if="vendor.businessType === 'hybrid'" class="px-2.5 py-1 bg-white shadow-sm border border-gray-100 rounded-lg text-indigo-700 text-[10px] font-extrabold tracking-wide uppercase">
                   Hybrid
                 </span>
-                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 bg-white shadow-md rounded-lg text-rose-600 text-[10px] font-extrabold tracking-wide uppercase">
+                <span v-if="vendor.preOrderOnly" class="px-2.5 py-1 bg-white shadow-sm border border-gray-100 rounded-lg text-rose-600 text-[10px] font-extrabold tracking-wide uppercase">
                   Pre-order
                 </span>
               </div>

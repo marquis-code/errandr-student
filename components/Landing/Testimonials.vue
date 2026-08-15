@@ -1,5 +1,5 @@
 <template>
-  <section class="py-24 px-6 lg:px-10 bg-white overflow-hidden">
+  <section class="py-24 px-4 lg:px-10 bg-white overflow-hidden">
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
       <!-- Left side: Content -->
       <div class="space-y-8 text-center lg:text-left">
@@ -28,12 +28,12 @@
             class="transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
             :class="[
               activeIndex === i 
-                ? 'opacity-100 scale-100 translate-x-0 z-20 shadow-2xl border-parentPrimary/20' 
+                ? 'opacity-100 scale-100 translate-x-0 z-20 shadow-sm border border-gray-100 border-parentPrimary/20' 
                 : 'opacity-40 scale-90 translate-x-12 z-10 grayscale blur-[2px] pointer-events-none'
             ]"
           >
             <div 
-              class="bg-white p-8 rounded-[2.5rem] border border-gray-100 flex items-start gap-6 relative"
+              class="bg-white p-5 rounded-[2.5rem] border border-gray-100 flex items-start gap-6 relative"
               :class="{ 'ring-1 ring-parentPrimary/5': activeIndex === i }"
             >
               <!-- Indicator Line (from image style) -->

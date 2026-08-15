@@ -1,6 +1,6 @@
 <template>
  <Transition name="modal">
- <div v-if="isOpen" class="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-0 sm:p-6 drop-shadow-2xl" role="dialog" aria-modal="true">
+ <div v-if="isOpen" class="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-0 sm:p-4 drop-shadow-sm border border-gray-100" role="dialog" aria-modal="true">
  <!-- Backdrop -->
  <div 
  class="fixed inset-0 bg-gray-900/60 backdrop-blur-md transition-opacity" 
@@ -9,7 +9,7 @@
 
  <!-- Modal panel -->
  <div 
- class="relative bg-white w-full h-full sm:h-auto sm:max-h-[90vh] sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col transform transition-all duration-300 ease-out"
+ class="relative bg-white w-full h-full sm:h-auto sm:max-h-[90vh] sm:rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transform transition-all duration-300 ease-out"
  :class="[
  size === 'sm' ? 'sm:max-w-md' : 
  size === 'md' ? 'sm:max-w-2xl' : 
@@ -17,7 +17,7 @@
  ]"
  >
  <!-- Header -->
- <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+ <div class="px-4 py-5 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
  <div>
  <h3 class="text-xl font-medium text-gray-900 tracking-tight">{{ title }}</h3>
  <p v-if="description" class="text-sm font-bold text-gray-400  mt-1">{{ description }}</p>
@@ -31,12 +31,12 @@
  </div>
 
  <!-- Content -->
- <div class="flex-1 overflow-y-auto p-6 sm:p-8 hide-scrollbar">
+ <div class="flex-1 overflow-y-auto p-4 sm:p-5 hide-scrollbar">
  <slot></slot>
  </div>
 
  <!-- Footer (Optional) -->
- <div v-if="$slots.footer" class="px-8 py-5 border-t border-gray-100 bg-gray-50/50 flex items-center justify-end gap-3 shrink-0">
+ <div v-if="$slots.footer" class="px-5 py-5 border-t border-gray-100 bg-gray-50/50 flex items-center justify-end gap-3 shrink-0">
  <slot name="footer"></slot>
  </div>
  </div>

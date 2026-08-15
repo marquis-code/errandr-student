@@ -9,14 +9,14 @@
         <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-parentPrimary/5 rounded-full blur-[100px] -translate-x-1/4"></div>
       </div>
 
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 relative z-10 text-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-10 relative z-10 text-center">
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 text-sm font-medium tracking-[0.2em] uppercase text-gray-400 mb-8">
           <span class="w-2 h-2 rounded-full bg-parentPrimary"></span>
           Direct Support
         </div>
         <h1 class="text-5xl md:text-7xl font-medium tracking-tighter leading-[0.9] text-gray-900 mb-6 max-w-4xl mx-auto">
           We're here for <br />
-          <span class="text-parentPrimary  bg-parentPrimary/5 px-6 rounded-3xl">every student.</span>
+          <span class="text-parentPrimary  bg-parentPrimary/5 px-4 rounded-3xl">every student.</span>
         </h1>
         <p class="text-xl text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed tracking-tight">
           Have a question about an order? Want to bring Errandr to your campus? Reach out to our dedicated support team.
@@ -26,10 +26,10 @@
 
     <!-- Contact Cards -->
     <section class="py-24 bg-white">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <!-- Support Card -->
-          <div class="bg-gray-50/50 p-8 rounded-[2.5rem] border border-gray-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
+          <div class="bg-gray-50/50 p-5 rounded-[2.5rem] border border-gray-100 hover:bg-white hover:shadow-sm border border-gray-100 hover:-translate-y-2 transition-all duration-500 group">
             <div class="w-14 h-14 bg-parentPrimary/10 rounded-2xl flex items-center justify-center text-parentPrimary mb-8 group-hover:scale-110 transition-transform">
               <Mail class="w-7 h-7" />
             </div>
@@ -39,7 +39,7 @@
           </div>
 
           <!-- Expansion Card -->
-          <div class="bg-gray-50/50 p-8 rounded-[2.5rem] border border-gray-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
+          <div class="bg-gray-50/50 p-5 rounded-[2.5rem] border border-gray-100 hover:bg-white hover:shadow-sm border border-gray-100 hover:-translate-y-2 transition-all duration-500 group">
             <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-8 group-hover:scale-110 transition-transform">
               <Building class="w-7 h-7" />
             </div>
@@ -49,7 +49,7 @@
           </div>
 
           <!-- Phone Card -->
-          <div class="bg-gray-50/50 p-8 rounded-[2.5rem] border border-gray-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
+          <div class="bg-gray-50/50 p-5 rounded-[2.5rem] border border-gray-100 hover:bg-white hover:shadow-sm border border-gray-100 hover:-translate-y-2 transition-all duration-500 group">
             <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-8 group-hover:scale-110 transition-transform">
               <Phone class="w-7 h-7" />
             </div>
@@ -59,7 +59,7 @@
           </div>
 
           <!-- Social Card -->
-          <div class="bg-gray-50/50 p-8 rounded-[2.5rem] border border-gray-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
+          <div class="bg-gray-50/50 p-5 rounded-[2.5rem] border border-gray-100 hover:bg-white hover:shadow-sm border border-gray-100 hover:-translate-y-2 transition-all duration-500 group">
             <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 mb-8 group-hover:scale-110 transition-transform">
               <Instagram class="w-7 h-7" />
             </div>
@@ -76,7 +76,7 @@
 
     <!-- Office Section -->
     <section class="py-24 bg-gray-50/30">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-10">
         <div class="bg-white p-12 md:p-20 rounded-[4rem] border border-gray-100 flex flex-col md:flex-row items-center gap-16 shadow-sm">
           <div class="flex-1 space-y-8">
             <h2 class="text-4xl font-medium text-gray-900 tracking-tight leading-[0.95]">Our Base of <br/><span class="text-parentPrimary">Operations.</span></h2>

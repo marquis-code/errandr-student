@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4 animate-pulse">
     <div v-for="i in count" :key="i" :class="containerClass">
-      <div v-if="variant === 'card'" class="bg-white border border-dark-100 rounded-[2rem] p-6 space-y-4 shadow-sm">
+      <div v-if="variant === 'card'" class="bg-white border border-dark-100 rounded-[2rem] p-4 space-y-4 shadow-sm">
         <div class="h-40 bg-dark-100 rounded-2xl w-full"></div>
         <div class="h-4 bg-dark-100 rounded-full w-3/4"></div>
         <div class="h-3 bg-dark-100 rounded-full w-1/2"></div>

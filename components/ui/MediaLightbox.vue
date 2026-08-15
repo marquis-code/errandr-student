@@ -32,7 +32,7 @@
               <template v-if="currentItem.type === 'video'">
                 <video 
                   :src="currentItem.url" 
-                  class="max-w-full max-h-full object-contain rounded-lg shadow-2xl" 
+                  class="max-w-full max-h-full object-contain rounded-lg shadow-sm border border-gray-100" 
                   controls 
                   autoplay 
                   playsinline
@@ -41,7 +41,7 @@
               <template v-else>
                 <img 
                   :src="currentItem.url" 
-                  class="max-w-full max-h-full object-contain rounded-lg shadow-2xl" 
+                  class="max-w-full max-h-full object-contain rounded-lg shadow-sm border border-gray-100" 
                 />
               </template>
             </div>

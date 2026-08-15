@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen w-full flex flex-col items-center justify-center bg-white overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen w-full flex flex-col items-center justify-center bg-white overflow-hidden py-12 px-4 sm:px-4 lg:px-5">
     <!-- Form Card -->
-    <div class="w-full max-w-md flex flex-col justify-center px-0 sm:px-6 py-12 bg-white sm:rounded-[2rem] relative z-10 my-8">
+    <div class="w-full max-w-md flex flex-col justify-center px-0 sm:px-4 py-12 bg-white sm:rounded-[2rem] relative z-10 my-8">
       <div class="mb-10 text-center flex flex-col items-center">
         <NuxtLink to="/" class="flex items-center gap-2 mb-8 inline-block group">
                  <div class="flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -28,7 +28,7 @@
         <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
 
         <button type="submit" :disabled="loading || validatingReferral"
-          class="w-full py-3 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#FF5C1A]/20 mt-4">
+          class="w-full py-3 bg-[#FF5C1A] hover:bg-[#E54D12] text-white rounded-xl font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm border border-gray-100 shadow-[#FF5C1A]/20 mt-4">
           <Loader2 v-if="loading || validatingReferral" class="animate-spin w-6 h-6" />
           {{ loading || validatingReferral ? 'validating...' : 'create account' }}
         </button>

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-fade-in pb-32 px-0 sm:px-4 md:px-6">
+  <div class="space-y-6 animate-fade-in pb-32 px-0 sm:px-4 md:px-4">
     <!-- Header -->
     <header class="pt-6 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-0 sm:px-0">
       <div>
@@ -17,7 +17,7 @@
         <RewardsQuestsView />
         
         <!-- Legend Card -->
-        <div class="bg-gradient-to-br from-amber-50 to-white border-0 sm:border border-amber-100 shadow-none sm:shadow-sm rounded-none sm:rounded-2xl p-4 sm:p-6 relative overflow-hidden group">
+        <div class="bg-gradient-to-br from-amber-50 to-white border-0 sm:border border-amber-100 shadow-none sm:shadow-sm rounded-none sm:rounded-2xl p-4 sm:p-4 relative overflow-hidden group">
           <div class="absolute -right-20 -top-20 w-64 h-64 bg-parentPrimary/10 rounded-full blur-[80px] group-hover:scale-110 transition-transform duration-1000"></div>
           
           <div class="relative z-10">
@@ -38,7 +38,7 @@
       <!-- Sidebar Info -->
       <div class="space-y-6">
         <!-- How Quests Work -->
-        <div class="bg-white border-0 sm:border border-gray-100 shadow-none sm:shadow-sm rounded-none sm:rounded-2xl p-4 sm:p-6">
+        <div class="bg-white border-0 sm:border border-gray-100 shadow-none sm:shadow-sm rounded-none sm:rounded-2xl p-4 sm:p-4">
           <h4 class="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-5">How Quests Work</h4>
           <ul class="space-y-4">
              <li v-for="(step, i) in steps" :key="i" class="flex gap-3">
@@ -52,7 +52,7 @@
         </div>
 
         <!-- Callout block -->
-        <div class="bg-white border-0 sm:border border-gray-100 shadow-none sm:shadow-sm rounded-none sm:rounded-2xl p-4 sm:p-6">
+        <div class="bg-white border-0 sm:border border-gray-100 shadow-none sm:shadow-sm rounded-none sm:rounded-2xl p-4 sm:p-4">
           <div class="w-8 h-8 rounded-xl bg-parentPrimary/10 flex items-center justify-center mb-4 text-parentPrimary">
             <Trophy class="w-4 h-4" />
           </div>

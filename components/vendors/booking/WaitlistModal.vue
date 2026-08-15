@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div class="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4 animate-fade-in" @click.self="$emit('close')">
-      <div class="bg-white w-full md:w-[480px] rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-up-modal">
+      <div class="bg-white w-full md:w-[480px] rounded-t-3xl md:rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col animate-slide-up-modal">
         
         <div class="p-4 border-b border-gray-100 flex items-center justify-between">
           <h2 class="text-lg font-bold text-gray-900">Join Waitlist</h2>
@@ -10,7 +10,7 @@
           </button>
         </div>
 
-        <div class="p-6 overflow-y-auto space-y-4">
+        <div class="p-4 overflow-y-auto space-y-4">
           <p class="text-sm text-gray-600">
             This time slot ({{ time }}) on {{ date }} is currently booked. Join the waitlist, and if a spot opens up, we'll notify you!
           </p>

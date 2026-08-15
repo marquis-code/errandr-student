@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen w-full bg-white pb-24 font-sans" v-if="order">
-    <div class="w-full max-w-7xl mx-auto px-4 md:px-6 pt-8">
+    <div class="w-full max-w-7xl mx-auto px-4 md:px-4 pt-8">
 
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -98,7 +98,7 @@
              </div>
 
              <!-- PENDING NEGOTIATION -->
-             <div v-if="order.type === 'custom_errand' && order.status === 'pending'" class="p-6 rounded-2xl border border-gray-100 flex flex-col items-center text-center">
+             <div v-if="order.type === 'custom_errand' && order.status === 'pending'" class="p-4 rounded-2xl border border-gray-100 flex flex-col items-center text-center">
                 <div class="w-12 h-12 rounded-xl bg-gray-900 flex items-center justify-center mb-4">
                    <Bike class="w-6 h-6 text-white" />
                 </div>
@@ -157,14 +157,14 @@
              </div>
 
              <!-- AWAITING PAYMENT -->
-             <div v-if="order.type === 'custom_errand' && order.status === 'awaiting_payment'" class="p-6 rounded-2xl bg-gray-900 text-white flex flex-col items-center text-center">
+             <div v-if="order.type === 'custom_errand' && order.status === 'awaiting_payment'" class="p-4 rounded-2xl bg-gray-900 text-white flex flex-col items-center text-center">
                 <div class="w-12 h-12 rounded-xl bg-[#FF5C1A] flex items-center justify-center mb-4">
                    <Check class="w-6 h-6 text-white" />
                 </div>
                 <h3 class="text-lg font-bold tracking-tight mb-1">Rider Accepted</h3>
                 <p class="text-gray-400 text-xs max-w-sm mb-5">Secure the rider by paying the escrow fee. This covers their labor and our platform convenience fee.</p>
 
-                <button @click="payForErrand" :disabled="isInitializingPayment" class="bg-[#FF5C1A] text-white font-bold px-6 py-2.5 rounded-lg hover:bg-[#e6511a] transition-colors disabled:opacity-50 flex items-center gap-2 text-xs">
+                <button @click="payForErrand" :disabled="isInitializingPayment" class="bg-[#FF5C1A] text-white font-bold px-4 py-2.5 rounded-lg hover:bg-[#e6511a] transition-colors disabled:opacity-50 flex items-center gap-2 text-xs">
                    <Zap v-if="!isInitializingPayment" class="w-3.5 h-3.5" />
                    {{ isInitializingPayment ? 'Processing...' : 'Pay Escrow & Open Chat' }}
                 </button>

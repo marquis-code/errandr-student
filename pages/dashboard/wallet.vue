@@ -14,7 +14,7 @@
       </div>
 
       <!-- Wallet Balance Card -->
-      <div class="relative overflow-hidden bg-gray-900 rounded-2xl p-6 md:p-8 text-white">
+      <div class="relative overflow-hidden bg-gray-900 rounded-2xl p-4 md:p-5 text-white">
         <div class="absolute top-0 right-0 w-48 h-48 bg-parentPrimary/15 rounded-full blur-[80px] -mr-20 -mt-20"></div>
         <div class="absolute bottom-0 left-0 w-40 h-40 bg-emerald-500/10 rounded-full blur-[60px] -ml-16 -mb-16"></div>
         
@@ -30,7 +30,7 @@
           </div>
           <button 
             @click="showTopup = true"
-            class="px-6 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 active:scale-95 transition-all shadow-lg shadow-parentPrimary/30 flex items-center gap-2 self-start md:self-center"
+            class="px-4 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 active:scale-95 transition-all shadow-sm border border-gray-100 shadow-parentPrimary/30 flex items-center gap-2 self-start md:self-center"
           >
             <Plus class="w-4 h-4" />
             Add Money
@@ -123,9 +123,9 @@
         leave-to-class="translate-y-full md:translate-y-0 md:scale-95 md:opacity-0"
       >
         <div v-if="showTopup" class="fixed inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center md:p-4 z-[111]">
-          <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-2xl overflow-hidden shadow-2xl">
+          <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-2xl overflow-hidden shadow-sm border border-gray-100">
             <!-- Header with gradient accent -->
-            <div class="relative bg-gray-900 px-6 py-6 md:py-8 text-center overflow-hidden">
+            <div class="relative bg-gray-900 px-4 py-4 md:py-5 text-center overflow-hidden">
               <div class="absolute top-0 right-0 w-40 h-40 bg-parentPrimary/20 rounded-full blur-[60px] -mr-16 -mt-16"></div>
               <div class="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-[40px] -ml-12 -mb-12"></div>
               
@@ -146,7 +146,7 @@
             </div>
 
             <!-- Body -->
-            <div class="p-6 space-y-5">
+            <div class="p-4 space-y-5">
               <!-- Amount Input -->
               <div>
                 <label class="text-sm font-medium text-gray-400 tracking-wider block mb-2 pl-1">Enter Amount</label>
@@ -167,7 +167,7 @@
                   v-for="a in [500, 1000, 2000, 5000]" 
                   :key="a"
                   @click="amount = a"
-                  :class="amount === a ? 'bg-parentPrimary text-white border-parentPrimary shadow-md shadow-parentPrimary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-parentPrimary/30'"
+                  :class="amount === a ? 'bg-parentPrimary text-white border-parentPrimary shadow-sm border border-gray-100 shadow-parentPrimary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-parentPrimary/30'"
                   class="flex-1 py-2.5 rounded-xl text-xs font-medium transition-all border active:scale-95"
                 >
                   ₦{{ a >= 1000 ? (a / 1000) + 'k' : a }}
@@ -188,7 +188,7 @@
               <button 
                 @click="initiateTopup"
                 :disabled="loadingPayment || amount < 50"
-                class="w-full py-4 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 disabled:opacity-40 transition-all shadow-lg shadow-parentPrimary/20 flex items-center justify-center gap-2 active:scale-[0.98]"
+                class="w-full py-4 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 disabled:opacity-40 transition-all shadow-sm border border-gray-100 shadow-parentPrimary/20 flex items-center justify-center gap-2 active:scale-[0.98]"
               >
                 <Loader2 v-if="loadingPayment" class="w-4 h-4 animate-spin" />
                 <span v-else>Continue with Paystack</span>
@@ -218,9 +218,9 @@
         leave-to-class="opacity-0"
       >
         <div v-if="selectedTx" class="fixed inset-0 z-[110] flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm" @click.self="selectedTx = null">
-          <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-2xl overflow-hidden shadow-2xl animate-slide-up-mobile md:animate-zoom-in receipt-content" id="receipt-print">
+          <div class="bg-white w-full md:max-w-md rounded-t-[2rem] md:rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-slide-up-mobile md:animate-zoom-in receipt-content" id="receipt-print">
             <!-- Header -->
-            <div class="bg-gray-900 p-6 md:p-8 text-center relative overflow-hidden">
+            <div class="bg-gray-900 p-4 md:p-5 text-center relative overflow-hidden">
               <div class="absolute inset-0 bg-emerald-500/5 blur-3xl rounded-full translate-y-12"></div>
               
               <!-- Mobile handle -->
@@ -232,7 +232,7 @@
               
               <div 
                 :class="selectedTx.type === 'credit' ? 'bg-emerald-500 shadow-emerald-500/20' : 'bg-parentPrimary shadow-parentPrimary/20'"
-                class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-white shadow-2xl mb-4 relative z-10"
+                class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-white shadow-sm border border-gray-100 mb-4 relative z-10"
               >
                 <WalletIcon v-if="selectedTx.type === 'credit'" class="w-8 h-8" />
                 <ShoppingBag v-else class="w-8 h-8" />
@@ -245,7 +245,7 @@
             </div>
 
             <!-- Body -->
-            <div class="p-5 md:p-6 space-y-5 max-h-[50vh] md:max-h-none overflow-y-auto">
+            <div class="p-5 md:p-4 space-y-5 max-h-[50vh] md:max-h-none overflow-y-auto">
               <div class="space-y-4 bg-gray-50 rounded-xl p-4 border border-gray-100">
                 <div class="flex justify-between items-center">
                   <span class="text-sm font-bold text-gray-400 tracking-wider">Status</span>

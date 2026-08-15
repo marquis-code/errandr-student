@@ -3,7 +3,7 @@
     <!-- Background geometric decor -->
     <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-parentPrimary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 lg:px-10 relative z-10">
       
       <!-- Big Bold CTA inside Footer -->
       <div class="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-10">
@@ -87,7 +87,7 @@
       </div>
 
       <!-- Bottom Bar -->
-      <div class="py-8 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="py-5 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
         <p class="text-slate-400 font-bold tracking-tight">
           &copy; {{ new Date().getFullYear() }} Errander Inc. Delivering happiness.
         </p>

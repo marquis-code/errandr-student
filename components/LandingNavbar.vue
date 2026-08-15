@@ -8,7 +8,7 @@
         : 'bg-transparent py-5'
     ]"
   >
-    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="max-w-7xl mx-auto px-4 lg:px-10">
       <div class="flex justify-between items-center">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-3 group">
@@ -21,19 +21,19 @@
           <div class="hidden md:flex items-center gap-3">
             <template v-if="!user">
               <!-- Manage Buttons for Guests -->
-              <NuxtLink to="/errands/custom" class="px-5 py-2 text-sm font-bold text-white bg-parentPrimary hover:bg-orange-600 transition-colors rounded-full shadow-lg hover:shadow-xl whitespace-nowrap">
+              <NuxtLink to="/errands/custom" class="px-5 py-2 text-sm font-bold text-white bg-parentPrimary hover:bg-orange-600 transition-colors rounded-full shadow-sm border border-gray-100 hover:shadow-sm border border-gray-100 whitespace-nowrap">
                 Request Custom Errand
               </NuxtLink>
               <div class="w-px h-4 bg-gray-300 mx-2"></div>
               <NuxtLink to="/auth/login" class="px-5 py-2 text-sm font-medium text-gray-900 hover:text-parentPrimary transition-colors rounded-full hover:bg-gray-50 whitespace-nowrap">
                 Log In
               </NuxtLink>
-              <NuxtLink to="/auth/register" class="px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-full shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-800 transition-all whitespace-nowrap">
+              <NuxtLink to="/auth/register" class="px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-full shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-800 transition-all whitespace-nowrap">
                 Sign Up
               </NuxtLink>
             </template>
             <template v-else>
-              <NuxtLink to="/errands/custom" class="px-5 py-2 text-sm font-bold text-white bg-parentPrimary hover:bg-orange-600 transition-colors rounded-full shadow-lg hover:shadow-xl whitespace-nowrap">
+              <NuxtLink to="/errands/custom" class="px-5 py-2 text-sm font-bold text-white bg-parentPrimary hover:bg-orange-600 transition-colors rounded-full shadow-sm border border-gray-100 hover:shadow-sm border border-gray-100 whitespace-nowrap">
                 Request Custom Errand
               </NuxtLink>
               <div class="w-px h-4 bg-gray-300 mx-2"></div>
@@ -55,7 +55,7 @@
 
           <!-- Fresha-style Menu Dropdown -->
           <Menu as="div" class="relative">
-            <MenuButton class="flex items-center gap-2 rounded-full bg-white border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all px-4 py-2 focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 ml-2">
+            <MenuButton class="flex items-center gap-2 rounded-full bg-white border border-gray-200 hover:shadow-sm border border-gray-100 hover:border-gray-300 transition-all px-4 py-2 focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 ml-2">
               <span class="text-sm font-medium text-gray-900 hidden sm:block">Menu</span>
               <MenuIcon class="w-5 h-5 text-gray-900" />
             </MenuButton>

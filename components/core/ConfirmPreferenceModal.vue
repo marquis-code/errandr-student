@@ -5,7 +5,7 @@
       <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" @click="close"></div>
       
       <!-- Modal -->
-      <div class="relative bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl transform transition-all">
+      <div class="relative bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-sm border border-gray-100 transform transition-all">
         <!-- Close button -->
         <button 
           @click="close"
@@ -14,7 +14,7 @@
           <X class="w-4 h-4" />
         </button>
 
-        <div class="p-6 pt-8 text-center">
+        <div class="p-4 pt-8 text-center">
           <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4" :class="isEnabled ? 'bg-parentPrimary/10 text-parentPrimary' : 'bg-red-50 text-red-500'">
             <Bell v-if="isEnabled" class="w-8 h-8" />
             <BellOff v-else class="w-8 h-8" />

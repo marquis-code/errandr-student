@@ -1,5 +1,5 @@
 <template>
-  <section id="contact" class="py-24 px-6 lg:px-10 bg-white relative overflow-hidden">
+  <section id="contact" class="py-24 px-4 lg:px-10 bg-white relative overflow-hidden">
     <!-- Background Decor -->
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-parentPrimary/[0.03] rounded-full blur-[120px] pointer-events-none"></div>
 
@@ -22,7 +22,7 @@
               type="text" 
               placeholder="First Name" 
               required
-              class="w-full px-8 py-5 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none"
+              class="w-full px-5 py-5 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none"
             />
           </div>
           <div class="space-y-2">
@@ -31,7 +31,7 @@
               type="text" 
               placeholder="Last Name" 
               required
-              class="w-full px-8 py-5 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none"
+              class="w-full px-5 py-5 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none"
             />
           </div>
         </div>
@@ -40,7 +40,7 @@
           <select 
             v-model="form.inquiryType"
             required
-            class="w-full px-8 py-5 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none appearance-none cursor-pointer"
+            class="w-full px-5 py-5 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none appearance-none cursor-pointer"
           >
             <option value="" disabled selected>Select Inquiry Type</option>
             <option value="vendor">Become a Vendor</option>
@@ -58,7 +58,7 @@
           <select 
             v-model="form.contactMethod"
             required
-            class="w-full px-8 py-5 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none appearance-none cursor-pointer"
+            class="w-full px-5 py-5 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none appearance-none cursor-pointer"
           >
             <option value="" disabled selected>Choose Preferred Contact Method</option>
             <option value="email">Email</option>
@@ -76,7 +76,7 @@
             placeholder="Add a Note (How can we help?)" 
             rows="5"
             required
-            class="w-full px-8 py-6 bg-gray-50 border border-gray-100 rounded-[2rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none resize-none"
+            class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-[2rem] text-base font-bold text-gray-900 focus:bg-white focus:border-parentPrimary transition-all outline-none resize-none"
           ></textarea>
         </div>
 
@@ -84,7 +84,7 @@
           <button 
             type="submit"
             :disabled="loading"
-            class="px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-medium text-sm uppercase tracking-[0.2em] shadow-2xl hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center gap-3 mx-auto lg:mx-0"
+            class="px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-medium text-sm uppercase tracking-[0.2em] shadow-sm border border-gray-100 hover:bg-parentPrimary hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center gap-3 mx-auto lg:mx-0"
           >
             <span v-if="loading">Sending...</span>
             <span v-else>Send Request</span>
@@ -93,7 +93,7 @@
         </div>
       </form>
 
-      <div v-if="success" class="mt-8 p-6 bg-emerald-50 border border-emerald-100 rounded-[2rem] text-center text-emerald-600 font-medium animate-fade-in">
+      <div v-if="success" class="mt-8 p-4 bg-emerald-50 border border-emerald-100 rounded-[2rem] text-center text-emerald-600 font-medium animate-fade-in">
         ✨ Sent sharp-sharp! We'll hit you up on email soon.
       </div>
     </div>

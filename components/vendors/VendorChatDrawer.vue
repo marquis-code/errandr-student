@@ -29,7 +29,7 @@
         style="background-color: #ECE5DD; background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Ccircle cx=%2210%22 cy=%2210%22 r=%221%22 fill=%22%23d4cfc6%22 fill-opacity=%220.2%22/%3E%3C/svg%3E'); background-repeat: repeat;"
         ref="messagesContainer"
       >
-        <div v-if="loading" class="flex justify-center py-8">
+        <div v-if="loading" class="flex justify-center py-5">
           <Loader2 class="w-8 h-8 text-gray-400 animate-spin" />
         </div>
         
@@ -62,7 +62,7 @@
 
         <!-- Empty state -->
         <div v-else class="h-full flex flex-col items-center justify-center text-gray-500 space-y-3">
-          <div class="bg-white/60 p-6 rounded-xl shadow-sm backdrop-blur-sm text-center">
+          <div class="bg-white/60 p-4 rounded-xl shadow-sm backdrop-blur-sm text-center">
             <MessageSquare class="w-8 h-8 text-gray-400 mx-auto mb-2" />
             <p class="text-sm font-medium">Send a message to {{ vendorName }}</p>
             <p class="text-xs text-gray-400 mt-1">They'll receive it instantly.</p>

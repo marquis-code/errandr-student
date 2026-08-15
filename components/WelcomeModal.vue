@@ -24,7 +24,7 @@
             leave-from="opacity-100 scale-100 translate-y-0"
             leave-to="opacity-0 scale-95 translate-y-8"
           >
-            <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-[3rem] bg-white p-8 md:p-12 text-center align-middle transition-all border border-gray-100">
+            <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-[3rem] bg-white p-5 md:p-12 text-center align-middle transition-all border border-gray-100">
               <!-- Animated Icon -->
               <div class="mb-8 relative inline-block">
                 <div class="w-24 h-24 bg-parentPrimary/10 rounded-full flex items-center justify-center text-5xl animate-bounce-slow">
@@ -49,7 +49,7 @@
               <div class="mt-12 space-y-4">
                 <button
                   type="button"
-                  class="w-full inline-flex justify-center items-center gap-2 rounded-2xl bg-gray-900 px-8 py-5 text-sm font-medium uppercase tracking-[0.2em] text-white hover:bg-parentPrimary transition-all duration-300 active:scale-95 transition-all"
+                  class="w-full inline-flex justify-center items-center gap-2 rounded-2xl bg-gray-900 px-5 py-5 text-sm font-medium uppercase tracking-[0.2em] text-white hover:bg-parentPrimary transition-all duration-300 active:scale-95 transition-all"
                   @click="closeModal"
                 >
                   Let's get started <ArrowRight class="w-4 h-4" />

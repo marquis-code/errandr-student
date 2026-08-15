@@ -8,7 +8,7 @@
         <div class="bg-white rounded-none sm:rounded-[1.75rem] border-0 sm:border border-[#E7E2D4] shadow-none sm:shadow-[0_1px_0_#E7E2D4] overflow-hidden">
 
           <!-- slip header -->
-          <div class="px-5 sm:px-8 pt-5 sm:pt-7 pb-4 sm:pb-5 flex items-center justify-between gap-3">
+          <div class="px-5 sm:px-5 pt-5 sm:pt-7 pb-4 sm:pb-5 flex items-center justify-between gap-3">
             <div class="min-w-0">
               <p class="text-[10px] tracking-wide text-[#9C9584] uppercase truncate">order slip · errandr</p>
               <h2 class="font-display text-xl font-medium mt-0.5">meal desk</h2>
@@ -19,13 +19,13 @@
           </div>
 
           <!-- tear line -->
-          <div class="relative px-5 sm:px-8">
+          <div class="relative px-5 sm:px-5">
             <div class="border-t-2 border-dashed border-[#E7E2D4]"></div>
             <span class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F7F4EC]"></span>
             <span class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F7F4EC]"></span>
           </div>
 
-          <div class="px-5 sm:px-8 py-5 sm:py-7 space-y-5 sm:space-y-7">
+          <div class="px-5 sm:px-5 py-5 sm:py-7 space-y-5 sm:space-y-7">
             <div class="space-y-2">
               <label class="text-xs text-[#9C9584] flex items-center gap-2">
                 <Wallet class="w-3.5 h-3.5 text-parentPrimary shrink-0" /> weekly budget
@@ -75,19 +75,19 @@
 
         <!-- ============ SAVINGS RECEIPT ============ -->
         <div v-if="plan" class="bg-[#17150F] rounded-none sm:rounded-[1.75rem] overflow-hidden">
-          <div class="px-5 sm:px-8 pt-5 sm:pt-7 pb-4 sm:pb-5 flex items-center justify-between">
+          <div class="px-5 sm:px-5 pt-5 sm:pt-7 pb-4 sm:pb-5 flex items-center justify-between">
             <p class="text-[10px] tracking-wide text-white/40 uppercase">intelligence report</p>
             <Target class="w-4 h-4 text-parentPrimary shrink-0" />
           </div>
-          <div class="px-5 sm:px-8 pb-4 sm:pb-5">
+          <div class="px-5 sm:px-5 pb-4 sm:pb-5">
             <p class="font-display text-base sm:text-lg font-medium leading-snug text-white lowercase">{{ plan.recommendation }}</p>
           </div>
-          <div class="relative px-5 sm:px-8">
+          <div class="relative px-5 sm:px-5">
             <div class="border-t-2 border-dashed border-white/15"></div>
             <span class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F7F4EC]"></span>
             <span class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F7F4EC]"></span>
           </div>
-          <div class="px-5 sm:px-8 py-5 sm:py-7 flex items-end justify-between gap-3">
+          <div class="px-5 sm:px-5 py-5 sm:py-7 flex items-end justify-between gap-3">
             <div class="min-w-0">
               <p class="text-xs text-white/40 mb-1">potential savings</p>
               <p class="font-mono text-xl sm:text-2xl text-[#5FAE85] truncate">₦{{ plan.savings.toLocaleString() }}</p>
@@ -101,7 +101,7 @@
       <section class="lg:col-span-8 w-full space-y-6 sm:space-y-8">
 
         <!-- Empty state -->
-        <div v-if="!plan && !loading" class="bg-white rounded-none sm:rounded-[1.75rem] border-0 sm:border border-[#E7E2D4] p-8 sm:p-16 lg:p-24 text-center">
+        <div v-if="!plan && !loading" class="bg-white rounded-none sm:rounded-[1.75rem] border-0 sm:border border-[#E7E2D4] p-5 sm:p-16 lg:p-24 text-center">
           <div class="max-w-sm mx-auto">
             <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-[#E7E2D4] bg-[#FBFAF6] flex items-center justify-center text-4xl sm:text-5xl mx-auto mb-6 sm:mb-8">🍛</div>
             <h3 class="font-display text-2xl sm:text-3xl font-medium mb-3 lowercase">your table is set.</h3>
@@ -111,7 +111,7 @@
 
         <!-- Loading: printing stubs -->
         <div v-if="loading" class="space-y-4 sm:space-y-6">
-          <div v-for="i in 3" :key="i" class="bg-white p-5 sm:p-8 rounded-none sm:rounded-[1.75rem] border-0 sm:border border-[#E7E2D4] space-y-4 sm:space-y-5">
+          <div v-for="i in 3" :key="i" class="bg-white p-5 sm:p-5 rounded-none sm:rounded-[1.75rem] border-0 sm:border border-[#E7E2D4] space-y-4 sm:space-y-5">
             <div class="flex justify-between items-center">
               <div class="w-20 h-6 bg-[#F0EDE3] rounded-md animate-pulse"></div>
               <div class="w-14 h-6 bg-[#F0EDE3] rounded-md animate-pulse"></div>
@@ -140,13 +140,13 @@
               :key="dayPlan.day"
               class="bg-white rounded-none sm:rounded-[1.75rem] border-0 sm:border border-[#E7E2D4] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-12px_rgba(23,21,15,0.25)] transition-all duration-300 flex flex-col overflow-hidden"
             >
-              <div class="px-5 sm:px-6 py-4 flex justify-between items-center">
+              <div class="px-5 sm:px-4 py-4 flex justify-between items-center">
                 <span class="text-xs px-3 py-1.5 bg-[#17150F] text-white rounded-md">day {{ dayPlan.day }}</span>
                 <span class="font-mono text-base sm:text-lg">₦{{ dayPlan.dailyCost.toLocaleString() }}</span>
               </div>
 
               <!-- tear line -->
-              <div class="relative px-5 sm:px-6">
+              <div class="relative px-5 sm:px-4">
                 <div class="border-t-2 border-dashed border-[#E7E2D4]"></div>
                 <span class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F7F4EC]"></span>
                 <span class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F7F4EC]"></span>
@@ -172,7 +172,7 @@
                 </div>
               </div>
 
-              <div class="px-5 sm:px-6 py-3 sm:py-4 border-t border-[#E7E2D4] flex flex-wrap items-center gap-1.5">
+              <div class="px-5 sm:px-4 py-3 sm:py-4 border-t border-[#E7E2D4] flex flex-wrap items-center gap-1.5">
                 <span
                   v-for="nutrient in getDayNutrients(dayPlan)"
                   :key="nutrient"
@@ -186,7 +186,7 @@
           </div>
 
           <!-- Market vs Mama-put CTA -->
-          <div class="bg-parentPrimary rounded-none sm:rounded-[1.75rem] p-6 sm:p-12 lg:p-16 text-white relative overflow-hidden">
+          <div class="bg-parentPrimary rounded-none sm:rounded-[1.75rem] p-4 sm:p-12 lg:p-16 text-white relative overflow-hidden">
             <div class="relative z-10 max-w-lg space-y-4 sm:space-y-5">
               <p class="text-[10px] tracking-wide uppercase text-white/70">weekend field guide</p>
               <h3 class="font-display text-2xl sm:text-4xl font-medium lowercase leading-tight">market vs mama-put</h3>

@@ -24,7 +24,7 @@
             leave-from="opacity-100 scale-100"
             leave-to="opacity-0 scale-95"
           >
-            <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-[2.5rem] bg-white p-8 text-left align-middle shadow-2xl transition-all border border-gray-100">
+            <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-[2.5rem] bg-white p-5 text-left align-middle shadow-sm border border-gray-100 transition-all border border-gray-100">
               <div class="relative">
                 <!-- Close Button -->
                 <button 
@@ -68,7 +68,7 @@
                   <button
                     type="submit"
                     :disabled="loading"
-                    class="w-full py-3.5 bg-parentPrimary text-white rounded-xl font-bold text-sm hover:bg-parentPrimary/90 transition-all shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
+                    class="w-full py-3.5 bg-parentPrimary text-white rounded-xl font-bold text-sm hover:bg-parentPrimary/90 transition-all shadow-sm border border-gray-100 disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     <Loader2 v-if="loading" class="w-4 h-4 animate-spin" />
                     <span v-else>Notify Me</span>
