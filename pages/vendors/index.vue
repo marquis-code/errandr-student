@@ -72,6 +72,43 @@
             <SlidersHorizontal class="w-3.5 h-3.5" /> Filters
           </button>
           
+          <!-- Sort Dropdown -->
+          <div class="relative z-30" ref="sortDropdownRef">
+            <button 
+              @click="showSortDropdown = !showSortDropdown"
+              class="flex items-center gap-2 px-4 py-2.5 border border-gray-100 rounded-xl text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm shrink-0 active:scale-95"
+            >
+              Sort By
+              <ChevronDown class="w-3 h-3 ml-1 transition-transform" :class="{ 'rotate-180': showSortDropdown }" />
+            </button>
+            
+            <Transition name="fade-up">
+              <div v-if="showSortDropdown" class="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden">
+                <button 
+                  @click="sortBy = 'latest'; showSortDropdown = false"
+                  class="w-full text-left px-4 py-3 text-xs font-bold hover:bg-gray-50 transition-colors"
+                  :class="sortBy === 'latest' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-600'"
+                >
+                  Latest Added
+                </button>
+                <button 
+                  @click="sortBy = 'alphabetical'; showSortDropdown = false"
+                  class="w-full text-left px-4 py-3 text-xs font-bold hover:bg-gray-50 transition-colors"
+                  :class="sortBy === 'alphabetical' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-600'"
+                >
+                  Alphabetical (A-Z)
+                </button>
+                <button 
+                  @click="sortBy = 'popularity'; showSortDropdown = false"
+                  class="w-full text-left px-4 py-3 text-xs font-bold hover:bg-gray-50 transition-colors"
+                  :class="sortBy === 'popularity' ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-600'"
+                >
+                  Most Popular
+                </button>
+              </div>
+            </Transition>
+          </div>
+          
           <button 
             v-if="hasActiveFilters"
             @click="resetAllFilters" 
@@ -397,14 +434,20 @@ const showQuickDelivery = ref(false);
 const showMobileFilters = ref(false);
 const maxDeliveryFee = ref(1000);
 const minRating = ref('0');
-const sortBy = ref('popularity');
+const sortBy = ref('latest');
 const { favoriteVendorIds, fetchFavorites, toggleFavorite, isVendorFavorited } = useFavorites();
 
 const showCategoryDropdown = ref(false);
 const categoryDropdownRef = ref(null);
+const showSortDropdown = ref(false);
+const sortDropdownRef = ref(null);
 
 onClickOutside(categoryDropdownRef, () => {
   showCategoryDropdown.value = false;
+});
+
+onClickOutside(sortDropdownRef, () => {
+  showSortDropdown.value = false;
 });
 
 watch(globalFilter, (newVal) => {
@@ -494,9 +537,15 @@ const filteredVendors = computed(() => {
     filtered = filtered.filter(v => (v.rating || 5) >= parseFloat(minRating.value));
   }
 
-  // Sorting (Popularity default)
+  // Sorting
   filtered = [...filtered].sort((a, b) => {
-    return (b.totalOrders || 0) - (a.totalOrders || 0);
+    if (sortBy.value === 'latest') {
+      return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+    } else if (sortBy.value === 'alphabetical') {
+      return (a.storeName || '').localeCompare(b.storeName || '');
+    } else { // 'popularity'
+      return (b.totalOrders || 0) - (a.totalOrders || 0);
+    }
   });
 
   return filtered;
@@ -513,7 +562,7 @@ const resetAllFilters = () => {
   showQuickDelivery.value = false;
   maxDeliveryFee.value = 1000;
   minRating.value = '0';
-  sortBy.value = 'popularity';
+  sortBy.value = 'latest';
 };
 
 import { vendors_api } from '@/api_factory/modules/vendors';

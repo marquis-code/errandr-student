@@ -47,7 +47,53 @@
  <p class="text-sm font-bold text-gray-400  animate-pulse">Retrieving order details...</p>
  </div>
 
- <div v-else-if="order" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+ <div v-else-if="order" class="space-y-6">
+    <!-- Status Communication Banner -->
+    <div v-if="order.type !== 'custom_errand' && order.status !== 'pending' && order.status !== 'delivered' && order.status !== 'cancelled'" class="animate-fade-in">
+      
+      <!-- Vendor ready, no errander yet -->
+      <div v-if="!order.errander && order.status === 'ready_for_pickup'" class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm">
+        <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center shrink-0">
+          <AlertCircle class="w-5 h-5" />
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-amber-900">Food is hot and ready! 🍲</h4>
+          <p class="text-[13px] text-amber-800 mt-1 leading-relaxed">
+            The vendor is done preparing your order! We're just matching you with a rider to swing by and pick it up. It won't be long!
+          </p>
+        </div>
+      </div>
+
+      <!-- Errander assigned, vendor working or ready -->
+      <div v-else-if="order.errander && (order.status === 'preparing' || order.status === 'ready_for_pickup')" class="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm">
+        <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+          <Bike class="w-5 h-5" />
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-blue-900">Rider Assigned!</h4>
+          <p class="text-[13px] text-blue-800 mt-1 leading-relaxed">
+            <span v-if="order.status === 'ready_for_pickup'">Your order is ready! We're waiting for your rider, {{ order.errander.firstName || 'your errander' }}, to pick it up from the store.</span>
+            <span v-else>Your rider, {{ order.errander.firstName || 'your errander' }}, has been assigned and is heading to the store while your order is being prepared.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Errander picked up (in transit) -->
+      <div v-else-if="order.status === 'in_transit'" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm">
+        <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+          <CheckCircle2 class="w-5 h-5" />
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-emerald-900">Order Picked Up!</h4>
+          <p class="text-[13px] text-emerald-800 mt-1 leading-relaxed">
+            Your rider has successfully picked up your order and is currently on their way to deliver it to you. Keep an eye out!
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+ <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
  
  <!-- LEFT COLUMN (8 cols): Journey, Items, Delivery -->
  <div class="md:col-span-12 lg:col-span-8 space-y-8">
@@ -77,8 +123,8 @@
  </h4>
  <span v-if="step.timestamp" class="text-sm font-bold text-gray-400 ">{{ formatTime(step.timestamp) }}</span>
  </div>
- <p v-if="step.active" class="text-sm font-bold text-parentPrimary/60 mt-0.5  animate-pulse">
- {{ idx === currentStepIndex ? 'Current Status' : 'Completed' }}
+ <p v-if="step.active" class="text-sm font-bold text-parentPrimary/60 mt-0.5" :class="{'animate-pulse': step.current}">
+ {{ step.current ? 'Current Status' : 'Completed' }}
  </p>
  </div>
  </div>
@@ -298,7 +344,7 @@
  <div class="flex items-center gap-4 mb-8">
  <div class="w-16 h-16 rounded-2xl border border-gray-100 shadow-inner overflow-hidden flex items-center justify-center bg-gray-50 flex-shrink-0">
  <template v-if="order.type !== 'custom_errand'">
- <video v-if="order.vendor?.logo && order.vendor.logo.match(/\\.(mp4|webm|ogg|mov)$/i)" :src="order.vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
+ <video v-if="order.vendor?.logo && order.vendor.logo.match(/\.(mp4|webm|ogg|mov)$/i)" :src="order.vendor.logo" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
  <img v-else-if="order.vendor?.logo" :src="order.vendor.logo" class="w-full h-full object-cover" />
  <Store v-else class="w-8 h-8 text-gray-300" />
  </template>
@@ -426,6 +472,7 @@
  </div>
  </div>
 
+ </div>
  </div>
 
  <!-- Not Found State -->
@@ -648,7 +695,7 @@
 import { 
   ArrowLeft, Phone, MapPin, Truck, ShoppingBag, 
   Package, CheckCircle2, AlertCircle, RefreshCw,
-  Search, CreditCard, MessageSquare, Clock, LayoutGrid, Star, Inbox, LifeBuoy, Store, ShieldCheck, User, X, ChevronRight, HeadphonesIcon, Heart
+  Search, CreditCard, MessageSquare, Clock, LayoutGrid, Star, Inbox, LifeBuoy, Store, ShieldCheck, User, X, ChevronRight, HeadphonesIcon, Heart, Bike
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from '#imports';
 import { ref, computed, onMounted, watch } from 'vue';
@@ -901,31 +948,43 @@ const trackSteps = computed(() => {
  return history.find((h: any) => h.status === s)?.timestamp;
  };
 
- return [
- { label: 'Ordered', icon: ShoppingBag, active: true, timestamp: order.value.createdAt },
- { 
- label: 'Preparing', 
- icon: Package, 
- active: ['confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'delivered'].includes(status),
- timestamp: getTimestamp('preparing') || getTimestamp('confirmed')
- },
- { 
- label: 'On Way', 
- icon: Truck, 
- active: ['picked_up', 'in_transit', 'delivered'].includes(status),
- timestamp: getTimestamp('picked_up') || getTimestamp('in_transit')
- },
- { 
- label: 'Delivered', 
- icon: CheckCircle2, 
- active: status === 'delivered',
- timestamp: getTimestamp('delivered')
- }
- ];
-});
-
-const currentStepIndex = computed(() => {
- return trackSteps.value.filter(s => s.active).length - 1;
+  return [
+    { 
+      label: 'Order Created', 
+      icon: ShoppingBag, 
+      active: true, 
+      current: false,
+      timestamp: order.value.createdAt 
+    },
+    { 
+      label: 'Preparing', 
+      icon: Package, 
+      active: ['confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'delivered'].includes(status),
+      current: ['confirmed', 'preparing'].includes(status),
+      timestamp: getTimestamp('preparing') || getTimestamp('confirmed')
+    },
+    {
+      label: !order.value.errander ? 'Finding Rider...' : 'Rider Assigned',
+      icon: Bike,
+      active: !!order.value.errander || ['confirmed', 'preparing', 'ready_for_pickup'].includes(status),
+      current: !order.value.errander && ['confirmed', 'preparing', 'ready_for_pickup'].includes(status),
+      timestamp: order.value.errander ? (getTimestamp('errander_assigned') || getTimestamp('preparing')) : null
+    },
+    { 
+      label: 'On Way', 
+      icon: Truck, 
+      active: ['picked_up', 'in_transit', 'delivered'].includes(status),
+      current: ['picked_up', 'in_transit'].includes(status),
+      timestamp: getTimestamp('picked_up') || getTimestamp('in_transit')
+    },
+    { 
+      label: 'Delivered', 
+      icon: CheckCircle2, 
+      active: status === 'delivered',
+      current: false, // It's completed
+      timestamp: getTimestamp('delivered')
+    }
+  ];
 });
 </script>
 

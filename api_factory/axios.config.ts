@@ -113,16 +113,29 @@ instanceArray.forEach((instance) => {
     (err: any) => {
       const { logOut } = useUser();
       
-      // Check for timeout or network connection error
+      // Check for timeout or network connection error (which includes CORS errors in browsers)
       if (err.code === 'ECONNABORTED' || err.message?.includes('timeout') || err.message?.includes('Network Error') || typeof err.response === "undefined") {
         try {
           const { recordSlowNetwork } = useNetworkStatus();
           recordSlowNetwork();
         } catch (e) {}
         
+        let errorMessage = "Network Error. Please check your connection.";
+        // In a browser, if it's a Network Error and we are online, it's highly likely a CORS error or server down
+        if (typeof window !== 'undefined' && window.navigator.onLine && err.message?.includes('Network Error')) {
+          errorMessage = "Network Error (or CORS error). The server might be unreachable or rejecting the request origin.";
+        }
+
+        getToast()({
+          title: "Connection Error",
+          message: errorMessage,
+          toastType: "error",
+          duration: 4000
+        });
+        
         return {
           type: "ERROR",
-          ...(err.response || { status: 0, statusText: "Network Error" }),
+          ...(err.response || { status: 0, statusText: errorMessage }),
         };
       }
       if (err.response.status === 401) {

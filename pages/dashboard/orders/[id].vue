@@ -31,21 +31,21 @@
              <div class="flex flex-col items-center gap-2 relative z-10 flex-1 min-w-[86px]">
                <div :class="[
                  'w-8 h-8 rounded-full flex items-center justify-center transition-colors shrink-0',
-                 isStepCompleted(step.status) ? 'bg-gray-900 text-white' :
-                 isStepCurrent(step.status) ? 'bg-[#FF5C1A] text-white' : 'bg-gray-100 text-gray-400'
+                 step._completed ? 'bg-gray-900 text-white' :
+                 step._current ? 'bg-[#FF5C1A] text-white' : 'bg-gray-100 text-gray-400'
                ]">
-                 <Check v-if="isStepCompleted(step.status)" class="w-3.5 h-3.5" />
-                 <Loader2 v-else-if="isStepCurrent(step.status)" class="w-3.5 h-3.5 animate-spin" />
+                 <Check v-if="step._completed" class="w-3.5 h-3.5" />
+                 <Loader2 v-else-if="step._current" class="w-3.5 h-3.5 animate-spin" />
                  <span v-else class="text-[11px] font-bold">{{ idx + 1 }}</span>
                </div>
                <h4 :class="[
                  'text-[11px] font-bold text-center leading-tight transition-colors',
-                 (isStepCompleted(step.status) || isStepCurrent(step.status)) ? 'text-gray-900' : 'text-gray-300'
+                 (step._completed || step._current) ? 'text-gray-900' : 'text-gray-300'
                ]">{{ step.label }}</h4>
              </div>
 
              <div v-if="idx < orderSteps.length - 1" class="flex-1 h-0.5 w-full hidden md:block rounded-full bg-gray-100 -mt-6">
-                <div class="h-full transition-all duration-700 bg-[#FF5C1A]" :style="{ width: isStepCompleted(orderSteps[idx + 1].status) || isStepCurrent(orderSteps[idx + 1].status) ? '100%' : '0%' }"></div>
+                <div class="h-full transition-all duration-700 bg-[#FF5C1A]" :style="{ width: (orderSteps[idx + 1]._completed || orderSteps[idx + 1]._current) ? '100%' : '0%' }"></div>
              </div>
            </template>
         </div>
@@ -53,6 +53,49 @@
 
       <!-- Main Content -->
       <div class="space-y-5">
+
+             <!-- Status Communication Banners -->
+             <div v-if="order.type !== 'custom_errand' && order.status !== 'pending' && order.status !== 'delivered' && order.status !== 'cancelled'" class="animate-fade-in">
+                <!-- Vendor ready, no errander yet -->
+                <div v-if="!order.errander && order.status === 'ready_for_pickup'" class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm mb-4">
+                  <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center shrink-0">
+                    <AlertCircle class="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-amber-900">Food is hot and ready! 🍲</h4>
+                    <p class="text-[13px] text-amber-800 mt-1 leading-relaxed">
+                      The vendor is done preparing your order! We're just matching you with a rider to swing by and pick it up. It won't be long!
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Errander assigned, vendor working or ready -->
+                <div v-else-if="order.errander && (order.status === 'preparing' || order.status === 'ready_for_pickup')" class="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm mb-4">
+                  <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                    <Bike class="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-blue-900">Rider Assigned!</h4>
+                    <p class="text-[13px] text-blue-800 mt-1 leading-relaxed">
+                      <span v-if="order.status === 'ready_for_pickup'">Your order is ready! We're waiting for your rider, {{ order.errander.firstName || 'your errander' }}, to pick it up from the store.</span>
+                      <span v-else>Your rider, {{ order.errander.firstName || 'your errander' }}, has been assigned and is heading to the store while your order is being prepared.</span>
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Errander picked up (in transit) -->
+                <div v-else-if="order.status === 'in_transit'" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm mb-4">
+                  <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                    <Check class="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-emerald-900">Order Picked Up!</h4>
+                    <p class="text-[13px] text-emerald-800 mt-1 leading-relaxed">
+                      Your rider has successfully picked up your order and is currently on their way to deliver it to you. Keep an eye out!
+                    </p>
+                  </div>
+                </div>
+             </div>
 
              <!-- PENDING NEGOTIATION -->
              <div v-if="order.type === 'custom_errand' && order.status === 'pending'" class="p-6 rounded-2xl border border-gray-100 flex flex-col items-center text-center">
@@ -685,16 +728,6 @@ const copyVerificationCode = async () => {
 };
 
 // Order Tracking Stepper Logic
-const ALL_STEPS = [
-  { status: 'pending', label: 'Order Placed', description: 'Your order has been placed' },
-  { status: 'confirmed', label: 'Confirmed', description: 'Vendor has confirmed your order' },
-  { status: 'preparing', label: 'Preparing', description: 'Vendor is preparing your items' },
-  { status: 'ready_for_pickup', label: 'Ready for Pickup', description: 'Items are ready for errander' },
-  { status: 'picked_up', label: 'Picked Up', description: 'Errander picked up your items' },
-  { status: 'in_transit', label: 'In Transit', description: 'Errander is on the way' },
-  { status: 'delivered', label: 'Delivered', description: 'Order completed successfully' }
-];
-
 const CUSTOM_ERRAND_STEPS = [
   { status: 'pending', label: 'Errand Broadcasted', description: 'Waiting for riders to respond' },
   { status: 'awaiting_payment', label: 'Rider Negotiated', description: 'Waiting for escrow payment' },
@@ -703,26 +736,58 @@ const CUSTOM_ERRAND_STEPS = [
   { status: 'delivered', label: 'Delivered', description: 'Errand completed successfully' }
 ];
 
-const orderSteps = computed(() => {
-  if (order.value?.type === 'custom_errand') {
-    return CUSTOM_ERRAND_STEPS;
-  }
-  return ALL_STEPS;
-});
+const getStatusIndex = (status: string, stepsArray: any[]) => stepsArray.findIndex(s => s.status === status);
 
-const getStatusIndex = (status: string) => orderSteps.value.findIndex(s => s.status === status);
-
-const isStepCompleted = (stepStatus: string) => {
+const isStepCompletedCustom = (stepStatus: string, stepsArray: any[]) => {
   if (!order.value?.status) return false;
-  const currentIdx = getStatusIndex(order.value.status);
-  const stepIdx = getStatusIndex(stepStatus);
+  const currentIdx = getStatusIndex(order.value.status, stepsArray);
+  const stepIdx = getStatusIndex(stepStatus, stepsArray);
   return stepIdx < currentIdx;
 };
 
-const isStepCurrent = (stepStatus: string) => {
+const isStepCurrentCustom = (stepStatus: string) => {
   if (!order.value?.status) return false;
   return stepStatus === order.value.status;
 };
+
+const orderSteps = computed(() => {
+  if (order.value?.type === 'custom_errand') {
+    return CUSTOM_ERRAND_STEPS.map(s => ({
+      ...s,
+      _completed: isStepCompletedCustom(s.status, CUSTOM_ERRAND_STEPS),
+      _current: isStepCurrentCustom(s.status)
+    }));
+  }
+  
+  const status = order.value?.status;
+  return [
+    { 
+      label: 'Order Placed', 
+      _completed: true, 
+      _current: false 
+    },
+    { 
+      label: 'Preparing', 
+      _completed: ['ready_for_pickup', 'picked_up', 'in_transit', 'delivered'].includes(status),
+      _current: ['confirmed', 'preparing'].includes(status)
+    },
+    {
+      label: !order.value?.errander ? 'Finding Rider...' : 'Rider Assigned',
+      _completed: !!order.value?.errander,
+      _current: !order.value?.errander && ['confirmed', 'preparing', 'ready_for_pickup'].includes(status)
+    },
+    { 
+      label: 'On Way', 
+      _completed: ['delivered'].includes(status),
+      _current: ['picked_up', 'in_transit'].includes(status)
+    },
+    { 
+      label: 'Delivered', 
+      _completed: status === 'delivered',
+      _current: status === 'delivered'
+    }
+  ];
+});
 
 useHead({ title: 'Order Details - Errandr' });
 </script>

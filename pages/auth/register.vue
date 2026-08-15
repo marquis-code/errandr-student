@@ -22,6 +22,7 @@
         <UiAnimatedInput v-model="form.matricNumber" type="text" label="matric number" placeholder="" />
         <UiAnimatedInput v-model="form.password" type="password" label="password" required minlength="6" placeholder="" />
         <UiAnimatedInput v-model="form.dateOfBirth" type="date" label="birthday" placeholder="" />
+        <UiSelectInput v-model="form.gender" label="gender" :options="['Male', 'Female', 'Other']" placeholder="Select your gender" />
         <UiAnimatedInput v-model="form.referredBy" type="text" label="referral code (optional)" @input="formatReferralCode" />
 
         <p v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</p>
@@ -54,7 +55,7 @@ import { useAuth } from '@/composables/modules/auth'
 definePageMeta({ layout: false })
 const { register, loading } = useAuth()
 const error = ref('')
-const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', matricNumber: '', referredBy: '', dateOfBirth: '' })
+const form = reactive({ firstName: '', lastName: '', email: '', password: '', phone: '', matricNumber: '', referredBy: '', dateOfBirth: '', gender: '' })
 
 const validatingReferral = ref(false)
 

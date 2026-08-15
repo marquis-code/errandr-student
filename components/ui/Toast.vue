@@ -8,11 +8,11 @@
           :class="[
             'toast-base',
             {
-              'bg-[#FEF3F2] border-[#FF383013]': toast.type === 'error',
-              'bg-green-50 border-primary-200': toast.type === 'success',
-              'bg-yellow-50 border-yellow-200': toast.type === 'warning',
-              'bg-blue-50 border-blue-200': toast.type === 'info',
-              'bg-white border-gray-200 shadow-lg': toast.type === 'notification'
+              'bg-rose-500 border-rose-600 text-white': toast.type === 'error',
+              'bg-emerald-500 border-emerald-600 text-white': toast.type === 'success',
+              'bg-amber-500 border-amber-600 text-white': toast.type === 'warning',
+              'bg-blue-500 border-blue-600 text-white': toast.type === 'info',
+              'bg-white border-gray-200 shadow-lg text-gray-900': toast.type === 'notification'
             }
           ]"
           class="w-full rounded-2xl border p-[12px] flex items-center gap-3 cursor-pointer pointer-events-auto"
@@ -22,11 +22,11 @@
             <div :class="[
               'w-8 h-8 rounded-full flex items-center justify-center',
               {
-                'text-white': toast.type === 'error',
-                'bg-primary-500 text-white': toast.type === 'success', 
-                'bg-yellow-500 text-white': toast.type === 'warning',
-                'bg-blue-500 text-white': toast.type === 'info',
-                'bg-white border': toast.type === 'notification'
+                'bg-white/20 text-white': toast.type === 'error',
+                'bg-white/20 text-white': toast.type === 'success', 
+                'bg-white/20 text-white': toast.type === 'warning',
+                'bg-white/20 text-white': toast.type === 'info',
+                'bg-gray-100 text-gray-600 border': toast.type === 'notification'
               }
             ]">
               <CheckCircle v-if="toast.type === 'success'" :size="18" />
@@ -40,10 +40,10 @@
             <h4 v-if="toast.title" :class="[
               'font-bold text-sm mb-0.5',
               {
-                'text-[#FF3830]': toast.type === 'error',
-                'text-primary-800': toast.type === 'success',
-                'text-yellow-800': toast.type === 'warning', 
-                'text-blue-800': toast.type === 'info',
+                'text-white': toast.type === 'error',
+                'text-white': toast.type === 'success',
+                'text-white': toast.type === 'warning', 
+                'text-white': toast.type === 'info',
                 'text-gray-900': toast.type === 'notification'
               }
             ]">
@@ -53,10 +53,10 @@
               'font-medium leading-tight',
               toast.title ? 'text-xs opacity-90' : 'text-sm',
               {
-                'text-[#FF3830]': toast.type === 'error',
-                'text-primary-800': toast.type === 'success',
-                'text-yellow-800': toast.type === 'warning', 
-                'text-blue-800': toast.type === 'info',
+                'text-white': toast.type === 'error',
+                'text-white': toast.type === 'success',
+                'text-white': toast.type === 'warning', 
+                'text-white': toast.type === 'info',
                 'text-gray-600': toast.type === 'notification'
               }
             ]">
