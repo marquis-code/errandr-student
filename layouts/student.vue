@@ -2,10 +2,6 @@
   <div class="min-h-screen bg-white flex flex-col lg:flex-row selection:bg-[#FF5C1A]/15 selection:text-[#FF5C1A] w-full overflow-x-hidden pt-safe">
     <FullScreenLoader></FullScreenLoader>
     <Toast ref="toastRef"></Toast>
-    
-    <div class="w-full fixed bottom-0 left-0 z-[120]">
-      <ExamPromoBanner />
-    </div>
 
     <!-- Desktop Sidebar: ID Badge -->
     <aside class="hidden lg:flex flex-col w-72 h-[calc(100vh-2rem)] fixed left-4 top-4 bottom-4 z-50">

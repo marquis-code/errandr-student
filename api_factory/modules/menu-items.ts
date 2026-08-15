@@ -15,5 +15,8 @@ export const menu_items_api = {
   },
   getAddOns: (vendorId: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.get(`/menu/add-ons/vendor/${vendorId}`);
+  },
+  getPacks: (vendorId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get(`/menu/packs/vendor/${vendorId}`);
   }
 };

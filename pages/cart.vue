@@ -309,6 +309,10 @@
                   <span class="flex items-center gap-1">🎟 Streak Free Delivery</span>
                   <span class="font-bold">-₦{{ computedTokenDiscount.toLocaleString() }}</span>
                 </div>
+                <div v-if="computedComboPromoDiscount > 0" class="flex justify-between items-center text-xs font-bold text-emerald-600">
+                  <span class="flex items-center gap-1">✨ Exam Combo Discount</span>
+                  <span class="font-bold">-₦{{ computedComboPromoDiscount.toLocaleString() }}</span>
+                </div>
                 <div v-if="computedBrethrenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-parentPrimary">
                   <span class="flex items-center gap-1"><Users class="w-3 h-3" /> Brethren Split</span>
                   <span class="font-bold">-₦{{ computedBrethrenDiscount.toLocaleString() }}</span>
@@ -438,6 +442,18 @@
                   <i class="lucide-users text-sm"></i>
                 </div>
               </div>
+              
+              <!-- Top Notice Banner -->
+              <div v-if="computedComboPromoDiscount > 0" class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <span class="text-emerald-600 text-lg">✨</span>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-emerald-800">Exam Combo Promo Applied!</h4>
+                  <p class="text-xs text-emerald-600 mt-0.5">A ₦1,000 discount has been applied to your checkout for selecting a promo vendor combo.</p>
+                </div>
+              </div>
+
               <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
                 <div class="px-5 py-4 bg-gray-50/50 border-b border-gray-100">
                   <h3 class="text-sm font-medium text-gray-900 tracking-tight">Order Summary</h3>
@@ -466,6 +482,10 @@
                   <div v-if="computedTokenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-orange-500">
                     <span class="flex items-center gap-1">🎟 Streak Free Delivery</span>
                     <span class="font-bold">-₦{{ computedTokenDiscount.toLocaleString() }}</span>
+                  </div>
+                  <div v-if="computedComboPromoDiscount > 0" class="flex justify-between items-center text-xs font-bold text-emerald-600">
+                    <span class="flex items-center gap-1">✨ Exam Combo Discount</span>
+                    <span class="font-bold">-₦{{ computedComboPromoDiscount.toLocaleString() }}</span>
                   </div>
                   <div v-if="computedBrethrenDiscount > 0" class="flex justify-between items-center text-xs font-bold text-parentPrimary">
                     <span class="flex items-center gap-1"><Users class="w-3 h-3" /> Brethren Split</span>
@@ -907,6 +927,8 @@ const getGroupedCustomizations = (customizations: any[]) => {
 
 const platformProcessingFee = ref(0);
 const platformServiceFeePercentage = ref(5);
+const platformConvenienceFee = ref(50);
+const platformBaseFee = ref(350);
 
 const fetchPlatformSettings = async () => {
   try {
@@ -914,6 +936,8 @@ const fetchPlatformSettings = async () => {
     if (res?.data) {
       platformProcessingFee.value = res.data.platformProcessingFee ?? 0;
       platformServiceFeePercentage.value = res.data.platformServiceFeePercentage ?? 5;
+      platformConvenienceFee.value = res.data.convenienceFee ?? 50;
+      platformBaseFee.value = res.data.baseFee ?? 350;
     }
     
     try {
@@ -1080,7 +1104,7 @@ const computedTotalDeliveryFee = computed(() => {
   let total = 0;
   cartStore.allVendorIds.value.forEach(vId => {
     // Fallback to static if dynamic fee isn't fetched yet
-    total += dynamicDeliveryFees.value[vId] ?? 300;
+    total += dynamicDeliveryFees.value[vId] ?? platformBaseFee.value;
   });
   if (groupOrder.value && groupOrder.value.status === 'locked' && groupOrder.value.splitType === 'split_bill') {
      const activeParticipants = groupOrder.value.participants.filter((p: any) => p.items.length > 0).length || 1;
@@ -1096,9 +1120,9 @@ const computedTotalDeliveryFee = computed(() => {
     addrLower.includes('cmul') ||
     addrLower.includes('unilag') // Assuming Idi Araba campus check
   ) {
-    // If it's a CMUL/LUTH delivery, it should strictly be 300 flat
+    // If it's a CMUL/LUTH delivery, it should strictly be flat fee
     // regardless of the number of vendors to simplify the experience.
-    total = 300;
+    total = platformBaseFee.value;
   }
 
   return isDormDelivery.value ? Math.round(total * 0.5) : Math.round(total);
@@ -1128,12 +1152,40 @@ const computedTotalPackagingFee = computed(() => {
   return Math.round(total);
 });
 
-const computedTotalServiceFee = computed(() => Math.round(currentSubtotal.value * (platformServiceFeePercentage.value / 100)));
+const computedTotalServiceFee = computed(() => platformConvenienceFee.value * (cartStore.allVendorIds.value.length || 1));
 
 const computedBirthdayDiscount = computed(() => {
   if (!isBirthday.value) return 0;
   // 100% free delivery + 10% off subtotal
   return computedTotalDeliveryFee.value + Math.round(currentSubtotal.value * 0.10);
+});
+
+const computedComboPromoDiscount = computed(() => {
+  let hasEligibleCombo = false;
+  const isGroupOrderCart = !!groupOrder.value;
+  if (isGroupOrderCart && groupOrder.value) {
+    const vId = groupOrder.value.vendor?._id;
+    const vendorName = vendorsMetadata.value[vId]?.storeName?.toLowerCase() || '';
+    if (vendorName.includes('iyabo') || vendorName.includes('hvip') || vendorName.includes('waris') || vendorName.includes('chijioke')) {
+      const stats = cartStore.getVendorStats(vId) as any;
+      if (stats && stats.packs && stats.packs.length > 0) {
+        const hasComboItem = stats.packs.some((p: any) => p.items && p.items.some((i: any) => i.isPrepaidByPlatform));
+        if (hasComboItem) hasEligibleCombo = true;
+      }
+    }
+  } else {
+    for (const vId of cartStore.allVendorIds.value) {
+      const vendorName = vendorsMetadata.value[vId]?.storeName?.toLowerCase() || '';
+      if (vendorName.includes('iyabo') || vendorName.includes('hvip') || vendorName.includes('waris') || vendorName.includes('chijioke')) {
+        const stats = cartStore.getVendorStats(vId) as any;
+        if (stats && stats.packs && stats.packs.length > 0) {
+          const hasComboItem = stats.packs.some((p: any) => p.items && p.items.some((i: any) => i.isPrepaidByPlatform));
+          if (hasComboItem) hasEligibleCombo = true;
+        }
+      }
+    }
+  }
+  return hasEligibleCombo ? 1000 : 0;
 });
 
 const computedBrethrenDiscount = computed(() => {
@@ -1169,7 +1221,7 @@ const groupSubtotal = computed(() => {
 });
 
 const subtotalBeforeFee = computed(() =>
-  currentSubtotal.value + computedTotalDeliveryFee.value + computedTotalPackagingFee.value + computedTotalServiceFee.value - computedBirthdayDiscount.value - computedTokenDiscount.value - computedPromoDiscount.value - computedBrethrenDiscount.value
+  currentSubtotal.value + computedTotalDeliveryFee.value + computedTotalPackagingFee.value + computedTotalServiceFee.value - computedBirthdayDiscount.value - computedTokenDiscount.value - computedPromoDiscount.value - computedBrethrenDiscount.value - computedComboPromoDiscount.value
 );
 
 const computedPaystackFee = computed(() => {
@@ -1320,6 +1372,7 @@ const submitSplitMode = async () => {
 };
 
 const startPayment = async () => {
+  if (placing.value) return;
   paymentError.value = '';
 
   if (isPreOrderCart.value) {
@@ -1435,7 +1488,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const vendorMeta = vendorsMetadata.value[vendorId];
       const subtotal = participant.items.reduce((s: number, i: any) => s + (i.price * i.quantity), 0);
       const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendorMeta?.deliveryFee ?? 150);
-      const sFee = Math.round(subtotal * (platformServiceFeePercentage.value / 100));
+      const sFee = platformConvenienceFee.value;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const res = await createOrder({
         vendorId, customer: participant.user._id, items: participant.items.map((i: any) => ({ product: i.productId, name: i.name, price: i.price, image: i.image, quantity: i.quantity, subtotal: i.price * i.quantity, customizations: i.customizations || [] })),
@@ -1453,7 +1506,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const stats = cartStore.getVendorStats(vId) as any;
       const vendor = vendorsMetadata.value[vId];
       const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendor?.deliveryFee ?? 150);
-      const sFee = Math.round(stats.subtotal * (platformServiceFeePercentage.value / 100));
+      const sFee = platformConvenienceFee.value;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const res = await createOrder({
         vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, packType: p.packType, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal, customizations: item.customizations || [] })) })),

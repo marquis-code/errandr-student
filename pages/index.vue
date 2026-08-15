@@ -1,5 +1,6 @@
 <template>
  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
+ <ExamPromoBanner />
  <BatchDeliveryBanner />
  
  <!-- Birthday Banner -->
@@ -356,50 +357,8 @@
 
 
 
- <!-- Active Promotions -->
- <section v-if="activePromotions.length > 0" class="py-12 bg-white overflow-hidden border-t border-gray-100">
- <div class="max-w-7xl mx-auto px-4 sm:px-4 lg:px-5 mb-8">
- <div class="flex items-end justify-between">
- <div>
- <div class="inline-flex items-center gap-2 text-rose-500 font-bold text-sm mb-2 text-center">
- <Megaphone class="w-4 h-4" /> Live Offers
- </div>
- <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 -tight">Campus Bonanzas</h2>
- </div>
- </div>
- </div>
- 
- <div class="max-w-7xl mx-auto pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-0">
- <div class="flex overflow-x-auto gap-6 pb-8 hide-scrollbar snap-x snap-mandatory">
-        <div v-for="(promo, idx) in activePromotions" :key="idx" 
-          @click="handlePromoClick(promo)"
-          class="min-w-[300px] sm:min-w-[400px] snap-start shrink-0 group cursor-pointer relative flex flex-col bg-white rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-        >
- <div class="relative h-[200px] w-full overflow-hidden bg-gray-100">
- <img :src="promo.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Promo" />
- <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
- 
- <div class="absolute top-4 left-4">
- <span class="px-3 py-1 bg-rose-500 text-white rounded-full text-sm font-medium  shadow-sm">
- PROMO
- </span>
- </div>
-
- <div class="absolute bottom-4 left-4 right-4">
- <h3 class="text-xl font-bold text-white -tight leading-tight mb-1 truncate">{{ promo.title }}</h3>
- <p class="text-sm text-white/80 line-clamp-1 font-medium">{{ promo.description }}</p>
- </div>
- </div>
- <div class="p-5 flex items-center justify-between bg-white">
- <span class="text-sm font-bold text-gray-900 flex items-center gap-2">
- <Store class="w-3.5 h-3.5 text-gray-400" /> {{ promo.vendorName }}
- </span>
- <span class="text-sm font-medium text-rose-500   bg-rose-50 px-3 py-1.5 rounded-xl transition-colors group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-sm border border-gray-100">Claim Offer &rarr;</span>
- </div>
- </div>
- </div>
- </div>
- </section>
+  <!-- Promo Carousel -->
+  <CorePromoCarousel />
 
   <!-- Book Again -->
   <VendorGroupCarousel

@@ -11,6 +11,7 @@ interface CartItem {
   quantity: number;
   customizations: { name: string; selected: string; price: number }[];
   subtotal: number;
+  isPrepaidByPlatform?: boolean;
 }
 
 interface Pack {

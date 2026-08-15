@@ -39,14 +39,22 @@
               v-for="pack in packs" 
               :key="pack._id"
               @click="openProductModal(pack)"
-              class="bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[200px] shrink-0 cursor-pointer hover:bg-gray-100 transition-colors flex flex-col justify-between"
+              class="relative bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[200px] shrink-0 cursor-pointer hover:bg-gray-100 transition-colors flex flex-col justify-between overflow-hidden"
+              :class="{ 'opacity-50 grayscale pointer-events-none': isProductOutOfStock(pack) }"
             >
+              <!-- Promo Badge -->
+              <div v-if="pack.isPrepaidByPlatform" class="absolute top-0 right-0 z-10 px-2 py-1 bg-indigo-500 text-white rounded-bl-lg shadow-sm text-[9px] font-bold uppercase tracking-widest">
+                Promo
+              </div>
+              
               <div>
-                <h4 class="font-bold text-gray-900 mb-1 text-[15px]">{{ pack.name }}</h4>
+                <h4 class="font-bold text-gray-900 mb-1 text-[15px] pr-10">{{ pack.name }}</h4>
                 <p class="text-xs text-gray-500 mb-2">{{ pack.description || 'Bundle items' }}</p>
               </div>
-              <div class="text-sm font-bold text-gray-900 mt-auto">
-                ₦{{ (pack.bundlePrice || pack.price || 0).toLocaleString() }}
+              <div class="text-sm font-bold text-gray-900 mt-auto flex items-center justify-between">
+                <span>₦{{ (pack.bundlePrice || pack.price || 0).toLocaleString() }}</span>
+                <span v-if="isProductOutOfStock(pack)" class="text-[10px] font-bold text-rose-500 uppercase tracking-wider bg-rose-50 px-2 py-1 rounded">Out of stock</span>
+                <span v-else-if="pack.trackStock && pack.stockQuantity <= 5" class="text-[9px] font-bold text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded">{{ pack.stockQuantity }} left</span>
               </div>
             </div>
           </div>
@@ -61,9 +69,13 @@
               :key="'top-' + product._id"
               @click="openProductModal(product)"
               class="flex items-center justify-between py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors px-2"
+              :class="{ 'opacity-50 grayscale pointer-events-none': isProductOutOfStock(product) }"
             >
               <div class="flex flex-col">
-                <span class="font-bold text-gray-900 text-[15px]">{{ product.name }}</span>
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="font-bold text-gray-900 text-[15px]">{{ product.name }}</span>
+                  <span v-if="product.isPrepaidByPlatform" class="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded text-[9px] font-bold uppercase tracking-wider shrink-0">Promo</span>
+                </div>
                 <span class="font-bold text-gray-500 text-[15px]">₦{{ (product.discountPrice || product.pricePerPortion || product.price || 0).toLocaleString() }}</span>
               </div>
               
@@ -100,9 +112,13 @@
                 :key="product._id"
                 @click="openProductModal(product)"
                 class="flex items-center justify-between py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors px-2"
+                :class="{ 'opacity-50 grayscale pointer-events-none': isProductOutOfStock(product) }"
               >
                 <div class="flex flex-col">
-                  <span class="font-bold text-gray-900 text-[15px]">{{ product.name }}</span>
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="font-bold text-gray-900 text-[15px]">{{ product.name }}</span>
+                    <span v-if="product.isPrepaidByPlatform" class="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded text-[9px] font-bold uppercase tracking-wider shrink-0">Promo</span>
+                  </div>
                   <span class="font-bold text-gray-500 text-[15px]">₦{{ (product.discountPrice || product.pricePerPortion || product.price || 0).toLocaleString() }}</span>
                 </div>
 
@@ -396,6 +412,14 @@
             >
               All
             </button>
+            <button 
+              v-if="packs.length > 0 && !isMiniMart"
+              @click="scrollToCategory('combos-promos')"
+              class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0"
+              :class="activeCategory === 'combos-promos' ? 'bg-parentPrimary/10 text-parentPrimary font-bold' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'"
+            >
+              Combos
+            </button>
             <template v-for="cat in categories" :key="cat">
               <button
                 v-if="groupedProducts[cat] && groupedProducts[cat].length > 0"
@@ -466,6 +490,40 @@
           
           <!-- Products Column -->
           <div class="flex-1 space-y-10">
+            <!-- Bundles / Packs for Restaurant Layout -->
+            <section id="combos-promos" class="scroll-mt-32" v-if="packs.length > 0">
+              <div class="flex items-center gap-3 mb-5">
+                <h2 class="text-lg font-medium text-gray-900 tracking-tight">Combos &amp; Promos</h2>
+                <div class="h-px bg-gray-100 flex-1"></div>
+                <span class="text-xs font-bold text-gray-400">{{ packs.length }} items</span>
+              </div>
+              <div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x">
+                <div 
+                  v-for="pack in packs" 
+                  :key="pack._id"
+                  @click="openProductModal(pack)"
+                  class="relative bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[240px] md:min-w-[280px] shrink-0 snap-start cursor-pointer hover:bg-gray-100 hover:border-parentPrimary/20 hover:shadow-sm transition-all flex flex-col justify-between overflow-hidden"
+                  :class="{ 'opacity-50 grayscale pointer-events-none': isProductOutOfStock(pack) }"
+                >
+                  <div v-if="pack.isPrepaidByPlatform" class="absolute top-0 right-0 z-10 px-2 py-1 bg-indigo-500 text-white rounded-bl-lg shadow-sm text-[9px] font-bold uppercase tracking-widest">
+                    Promo
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-gray-900 mb-1 text-[15px] pr-10 leading-tight">{{ pack.name }}</h4>
+                    <p class="text-xs text-gray-500 mb-3 line-clamp-2 leading-relaxed">{{ pack.description || 'Bundle items' }}</p>
+                  </div>
+                  <div class="text-sm font-bold text-gray-900 mt-auto flex items-center justify-between">
+                    <span>₦{{ (pack.bundlePrice || pack.price || 0).toLocaleString() }}</span>
+                    <span v-if="isProductOutOfStock(pack)" class="text-[10px] font-bold text-rose-500 uppercase tracking-wider bg-rose-50 px-2 py-1 rounded">Out of stock</span>
+                    <span v-else-if="pack.trackStock && pack.stockQuantity <= 5" class="text-[9px] font-bold text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded">{{ pack.stockQuantity }} left</span>
+                    <div v-else class="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center shadow-sm">
+                      <Plus class="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <template v-for="cat in categories" :key="cat">
               <section 
                 v-if="groupedProducts[cat] && groupedProducts[cat].length > 0"
@@ -485,7 +543,8 @@
                   v-for="product in (isMiniMart && !expandedCategories[cat] ? groupedProducts[cat].slice(0, 10) : groupedProducts[cat])" 
                   :key="product._id"
                   @click="openProductModal(product)"
-                  class="group flex items-center gap-3 p-2.5 bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-sm border border-gray-100 transition-all cursor-pointer active:scale-[0.98]"
+                  class="group flex items-center gap-3 p-2.5 bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-sm transition-all cursor-pointer active:scale-[0.98]"
+                  :class="{ 'opacity-50 grayscale pointer-events-none': isProductOutOfStock(product) }"
                 >
                   <!-- Square Image / Mini Carousel -->
                   <div class="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0 relative" @click.stop="getMediaItems(product).length ? openLightbox(getMediaItems(product), 0) : null">
@@ -506,7 +565,10 @@
                   </div>
                   <!-- Info -->
                   <div class="flex-1 min-w-0 py-0.5">
-                    <h3 class="text-sm font-medium text-gray-900 tracking-tight leading-tight truncate">{{ product.name }}</h3>
+                    <div class="flex items-center gap-2 mb-0.5">
+                      <h3 class="text-sm font-medium text-gray-900 tracking-tight leading-tight truncate">{{ product.name }}</h3>
+                      <span v-if="product.isPrepaidByPlatform" class="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded text-[9px] font-bold uppercase tracking-wider shrink-0">Promo</span>
+                    </div>
                     <p class="text-[11px] text-gray-400 font-medium line-clamp-1 mt-0.5 leading-relaxed">{{ product.description || defaultProductDescription }}</p>
                     <div class="flex items-center justify-between mt-2">
                       <div>
@@ -552,8 +614,12 @@
                   v-for="product in (isMiniMart && !expandedCategories[cat] ? groupedProducts[cat].slice(0, 10) : groupedProducts[cat])" 
                   :key="product._id"
                   @click="openProductModal(product)"
-                  class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-sm border border-gray-100 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
+                  class="group relative bg-white rounded-2xl border border-gray-100 hover:border-parentPrimary/20 hover:shadow-sm transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
+                  :class="{ 'opacity-50 grayscale pointer-events-none': isProductOutOfStock(product) }"
                 >
+                  <!-- Promo Badge -->
+                  <div v-if="product.isPrepaidByPlatform" class="absolute top-3 left-3 z-20 px-2 py-1 bg-indigo-500 text-white border-indigo-600 rounded shadow text-[10px] font-bold uppercase tracking-wider">Promo</div>
+                  
                   <!-- Media Carousel -->
                   <MediaCarousel 
                     :media-items="getMediaItems(product)" 
@@ -1656,9 +1722,20 @@ const getMediaItems = (product: any) => {
   }
   if (product.images && product.images.length > 0) {
     items.push(...product.images.map((url: string) => ({ type: isVideo(url) ? 'video' : 'image', url })));
+  } else if (product.imageUrl) {
+    items.push({ type: isVideo(product.imageUrl) ? 'video' : 'image', url: product.imageUrl });
   } else if (product.image) {
     items.push({ type: isVideo(product.image) ? 'video' : 'image', url: product.image });
+  } else if (product.components?.[0]?.itemId?.image) {
+    items.push({ type: 'image', url: product.components[0].itemId.image });
   }
+
+  // Fallback to vendor logo or banner for combos
+  if (items.length === 0 && vendor.value) {
+    if (vendor.value.logo) items.push({ type: isVideo(vendor.value.logo) ? 'video' : 'image', url: vendor.value.logo });
+    else if (vendor.value.bannerUrl) items.push({ type: isVideo(vendor.value.bannerUrl) ? 'video' : 'image', url: vendor.value.bannerUrl });
+  }
+  
   return items;
 };
 
@@ -2021,6 +2098,7 @@ const addToCart = (product: any) => {
     quantity: 1,
     customizations: customItems,
     note: productNote.value,
+    isPrepaidByPlatform: !!product.isPrepaidByPlatform
   });
   
   if (isGroupOrderActiveForThisVendor.value) {
@@ -2217,7 +2295,7 @@ const confirmLeaveGroup = async () => {
 };
 
 const isProductOutOfStock = (product: any) => {
-  return product.isAvailable === false || (product.trackStock && product.inStock <= 0) || product.publishItem === false;
+  return product.isAvailable === false || (product.trackStock && (product.stockQuantity || product.inStock || 0) <= 0) || product.publishItem === false;
 };
 
 const notifyRestock = async (productId: string) => {
@@ -2284,6 +2362,12 @@ onMounted(async () => {
         console.error('Failed to fetch add-ons', e);
       }
       
+      try {
+        packsRes = await menu_items_api.getPacks(vendor.value._id);
+      } catch (e) {
+        console.error('Failed to fetch packs', e);
+      }
+      
     } else {
       productsRes = await products_api.getByVendor(vendor.value._id);
       topPicksRes = await products_api.getTopPicks(vendor.value._id);
@@ -2305,6 +2389,21 @@ onMounted(async () => {
     }).filter(Boolean))];
     // categories are now computed dynamically
     if (uniqueCats.length > 0) activeCategory.value = uniqueCats[0] as string;
+    
+    // Auto-open product or pack modal if query param is present (for landing page promos)
+    if (route.query.packId) {
+      const pId = route.query.packId as string;
+      const foundPack = packs.value.find((p: any) => p._id === pId);
+      if (foundPack) {
+        setTimeout(() => openProductModal(foundPack), 300);
+      }
+    } else if (route.query.productId) {
+      const pId = route.query.productId as string;
+      const foundProd = products.value.find((p: any) => p._id === pId) || topPicks.value.find((p: any) => p._id === pId);
+      if (foundProd) {
+        setTimeout(() => openProductModal(foundProd), 300);
+      }
+    }
     window.addEventListener('scroll', handleScroll);
     checkIfFavorited();
     if (route.query.group) {
