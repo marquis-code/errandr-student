@@ -52,6 +52,11 @@ const dismiss = () => {
 const enable = async () => {
   loading.value = true
   try {
+    // Aggressive iOS fix: Request permission instantly before any other wrappers or async delays
+    if ('Notification' in window) {
+      await Notification.requestPermission();
+    }
+
     // Add a race condition so it doesn't hang indefinitely (e.g. 5 seconds)
     await Promise.race([
       requestPermissionAndRegister(),

@@ -9,21 +9,11 @@ export const usePromos = () => {
   const fetchPromos = async () => {
     loading.value = true;
     try {
-      const [packsRes, itemsRes, productsRes, productPacksRes] = await Promise.all([
-        GATEWAY_ENDPOINT.get('/menu/packs/promos').catch(() => ({ data: [] })),
-        GATEWAY_ENDPOINT.get('/menu/items/promos').catch(() => ({ data: [] })),
-        GATEWAY_ENDPOINT.get('/products/promos').catch(() => ({ data: [] })),
-        GATEWAY_ENDPOINT.get('/products/packs/promos').catch(() => ({ data: [] }))
-      ]);
+      const res = await GATEWAY_ENDPOINT.get('/products/all-promos');
+      const data = res.data?.data || res.data || [];
+      const combined = Array.isArray(data) ? data : [];
       
-      const combined = [
-        ...(Array.isArray(packsRes.data) ? packsRes.data : packsRes.data?.data || []), 
-        ...(Array.isArray(itemsRes.data) ? itemsRes.data : itemsRes.data?.data || []),
-        ...(Array.isArray(productsRes.data) ? productsRes.data : productsRes.data?.data || []),
-        ...(Array.isArray(productPacksRes.data) ? productPacksRes.data : productPacksRes.data?.data || [])
-      ];
-      
-      console.log('Fetched promos combined:', combined);
+      console.log('Fetched promos:', combined);
       
       combined.sort((a, b) => new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime());
       promos.value = combined;

@@ -1,7 +1,7 @@
 <template>
- <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
- <ExamPromoBanner />
- <BatchDeliveryBanner />
+  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
+  <CoreExamPromoBanner />
+  <BatchDeliveryBanner />
  
  <!-- Birthday Banner -->
  <div v-if="isBirthday" class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] text-white py-3 px-4 text-center shadow-sm border border-gray-100 relative z-[51]">

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-fade-in pb-32 px-0 md:px-4">
+  <div class="space-y-6 animate-fade-in pb-32 px-3 md:px-4">
     <!-- Header -->
     <header class="pt-6 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>

@@ -150,12 +150,33 @@
                 <SelectInput v-model="deliveryOption" label="Delivery Policy" :options="[{label: isFetchingFees ? 'Use an Errander (Calculating...)' : (computedTotalDeliveryFee > 0 && deliveryOption === 'use_an_errander' ? `Use an Errander (₦${computedTotalDeliveryFee.toLocaleString()})` : 'Use an Errander (Calculated at checkout)'), value: 'use_an_errander'}, {label: 'Batch Delivery (Wait up to 3 hours) - ₦150', value: 'batch_run'}, {label: 'I\'ll pick it up myself', value: 'pickup'}]" />
                 
                 <div v-if="deliveryOption === 'use_an_errander'" class="animate-fade-in relative z-50">
-                  <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Hostel / Campus Location</label>
-                  <UiMapboxAutocomplete 
-                    v-model="specificAddress" 
-                    @select="handleAddressSelect" 
-                    placeholder="e.g. Moremi Hall, Room 302, Unilag" 
-                  />
+                  <div class="mb-4">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                      <div class="relative w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all" :class="isWithinLuth ? 'bg-parentPrimary' : ''">
+                        <input type="checkbox" v-model="isWithinLuth" class="sr-only peer" />
+                      </div>
+                      <span class="text-[11px] font-bold text-gray-700 group-hover:text-gray-900">Do you stay within LUTH and College of Medicine?</span>
+                    </label>
+                  </div>
+                  
+                  <div v-if="isWithinLuth">
+                    <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Hostel / Campus Location</label>
+                    <input 
+                      v-model="specificAddress"
+                      type="text"
+                      placeholder="e.g. BLOCK 4 COMMON ROOM"
+                      class="w-full bg-white border border-gray-100 focus:border-parentPrimary/50 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all shadow-sm"
+                    />
+                  </div>
+                  
+                  <div v-else>
+                    <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Delivery Address</label>
+                    <UiMapboxAutocomplete 
+                      v-model="specificAddress" 
+                      @select="handleAddressSelect" 
+                      placeholder="e.g. Moremi Hall, Room 302, Unilag" 
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -858,6 +879,7 @@ const config = useRuntimeConfig();
 
 const recipientName = ref('');
 const recipientPhone = ref('');
+const isWithinLuth = ref(true);
 const specificAddress = ref('');
 const deliveryCoordinates = ref<[number, number] | null>(null);
 
@@ -1161,31 +1183,54 @@ const computedBirthdayDiscount = computed(() => {
 });
 
 const computedComboPromoDiscount = computed(() => {
-  let hasEligibleCombo = false;
+  let discount = 0;
   const isGroupOrderCart = !!groupOrder.value;
-  if (isGroupOrderCart && groupOrder.value) {
-    const vId = groupOrder.value.vendor?._id;
-    const vendorName = vendorsMetadata.value[vId]?.storeName?.toLowerCase() || '';
-    if (vendorName.includes('iyabo') || vendorName.includes('hvip') || vendorName.includes('waris') || vendorName.includes('chijioke')) {
-      const stats = cartStore.getVendorStats(vId) as any;
-      if (stats && stats.packs && stats.packs.length > 0) {
-        const hasComboItem = stats.packs.some((p: any) => p.items && p.items.some((i: any) => i.isPrepaidByPlatform));
-        if (hasComboItem) hasEligibleCombo = true;
+  const vendorIds = isGroupOrderCart ? [groupOrder.value.vendor?._id] : cartStore.allVendorIds.value;
+
+  for (const vId of vendorIds) {
+    if (!vId) continue;
+    const vendor = vendorsMetadata.value[vId];
+    const vendorName = vendor?.storeName?.toLowerCase() || '';
+    const stats = cartStore.getVendorStats(vId) as any;
+    const subtotal = isGroupOrderCart ? groupSubtotal.value : (stats?.subtotal || 0);
+
+    // Check new prepaidPromo logic first
+    if (vendor?.prepaidPromo?.enabled) {
+      if (vendor.prepaidPromo.usedOrders < vendor.prepaidPromo.maxOrders) {
+        if (subtotal >= vendor.prepaidPromo.budgetPerOrder) {
+          let vendorDiscount = (vendor.prepaidPromo && vendor.prepaidPromo.discountValue) ? vendor.prepaidPromo.discountValue : 1000;
+          // Ensure discount doesn't exceed subtotal to prevent negative totals
+          if (vendorDiscount > subtotal) {
+            vendorDiscount = subtotal;
+          }
+          discount += vendorDiscount;
+          continue;
+        }
       }
     }
-  } else {
-    for (const vId of cartStore.allVendorIds.value) {
-      const vendorName = vendorsMetadata.value[vId]?.storeName?.toLowerCase() || '';
-      if (vendorName.includes('iyabo') || vendorName.includes('hvip') || vendorName.includes('waris') || vendorName.includes('chijioke')) {
-        const stats = cartStore.getVendorStats(vId) as any;
+
+    // Fallback old logic
+    if (vendorName.includes('iyabo') || vendorName.includes('hvip') || vendorName.includes('waris') || vendorName.includes('chijioke')) {
+      if (vendorName.includes('waris')) {
+        // Waris Kitchen new rule: ₦1000 off for orders >= ₦2000
+        if (subtotal >= 2000) {
+          // Verify it hasn't exceeded limits (if tracked manually here, but we rely on backend mainly)
+          const used = vendor?.prepaidPromo?.usedOrders || 0;
+          const max = vendor?.prepaidPromo?.maxOrders || 20;
+          if (used < max) {
+            discount += (vendor.prepaidPromo && vendor.prepaidPromo.discountValue) ? vendor.prepaidPromo.discountValue : 1000;
+          }
+        }
+      } else {
         if (stats && stats.packs && stats.packs.length > 0) {
           const hasComboItem = stats.packs.some((p: any) => p.items && p.items.some((i: any) => i.isPrepaidByPlatform));
-          if (hasComboItem) hasEligibleCombo = true;
+          if (hasComboItem) discount += (vendor.prepaidPromo && vendor.prepaidPromo.discountValue) ? vendor.prepaidPromo.discountValue : 1000;
         }
       }
     }
   }
-  return hasEligibleCombo ? 1000 : 0;
+  
+  return discount;
 });
 
 const computedBrethrenDiscount = computed(() => {

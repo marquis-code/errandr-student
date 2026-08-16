@@ -1,5 +1,5 @@
 <template>
- <div class="space-y-5 md:space-y-8 pb-24 animate-fade-in selection:bg-[#FF5C1A]/15 selection:text-[#FF5C1A] px-0 md:px-4 md:px-4">
+ <div class="space-y-5 md:space-y-8 pb-24 animate-fade-in selection:bg-[#FF5C1A]/15 selection:text-[#FF5C1A] px-3 md:px-4 md:px-4">
 
  <!-- Header -->
  <header class="pt-6">

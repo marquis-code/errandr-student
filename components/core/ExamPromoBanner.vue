@@ -1,48 +1,27 @@
 <template>
-  <div v-if="bannerData && bannerData.enabled" class="bg-indigo-600 text-white overflow-hidden py-2 relative z-50 shadow-sm border-b border-indigo-700">
-    <div class="marquee-container flex whitespace-nowrap">
-      <div class="marquee-content flex items-center gap-8 animate-marquee text-sm font-bold tracking-wide">
-        <span class="flex items-center gap-2">
-          <Sparkles class="w-4 h-4 text-yellow-300" />
-          {{ bannerData.text }}
-          <Sparkles class="w-4 h-4 text-yellow-300" />
-        </span>
-        <span class="flex items-center gap-2">
-          <Sparkles class="w-4 h-4 text-yellow-300" />
-          {{ bannerData.text }}
-          <Sparkles class="w-4 h-4 text-yellow-300" />
-        </span>
-        <span class="flex items-center gap-2">
-          <Sparkles class="w-4 h-4 text-yellow-300" />
-          {{ bannerData.text }}
-          <Sparkles class="w-4 h-4 text-yellow-300" />
-        </span>
+  <div class="bg-[#FF5C1A] text-white overflow-hidden py-2 relative z-50 shadow-sm">
+    <div class="marquee-container">
+      <div class="marquee-content animate-marquee flex items-center gap-12 text-sm font-semibold tracking-wide h-6">
+        <!-- We repeat it a few times for the marquee effect, ensuring they stay inline -->
+        <div class="flex items-center gap-12 shrink-0">
+          <span v-for="i in 5" :key="i" class="flex items-center gap-2 whitespace-nowrap">
+            <span class="text-base">🎓</span>
+            <span>Erranders Exam Combo!</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded text-white font-bold">₦1,000 OFF Food Vendors</span>
+            <span>&amp;</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded text-white font-bold">₦500 OFF Chips by Motee</span>
+            <span class="text-base">🍟</span>
+            <span class="italic font-bold">Limited offer available!</span>
+            <Sparkles class="w-4 h-4 text-yellow-300" />
+          </span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { Sparkles } from 'lucide-vue-next'
-import { useNuxtApp } from '#imports'
-
-const bannerData = ref<{ enabled: boolean, text: string } | null>(null)
-
-onMounted(async () => {
-  try {
-    const config = useRuntimeConfig()
-    const baseUrl = (config.public.apiBase as string) || 'https://api.erranders.org'
-    const cleanBaseUrl = baseUrl.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '')
-    
-    const response = await fetch(`${cleanBaseUrl}/api/v1/settings/exam-promo/public`)
-    if (response.ok) {
-      bannerData.value = await response.json()
-    }
-  } catch (error) {
-    console.error('Failed to load exam promo banner settings:', error)
-  }
-})
 </script>
 
 <style scoped>
@@ -54,7 +33,7 @@ onMounted(async () => {
 .marquee-content {
   display: inline-block;
   padding-left: 100%;
-  animation: marquee 30s linear infinite;
+  animation: marquee 45s linear infinite;
 }
 @keyframes marquee {
   0% { transform: translateX(0); }

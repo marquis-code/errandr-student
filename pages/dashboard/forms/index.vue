@@ -1,6 +1,6 @@
 <template>
-  <div class="space-y-6 pb-24 animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary">
-    <div class="mb-8 px-0 md:px-0">
+  <div class="space-y-6 pb-24 animate-fade-in px-3 selection:bg-parentPrimary/10 selection:text-parentPrimary">
+    <div class="mb-8  md:px-0">
       <h1 class="text-2xl font-bold text-gray-900 mb-1">Forms & Waivers</h1>
       <p class="text-sm text-gray-500">Manage your consultation forms, waivers, and documents.</p>
     </div>

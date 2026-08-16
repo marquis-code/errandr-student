@@ -590,6 +590,8 @@ const predefinedLocations = [
 ]
 
 const errandTemplates = [
+  "Get drugs from the pharmacy",
+  "Buy energy drinks/snacks",
   "Buy groceries from",
   "Print documents at",
   "Pick up a package from",

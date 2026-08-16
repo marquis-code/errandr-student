@@ -53,6 +53,33 @@
                       placeholder="e.g. Go to Yaba market and buy me 3 yards of black velvet material."
                       class="w-full border-[0.5px] border-gray-100 rounded-xl px-4 py-3 focus:ring-[0.5px] focus:ring-parentPrimary focus:border-parentPrimary transition-colors outline-none resize-none"
                     ></textarea>
+                    
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <button 
+                        @click="form.description = 'Get drugs from the pharmacy'"
+                        class="text-xs font-medium px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-full text-gray-600 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-colors"
+                      >
+                        💊 Get drugs from the pharmacy
+                      </button>
+                      <button 
+                        @click="form.description = 'Buy energy drinks and snacks for exam prep'"
+                        class="text-xs font-medium px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-full text-gray-600 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-colors"
+                      >
+                        ⚡ Buy energy drinks/snacks
+                      </button>
+                      <button 
+                        @click="form.description = 'Print assignment and submit'"
+                        class="text-xs font-medium px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-full text-gray-600 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-colors"
+                      >
+                        🖨️ Print assignment
+                      </button>
+                      <button 
+                        @click="form.description = 'Pick up a package'"
+                        class="text-xs font-medium px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-full text-gray-600 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-colors"
+                      >
+                        📦 Pick up a package
+                      </button>
+                    </div>
                   </div>
                   
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-5">

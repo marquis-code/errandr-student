@@ -1,6 +1,6 @@
 <template>
   <main class="min-h-screen pb-20">
-    <div class="max-w-3xl mx-auto px-0 pt-6 md:pt-8 space-y-6">
+    <div class="max-w-3xl mx-auto px-3 pt-6 md:pt-8 space-y-6">
       
       <!-- Header -->
       <div class="flex items-center gap-3">
@@ -35,6 +35,26 @@
             <Plus class="w-4 h-4" />
             Add Money
           </button>
+        </div>
+      </div>
+
+      <!-- Instant Virtual Account -->
+      <div v-if="wallet?.virtualAccount" class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0 border border-emerald-100/50">
+            <Building2 class="w-6 h-6 text-emerald-600" />
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="text-gray-900 font-semibold tracking-tight">{{ wallet.virtualAccount.bankName }}</h3>
+              <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Instant Funding</span>
+            </div>
+            <p class="text-2xl font-bold tracking-tight text-gray-800 font-mono">{{ wallet.virtualAccount.accountNumber }}</p>
+            <p class="text-sm font-medium text-emerald-600/80 mt-0.5">{{ wallet.virtualAccount.accountName }}</p>
+          </div>
+        </div>
+        <div class="bg-white/60 p-3 rounded-xl border border-emerald-100/50">
+          <p class="text-xs font-medium text-emerald-800 leading-relaxed max-w-xs">Transfer to this dedicated account number to automatically fund your wallet instantly. No card required.</p>
         </div>
       </div>
 
@@ -297,7 +317,7 @@
 import { 
   ArrowLeft, RefreshCw, Plus, ArrowUpRight, ArrowDownLeft, 
   Wallet as WalletIcon, X, Loader2, ArrowRight, ChevronRight,
-  Printer, ShoppingBag
+  Printer, ShoppingBag, Building2
 } from 'lucide-vue-next';
 import logoLight from '@/assets/img/logo-light.png';
 import { useWallet } from '@/composables/modules/wallets';
@@ -314,7 +334,7 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const { user } = useUser();
-const { balance, fetchWallet } = useWallet();
+const { balance, wallet, fetchWallet } = useWallet();
 const { loading: loadingPayment, initializePayment, verifyPayment } = usePayments();
 const { showToast } = useCustomToast();
 

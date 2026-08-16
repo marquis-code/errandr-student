@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-3xl animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary px-0 md:px-0">
+  <div class="max-w-3xl animate-fade-in selection:bg-parentPrimary/10 selection:text-parentPrimary px-3 md:px-0">
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-gray-900 mb-1">Settings</h1>
       <p class="text-sm text-gray-500">Manage your account preferences and notifications.</p>
@@ -175,6 +175,24 @@ const handleConfirmPreference = async () => {
       ...preferences.value,
       [activePreferenceKey.value]: newValue
     };
+
+    // Aggressive Push Notification Fix: Trigger browser permission directly if toggled on BEFORE any async await
+    // iOS Safari requires this to be the very first thing in the click handler, otherwise it loses the "user gesture" context.
+    if (activePreferenceKey.value === 'pushNotifications' && newValue === true) {
+      if ('Notification' in window) {
+        if (Notification.permission !== 'granted') {
+          try {
+            await Notification.requestPermission();
+            const { useStudentNotifications } = await import('@/composables/useStudentNotifications');
+            const { requestPermissionAndRegister } = useStudentNotifications();
+            // Call this to register the service worker and get the FCM token now that we have permission
+            requestPermissionAndRegister(); 
+          } catch (e) {
+            console.error('Failed to request permission', e);
+          }
+        }
+      }
+    }
 
     const res = await users_api.updateProfile({ preferences: updatedPreferences });
     setUser(res.data?.user || res.data);
