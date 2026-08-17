@@ -323,17 +323,19 @@
  </div>
  </div>
 
- <div class="flex items-center gap-3 mt-6 bg-emerald-50 px-4 py-3 rounded-xl border border-emerald-100 min-w-full relative z-10">
- <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center flex-shrink-0">
- <ShieldCheck class="w-4 h-4" />
- </div>
- <div class="flex-1 min-w-0">
- <p class="text-[8px] font-medium text-emerald-600 r mb-0.5 truncate">Delivery PIN</p>
- <p class="text-lg font-medium text-gray-900 truncate">{{ order.deliveryPin || '....' }}</p>
- </div>
- <div class="text-[8px] font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded border border-emerald-100 flex-shrink-0">Give to Rider</div>
- </div>
- <p class="text-sm font-medium text-gray-400 mt-3 relative z-10">Share this PIN with the rider upon delivery to confirm receipt.</p>
+ <template v-if="order.deliveryOption !== 'pickup' && order.deliveryPin">
+  <div class="flex items-center gap-3 mt-6 bg-emerald-50 px-4 py-3 rounded-xl border border-emerald-100 min-w-full relative z-10">
+  <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center flex-shrink-0">
+  <ShieldCheck class="w-4 h-4" />
+  </div>
+  <div class="flex-1 min-w-0">
+  <p class="text-[8px] font-medium text-emerald-600 r mb-0.5 truncate">Delivery PIN</p>
+  <p class="text-lg font-medium text-gray-900 truncate">{{ order.deliveryPin }}</p>
+  </div>
+  <div class="text-[8px] font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded border border-emerald-100 flex-shrink-0">Give to Rider</div>
+  </div>
+  <p class="text-sm font-medium text-gray-400 mt-3 relative z-10">Share this PIN with the rider upon delivery to confirm receipt.</p>
+  </template>
  </div>
 
  <!-- Service Provider Info -->
