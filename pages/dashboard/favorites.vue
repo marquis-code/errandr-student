@@ -37,6 +37,11 @@
             :src="fav.vendor?.banner || fav.product?.image || '/placeholder-store.jpg'"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
+          <!-- Padlock -->
+          <div v-if="fav.vendor && !fav.vendor.isOpen" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+            <Lock class="w-10 h-10 text-white mb-2" />
+            <span class="text-white font-bold text-sm tracking-wide text-center leading-tight">STORE<br/>CLOSED</span>
+          </div>
         </div>
         
         <div class="p-5 flex-1 flex flex-col">
@@ -60,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { Heart, Star } from 'lucide-vue-next';
+import { Heart, Star, Lock } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { favorites_api } from '@/api_factory/modules/favorites';

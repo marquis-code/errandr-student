@@ -59,18 +59,9 @@
                   class="w-full h-full object-cover grayscale opacity-50"
                   alt="Vendor Banner"
                 />
-                <div class="absolute inset-0 bg-gray-900/40"></div>
-                <div class="absolute bottom-0 inset-x-0 flex items-center justify-between px-4 py-3 bg-white/10 backdrop-blur-md border-t border-white/10">
-                  <div>
-                    <p class="text-white text-xs font-medium leading-none mb-0.5">Closed right now</p>
-                    <p class="text-white/50 text-[11px] font-medium">Opens {{ vendor.openingTime || '8:00 AM' }}</p>
-                  </div>
-                  <button
-                    @click.stop="$emit('notify', vendor)"
-                    class="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-[11px] font-bold transition-all shadow-sm border border-gray-100"
-                  >
-                    <Bell class="w-3 h-3" /> Notify me
-                  </button>
+                <div class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+                  <Lock class="w-10 h-10 text-white mb-2" />
+                  <span class="text-white font-bold text-sm tracking-wide text-center leading-tight">STORE<br/>CLOSED</span>
                 </div>
               </template>
               
@@ -151,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight, Store, Star, Clock, Bike, ArrowUpRight, Bell, Sparkles, TrendingUp, Flame, Share2, Heart } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, Store, Star, Clock, Bike, ArrowUpRight, Bell, Sparkles, TrendingUp, Flame, Share2, Heart, Lock } from 'lucide-vue-next'
 import { useFavorites } from '@/composables/modules/favorites'
 
 const { isVendorFavorited, toggleFavorite } = useFavorites()

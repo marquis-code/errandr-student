@@ -44,8 +44,13 @@
             <div class="h-28 w-full bg-gray-50 relative overflow-hidden">
               <video v-if="(vendor.banner || vendor.logo) && (vendor.banner || vendor.logo).match(/\\.(mp4|webm|ogg|mov)/i)" :src="vendor.banner || vendor.logo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" autoplay loop muted playsinline></video>
               <img v-else :src="vendor.banner || vendor.logo || '/placeholder-store.jpg'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <!-- Padlock -->
+              <div v-if="vendor.isOpen === false" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+                <Lock class="w-6 h-6 text-white mb-1" />
+                <span class="text-white font-bold text-[9px] tracking-wide text-center leading-tight">STORE<br/>CLOSED</span>
+              </div>
               <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
-              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 z-20">
                 <Star class="w-3 h-3 text-amber-500 fill-current" />
                 <span class="text-[10px] font-medium text-gray-900">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
               </div>
