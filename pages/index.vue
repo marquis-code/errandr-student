@@ -358,7 +358,7 @@
 
 
   <!-- Promo Carousel -->
-  <CorePromoCarousel />
+  <CorePromoCarousel @open-closed-modal="navigateToVendor" />
 
   <!-- Book Again -->
   <VendorGroupCarousel

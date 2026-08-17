@@ -73,6 +73,11 @@
               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
               alt="Promo Image"
             />
+            <!-- Closed Overlay -->
+            <div v-if="isVendorClosed(promo)" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+              <Lock class="w-10 h-10 text-white mb-2" />
+              <span class="text-white font-bold text-sm tracking-wide">STORE CLOSED</span>
+            </div>
             <!-- Vendor Overlay -->
             <div class="absolute bottom-2 left-2 flex items-center gap-2 bg-white/95 backdrop-blur-md px-2 py-1.5 rounded-lg shadow-sm border border-white">
               <div class="w-6 h-6 rounded-md overflow-hidden bg-gray-100 shrink-0">
@@ -110,7 +115,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { ChevronLeft, ChevronRight, Tag, ArrowRight } from 'lucide-vue-next';
+import { ChevronLeft, ChevronRight, Tag, ArrowRight, Lock } from 'lucide-vue-next';
 import { usePromos } from '@/composables/modules/products/usePromos';
 
 const router = useRouter();
@@ -130,8 +135,22 @@ const scrollRight = () => {
   }
 };
 
+const emit = defineEmits(['open-closed-modal']);
+
+const isVendorClosed = (promo: any) => {
+  const vendor = promo.vendorId || promo.vendor;
+  return vendor && vendor.isOpen === false && vendor.statusMessage !== 'open';
+};
+
 const goToVendor = (promo: any) => {
-  const vendorId = (promo.vendorId || promo.vendor)?._id || (promo.vendorId || promo.vendor);
+  const vendor = promo.vendorId || promo.vendor;
+  
+  if (isVendorClosed(promo)) {
+    emit('open-closed-modal', vendor);
+    return;
+  }
+  
+  const vendorId = vendor?._id || vendor;
   if (vendorId) {
     const isPack = !!(promo.components || promo.items || promo.bundlePrice);
     const query = isPack ? { packId: promo._id } : { productId: promo._id };
