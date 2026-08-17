@@ -220,9 +220,14 @@
           class="absolute inset-0 w-full h-full object-cover"
           alt="Store Banner"
         />
+        <!-- Closed Padlock Overlay -->
+        <div v-if="!vendor.isOpen" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+          <Lock class="w-12 h-12 text-white mb-2" />
+          <span class="text-white font-bold text-base tracking-wide text-center">STORE<br/>CLOSED</span>
+        </div>
         <!-- Gradient Overlays -->
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-gray-900/20"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-gray-900/30 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-gray-900/20 z-[5]"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-gray-900/30 to-transparent z-[5]"></div>
         
         <!-- Top Navigation -->
         <div class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-5 pt-safe-top pb-4 md:pb-6 mt-4 md:mt-6">
@@ -1621,7 +1626,7 @@
 
 <script setup lang="ts">
 import { 
-  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, ChevronDown, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText, RefreshCw
+  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, ChevronDown, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText, RefreshCw, Lock
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 

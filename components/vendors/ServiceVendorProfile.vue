@@ -9,8 +9,14 @@
         autoplay loop muted playsinline>
       </video>
       <img v-else-if="vendor.banner || vendor.logo" :src="vendor.banner || vendor.logo" class="absolute inset-0 w-full h-full object-cover opacity-90" />
-      <div class="absolute inset-0 bg-gradient-to-t from-[#0B0906] via-[#0B0906]/45 to-[#0B0906]/5"></div>
-      <div class="absolute inset-0 bg-gradient-to-b from-[#0B0906]/50 via-transparent to-transparent"></div>
+      <div class="absolute inset-0 bg-[#0B0906] bg-opacity-20" v-else></div>
+      <!-- Closed Padlock Overlay -->
+      <div v-if="!vendor.isOpen" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+        <Lock class="w-12 h-12 text-white mb-2" />
+        <span class="text-white font-bold text-base tracking-wide text-center">STORE<br/>CLOSED</span>
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#0B0906] via-[#0B0906]/45 to-[#0B0906]/5 z-[5]"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-[#0B0906]/50 via-transparent to-transparent z-[5]"></div>
 
       <!-- Floating Navigation -->
       <div class="absolute top-0 inset-x-0 z-30 px-4 md:px-5 py-4 flex items-center justify-between">
@@ -305,7 +311,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { ArrowLeft, Share2, Heart, Star, Clock, MapPin, Sparkles, Navigation, Link as LinkIcon, Check, ChevronRight, CheckCircle2, Info } from 'lucide-vue-next';
+import { ArrowLeft, Share2, Heart, Star, Clock, MapPin, Sparkles, Navigation, Link as LinkIcon, Check, ChevronRight, CheckCircle2, Info, Lock } from 'lucide-vue-next';
 import { services_api } from '@/api_factory/modules/services';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { useFavorites } from '@/composables/modules/favorites';

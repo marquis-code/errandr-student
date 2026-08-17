@@ -49,7 +49,11 @@
           <div>
             <div class="relative aspect-square rounded-xl overflow-hidden mb-3 md:mb-4 bg-gray-50">
               <img :src="item.image || item.logo || item.banner || 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=400&h=400&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-              
+              <!-- Padlock for closed vendors or products from closed vendors -->
+              <div v-if="item.isOpen === false || item.vendor?.isOpen === false" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+                <Lock class="w-8 h-8 text-white mb-1" />
+                <span class="text-white font-bold text-[10px] tracking-wide text-center leading-tight">STORE<br/>CLOSED</span>
+              </div>
               <!-- Price Badge -->
               <div v-if="item.price !== undefined" class="absolute bottom-2 left-2">
                 <span class="px-2.5 py-1 bg-white/95 backdrop-blur-md rounded-lg text-xs font-bold text-gray-900 border border-gray-100 shadow-sm">
@@ -93,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { Search } from 'lucide-vue-next';
+import { Search, Lock } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { search_api } from '@/api_factory/modules/search';

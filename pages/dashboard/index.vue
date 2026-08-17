@@ -160,10 +160,14 @@
  :to="`/vendors/${vendor._id}`"
  class="bg-white border border-[#E7E2DA] rounded-xl p-3 flex items-center gap-4 hover:border-[#FF5C1A]/30 transition-all group"
  >
- <div class="relative w-20 h-20 shrink-0">
- <video v-if="(vendor.logo || vendor.banner) && (vendor.logo || vendor.banner).match(/\\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo || vendor.banner" class="w-full h-full rounded-lg object-cover bg-[#FAF8F5]" autoplay loop muted playsinline></video>
- <img v-else :src="vendor.logo || vendor.banner || '/placeholder-store.jpg'" class="w-full h-full rounded-lg object-cover bg-[#FAF8F5]" />
- <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white" title="Active" />
+ <div class="relative w-20 h-20 shrink-0 overflow-hidden rounded-lg">
+  <video v-if="(vendor.logo || vendor.banner) && (vendor.logo || vendor.banner).match(/\.(mp4|webm|ogg|mov)$/i)" :src="vendor.logo || vendor.banner" class="w-full h-full object-cover bg-[#FAF8F5]" autoplay loop muted playsinline></video>
+  <img v-else :src="vendor.logo || vendor.banner || '/placeholder-store.jpg'" class="w-full h-full object-cover bg-[#FAF8F5]" />
+  <div v-if="vendor.isOpen === false" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+    <Lock class="w-5 h-5 text-white mb-1" />
+    <span class="text-white font-bold text-[8px] tracking-wide px-1 text-center leading-tight">STORE<br/>CLOSED</span>
+  </div>
+  <div v-else class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white" title="Active" />
  </div>
  <div class="flex-1 min-w-0 py-1">
  <h3 class="text-sm font-bold text-[#171310] group-hover:text-[#FF5C1A] truncate tracking-tight mb-1 transition-colors">{{ vendor.storeName }}</h3>
@@ -193,7 +197,7 @@ import {
  Search, Star, Timer, MapPin, ArrowRight, ShieldCheck, 
  Check, Trophy, Flame, BarChart3, UtensilsCrossed, 
  PackageSearch, Clock, RefreshCw, WifiOff, MoonStar,
- Rocket, Users
+ Rocket, Users, Lock
 } from 'lucide-vue-next';
 import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
