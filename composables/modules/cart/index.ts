@@ -78,27 +78,15 @@ export const useCart = () => {
     const { vendorsMetadata } = useVendors();
     const { showToast } = useCustomToast();
 
-    // Check pre-order mixing
-    const currentVendorMeta = vendorsMetadata.value[item.vendorId];
-    const isCurrentPreOrder = currentVendorMeta?.preOrderOnly || false;
-
-    // Check if cart has other vendors
+    // Prevent multi-vendor checkout by ensuring only one vendor in cart
     const otherVendorIds = allVendorIds.value.filter(id => id !== item.vendorId);
     if (otherVendorIds.length > 0) {
-      for (const otherId of otherVendorIds) {
-        const otherMeta = vendorsMetadata.value[otherId];
-        // If otherMeta is undefined, we assume it's real-time for safety, or we skip
-        const isOtherPreOrder = otherMeta?.preOrderOnly || false;
-        
-        if (isCurrentPreOrder !== isOtherPreOrder) {
-          showToast({
-            title: 'Cart Conflict',
-            message: 'You cannot mix pre-order and real-time items. Please clear or checkout your current cart first.',
-            toastType: 'error'
-          });
-          return;
-        }
-      }
+      showToast({
+        title: 'Cart Conflict',
+        message: 'You can only order from one vendor at a time. Please clear or checkout your current cart first.',
+        toastType: 'error'
+      });
+      return;
     }
 
     const vCart = ensureVendorCart(item.vendorId);
@@ -236,7 +224,7 @@ export const useCart = () => {
   };
 
   // Computed
-  const allVendorIds = computed(() => Object.keys(carts.value));
+  const allVendorIds = computed(() => Object.keys(carts.value).filter(vId => carts.value[vId].packs.some(p => p.items.length > 0)));
   const allPacks = computed(() => Object.values(carts.value).flatMap(c => c.packs));
   const allItems = computed(() => allPacks.value.flatMap(p => p.items));
   

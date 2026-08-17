@@ -53,6 +53,14 @@
             </template>
           </div>
 
+          <!-- Cart Icon -->
+          <NuxtLink to="/cart" class="relative p-2.5 rounded-full bg-white border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center ml-2">
+            <ShoppingCart class="w-5 h-5 text-gray-900" />
+            <span v-if="cartItemCount > 0" class="absolute top-0 right-0 bg-parentPrimary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center translate-x-1/4 -translate-y-1/4 shadow-sm">
+              {{ cartItemCount }}
+            </span>
+          </NuxtLink>
+
           <!-- Fresha-style Menu Dropdown -->
           <Menu as="div" class="relative">
             <MenuButton class="flex items-center gap-2 rounded-full bg-white border border-gray-200 hover:shadow-sm border border-gray-100 hover:border-gray-300 transition-all px-4 py-2 focus:outline-none focus:ring-2 focus:ring-parentPrimary/20 ml-2">
@@ -181,7 +189,8 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { useUser } from "@/composables/modules/auth/user"
-import { Home, User, LogOut, Menu as MenuIcon, Filter, ChevronDown } from 'lucide-vue-next'
+import { useCart } from "@/composables/modules/cart"
+import { Home, User, LogOut, Menu as MenuIcon, Filter, ChevronDown, ShoppingCart } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import { useGlobalFilter } from '@/composables/core/useGlobalFilter'
 
@@ -191,6 +200,7 @@ const scrolled = ref(false)
 
 const $route = useRoute()
 const { user, logOut } = useUser()
+const { itemCount: cartItemCount } = useCart()
 const { globalFilter, setFilter, globalFiltersList, fetchCategories } = useGlobalFilter()
 
 const activeFilterLabel = computed(() => {

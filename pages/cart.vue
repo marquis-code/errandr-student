@@ -71,15 +71,16 @@
       <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-gray-50">
         <div class="max-w-[1200px] mx-auto flex items-center justify-between px-4 md:px-4 py-3">
           <div class="flex items-center gap-3">
-            <button @click="goBack" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all active:scale-95">
+            <button @click="checkoutStep === 'checkout' ? checkoutStep = 'cart' : goBack()" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all active:scale-95">
               <ArrowLeft class="w-4 h-4 text-gray-900" />
             </button>
             <div>
-              <h1 class="text-base font-medium text-gray-900 tracking-tight leading-none">Checkout</h1>
+              <h1 class="text-base font-medium text-gray-900 tracking-tight leading-none">{{ checkoutStep === 'cart' ? 'Your Cart' : 'Checkout' }}</h1>
               <p class="text-[10px] font-bold text-gray-400 mt-0.5">{{ cartStore.itemCount }} items</p>
             </div>
           </div>
           <button 
+            v-if="checkoutStep === 'checkout'"
             @click="showOrderBreakdown = true"
             class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs font-medium text-gray-900 hover:bg-gray-100 transition-all lg:hidden active:scale-95"
           >
@@ -95,6 +96,7 @@
 
           <!-- LEFT: Delivery + Payment -->
           <div class="flex-1 space-y-5">
+            <div v-show="checkoutStep === 'checkout'" class="space-y-5">
             
             <!-- Split Bill Payment Progress -->
             <div v-if="groupOrder && groupOrder.status === 'locked' && groupOrder.splitType === 'split_bill'" class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-hidden">
@@ -147,14 +149,13 @@
               <div class="p-4 sm:p-5 space-y-4">
                 <AnimatedInput v-model="recipientName" label="Full Name"  />
                 <AnimatedInput v-model="recipientPhone" label="Phone Number" type="tel" />
-                <SelectInput v-model="deliveryOption" label="Delivery Policy" :options="[{label: isFetchingFees ? 'Use an Errander (Calculating...)' : (computedTotalDeliveryFee > 0 && deliveryOption === 'use_an_errander' ? `Use an Errander (₦${computedTotalDeliveryFee.toLocaleString()})` : 'Use an Errander (Calculated at checkout)'), value: 'use_an_errander'}, {label: 'Batch Delivery (Wait up to 3 hours) - ₦150', value: 'batch_run'}, {label: 'I\'ll pick it up myself', value: 'pickup'}]" />
+                <SelectInput v-model="deliveryOption" label="Delivery Policy" :options="[{label: isFetchingFees ? 'Use an Errander (Calculating...)' : (computedTotalDeliveryFee > 0 ? `Use an Errander (₦${computedTotalDeliveryFee.toLocaleString()})` : 'Use an Errander'), value: 'use_an_errander'}, {label: 'I\'ll pick it up myself', value: 'pickup'}]" />
                 
                 <div v-if="deliveryOption === 'use_an_errander'" class="animate-fade-in relative z-50">
                   <div class="mb-4">
                     <label class="flex items-center gap-2 cursor-pointer group">
-                      <div class="relative w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all" :class="isWithinLuth ? 'bg-parentPrimary' : ''">
-                        <input type="checkbox" v-model="isWithinLuth" class="sr-only peer" />
-                      </div>
+                      <input type="checkbox" v-model="isWithinLuth" class="sr-only peer" />
+                      <div class="relative w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:bg-parentPrimary dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                       <span class="text-[11px] font-bold text-gray-700 group-hover:text-gray-900">Do you stay within LUTH and College of Medicine?</span>
                     </label>
                   </div>
@@ -379,9 +380,10 @@
                 </div>
               </div>
             </div>
+            </div> <!-- End of checkout step wrapper -->
 
-            <!-- Desktop: Order Items -->
-            <div class="hidden lg:block bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <!-- Order Items (Step 1) -->
+            <div v-if="checkoutStep === 'cart'" class="bg-white rounded-2xl border border-gray-100 overflow-hidden w-full mx-auto">
               <div class="flex items-center justify-between px-5 py-4 bg-gray-50/50 border-b border-gray-100">
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600">
@@ -561,12 +563,12 @@
                   </div>
                   <button 
                     v-if="canCheckout"
-                    @click="startPayment"
-                    :disabled="placing || (paymentMethod === 'wallet' && balance < finalTotal)"
+                    @click="checkoutStep === 'cart' ? checkoutStep = 'checkout' : startPayment()"
+                    :disabled="placing || (checkoutStep === 'checkout' && paymentMethod === 'wallet' && balance < finalTotal)"
                     class="w-full py-4 bg-parentPrimary text-white rounded-2xl text-xs font-medium tracking-wider hover:bg-parentPrimary/90 transition-all disabled:opacity-40 flex items-center justify-center gap-2 shadow-sm border border-gray-100 shadow-parentPrimary/20 active:scale-[0.98]"
                   >
                     <Loader2 v-if="placing" class="w-4 h-4 animate-spin" />
-                    <span>{{ placing ? 'Processing...' : 'Complete Checkout' }}</span>
+                    <span>{{ placing ? 'Processing...' : (checkoutStep === 'cart' ? 'Proceed to Checkout' : 'Complete Checkout') }}</span>
                     <ArrowRight v-if="!placing" class="w-4 h-4" />
                   </button>
                   <div v-else class="w-full py-4 bg-gray-100 text-gray-500 rounded-2xl text-xs font-medium tracking-wider text-center">
@@ -580,7 +582,7 @@
       </div>
 
       <!-- ===== MOBILE FLOATING CHECKOUT BAR ===== -->
-      <div class="fixed bottom-6 left-4 right-4 z-40 lg:hidden">
+      <div v-if="!cartStore.isEmpty.value" class="fixed bottom-6 left-4 right-4 z-40 lg:hidden">
         <div class="bg-gray-900 rounded-2xl px-5 py-4 text-white flex items-center justify-between shadow-sm border border-gray-100 shadow-black/30">
           <div>
             <p class="text-[9px] font-bold text-white/40 tracking-wider mb-0.5">Total</p>
@@ -588,12 +590,12 @@
           </div>
           <button 
             v-if="canCheckout"
-            @click="startPayment"
-            :disabled="placing || (paymentMethod === 'wallet' && balance < finalTotal)"
+            @click="checkoutStep === 'cart' ? checkoutStep = 'checkout' : startPayment()"
+            :disabled="placing || (checkoutStep === 'checkout' && paymentMethod === 'wallet' && balance < finalTotal)"
             class="px-4 py-3.5 bg-parentPrimary text-white rounded-xl text-xs font-medium tracking-wider hover:scale-105 active:scale-95 transition-all disabled:opacity-30 flex items-center gap-2 shadow-sm border border-gray-100 shadow-parentPrimary/30"
           >
             <div v-if="placing" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-            <span v-else>Pay Now</span>
+            <span v-else>{{ checkoutStep === 'cart' ? 'Checkout' : 'Pay Now' }}</span>
             <ArrowRight v-if="!placing" class="w-3.5 h-3.5" />
           </button>
           <div v-else class="px-4 py-3.5 bg-gray-100 text-gray-500 rounded-xl text-xs font-medium tracking-wider text-center flex items-center justify-center">
@@ -901,6 +903,7 @@ const handleGuestCheckout = (guestData: any) => {
 };
 
 const deliveryOption = ref('use_an_errander');
+const checkoutStep = ref<'cart' | 'checkout'>('cart');
 const placing = ref(false);
 const showAuthModal = ref(false);
 const showOrderBreakdown = ref(false);
@@ -1111,11 +1114,7 @@ const validatePromo = async () => {
 
 const examBrethrenActive = ref(false);
 
-const isNightOwl = computed(() => {
-  if (!examBrethrenActive.value) return false;
-  const currentHour = new Date().getHours();
-  return currentHour >= 22 || currentHour < 2;
-});
+const isNightOwl = computed(() => false);
 
 const computedTotalDeliveryFee = computed(() => {
   if (deliveryOption.value === 'pickup' || isNightOwl.value) return 0;
@@ -1150,22 +1149,39 @@ const computedTotalDeliveryFee = computed(() => {
   return isDormDelivery.value ? Math.round(total * 0.5) : Math.round(total);
 });
 
+const getVendorPackagingFee = (vId: string, stats: any, vendorMeta: any) => {
+  const isIyabo = vId === '6a4e4ba65be2071e52785438';
+  
+  if (!isIyabo) {
+    return 0; // Pack fee is 0 for vendors except Iyabo
+  }
+  
+  const cartItems = stats.packs.flatMap((p: any) => p.items) || [];
+  const nonMoteeItems = cartItems.filter((i: any) => !i.name.toLowerCase().includes('motee chip'));
+  if (nonMoteeItems.length === 0) {
+    return 0; // Pack does not apply if they only order Motee Chips
+  }
+
+  const fallbackPack = selectedPacks.value[vId];
+  const fallbackPrice = fallbackPack ? fallbackPack.price : (vendorMeta?.packagingFee ?? 0);
+  
+  let total = 0;
+  if (stats.packs.length > 0) {
+    stats.packs.forEach((pack: any) => {
+      total += pack.packType?.price ?? fallbackPrice;
+    });
+  } else {
+    total += fallbackPrice;
+  }
+  return total;
+};
+
 const computedTotalPackagingFee = computed(() => {
   let total = 0;
   cartStore.allVendorIds.value.forEach(vId => {
     const stats = cartStore.getVendorStats(vId);
     const vendorMeta = vendorsMetadata.value[vId];
-    const fallbackPack = selectedPacks.value[vId];
-    const fallbackPrice = fallbackPack ? fallbackPack.price : (vendorMeta?.packagingFee ?? 0);
-    
-    // Sum per-pack pricing: each pack can have its own packType
-    if (stats.packs.length > 0) {
-      stats.packs.forEach((pack: any) => {
-        total += pack.packType?.price ?? fallbackPrice;
-      });
-    } else {
-      total += fallbackPrice;
-    }
+    total += getVendorPackagingFee(vId, stats, vendorMeta);
   });
   if (groupOrder.value && groupOrder.value.status === 'locked' && groupOrder.value.splitType === 'split_bill') {
      const activeParticipants = groupOrder.value.participants.filter((p: any) => p.items.length > 0).length || 1;
@@ -1174,7 +1190,7 @@ const computedTotalPackagingFee = computed(() => {
   return Math.round(total);
 });
 
-const computedTotalServiceFee = computed(() => platformConvenienceFee.value * (cartStore.allVendorIds.value.length || 1));
+const computedTotalServiceFee = computed(() => cartStore.allVendorIds.value.length === 0 ? 0 : platformConvenienceFee.value * cartStore.allVendorIds.value.length);
 
 const computedBirthdayDiscount = computed(() => {
   if (!isBirthday.value) return 0;
@@ -1535,9 +1551,10 @@ const preCreateOrders = async (): Promise<string[]> => {
       const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendorMeta?.deliveryFee ?? 150);
       const sFee = platformConvenienceFee.value;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
+      const actualPackFee = getVendorPackagingFee(vendorId, { packs: [] }, vendorMeta);
       const res = await createOrder({
         vendorId, customer: participant.user._id, items: participant.items.map((i: any) => ({ product: i.productId, name: i.name, price: i.price, image: i.image, quantity: i.quantity, subtotal: i.price * i.quantity, customizations: i.customizations || [] })),
-        subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: vendorMeta?.packagingFee ?? 0, total: subtotal + sFee + (vendorMeta?.packagingFee ?? 0) + deliveryFee + pFee,
+        subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: actualPackFee, total: subtotal + sFee + actualPackFee + deliveryFee + pFee,
         deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, isGroupOrder: true, groupId: activeCode.value, isGroupLeader: participant.user._id === groupOrder.value.host._id,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value,
         vendorNote: cartStore.vendorNotes.value[vendorId] || '',
@@ -1553,9 +1570,10 @@ const preCreateOrders = async (): Promise<string[]> => {
       const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendor?.deliveryFee ?? 150);
       const sFee = platformConvenienceFee.value;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
+      const actualPackFee = getVendorPackagingFee(vId, stats, vendor);
       const res = await createOrder({
         vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, packType: p.packType, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal, customizations: item.customizations || [] })) })),
-        subtotal: stats.subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: vendor?.packagingFee ?? 0, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: vendor?.packagingFee ?? 0 },
+        subtotal: stats.subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: actualPackFee, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: actualPackFee },
         isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
         vendorNote: cartStore.vendorNotes.value[vId] || '',
