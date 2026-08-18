@@ -495,26 +495,33 @@ watch(mode, (newMode) => {
   }
 })
 
-onMounted(async () => {
-  await fetchStudentOrders()
-  
+const checkOrders = () => {
   // 1. Check for Pending Orders (Abandoned Cart)
-  const pending = studentOrders.value.find(o => o.status === 'PENDING' || o.status === 'AWAITING_PAYMENT')
-  if (pending && route.path !== `/dashboard/orders/${pending._id}` && route.path !== '/cart') {
+  const pending = studentOrders.value.find((o: any) => o.status === 'PENDING' || o.status === 'AWAITING_PAYMENT')
+  if (pending && route.path !== `/dashboard/orders/${pending._id}` && route.path !== '/cart' && !pendingOrderModalOpen.value) {
     pendingOrder.value = pending
     pendingOrderModalOpen.value = true
   }
   
   // 2. Check for Recently Delivered Orders (Unrated)
-  const delivered = studentOrders.value.find(o => 
+  const delivered = studentOrders.value.find((o: any) => 
     (o.status === 'DELIVERED' || o.status === 'COMPLETED') && 
     (!o.hasRatedVendor || !o.hasRatedErrander)
   )
-  if (delivered && !pendingOrderModalOpen.value && route.path !== `/dashboard/orders/${delivered._id}`) {
+  if (delivered && !pendingOrderModalOpen.value && route.path !== `/dashboard/orders/${delivered._id}` && !reviewOrderModalOpen.value) {
     reviewOrder.value = delivered
     reviewOrderModalOpen.value = true
   }
+}
+
+onMounted(async () => {
+  await fetchStudentOrders()
+  checkOrders()
 })
+
+watch(() => studentOrders.value, () => {
+  checkOrders()
+}, { deep: true })
 </script>
 
 <style scoped>
