@@ -48,7 +48,9 @@ export const orders_api = {
   rateOrder: (id: string, payload: any) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${id}/rate`, payload);
   },
-
+  submitFeedback: (id: string, payload: any) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${id}/feedback`, payload);
+  },
   reorder: (id: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.post(`/orders/${id}/reorder`);
   },

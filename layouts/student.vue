@@ -330,6 +330,19 @@
         </div>
       </div>
     </Transition>
+
+    <!-- Global Modals -->
+    <PendingOrderModal
+      :isOpen="pendingOrderModalOpen"
+      :order="pendingOrder"
+      @close="pendingOrderModalOpen = false"
+    />
+
+    <ReviewOrderModal
+      :isOpen="reviewOrderModalOpen"
+      :order="reviewOrder"
+      @close="reviewOrderModalOpen = false"
+    />
   </div>
 </template>
 
@@ -362,18 +375,30 @@ import {
 } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
-import { useDashboardMode } from '@/composables/useDashboardMode'
+import { useAuth } from '@/composables/modules/auth'
+import { useStudentOrders } from '@/composables/modules/orders'
+import ConfirmModal from '@/components/core/ConfirmModal.vue'
+import PendingOrderModal from '@/components/core/PendingOrderModal.vue'
+import ReviewOrderModal from '@/components/core/ReviewOrderModal.vue'
 
 const { unreadCount } = useNotifications()
 useRealtimeNotifications() // Initialize listener
 
 const route = useRoute()
 const router = useRouter()
-const { user, logOut } = useUser()
+const { user } = useUser()
+const { logOut } = useAuth()
+const { orders: studentOrders, fetchOrders: fetchStudentOrders } = useStudentOrders()
+
 const isMobileSidebarOpen = ref(false)
 const logoutModalOpen = ref(false)
+const pendingOrderModalOpen = ref(false)
+const pendingOrder = ref<any>(null)
+const reviewOrderModalOpen = ref(false)
+const reviewOrder = ref<any>(null)
 
-const { mode, setMode } = useDashboardMode()
+// Mode toggle: 'errands' or 'services'
+const mode = ref<'errands' | 'services'>('errands')
 
 // `code` is a short manifest-style tag rendered on the right of each nav
 // row (visual only, mirrors the courier/dispatch waybill language used
@@ -468,6 +493,27 @@ watch(mode, (newMode) => {
     router.push('/dashboard')
   } else if (newMode === 'services' && (route.path === '/dashboard' || route.path.startsWith('/dashboard/orders'))) {
     router.push('/dashboard/activity')
+  }
+})
+
+onMounted(async () => {
+  await fetchStudentOrders()
+  
+  // 1. Check for Pending Orders (Abandoned Cart)
+  const pending = studentOrders.value.find(o => o.status === 'PENDING' || o.status === 'AWAITING_PAYMENT')
+  if (pending && route.path !== `/dashboard/orders/${pending._id}` && route.path !== '/cart') {
+    pendingOrder.value = pending
+    pendingOrderModalOpen.value = true
+  }
+  
+  // 2. Check for Recently Delivered Orders (Unrated)
+  const delivered = studentOrders.value.find(o => 
+    (o.status === 'DELIVERED' || o.status === 'COMPLETED') && 
+    (!o.hasRatedVendor || !o.hasRatedErrander)
+  )
+  if (delivered && !pendingOrderModalOpen.value && route.path !== `/dashboard/orders/${delivered._id}`) {
+    reviewOrder.value = delivered
+    reviewOrderModalOpen.value = true
   }
 })
 </script>
