@@ -231,12 +231,17 @@
                       </div>
                       <h3 class="text-base font-bold text-gray-900">{{ order.errander.firstName }} {{ order.errander.lastName }}</h3>
                    </div>
-                   <div class="flex gap-2">
-                      <a :href="`tel:${order.errander.phone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
-                        Call
-                      </a>
+                   <div class="flex flex-col gap-2">
+                      <div class="flex gap-2">
+                        <a :href="`tel:${order.errander.phone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
+                          Call
+                        </a>
+                        <a v-if="order.errander.phone" :href="`https://wa.me/${order.errander.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I am the customer for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors">
+                          WhatsApp
+                        </a>
+                      </div>
                       <button @click="openChat(String(order.errander?.user?._id || order.errander?.user || order.errander._id), (order.errander?.user?.firstName || order.errander?.firstName) + ' (Rider)', order.errander?.user?.avatar)" class="flex-1 py-2.5 rounded-lg bg-gray-900 text-white text-xs font-bold text-center hover:bg-black transition-colors flex items-center justify-center gap-1.5">
-                        <MessageSquare class="w-3.5 h-3.5" /> Message
+                        <MessageSquare class="w-3.5 h-3.5" /> In-App Message
                       </button>
                    </div>
                 </div>
@@ -257,9 +262,19 @@
                       </div>
                       <h3 class="text-base font-bold text-gray-900">{{ order.vendor?.storeName || 'Vendor' }}</h3>
                    </div>
-                   <button @click="openChat((order.vendor?.owner?._id || order.vendor?.owner || '') + ',' + (order.vendor?._id || ''), order.vendor?.storeName || 'Vendor', order.vendor?.logo)" class="w-full py-2.5 rounded-lg bg-gray-900 text-white text-xs font-bold text-center hover:bg-black transition-colors flex items-center justify-center gap-1.5">
-                     <MessageSquare class="w-3.5 h-3.5" /> Message Store
-                   </button>
+                   <div class="flex flex-col gap-2">
+                     <div v-if="order.vendor?.phone" class="flex gap-2">
+                       <a :href="`tel:${order.vendor.phone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
+                         Call
+                       </a>
+                       <a :href="`https://wa.me/${order.vendor.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I am the customer for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors flex justify-center items-center">
+                         WhatsApp
+                       </a>
+                     </div>
+                     <button @click="openChat((order.vendor?.owner?._id || order.vendor?.owner || '') + ',' + (order.vendor?._id || ''), order.vendor?.storeName || 'Vendor', order.vendor?.logo)" class="w-full py-2.5 rounded-lg bg-gray-900 text-white text-xs font-bold text-center hover:bg-black transition-colors flex items-center justify-center gap-1.5">
+                       <MessageSquare class="w-3.5 h-3.5" /> In-App Message Store
+                     </button>
+                   </div>
                 </div>
 
                 <!-- Receipt Summary -->
