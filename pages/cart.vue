@@ -385,11 +385,11 @@
                 </div>
               </div>
             </div>
-            </div> <!-- End of checkout step wrapper -->
 
             <!-- Order Items (Step 1) -->
             <div v-if="checkoutStep === 'cart'" class="bg-white rounded-2xl border border-gray-100 overflow-hidden w-full mx-auto">
               <div class="flex items-center justify-between px-5 py-4 bg-gray-50/50 border-b border-gray-100">
+
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600">
                     <ShoppingCart class="w-4 h-4" />
