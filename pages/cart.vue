@@ -1155,12 +1155,7 @@ const computedTotalDeliveryFee = computed(() => {
 });
 
 const getVendorPackagingFee = (vId: string, stats: any, vendorMeta: any) => {
-  const isIyabo = vId === '6a4e4ba65be2071e52785438';
-  
-  if (!isIyabo) {
-    return 0; // Pack fee is 0 for vendors except Iyabo
-  }
-  
+
   const cartItems = stats.packs.flatMap((p: any) => p.items) || [];
   const nonMoteeItems = cartItems.filter((i: any) => !i.name.toLowerCase().includes('motee chip'));
   if (nonMoteeItems.length === 0) {
