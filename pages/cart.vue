@@ -154,9 +154,9 @@
               <div class="p-4 sm:p-5 space-y-4">
                 <AnimatedInput v-model="recipientName" label="Full Name"  />
                 <AnimatedInput v-model="recipientPhone" label="Phone Number" type="tel" />
-                <SelectInput v-model="deliveryOption" label="Delivery Policy" :options="[{label: isFetchingFees ? 'Use an Errander (Calculating...)' : (computedTotalDeliveryFee > 0 ? `Use an Errander (₦${computedTotalDeliveryFee.toLocaleString()})` : 'Use an Errander'), value: 'use_an_errander'}, {label: 'I\'ll pick it up myself', value: 'pickup'}]" />
+                <!-- Delivery Option is fixed to use_an_errander -->
                 
-                <div v-if="deliveryOption === 'use_an_errander'" class="animate-fade-in relative z-50">
+                <div class="animate-fade-in relative z-50">
                   <div class="mb-4">
                     <label class="flex items-center gap-2 cursor-pointer group">
                       <input type="checkbox" v-model="isWithinLuth" class="sr-only peer" />
@@ -1062,7 +1062,7 @@ const dynamicDeliveryFees = ref<Record<string, number>>({});
 const isFetchingFees = ref(false);
 
 const fetchDeliveryFees = async () => {
-  if (deliveryOption.value === 'pickup') return;
+  // (legacy pickup check removed)
   const address = isDormDelivery.value ? (specificAddress.value || user.value?.deliveryAddress) : user.value?.deliveryAddress;
   
   if (!address) return; // Wait until address is known
@@ -1122,7 +1122,7 @@ const examBrethrenActive = ref(false);
 const isNightOwl = computed(() => false);
 
 const computedTotalDeliveryFee = computed(() => {
-  if (deliveryOption.value === 'pickup' || isNightOwl.value) return 0;
+  if (isNightOwl.value) return 0;
   const currentUser = user.value as any;
   if (currentUser?.campusPrimeActive && currentUser?.campusPrimeExpiry && new Date(currentUser.campusPrimeExpiry) > new Date()) return 0;
   if (deliveryOption.value === 'batch_run') return 150;
@@ -1391,7 +1391,7 @@ onMounted(async () => {
     recipientName.value = data.name || '';
     recipientPhone.value = data.phone || '';
     specificAddress.value = data.address || '';
-    deliveryOption.value = data.delivery || 'use_an_errander';
+    deliveryOption.value = 'use_an_errander'; // pickup no longer supported
     isMysteryBox.value = data.mystery || false;
     isDormDelivery.value = data.dorm || false;
     paymentMethod.value = data.paymentMethod || 'card';
@@ -1472,7 +1472,7 @@ const startPayment = async () => {
   // AT THIS POINT, THE USER IS ABOUT TO ACTUALLY PAY
   // Require delivery details and authentication
   if (!recipientName.value.trim() || !recipientPhone.value.trim()) return showToast({ title: 'Missing Info', message: 'Name and phone required', toastType: 'error' });
-  if (deliveryOption.value === 'use_an_errander' && !specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Address required', toastType: 'error' });
+  if (!specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Delivery address required', toastType: 'error' });
   if (!user.value?.email && !guestEmail.value) return (showAuthModal.value = true);
 
   if (paymentMethod.value === 'wallet' && balance.value < finalTotal.value) {
@@ -1553,7 +1553,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       if (!participant.items.length) continue;
       const vendorMeta = vendorsMetadata.value[vendorId];
       const subtotal = participant.items.reduce((s: number, i: any) => s + (i.price * i.quantity), 0);
-      const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendorMeta?.deliveryFee ?? 150);
+      const deliveryFee = vendorMeta?.deliveryFee ?? 150;
       const sFee = platformConvenienceFee.value;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const actualPackFee = getVendorPackagingFee(vendorId, { packs: [] }, vendorMeta);
@@ -1572,7 +1572,7 @@ const preCreateOrders = async (): Promise<string[]> => {
     for (const vId of [...cartStore.allVendorIds.value]) {
       const stats = cartStore.getVendorStats(vId) as any;
       const vendor = vendorsMetadata.value[vId];
-      const deliveryFee = deliveryOption.value === 'pickup' ? 0 : (vendor?.deliveryFee ?? 150);
+      const deliveryFee = vendor?.deliveryFee ?? 150;
       const sFee = platformConvenienceFee.value;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const actualPackFee = getVendorPackagingFee(vId, stats, vendor);

@@ -323,7 +323,7 @@
  </div>
  </div>
 
- <template v-if="order.deliveryOption !== 'pickup' && order.deliveryPin">
+ <template v-if="order.deliveryPin">
   <div class="flex items-center gap-3 mt-6 bg-emerald-50 px-4 py-3 rounded-xl border border-emerald-100 min-w-full relative z-10">
   <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center flex-shrink-0">
   <ShieldCheck class="w-4 h-4" />
