@@ -377,7 +377,6 @@ import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifica
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
 import { useAuth } from '@/composables/modules/auth'
 import { useStudentOrders } from '@/composables/modules/orders'
-import ConfirmModal from '@/components/core/ConfirmModal.vue'
 import PendingOrderModal from '@/components/core/PendingOrderModal.vue'
 import ReviewOrderModal from '@/components/core/ReviewOrderModal.vue'
 
