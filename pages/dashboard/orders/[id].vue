@@ -236,7 +236,7 @@
                         <a :href="`tel:${order.errander.phone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
                           Call
                         </a>
-                        <a v-if="order.errander.phone" :href="`https://wa.me/${order.errander.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I am the customer for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors">
+                        <a v-if="order.errander.phone" :href="`https://wa.me/${order.errander.phone.replace(/[^0-9]/g, '').replace(/^0/, '234')}?text=${encodeURIComponent('Hi, I am the customer for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors">
                           WhatsApp
                         </a>
                       </div>
@@ -267,7 +267,7 @@
                        <a :href="`tel:${order.vendor.phone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
                          Call
                        </a>
-                       <a :href="`https://wa.me/${order.vendor.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I am the customer for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors flex justify-center items-center">
+                       <a :href="`https://wa.me/${order.vendor.phone.replace(/[^0-9]/g, '').replace(/^0/, '234')}?text=${encodeURIComponent('Hi, I am the customer for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors flex justify-center items-center">
                          WhatsApp
                        </a>
                      </div>
