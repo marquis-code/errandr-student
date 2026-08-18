@@ -236,7 +236,7 @@
                         <a :href="`tel:${order.errander.phone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
                           Call
                         </a>
-                        <a v-if="order.errander.phone" :href="`https://wa.me/${order.errander.phone.replace(/[^0-9]/g, '').replace(/^0/, '234')}?text=${encodeURIComponent('Hi, I am the customer for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors">
+                        <a v-if="order.errander.phone" :href="getWhatsAppLink(order.errander.phone, 'rider')" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors">
                           WhatsApp
                         </a>
                       </div>
@@ -267,7 +267,7 @@
                        <a :href="`tel:${order.vendor.phone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
                          Call
                        </a>
-                       <a :href="`https://wa.me/${order.vendor.phone.replace(/[^0-9]/g, '').replace(/^0/, '234')}?text=${encodeURIComponent('Hi, I am the customer for order #' + order.orderNumber)}`" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors flex justify-center items-center">
+                       <a :href="getWhatsAppLink(order.vendor.phone, 'vendor')" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors flex justify-center items-center">
                          WhatsApp
                        </a>
                      </div>
@@ -508,6 +508,31 @@ const openChat = (receiverId: string | undefined, name: string, avatar?: string)
    chatReceiverName.value = name;
    chatReceiverAvatar.value = avatar || '';
    isChatOpen.value = true;
+};
+
+const getWhatsAppLink = (phone: string, type: 'vendor' | 'rider') => {
+  if (!phone || !order.value) return '#';
+  const cleanPhone = phone.replace(/[^0-9]/g, '').replace(/^0/, '234');
+  const o = order.value;
+  let message = '';
+  
+  if (type === 'vendor') {
+    const total = o.totalAmount || 0;
+    message = `Hello, I am the customer for order #${o.orderNumber}.
+
+My order includes ${o.items?.length || 0} item(s) for a total of ₦${total.toLocaleString('en-US')}.
+
+I just wanted to check on the status or provide some additional instructions:`;
+  } else if (type === 'rider') {
+    const deliveryAddress = o.type === 'custom_errand' ? (o.customDetails?.deliveryAddress || 'my address') : (o.customerAddress?.address || 'my address');
+    message = `Hello ${o.errander?.firstName || 'Rider'}, I am the customer for order #${o.orderNumber}.
+
+My delivery address is: *${deliveryAddress}*.
+
+Please let me know if you need any directions or when you are close!`;
+  }
+
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 };
 
 const checkAutoOpenChat = () => {
