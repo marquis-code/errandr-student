@@ -614,64 +614,25 @@ onMounted(async () => {
     } catch(e){}
   }
 
-  // Handle Paystack callback: verify payment, create order with reference
+  // Handle Paystack callback: verify payment and redirect to order
   if (route.query.reference) {
     isSubmitting.value = true
     step.value = 3
     const refStr = route.query.reference as string
-    
-    const savedPayloadStr = sessionStorage.getItem('pendingErrandPayload')
-    if (savedPayloadStr) {
-      try {
-        const parsed = JSON.parse(savedPayloadStr)
-        const payload = parsed.payload || parsed // Fallback for old sessions
-        form.value.estimatedItemCost = payload.estimatedItemCost || 0
-        form.value.runnerFee = payload.runnerFee || 0
-      } catch (e) {}
-    }
 
     try {
       const verification = await verifyPayment(refStr)
       const vData = verification?.data || verification
       if (vData?.status === 'success') {
-        failedPaymentReference.value = refStr // Store it initially in case order creation fails
+        // Extract orderId from the metadata that was passed during initialization
+        const orderId = vData?.metadata?.orderId || vData?.data?.metadata?.orderId;
         
-        if (!savedPayloadStr) {
-          showToast({ title: 'Error', message: 'Could not recover errand details. Please contact support.', toastType: 'error' })
-          isSubmitting.value = false
+        if (orderId) {
+          showToast({ title: 'Success!', message: 'Your errand is now live!', toastType: 'success' })
+          router.push(`/dashboard/orders/${orderId}`)
           return
-        }
-        
-        const parsed = JSON.parse(savedPayloadStr)
-        const payload = parsed.payload || parsed
-        payload.paymentReference = refStr
-
-        // Create the order with payment reference
-        const response = await api.post('/orders', payload)
-        
-        if (response.data) {
-          const orderId = response.data._id || response.data.id
-          try {
-            if (parsed.selectedPoolId) {
-              await orders_api.joinPool(orderId, parsed.selectedPoolId)
-              showToast({ title: 'Pool Joined!', message: 'You have joined the errand pool. The fee difference will be refunded to your wallet shortly.', toastType: 'success' })
-            } else if (parsed.allowPoolJoin) {
-              await orders_api.createPool(orderId, { title: payload.description.substring(0, 50) || 'Custom Errand Pool' })
-              showToast({ title: 'Pool Created!', message: 'Others can now join your errand to split the fee.', toastType: 'success' })
-            }
-          } catch(e) {
-            console.error('Pooling failed:', e)
-            showToast({ title: 'Warning', message: 'Errand created, but failed to join/create pool.', toastType: 'error' })
-          }
-        }
-
-        // Clear on success
-        sessionStorage.removeItem('pendingErrandPayload')
-        failedPaymentReference.value = ''
-
-        if (response.data) {
-          showToast({ title: 'Payment Successful!', message: 'Your errand is now live and waiting for a rider.', toastType: 'success' })
-          router.push(`/dashboard/orders/${response.data._id || response.data.id}`)
+        } else {
+          showToast({ title: 'Error', message: 'Could not find order reference. Please contact support.', toastType: 'error' })
         }
       } else {
         showToast({ title: 'Payment Failed', message: 'Your payment could not be verified. Please try again.', toastType: 'error' })
@@ -883,25 +844,22 @@ const submitErrand = async () => {
   try {
     const payload = await buildErrandPayload()
 
-    // Handle retry logic if payment succeeded but order creation failed earlier
-    if (failedPaymentReference.value) {
-      payload.paymentReference = failedPaymentReference.value
-      const response = await api.post('/orders', payload)
-      sessionStorage.removeItem('pendingErrandPayload')
-      failedPaymentReference.value = ''
-      showToast({ title: 'Success!', message: 'Your errand is now live!', toastType: 'success' })
-      router.push(`/dashboard/orders/${response.data._id || response.data.id}`)
-      return
+    // 1. Create the order FIRST (will be created as PENDING since no payment reference is provided yet)
+    const response = await api.post('/orders', payload)
+    const orderId = response.data._id || response.data.id
+
+    // 1.5 Handle Pooling
+    try {
+      if (selectedPoolId.value) {
+        await orders_api.joinPool(orderId, selectedPoolId.value)
+      } else if (allowPoolJoin.value) {
+        await orders_api.createPool(orderId, { title: payload.description.substring(0, 50) || 'Custom Errand Pool' })
+      }
+    } catch (e) {
+      console.error('Pooling logic failed:', e)
     }
 
-    // Save payload to sessionStorage so we can recover it after Paystack redirect
-    sessionStorage.setItem('pendingErrandPayload', JSON.stringify({
-      payload,
-      selectedPoolId: selectedPoolId.value,
-      allowPoolJoin: allowPoolJoin.value
-    }))
-
-    // Initialize Paystack payment
+    // 2. Initialize Paystack payment with the created orderId
     const amount = grandTotal.value
     const customerEmail = user.value?.email || 'customer@erranders.org'
     const customerName = user.value ? `${user.value.firstName} ${user.value.lastName}` : 'Customer'
@@ -910,7 +868,12 @@ const submitErrand = async () => {
       amount,
       customer: { name: customerName, email: customerEmail },
       callback_url: `${window.location.origin}/errands/custom`,
-      metadata: { type: 'custom_errand', estimatedItemCost: payload.estimatedItemCost, runnerFee: payload.runnerFee },
+      metadata: { 
+        type: 'custom_errand', 
+        orderId, 
+        estimatedItemCost: payload.estimatedItemCost, 
+        runnerFee: payload.runnerFee 
+      },
     })
 
     const authUrl = data?.data?.authorization_url || data?.authorization_url
@@ -921,7 +884,7 @@ const submitErrand = async () => {
     }
   } catch (error: any) {
     console.error(error)
-    showToast({ title: 'Error', message: error.response?.data?.message || 'Failed to initialize payment.', toastType: 'error' })
+    showToast({ title: 'Error', message: error.response?.data?.message || 'Failed to process errand.', toastType: 'error' })
   } finally {
     isSubmitting.value = false
   }
