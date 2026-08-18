@@ -455,6 +455,7 @@
               </div>
             </div>
           </div>
+        </div>
 
           <!-- RIGHT: Order Summary Sidebar -->
           <div class="hidden lg:block w-[340px] shrink-0">
