@@ -451,9 +451,9 @@
                           <div class="absolute top-0 right-0 bg-gray-900/80 backdrop-blur-sm text-white text-[9px] font-black px-1.5 py-0.5 rounded-bl-lg">x{{ item.quantity }}</div>
                         </div>
                         <div class="flex-1 min-w-0 pt-0.5">
-                          <div class="flex justify-between items-start mb-1">
-                            <div>
-                              <h5 class="text-sm font-bold text-gray-900 truncate pr-4">{{ toTitleCase(item.name) }}</h5>
+                          <div class="flex justify-between items-start mb-1 gap-2">
+                            <div class="flex-1 min-w-0">
+                              <h5 class="text-sm font-bold text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
                               <p v-if="item.customizations && item.customizations.length > 0" class="text-[10px] font-bold text-parentPrimary mt-0.5 bg-parentPrimary/10 inline-block px-2 py-0.5 rounded-full">Base: ₦{{ item.price?.toLocaleString() }}</p>
                             </div>
                             <div class="text-right shrink-0">
@@ -636,7 +636,7 @@
       </div>
 
       <!-- ===== MOBILE FLOATING CHECKOUT BAR ===== -->
-      <div v-if="!cartStore.isEmpty.value" class="fixed bottom-6 left-4 right-4 z-40 lg:hidden">
+      <div v-if="!cartStore.isEmpty.value" class="fixed bottom-[85px] left-4 right-4 z-40 lg:hidden">
         <div class="bg-gray-900 rounded-2xl px-5 py-4 text-white flex items-center justify-between shadow-sm border border-gray-100 shadow-black/30">
           <div>
             <p class="text-[9px] font-bold text-white/40 tracking-wider mb-0.5">Total</p>
@@ -721,8 +721,8 @@
                     <img v-else :src="item.image || '/placeholder-store.jpg'" @error="$event.target.src = '/placeholder-store.jpg'" class="w-full h-full object-cover" />
                   </div>
                   <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-start mb-1">
-                      <div>
+                    <div class="flex justify-between items-start mb-1 gap-2">
+                      <div class="flex-1 min-w-0">
                         <h5 class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
                         <p v-if="item.customizations && item.customizations.length > 0" class="text-[10px] font-medium text-gray-400 mt-0.5">Base: ₦{{ item.price?.toLocaleString() }}</p>
                       </div>
