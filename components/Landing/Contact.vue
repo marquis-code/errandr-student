@@ -1,6 +1,5 @@
 <template>
   <section id="contact" class="py-24 px-4 lg:px-10 bg-white relative overflow-hidden">
-    <!-- Background Decor -->
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-parentPrimary/[0.03] rounded-full blur-[120px] pointer-events-none"></div>
 
     <div class="max-w-4xl mx-auto relative z-10">
@@ -118,7 +117,6 @@ const handleSubmit = async () => {
   loading.value = true
   // Mock sending logic - integrating with EmailJS would happen here if configured
   try {
-    // In a real scenario, use window.emailjs.send(...)
     await new Promise(resolve => setTimeout(resolve, 1500))
     success.value = true
     Object.keys(form).forEach(key => form[key] = '')
