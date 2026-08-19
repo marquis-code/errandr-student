@@ -198,6 +198,7 @@
       </div>
     </Transition>
   </Teleport>
+  <CoreLogoutModal :isOpen="isLogoutModalOpen" @close="isLogoutModalOpen = false" />
 </template>
 
 <script setup lang="ts">
@@ -284,9 +285,10 @@ const handleNotificationClick = async (notif: any) => {
   }
 }
 
-const handleLogout = async () => {
-  await logOut()
-  window.location.reload()
+const isLogoutModalOpen = ref(false)
+
+const handleLogout = () => {
+  isLogoutModalOpen.value = true
 }
 </script>
 

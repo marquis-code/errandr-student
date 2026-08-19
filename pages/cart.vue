@@ -1609,6 +1609,7 @@ const preCreateOrders = async (): Promise<string[]> => {
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value,
         vendorNote: cartStore.vendorNotes.value[vendorId] || '',
         promoCode: promoCodeObj.value?.code || undefined,
+        isWithinLuth: isWithinLuth.value,
       });
       if (res?._id || res?.data?._id) createdIds.push(res?._id || res?.data?._id);
       isFirstOrder = false;
@@ -1628,6 +1629,7 @@ const preCreateOrders = async (): Promise<string[]> => {
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
         vendorNote: cartStore.vendorNotes.value[vId] || '',
         promoCode: promoCodeObj.value?.code || undefined,
+        isWithinLuth: isWithinLuth.value,
       });
       if (res?._id || res?.data?._id) { 
         createdIds.push(res?._id || res?.data?._id); 

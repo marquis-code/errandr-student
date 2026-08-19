@@ -306,30 +306,7 @@
     </main>
 
     <!-- Logout Modal -->
-    <Transition name="overlay">
-      <div
-        v-if="logoutModalOpen"
-        class="fixed inset-0 z-[110] flex items-center justify-center bg-[#171310]/50 backdrop-blur-sm px-4"
-        @click.self="logoutModalOpen = false"
-      >
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 max-w-sm w-full p-5 flex flex-col items-center text-center space-y-6 border border-[#E7E2DA]">
-          <div class="w-14 h-14 rounded-xl bg-rose-50 flex items-center justify-center">
-            <LogOut class="w-6 h-6 text-rose-500"></LogOut>
-          </div>
-          <div class="space-y-2">
-            <p class="ff-mono text-[10px] font-bold tracking-[0.15em] uppercase text-[#9C968E]">Confirm · Sign Out</p>
-            <h3 class="text-xl font-bold text-[#171310]">Leaving already?</h3>
-            <p class="text-sm text-[#9C968E] font-bold leading-relaxed">
-              Your active orders will still be processed while you're away.
-            </p>
-          </div>
-          <div class="flex gap-3 w-full">
-            <button @click="logoutModalOpen = false" class="flex-1 py-3.5 rounded-xl text-sm font-bold text-[#171310] bg-[#FAF8F5] border border-[#E7E2DA] hover:bg-[#F0ECE5] transition-all">Stay</button>
-            <button @click="confirmLogout" class="flex-1 py-3.5 rounded-xl text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 transition-all shadow-sm border border-gray-100 shadow-rose-200">Log out</button>
-          </div>
-        </div>
-      </div>
-    </Transition>
+    <CoreLogoutModal :isOpen="logoutModalOpen" @close="logoutModalOpen = false" />
 
     <!-- Global Modals -->
     <PendingOrderModal

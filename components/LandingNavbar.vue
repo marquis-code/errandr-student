@@ -182,6 +182,7 @@
     </div>
     <CoreManageBookingModal :isOpen="isBookingModalOpen" @close="isBookingModalOpen = false" />
     <CoreManageOrderModal :isOpen="isOrderModalOpen" @close="isOrderModalOpen = false" />
+    <CoreLogoutModal :isOpen="isLogoutModalOpen" @close="isLogoutModalOpen = false" />
   </nav>
 </template>
 
@@ -215,9 +216,10 @@ const activeFilterIcon = computed(() => {
   return f ? f.icon : ''
 })
 
-const handleLogout = async () => {
-  await logOut()
-  window.location.reload()
+const isLogoutModalOpen = ref(false)
+
+const handleLogout = () => {
+  isLogoutModalOpen.value = true
 }
 
 const handleScroll = () => {
