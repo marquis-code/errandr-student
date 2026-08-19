@@ -2103,7 +2103,8 @@ const addToCart = (product: any) => {
     quantity: 1,
     customizations: customItems,
     note: productNote.value,
-    isPrepaidByPlatform: !!product.isPrepaidByPlatform
+    isPrepaidByPlatform: !!product.isPrepaidByPlatform,
+    isPackagingFeeIncluded: !!product.isPackagingFeeIncluded
   });
   
   if (isGroupOrderActiveForThisVendor.value) {
@@ -2123,7 +2124,9 @@ const quickAddToCart = (product: any) => {
     image: getMediaItems(product)[0]?.url || product.image,
     quantity: 1,
     customizations: [],
-    note: ''
+    note: '',
+    isPrepaidByPlatform: !!product.isPrepaidByPlatform,
+    isPackagingFeeIncluded: !!product.isPackagingFeeIncluded
   });
   
   if (isGroupOrderActiveForThisVendor.value) {

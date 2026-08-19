@@ -420,7 +420,7 @@
                   </div>
                   
                   <!-- Packaging Selection -->
-                  <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0" class="mb-6 p-4 bg-gray-50/80 rounded-2xl border border-gray-100/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0 && !cartStore.getVendorStats(vendorId).packs.flatMap(p => p.items).every(i => i.isPackagingFeeIncluded)" class="mb-6 p-4 bg-gray-50/80 rounded-2xl border border-gray-100/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <h5 class="text-xs font-bold text-gray-900 flex items-center gap-1.5"><Box class="w-3.5 h-3.5 text-gray-500"/> Packaging Type</h5>
                       <p class="text-[10px] text-gray-500 mt-0.5">Choose how you want your items packed</p>
@@ -702,7 +702,7 @@
                 <h4 class="text-xs font-medium text-gray-900">{{ toTitleCase(vendorsMetadata[vendorId]?.storeName || '') }}</h4>
               </div>
               
-              <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0" class="pl-3 border-l-2 border-gray-50 space-y-1">
+              <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0 && !cartStore.getVendorStats(vendorId).packs.flatMap(p => p.items).every(i => i.isPackagingFeeIncluded)" class="pl-3 border-l-2 border-gray-50 space-y-1">
                 <label class="block text-[10px] font-bold text-gray-400">Packaging Type</label>
                 <select v-model="selectedPacks[vendorId]" class="w-full bg-white text-xs p-2 rounded-lg border border-gray-200 focus:outline-none focus:border-parentPrimary text-gray-700 font-medium">
                   <option v-for="(packOption, idx) in vendorsMetadata[vendorId].packs" :key="idx" :value="packOption">
@@ -1218,10 +1218,16 @@ const getVendorPackagingFee = (vId: string, stats: any, vendorMeta: any) => {
   let total = 0;
   if (stats.packs.length > 0) {
     stats.packs.forEach((pack: any) => {
-      total += pack.packType?.price ?? fallbackPrice;
+      const hasFeeIncluded = pack.items.some((i: any) => i.isPackagingFeeIncluded === true);
+      if (!hasFeeIncluded) {
+        total += pack.packType?.price ?? fallbackPrice;
+      }
     });
   } else {
-    total += fallbackPrice;
+    const hasFeeIncluded = cartItems.some((i: any) => i.isPackagingFeeIncluded === true);
+    if (!hasFeeIncluded) {
+      total += fallbackPrice;
+    }
   }
   return total;
 };
