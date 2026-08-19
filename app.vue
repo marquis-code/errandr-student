@@ -37,15 +37,19 @@ import { useStudentNotifications } from '@/composables/useStudentNotifications'
 import { useUser } from '@/composables/modules/auth/user'
 import { useWebRTC } from '@/composables/useWebRTC'
 
+import { useAuth } from '@/composables/modules/auth'
+
 const { initCart } = useCart()
 const { isLoggedIn } = useUser()
 const { requestPermissionAndRegister, listenForNotifications } = useStudentNotifications()
 const { initSocketListeners } = useWebRTC()
+const { checkRedirectResult } = useAuth()
 
 initCart()
 useRealtimeNotifications()
 
 onMounted(() => {
+  checkRedirectResult()
   listenForNotifications()
   initSocketListeners()
   if (isLoggedIn.value && 'Notification' in window && Notification.permission === 'granted') {

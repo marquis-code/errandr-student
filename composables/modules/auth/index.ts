@@ -4,13 +4,54 @@ import { useUser } from './user';
 import { navigateTo, useRoute, useRuntimeConfig } from '#imports';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult, signInWithRedirect } from 'firebase/auth';
 
 export const useAuth = () => {
   const { setUser, setToken, logOut } = useUser();
   const { showToast } = useCustomToast();
   const loading = ref(false);
   const firebaseLoading = ref(false);
+
+  const checkRedirectResult = async () => {
+    try {
+      const config = useRuntimeConfig();
+      const firebaseConfig = {
+        apiKey: config.public.firebaseApiKey,
+        authDomain: config.public.firebaseAuthDomain,
+        projectId: config.public.firebaseProjectId,
+      };
+
+      const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+      const auth = getAuth(app);
+      
+      const result = await getRedirectResult(auth);
+      if (result) {
+        firebaseLoading.value = true;
+        const idToken = await result.user.getIdToken();
+        const res = await auth_api.firebaseLogin({ idToken });
+        
+        if (res.type === 'ERROR') throw { data: res.data || { message: 'Firebase login failed' } };
+        
+        const responseData = res.data?.data || res.data;
+        const userData = responseData?.user;
+        const tokenValue = responseData?.token;
+        
+        if (userData && tokenValue) {
+          setUser(userData);
+          setToken(tokenValue);
+          showToast({
+            title: "Welcome Back!",
+            message: "You've successfully logged in with Google.",
+            toastType: "success",
+          });
+        }
+      }
+    } catch (e: any) {
+      console.error('Redirect login error:', e);
+    } finally {
+      firebaseLoading.value = false;
+    }
+  };
 
   const login = async (payload: any, options: { redirect?: boolean } = { redirect: true }) => {
     const route = useRoute();
@@ -72,7 +113,20 @@ export const useAuth = () => {
       const auth = getAuth(app);
       const provider = new GoogleAuthProvider();
 
-      const result = await signInWithPopup(auth, provider);
+      let result;
+      try {
+        result = await signInWithPopup(auth, provider);
+      } catch (err: any) {
+        if (err.code === 'auth/popup-blocked') {
+          console.warn('Popup blocked by browser. Falling back to signInWithRedirect...');
+          // Import signInWithRedirect dynamically or assume it's imported above
+          const { signInWithRedirect } = await import('firebase/auth');
+          await signInWithRedirect(auth, provider);
+          // The page will redirect, so we return an empty promise that never resolves
+          return new Promise(() => {});
+        }
+        throw err;
+      }
       const idToken = await result.user.getIdToken();
 
       const res = await auth_api.firebaseLogin({ idToken });
@@ -285,6 +339,7 @@ export const useAuth = () => {
     forgotPassword,
     verifyResetOTP,
     resetPassword,
-    logOut
+    logOut,
+    checkRedirectResult
   };
 };
