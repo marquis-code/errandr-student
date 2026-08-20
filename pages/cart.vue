@@ -1297,6 +1297,11 @@ const computedComboPromoDiscount = computed(() => {
     const stats = cartStore.getVendorStats(vId) as any;
     const subtotal = isGroupOrderCart ? groupSubtotal.value : (stats?.subtotal || 0);
 
+    // Check if promo is explicitly disabled for this vendor
+    if (vendor?.prepaidPromo && vendor.prepaidPromo.enabled === false) {
+      continue;
+    }
+
     // Check new prepaidPromo logic first
     if (vendor?.prepaidPromo?.enabled) {
       if (vendor.prepaidPromo.usedOrders < vendor.prepaidPromo.maxOrders) {
@@ -1312,7 +1317,7 @@ const computedComboPromoDiscount = computed(() => {
       }
     }
 
-    // Fallback old logic
+    // Fallback old logic (only applies if prepaidPromo is NOT explicitly disabled)
     if (vendorName.includes('iyabo') || vendorName.includes('hvip') || vendorName.includes('waris') || vendorName.includes('chijioke')) {
       if (vendorName.includes('waris')) {
         // Waris Kitchen new rule: ₦1000 off for orders >= ₦2000
