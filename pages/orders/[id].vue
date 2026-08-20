@@ -388,6 +388,13 @@
  >
  View Store Details
  </button>
+ <button 
+ v-if="order.status === 'pending' || order.status === 'accepted'"
+ @click="handleCancelOrderClick"
+ class="w-full py-4 text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-xl text-sm font-bold transition-colors mt-2"
+ >
+ Cancel Order
+ </button>
  </div>
  </div>
  </div>
@@ -688,6 +695,13 @@
  </div>
  </div>
  </Transition>
+ 
+ <SupportInterventionModal 
+ v-model:show="showSupportInterventionModal" 
+ :order-id="order?.orderNumber" 
+ :mode="supportInterventionMode" 
+ @confirmCancel="executeCancelOrder" 
+ />
  </Teleport>
 
  </div>
@@ -732,6 +746,10 @@ const chatReceiverAvatar = ref('');
 const showSupportModal = ref(false);
 const { user } = useUser();
 
+import SupportInterventionModal from '@/components/SupportInterventionModal.vue';
+const showSupportInterventionModal = ref(false);
+const supportInterventionMode = ref('standard');
+
 const rating = ref(0);
 const hoverRating = ref(0);
 const reviewText = ref('');
@@ -770,8 +788,8 @@ const approveReconciliation = async () => {
  }
 };
 
-const cancelOrder = async () => {
- if (!confirm('Are you sure you want to cancel this order? You will receive a full refund to your wallet.')) return;
+const executeCancelOrder = async () => {
+ showSupportInterventionModal.value = false;
  cancelling.value = true;
  try {
  await orders_api.cancelOrder(route.params.id as string);
@@ -782,6 +800,11 @@ const cancelOrder = async () => {
  } finally {
  cancelling.value = false;
  }
+};
+
+const handleCancelOrderClick = () => {
+ supportInterventionMode.value = 'cancel-intercept';
+ showSupportInterventionModal.value = true;
 };
 
 const submitRating = async () => {
@@ -825,12 +848,37 @@ const fetchOrder = async () => {
  try {
  const res = await orders_api.getOrder(route.params.id as string);
  order.value = res.data;
+ setupSupportTimer();
  } catch (e) {
  console.error('Failed to fetch order', e);
  } finally {
  loading.value = false;
  }
 };
+
+let supportTimer: any;
+const setupSupportTimer = () => {
+ clearTimeout(supportTimer);
+ if (order.value && (order.value.status === 'pending' || order.value.status === 'accepted')) {
+ const timeSinceCreation = Date.now() - new Date(order.value.createdAt).getTime();
+ const waitTime = Math.max(0, 5 * 60 * 1000 - timeSinceCreation);
+ 
+ supportTimer = setTimeout(() => {
+ if (order.value && (order.value.status === 'pending' || order.value.status === 'accepted')) {
+ supportInterventionMode.value = 'delayed-proactive';
+ showSupportInterventionModal.value = true;
+ }
+ }, waitTime);
+ }
+};
+
+watch(() => order.value?.status, (newStatus) => {
+ if (newStatus === 'pending' || newStatus === 'accepted') {
+ setupSupportTimer();
+ } else {
+ clearTimeout(supportTimer);
+ }
+});
 
 import { useSocket } from '@/composables/useSocket';
 

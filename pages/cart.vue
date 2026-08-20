@@ -155,7 +155,33 @@
                 <AnimatedInput v-model="recipientName" label="Full Name"  />
                 <AnimatedInput v-model="recipientPhone" label="Phone Number" type="tel" />
                 <!-- Delivery Option is fixed to use_an_errander -->
-                
+                <div class="mb-5 space-y-3">
+                  <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-1 pl-1">Delivery Method</label>
+                  <div class="grid grid-cols-2 gap-3">
+                    <button 
+                      @click="deliveryMode = 'room_delivery'"
+                      class="flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all"
+                      :class="deliveryMode === 'room_delivery' ? 'border-parentPrimary bg-parentPrimary/5 text-parentPrimary' : 'border-gray-100 bg-white hover:border-gray-200'"
+                    >
+                      <span class="text-xs font-bold" :class="deliveryMode === 'room_delivery' ? 'text-parentPrimary' : 'text-gray-900'">Room Delivery</span>
+                    </button>
+                    <button 
+                      @click="deliveryMode = 'dropoff_service'"
+                      class="flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all"
+                      :class="deliveryMode === 'dropoff_service' ? 'border-parentPrimary bg-parentPrimary/5 text-parentPrimary' : 'border-gray-100 bg-white hover:border-gray-200'"
+                    >
+                      <span class="text-xs font-bold" :class="deliveryMode === 'dropoff_service' ? 'text-parentPrimary' : 'text-gray-900'">Drop-off Service</span>
+                    </button>
+                  </div>
+                  <!-- Explanatory note for delivery types -->
+                  <div class="bg-gray-50 p-3 rounded-xl mt-2">
+                    <p class="text-[11px] font-medium text-gray-600 leading-relaxed">
+                      <span class="font-bold text-gray-900">Room Delivery:</span> Hand-delivered directly to your room or exact location. <br/>
+                      <span class="font-bold text-gray-900">Drop-off Service:</span> Delivered to a central drop-off point at your location (e.g. hostel porter, gate).
+                    </p>
+                  </div>
+                </div>
+
                 <div class="animate-fade-in relative z-50">
                   <div class="mb-4">
                     <label class="flex items-center gap-2 cursor-pointer group">
@@ -1005,10 +1031,13 @@ const getGroupedCustomizations = (customizations: any[]) => {
   return Object.values(grouped);
 };
 
+const deliveryMode = ref('room_delivery');
 const platformProcessingFee = ref(0);
 const platformServiceFeePercentage = ref(5);
 const platformConvenienceFee = ref(50);
 const platformBaseFee = ref(350);
+const platformRoomDeliveryFee = ref(350);
+const platformDropoffServiceFee = ref(300);
 
 const fetchPlatformSettings = async () => {
   try {
@@ -1018,6 +1047,8 @@ const fetchPlatformSettings = async () => {
       platformServiceFeePercentage.value = res.data.platformServiceFeePercentage ?? 5;
       platformConvenienceFee.value = res.data.convenienceFee ?? 50;
       platformBaseFee.value = res.data.baseFee ?? 350;
+      platformRoomDeliveryFee.value = res.data.roomDeliveryFee ?? 350;
+      platformDropoffServiceFee.value = res.data.dropoffServiceFee ?? 300;
     }
     
     try {
@@ -1177,11 +1208,13 @@ const computedTotalDeliveryFee = computed(() => {
   if (currentUser?.campusPrimeActive && currentUser?.campusPrimeExpiry && new Date(currentUser.campusPrimeExpiry) > new Date()) return 0;
   if (deliveryOption.value === 'batch_run') return 150;
   
+  const perVendorFee = deliveryMode.value === 'dropoff_service' ? platformDropoffServiceFee.value : platformRoomDeliveryFee.value;
   let total = 0;
+  
   cartStore.allVendorIds.value.forEach(vId => {
-    // Fallback to static if dynamic fee isn't fetched yet
-    total += dynamicDeliveryFees.value[vId] ?? platformBaseFee.value;
+    total += perVendorFee;
   });
+  
   if (groupOrder.value && groupOrder.value.status === 'locked' && groupOrder.value.splitType === 'split_bill') {
      const activeParticipants = groupOrder.value.participants.filter((p: any) => p.items.length > 0).length || 1;
      total = total / activeParticipants;
@@ -1194,11 +1227,9 @@ const computedTotalDeliveryFee = computed(() => {
     addrLower.includes('idi araba') || 
     addrLower.includes('idi-araba') ||
     addrLower.includes('cmul') ||
-    addrLower.includes('unilag') // Assuming Idi Araba campus check
+    addrLower.includes('unilag')
   ) {
-    // If it's a CMUL/LUTH delivery, it should strictly be flat fee
-    // regardless of the number of vendors to simplify the experience.
-    total = platformBaseFee.value;
+    total = perVendorFee;
   }
 
   return isDormDelivery.value ? Math.round(total * 0.5) : Math.round(total);
@@ -1374,6 +1405,17 @@ onMounted(async () => {
     if (u) fetchWallet();
   }, { immediate: true });
 
+  // Aggressively fetch wallet balance when the user returns to the tab
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === 'visible' && user.value) {
+      fetchWallet();
+    }
+  };
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  onUnmounted(() => {
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
+  });
+
   if (route.query.group) {
     try { await fetchGroupOrder(route.query.group as string); } catch (e) { console.error(e); }
   }
@@ -1443,6 +1485,7 @@ onMounted(async () => {
     recipientPhone.value = data.phone || '';
     specificAddress.value = data.address || '';
     deliveryOption.value = 'use_an_errander'; // pickup no longer supported
+    deliveryMode.value = data.deliveryMode || 'room_delivery';
     isMysteryBox.value = data.mystery || false;
     isDormDelivery.value = data.dorm || false;
     paymentMethod.value = data.paymentMethod || 'card';
@@ -1453,8 +1496,8 @@ onMounted(async () => {
   }
 });
 
-watch([recipientName, recipientPhone, specificAddress, deliveryOption, isMysteryBox, isDormDelivery, paymentMethod, scheduledDate], ([name, phone, address, delivery, mystery, dorm, method, date]) => {
-  localStorage.setItem('errandr_checkout_data', JSON.stringify({ name, phone, address, delivery, mystery, dorm, paymentMethod: method, scheduledDate: date }));
+watch([recipientName, recipientPhone, specificAddress, deliveryOption, deliveryMode, isMysteryBox, isDormDelivery, paymentMethod, scheduledDate], ([name, phone, address, delivery, dMode, mystery, dorm, method, date]) => {
+  localStorage.setItem('errandr_checkout_data', JSON.stringify({ name, phone, address, delivery, deliveryMode: dMode, mystery, dorm, paymentMethod: method, scheduledDate: date }));
 });
 
 let syncTimeout: any;
@@ -1526,10 +1569,18 @@ const startPayment = async () => {
   if (!specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Delivery address required', toastType: 'error' });
   if (!user.value?.email && !guestEmail.value) return (showAuthModal.value = true);
 
-  if (paymentMethod.value === 'wallet' && balance.value < finalTotal.value) {
-    showTopupModal.value = true;
-    topupAmount.value = Math.ceil(finalTotal.value - balance.value);
-    return;
+  if (paymentMethod.value === 'wallet') {
+    placing.value = true;
+    try {
+      await fetchWallet();
+    } finally {
+      placing.value = false;
+    }
+    if (balance.value < finalTotal.value) {
+      showTopupModal.value = true;
+      topupAmount.value = Math.ceil(finalTotal.value - balance.value);
+      return;
+    }
   }
 
   placing.value = true;
@@ -1611,7 +1662,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const res = await createOrder({
         vendorId, customer: participant.user._id, items: participant.items.map((i: any) => ({ product: i.productId, name: i.name, price: i.price, image: i.image, quantity: i.quantity, subtotal: i.price * i.quantity, customizations: i.customizations || [] })),
         subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: actualPackFee, total: subtotal + sFee + actualPackFee + deliveryFee + pFee,
-        deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, isGroupOrder: true, groupId: activeCode.value, isGroupLeader: participant.user._id === groupOrder.value.host._id,
+        deliveryOption: deliveryOption.value, deliveryMode: deliveryMode.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, isGroupOrder: true, groupId: activeCode.value, isGroupLeader: participant.user._id === groupOrder.value.host._id,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value,
         vendorNote: cartStore.vendorNotes.value[vendorId] || '',
         promoCode: promoCodeObj.value?.code || undefined,
@@ -1631,7 +1682,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const res = await createOrder({
         vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, packType: p.packType, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal, customizations: item.customizations || [] })) })),
         subtotal: stats.subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: actualPackFee, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: actualPackFee },
-        isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
+        isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, deliveryMode: deliveryMode.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
         vendorNote: cartStore.vendorNotes.value[vId] || '',
         promoCode: promoCodeObj.value?.code || undefined,

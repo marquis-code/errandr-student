@@ -12,6 +12,7 @@
     <ChatWidget />
     <CorePushNotificationPrompt />
     <CoreCallOverlay />
+    <RequirePhoneModal />
     
     <!-- Background Audio - Bottom Left -->
     <!-- <ClientOnly>
