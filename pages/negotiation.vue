@@ -53,10 +53,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
 import { orders_api } from '~/api_factory/modules/orders';
 import { useCustomToast } from '~/composables/core/useCustomToast';
+import { usePayments } from '~/composables/modules/payments/index';
+import { useUser } from '~/composables/modules/auth/user';
 
 const route = useRoute();
 const router = useRouter();
 const { showToast } = useCustomToast();
+const { initializePayment } = usePayments();
+const { user } = useUser();
 const config = useRuntimeConfig();
 
 const orderIds = (route.query.orderIds as string)?.split(',') || [];
@@ -119,17 +123,28 @@ const acceptBid = async (bid: any) => {
   try {
     const res = await orders_api.acceptBid(primaryOrderId, bid._id);
     if (res?.data || res) {
-      showToast({ title: 'Bid Accepted', message: 'Proceeding to payment...', toastType: 'success' });
-      // To keep it simple, we redirect to orders page, and the orders page has a "Pay Now" button if AWAITING_PAYMENT
-      // Since it's multi-vendor, they might have to pay for each order from the orders list,
-      // But we can trigger payment right here for the primary order, or redirect to a payment page.
-      // Redirect to the order details page where they can pay.
-      setTimeout(() => {
-        router.replace(`/orders/${primaryOrderId}`);
-      }, 1000);
+      const order = res.data?.data || res.data || res;
+      showToast({ title: 'Bid Accepted', message: 'Proceeding to secure payment...', toastType: 'success' });
+      
+      const amount = Math.round(order.total);
+      
+      // Initialize real Paystack payment
+      const paymentData = await initializePayment({
+        amount,
+        customer: { name: user.value?.firstName || 'Student', email: user.value?.email || 'user@example.com' },
+        callback_url: `${window.location.origin}/orders/${primaryOrderId}`,
+        metadata: { orderIds: [primaryOrderId] }
+      });
+      
+      const authUrl = paymentData?.data?.authorization_url || paymentData?.authorization_url;
+      if (authUrl) {
+        window.location.href = authUrl;
+      } else {
+        throw new Error('Could not initialize payment gateway');
+      }
     }
   } catch (e: any) {
-    showToast({ title: 'Error', message: e.response?.data?.message || 'Failed to accept bid.', toastType: 'error' });
+    showToast({ title: 'Error', message: e.response?.data?.message || e.message || 'Failed to accept bid.', toastType: 'error' });
   } finally {
     accepting.value = false;
   }
