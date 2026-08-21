@@ -1011,10 +1011,11 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from '#app';
 import { useWallet } from '@/composables/modules/wallets';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
-
-definePageMeta({ layout: false });
 import { orders_api } from '@/api_factory/modules/orders';
 import { settings_api } from '@/api_factory/modules/settings';
+import { useDebounceFn } from '@vueuse/core';
+
+definePageMeta({ layout: false });
 
 const cartStore = useCart();
 const { user } = useUser();
@@ -1229,7 +1230,7 @@ const canCheckout = computed(() => {
 const dynamicDeliveryFees = ref<Record<string, number>>({});
 const isFetchingFees = ref(false);
 
-const fetchDeliveryFees = async () => {
+const fetchDeliveryFees = useDebounceFn(async () => {
   // (legacy pickup check removed)
   const address = isDormDelivery.value ? (specificAddress.value || user.value?.deliveryAddress) : user.value?.deliveryAddress;
   
@@ -1255,7 +1256,7 @@ const fetchDeliveryFees = async () => {
   } finally {
     isFetchingFees.value = false;
   }
-};
+}, 800);
 
 watch(
   [() => cartStore.allVendorIds.value, specificAddress, isDormDelivery, deliveryOption], 
