@@ -68,8 +68,9 @@
                 </div>
 
                 <div class="w-full mt-6 space-y-3">
-                  <button @click="goToCheckout" class="w-full py-4 bg-gray-900 hover:bg-black text-white rounded-2xl text-sm font-bold tracking-wide transition-all shadow-md shadow-gray-900/20 active:scale-[0.98]">
-                    Complete Payment Now
+                  <button @click="payForOrder" :disabled="processingPayment" class="w-full flex items-center justify-center gap-2 py-4 bg-gray-900 hover:bg-black text-white rounded-2xl text-sm font-bold tracking-wide transition-all shadow-md shadow-gray-900/20 active:scale-[0.98] disabled:opacity-50">
+                    <Loader2 v-if="processingPayment" class="w-4 h-4 animate-spin" />
+                    <span>{{ processingPayment ? 'Initializing...' : 'Complete Payment Now' }}</span>
                   </button>
                   
                   <button @click="editOrder" class="w-full py-3.5 bg-orange-50 hover:bg-orange-100 text-orange-600 rounded-2xl text-sm font-bold tracking-wide transition-all border border-orange-100 active:scale-[0.98]">
@@ -105,10 +106,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { X, ShoppingCart } from 'lucide-vue-next'
+import { X, ShoppingCart, Loader2 } from 'lucide-vue-next'
 import { orders_api } from '@/api_factory/modules/orders'
 import { useCustomToast } from '@/composables/core/useCustomToast'
 import { useCart } from '@/composables/modules/cart'
+import { usePayments } from '@/composables/modules/payments'
+import { useUser } from '@/composables/modules/auth/user'
 
 const props = defineProps<{
   isOpen: boolean
@@ -120,8 +123,11 @@ const emit = defineEmits(['close'])
 const showFeedback = ref(false)
 const feedback = ref('')
 const submitting = ref(false)
+const processingPayment = ref(false)
 const { showToast } = useCustomToast()
 const cartStore = useCart()
+const { initializePayment } = usePayments()
+const { user } = useUser()
 
 const closeModal = () => {
   emit('close')
@@ -131,10 +137,35 @@ const closeModal = () => {
   }, 300)
 }
 
-const goToCheckout = () => {
-  if (props.order?._id) {
-    navigateTo(`/orders/${props.order._id}`)
-    closeModal()
+const payForOrder = async () => {
+  if (!props.order?._id) return;
+  processingPayment.value = true;
+  try {
+    const amount = Math.round(props.order.total || 0);
+    const data = await initializePayment({
+      amount,
+      customer: { 
+        name: user.value?.firstName || 'Student', 
+        email: user.value?.email || 'user@example.com' 
+      },
+      callback_url: `${window.location.origin}/orders/${props.order._id}`,
+      metadata: { orderIds: [props.order._id] }
+    });
+    
+    const authUrl = data?.data?.authorization_url || data?.authorization_url;
+    if (authUrl) {
+      window.location.href = authUrl;
+    } else {
+      showToast({ title: 'Error', message: 'Could not initialize payment gateway', toastType: 'error' });
+      navigateTo(`/orders/${props.order._id}`);
+      closeModal();
+    }
+  } catch (e) {
+    showToast({ title: 'Error', message: 'Failed to initialize payment', toastType: 'error' });
+    navigateTo(`/orders/${props.order._id}`);
+    closeModal();
+  } finally {
+    processingPayment.value = false;
   }
 }
 

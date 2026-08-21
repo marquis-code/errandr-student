@@ -2,7 +2,7 @@
  <div class="min-h-screen bg-[#FDFDFD] pb-32 font-sans selection:bg-parentPrimary/10">
  <!-- Immersive Header -->
  <div class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
- <div class="max-w-5xl w-full mx-auto px-4 py-3 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+ <div class="max-w-5xl w-full mx-auto px-4 py-6 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
  <div class="flex items-center gap-3">
  <button 
  @click="router.push('/')" 
@@ -320,6 +320,12 @@
  <p class="text-sm font-medium text-gray-400 r mb-0.5">Live Status</p>
  <h2 class="text-xl font-medium text-gray-900 tracking-tight transition-all ">{{ order.status.replace(/_/g, ' ') }}</h2>
  </div>
+ </div>
+ <div v-if="order.status === 'pending' || order.status === 'awaiting_payment'" class="mt-4">
+    <button @click="payForOrder" :disabled="processingPayment" class="w-full py-3 bg-gray-900 hover:bg-black text-white rounded-xl text-sm font-bold tracking-wide transition-all shadow-md shadow-gray-900/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2">
+      <Loader2 v-if="processingPayment" class="w-4 h-4 animate-spin" />
+      <span>{{ processingPayment ? 'Initializing...' : 'Complete Payment Now' }}</span>
+    </button>
  </div>
  </div>
 
@@ -738,6 +744,8 @@ import { orders_api } from '@/api_factory/modules/orders';
 import OrderChat from '@/components/core/OrderChat.vue';
 import UiModal from '@/components/ui/UiModal.vue';
 import { useUser } from '@/composables/modules/auth/user';
+import { usePayments } from '@/composables/modules/payments';
+import { Loader2 } from 'lucide-vue-next';
 
 const route = useRoute();
 const router = useRouter();
@@ -758,6 +766,7 @@ const getGroupedCustomizations = (customizations: any[]) => {
 const order = ref<any>(null);
 const loading = ref(true);
 const reordering = ref(false);
+const processingPayment = ref(false);
 const isChatOpen = ref(false);
 const chatReceiverId = ref<string>('');
 const chatReceiverName = ref('');
@@ -792,6 +801,36 @@ const getWhatsAppLink = (phone: string) => {
 };
 const showSupportModal = ref(false);
 const { user } = useUser();
+const { initializePayment } = usePayments();
+const { showToast } = useCustomToast();
+
+const payForOrder = async () => {
+  if (!order.value?._id) return;
+  processingPayment.value = true;
+  try {
+    const amount = Math.round(order.value.total || 0);
+    const data = await initializePayment({
+      amount,
+      customer: { 
+        name: user.value?.firstName || 'Student', 
+        email: user.value?.email || 'user@example.com' 
+      },
+      callback_url: `${window.location.origin}/orders/${order.value._id}`,
+      metadata: { orderIds: [order.value._id] }
+    });
+    
+    const authUrl = data?.data?.authorization_url || data?.authorization_url;
+    if (authUrl) {
+      window.location.href = authUrl;
+    } else {
+      showToast({ title: 'Error', message: 'Could not initialize payment gateway', toastType: 'error' });
+    }
+  } catch (e) {
+    showToast({ title: 'Error', message: 'Failed to initialize payment', toastType: 'error' });
+  } finally {
+    processingPayment.value = false;
+  }
+};
 
 import SupportInterventionModal from '@/components/SupportInterventionModal.vue';
 const showSupportInterventionModal = ref(false);
