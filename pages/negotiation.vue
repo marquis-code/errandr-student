@@ -52,13 +52,11 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
 import { orders_api } from '~/api_factory/modules/orders';
-import { useCustomToast } from '~/composables/useCustomToast';
-import { usePaystack } from '~/composables/usePaystack';
+import { useCustomToast } from '~/composables/core/useCustomToast';
 
 const route = useRoute();
 const router = useRouter();
 const { showToast } = useCustomToast();
-const { processPayment } = usePaystack();
 const config = useRuntimeConfig();
 
 const orderIds = (route.query.orderIds as string)?.split(',') || [];
