@@ -185,6 +185,16 @@
             <Heart class="w-4 h-4" :class="{ 'fill-rose-500': isFavorited }" />
           </button>
           <button 
+            v-if="cart.itemCount > 0"
+            @click="showGlobalCartModal = true"
+            class="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl transition-all border bg-gray-50 border-gray-100 text-gray-900 relative"
+          >
+            <ShoppingCart class="w-4 h-4" />
+            <div class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white border-2 border-white rounded-full flex items-center justify-center">
+              <span class="text-[8px] font-bold">{{ cart.itemCount }}</span>
+            </div>
+          </button>
+          <button 
             v-if="cart.getVendorStats(vendor._id).itemCount > 0"
             @click="showMobileCartDrawer = true" 
             class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-medium transition-all shadow-sm border border-gray-100"
@@ -194,8 +204,8 @@
           </button>
           <NuxtLink to="/cart" class="hidden lg:flex w-9 h-9 rounded-xl bg-gray-50 items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all relative">
             <ShoppingCart class="w-4 h-4 text-gray-900" />
-            <div v-if="cart.getVendorStats(vendor._id).itemCount > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white border-2 border-white rounded-full flex items-center justify-center">
-              <span class="text-[8px] font-bold">{{ cart.getVendorStats(vendor._id).itemCount }}</span>
+            <div v-if="cart.itemCount > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white border-2 border-white rounded-full flex items-center justify-center">
+              <span class="text-[8px] font-bold">{{ cart.itemCount }}</span>
             </div>
           </NuxtLink>
         </div>
@@ -221,7 +231,7 @@
           alt="Store Banner"
         />
         <!-- Closed Padlock Overlay -->
-        <div v-if="!vendor.isOpen" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+        <div v-if="!vendor.isOpen && route.query.schedule !== 'true'" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
           <Lock class="w-12 h-12 text-white mb-2" />
           <span class="text-white font-bold text-base tracking-wide text-center">STORE<br/>CLOSED</span>
         </div>
@@ -235,6 +245,15 @@
             <ArrowLeft class="w-4 h-4" />
           </button>
           <div class="flex items-center gap-2">
+            <button 
+              @click="showGlobalCartModal = true"
+              class="relative w-10 h-10 rounded-2xl backdrop-blur-xl flex items-center justify-center border transition-all active:scale-95 bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
+              <ShoppingCart class="w-4 h-4" />
+              <div v-if="cart.itemCount > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white rounded-full flex items-center justify-center text-[9px] font-bold border border-white/20 shadow-sm">
+                {{ cart.itemCount }}
+              </div>
+            </button>
             <button 
               @click="isShareModalOpen = true"
               class="w-10 h-10 rounded-2xl backdrop-blur-xl flex items-center justify-center border transition-all active:scale-95 bg-white/10 border-white/20 text-white hover:bg-white/20"
@@ -507,7 +526,7 @@
                   v-for="pack in packs" 
                   :key="pack._id"
                   @click="openProductModal(pack)"
-                  class="relative bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[240px] md:min-w-[280px] shrink-0 snap-start cursor-pointer hover:bg-gray-100 hover:border-parentPrimary/20 hover:shadow-sm transition-all flex flex-col justify-between overflow-hidden"
+                  class="relative bg-gray-50 border border-gray-100 rounded-xl p-4 w-[280px] md:w-[320px] max-w-[85vw] shrink-0 snap-start cursor-pointer hover:bg-gray-100 hover:border-parentPrimary/20 hover:shadow-sm transition-all flex flex-col justify-between overflow-hidden"
                   :class="{ 'opacity-50 grayscale pointer-events-none': isProductOutOfStock(pack) }"
                 >
                   <div v-if="pack.isPrepaidByPlatform" class="absolute top-0 right-0 z-10 px-2 py-1 bg-indigo-500 text-white rounded-bl-lg shadow-sm text-[9px] font-bold uppercase tracking-widest">
@@ -897,7 +916,7 @@
                       <span class="text-xl font-medium text-gray-900 tracking-tighter">₦{{ (cart.getVendorStats(vendor._id).subtotal + cart.getVendorStats(vendor._id).packagingFee).toLocaleString() }}</span>
                     </div>
                     <NuxtLink 
-                      v-if="!isVendorClosed"
+                      v-if="vendor.isOpen !== false || route.query.schedule === 'true'"
                       :to="canProceedToCheckout ? (isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart') : ''" 
                       @click="!canProceedToCheckout ? $event.preventDefault() : null"
                       :class="!canProceedToCheckout ? 'opacity-50 cursor-not-allowed' : 'hover:bg-parentPrimary/90 active:scale-[0.98] shadow-sm border border-gray-100 shadow-parentPrimary/20'"
@@ -1113,7 +1132,7 @@
                   <span class="text-lg font-bold text-gray-900 tracking-tight">₦{{ (cart.getVendorStats(vendor._id).subtotal + cart.getVendorStats(vendor._id).packagingFee).toLocaleString() }}</span>
                 </div>
                 <NuxtLink 
-                  v-if="!isVendorClosed"
+                  v-if="vendor.isOpen !== false || route.query.schedule === 'true'"
                   :to="canProceedToCheckout ? (isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart') : ''"
                   @click="!canProceedToCheckout ? $event.preventDefault() : null"
                   :class="!canProceedToCheckout ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#FF5C1A] active:scale-[0.98]'"
@@ -1150,7 +1169,7 @@
     >
       <div 
         v-if="(cart.getVendorStats(vendor._id).itemCount > 0 || groupOrder) && !showMobileCartDrawer"
-        class="fixed bottom-6 left-0 right-0 z-[50] max-w-2xl mx-auto px-4"
+        class="fixed bottom-24 lg:bottom-6 left-0 right-0 z-[50] max-w-2xl mx-auto px-4"
         :class="{ 'lg:hidden': !isMiniMart }"
       >
         <button 
@@ -1375,6 +1394,8 @@
       @close="showReviewsModal = false" 
       @review-added="fetchVendorDetails"
     />
+
+    <GlobalCartModal :isOpen="showGlobalCartModal" @close="showGlobalCartModal = false" />
 
     <!-- ============================================ -->
     <!-- PRODUCT DETAIL MODAL                         -->
@@ -1649,6 +1670,7 @@ import MediaCarousel from '@/components/ui/MediaCarousel.vue';
 import MediaLightbox from '@/components/ui/MediaLightbox.vue';
 import AppointmentBookingModal from '@/components/vendors/AppointmentBookingModal.vue';
 import VendorReviewsModal from '@/components/vendors/VendorReviewsModal.vue';
+import GlobalCartModal from '@/components/GlobalCartModal.vue';
 
 const isShareModalOpen = ref(false);
 import { useToast } from '@/composables/useToast';
@@ -1670,6 +1692,7 @@ const { showToast } = useToast();
 
 const scrolled = ref(false);
 const showMobileCartDrawer = ref(false);
+const showGlobalCartModal = ref(false);
 const props = defineProps<{ vendor: any }>();
 const vendor = computed(() => props.vendor);
 

@@ -268,6 +268,8 @@ export const useCart = () => {
   return {
     carts,
     allVendorIds,
+    allPacks,
+    allItems,
     addItem,
     clearCart,
     initCart,

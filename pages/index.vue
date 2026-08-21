@@ -471,6 +471,8 @@
  :isOpen="isClosedModalOpen" 
  :vendor="selectedVendorForModal" 
  @close="isClosedModalOpen = false" 
+ @schedule="handleScheduleVendor"
+ @notify="handleNotifyVendor"
  />
 
   <!-- Share Modal -->
@@ -857,6 +859,7 @@ const isNotifyModalOpen = ref(false)
 const selectedVendorForNotify = ref<any>(null)
 
 const handleNotifyVendor = (vendor: any) => {
+  isClosedModalOpen.value = false;
   selectedVendorForNotify.value = vendor
   isNotifyModalOpen.value = true
 }
@@ -978,6 +981,13 @@ const handlePromoClick = async (promo: any) => {
   addRecent(mockVendor);
   navigateTo(`/vendors/${promo.vendorId}`);
 }
+
+const handleScheduleVendor = (vendor: any) => {
+  isClosedModalOpen.value = false;
+  const vendorId = typeof vendor === 'string' ? vendor : vendor?._id || vendor?.id;
+  if (!vendorId) return;
+  navigateTo({ path: `/vendors/${vendorId}`, query: { schedule: 'true' } });
+};
 
 const navigateToVendor = (vendor: any) => {
   const vendorId = typeof vendor === 'string' ? vendor : vendor?._id || vendor?.id;

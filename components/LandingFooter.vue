@@ -24,7 +24,7 @@
         <!-- Left: Branding & Info -->
         <div class="md:col-span-5 space-y-8">
           <NuxtLink to="/" class="block group">
-            <img src="@/assets/img/logo-light.png" alt="Errander Logo" class="h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
+            <img src="@/assets/img/erranders.png" alt="Errander Logo" class="h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
           </NuxtLink>
           <p class="text-slate-500 text-lg leading-relaxed font-medium max-w-md">
             The premium food delivery network built exclusively for the modern student community. Fast, reliable, and perfectly tailored to your campus life.

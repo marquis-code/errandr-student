@@ -12,7 +12,7 @@
       <div class="flex justify-between items-center">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-3 group">
-          <img src="@/assets/img/logo-light.png" alt="Errander Logo" class="h-12 lg:h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
+          <img src="@/assets/img/erranders.png" alt="Errander Logo" class="h-12 lg:h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
         </NuxtLink>
         
         <!-- Actions & Menu -->
@@ -75,100 +75,118 @@
               leave-from-class="transform scale-100 opacity-100"
               leave-to-class="transform scale-95 opacity-0"
             >
-              <MenuItems class="absolute right-0 mt-3 w-72 origin-top-right rounded-3xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 focus:outline-none z-[100] overflow-hidden p-3 space-y-1">
+              <MenuItems class="absolute right-0 md:-right-2 mt-3 w-[calc(100vw-2rem)] sm:w-80 max-w-sm origin-top-right rounded-3xl bg-white/80 backdrop-blur-3xl shadow-[0_30px_60px_rgba(0,0,0,0.12)] border border-white/50 focus:outline-none z-[100] overflow-hidden">
                 <!-- User Section -->
-                <div v-if="user" class="px-4 py-3 mb-2 bg-gray-50 rounded-2xl border border-gray-100/50">
-                  <p class="text-xs font-medium text-gray-400 mb-0.5">Signed in as</p>
-                  <p class="text-sm font-bold text-gray-900 truncate">{{ user.firstName }} {{ user.lastName }}</p>
+                <div v-if="user" class="px-5 py-4 bg-gradient-to-br from-gray-50 to-white border-b border-gray-100/50 flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-full bg-parentPrimary text-white flex items-center justify-center font-bold text-lg shadow-inner">
+                    {{ user.firstName?.[0] || user.email?.[0] }}
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">Signed in</p>
+                    <p class="text-sm font-black text-gray-900 truncate">{{ user.firstName }} {{ user.lastName }}</p>
+                  </div>
                 </div>
                 
-                <!-- Main Nav Links -->
-                <MenuItem v-slot="{ active }">
-                  <NuxtLink to="/" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                    Home
-                  </NuxtLink>
-                </MenuItem>
-                <MenuItem v-slot="{ active }">
-                  <NuxtLink to="/about" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                    About us
-                  </NuxtLink>
-                </MenuItem>
-                <MenuItem v-slot="{ active }">
-                  <NuxtLink to="/faq" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                    FAQ
-                  </NuxtLink>
-                </MenuItem>
-                
-                <div class="h-px bg-gray-100 my-2 mx-2"></div>
-
-                <MenuItem v-slot="{ active }">
-                  <NuxtLink to="/errands/custom" :class="[active ? 'bg-orange-50 text-parentPrimary' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-bold transition-colors']">
-                    Request Custom Errand
-                  </NuxtLink>
-                </MenuItem>
-                <MenuItem v-slot="{ active }">
-                  <button @click="isBookingModalOpen = true" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                    Manage Booking
-                  </button>
-                </MenuItem>
-                <MenuItem v-slot="{ active }">
-                  <button @click="isOrderModalOpen = true" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                    Manage Order
-                  </button>
-                </MenuItem>
-                
-                <div class="h-px bg-gray-100 my-2 mx-2"></div>
-                
-                <!-- Action Links (Desktop Fallback + Mobile) -->
-                <div>
-                  <div class="px-4 py-2">
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Partner with us</p>
-                    <MenuItem v-slot="{ active }">
-                      <a href="https://vendor.erranders.org/auth/register" :class="[active ? 'bg-gray-50 text-gray-900' : 'text-gray-700', 'group flex w-full items-center rounded-xl px-4 py-2.5 text-sm font-medium transition-colors']">
-                        Join as Vendor
-                      </a>
-                    </MenuItem>
-                    <MenuItem v-slot="{ active }">
-                      <a href="https://dispatch.erranders.org/auth/register" :class="[active ? 'bg-gray-50 text-gray-900' : 'text-gray-700', 'group flex w-full items-center rounded-xl px-4 py-2.5 text-sm font-medium transition-colors']">
-                        Join as Rider
-                      </a>
-                    </MenuItem>
-                  </div>
-                  <div class="h-px bg-gray-100 my-2 mx-2"></div>
-                </div>
-
-                <!-- Auth/User Actions -->
-                <template v-if="!user">
-                  <div class="md:hidden">
-                    <MenuItem v-slot="{ active }">
-                      <NuxtLink to="/auth/login" :class="[active ? 'bg-gray-50 text-gray-900' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                        Log in
-                      </NuxtLink>
-                    </MenuItem>
-                    <MenuItem v-slot="{ active }">
-                      <NuxtLink to="/auth/register" :class="[active ? 'bg-gray-50 text-gray-900' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                        Sign up
-                      </NuxtLink>
-                    </MenuItem>
-                  </div>
-                </template>
-                <template v-else>
+                <div class="p-4 grid grid-cols-2 gap-2">
+                  <!-- Explore Section Commented Out -->
+                  <!-- 
+                  <div class="col-span-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 mt-1 px-2">Explore</div>
+                  
                   <MenuItem v-slot="{ active }">
-                    <NuxtLink to="/dashboard" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                      <Home class="w-4 h-4 mr-3 opacity-50" /> Dashboard
+                    <NuxtLink to="/" :class="[active ? 'bg-orange-50/50 scale-95' : 'bg-gray-50/50 hover:bg-gray-100/50', 'group flex flex-col items-center justify-center rounded-2xl p-4 transition-all']">
+                      <Home class="w-5 h-5 mb-2" :class="active ? 'text-parentPrimary' : 'text-gray-600'" />
+                      <span class="text-xs font-bold text-gray-700">Home</span>
                     </NuxtLink>
                   </MenuItem>
+                  
                   <MenuItem v-slot="{ active }">
-                    <NuxtLink to="/dashboard/profile" :class="[active ? 'bg-gray-50 text-parentPrimary' : 'text-gray-700', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                      <User class="w-4 h-4 mr-3 opacity-50" /> My Profile
+                    <NuxtLink to="/faq" :class="[active ? 'bg-orange-50/50 scale-95' : 'bg-gray-50/50 hover:bg-gray-100/50', 'group flex flex-col items-center justify-center rounded-2xl p-4 transition-all']">
+                      <Info class="w-5 h-5 mb-2" :class="active ? 'text-parentPrimary' : 'text-gray-600'" />
+                      <span class="text-xs font-bold text-gray-700">FAQ</span>
+                    </NuxtLink>
+                  </MenuItem> 
+                  -->
+
+                  <!-- Services Section -->
+                  <div class="col-span-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 mt-3 px-2">Services</div>
+
+                  <MenuItem v-slot="{ active }">
+                    <NuxtLink to="/errands/custom" :class="[active ? 'bg-orange-50 scale-95' : 'bg-orange-50/30 hover:bg-orange-50', 'group flex items-center gap-3 rounded-2xl p-3 col-span-2 transition-all border border-orange-100/50']">
+                      <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                        <Zap class="w-4 h-4 text-parentPrimary" />
+                      </div>
+                      <div class="flex-1">
+                        <span class="block text-sm font-bold text-gray-900">Custom Errand</span>
+                        <span class="block text-[10px] text-gray-500 font-medium">Request anything you need</span>
+                      </div>
                     </NuxtLink>
                   </MenuItem>
+
                   <MenuItem v-slot="{ active }">
-                    <button @click="handleLogout" :class="[active ? 'bg-rose-50 text-rose-600' : 'text-rose-500', 'group flex w-full items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors']">
-                      <LogOut class="w-4 h-4 mr-3 opacity-50" /> Log out
+                    <button @click="isBookingModalOpen = true" :class="[active ? 'bg-gray-100 scale-95' : 'bg-gray-50/50 hover:bg-gray-100/50', 'group flex items-center gap-3 rounded-2xl p-3 transition-all text-left']">
+                      <Calendar class="w-4 h-4 text-gray-600" />
+                      <span class="text-xs font-bold text-gray-700">Bookings</span>
                     </button>
                   </MenuItem>
-                </template>
+
+                  <MenuItem v-slot="{ active }">
+                    <button @click="isOrderModalOpen = true" :class="[active ? 'bg-gray-100 scale-95' : 'bg-gray-50/50 hover:bg-gray-100/50', 'group flex items-center gap-3 rounded-2xl p-3 transition-all text-left']">
+                      <Package class="w-4 h-4 text-gray-600" />
+                      <span class="text-xs font-bold text-gray-700">Orders</span>
+                    </button>
+                  </MenuItem>
+
+                  <!-- Partners & Actions -->
+                  <div class="col-span-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 mt-3 px-2">Partner with us</div>
+                  
+                  <MenuItem v-slot="{ active }">
+                    <a href="https://vendor.erranders.org/auth/register" :class="[active ? 'bg-gray-900 text-white scale-95' : 'bg-gray-800 text-white hover:bg-gray-900', 'group flex items-center justify-center gap-2 rounded-2xl p-3 transition-all shadow-sm']">
+                      <Store class="w-4 h-4" />
+                      <span class="text-xs font-bold">Vendor</span>
+                    </a>
+                  </MenuItem>
+
+                  <MenuItem v-slot="{ active }">
+                    <a href="https://dispatch.erranders.org/auth/register" :class="[active ? 'bg-gray-900 text-white scale-95' : 'bg-gray-800 text-white hover:bg-gray-900', 'group flex items-center justify-center gap-2 rounded-2xl p-3 transition-all shadow-sm']">
+                      <Bike class="w-4 h-4" />
+                      <span class="text-xs font-bold">Rider</span>
+                    </a>
+                  </MenuItem>
+                </div>
+
+                <!-- Footer Auth / Account -->
+                <div class="p-3 bg-gray-50/80 border-t border-gray-100 flex flex-col gap-2">
+                  <template v-if="!user">
+                    <div class="grid grid-cols-2 gap-2">
+                      <MenuItem v-slot="{ active }">
+                        <NuxtLink to="/auth/login" :class="[active ? 'bg-white scale-95' : 'bg-transparent hover:bg-white', 'flex justify-center rounded-xl py-2.5 text-sm font-bold text-gray-900 transition-all border border-transparent hover:border-gray-200']">
+                          Log in
+                        </NuxtLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active }">
+                        <NuxtLink to="/auth/register" :class="[active ? 'bg-parentPrimary scale-95' : 'bg-gray-900 hover:bg-parentPrimary', 'flex justify-center rounded-xl py-2.5 text-sm font-bold text-white transition-all shadow-sm']">
+                          Sign up
+                        </NuxtLink>
+                      </MenuItem>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="grid grid-cols-2 gap-2">
+                      <MenuItem v-slot="{ active }">
+                        <NuxtLink to="/dashboard" :class="[active ? 'bg-white scale-95' : 'bg-transparent hover:bg-white', 'flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold text-gray-900 transition-all border border-transparent hover:border-gray-200']">
+                          <LayoutDashboard class="w-3.5 h-3.5" />
+                          Dashboard
+                        </NuxtLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active }">
+                        <button @click="handleLogout" :class="[active ? 'bg-white scale-95' : 'bg-transparent hover:bg-white', 'flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold text-rose-600 transition-all border border-transparent hover:border-rose-100']">
+                          <LogOut class="w-3.5 h-3.5" />
+                          Log out
+                        </button>
+                      </MenuItem>
+                    </div>
+                  </template>
+                </div>
 
               </MenuItems>
             </Transition>
@@ -191,7 +209,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { useUser } from "@/composables/modules/auth/user"
 import { useCart } from "@/composables/modules/cart"
-import { Home, User, LogOut, Menu as MenuIcon, Filter, ChevronDown, ShoppingCart } from 'lucide-vue-next'
+import { Home, User, LogOut, Menu as MenuIcon, Filter, ChevronDown, ShoppingCart, Info, Zap, Package, Calendar, Store, Bike, LayoutDashboard } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import { useGlobalFilter } from '@/composables/core/useGlobalFilter'
 

@@ -43,8 +43,9 @@
         <div
           v-for="item in results"
           :key="item._id"
-          class="bg-white rounded-2xl p-2.5 md:p-3 border border-gray-100 hover:border-parentPrimary/30 hover:shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer relative overflow-hidden flex flex-col h-full justify-between"
-          @click="router.push(`/vendors/${item.vendor?._id || item._id}`)"
+          class="bg-white rounded-2xl p-2.5 md:p-3 border border-gray-100 hover:border-parentPrimary/30 hover:shadow-sm border border-gray-100 transition-all duration-300 group relative overflow-hidden flex flex-col h-full justify-between"
+          :class="{ 'cursor-pointer': item.isOpen !== false && item.vendor?.isOpen !== false, 'opacity-75 cursor-not-allowed': item.isOpen === false || item.vendor?.isOpen === false }"
+          @click="handleItemClick(item)"
         >
           <div>
             <div class="relative aspect-square rounded-xl overflow-hidden mb-3 md:mb-4 bg-gray-50">
@@ -146,6 +147,13 @@ onMounted(() => {
     performSearch();
   }
 });
+
+const handleItemClick = (item: any) => {
+  if (item.isOpen === false || item.vendor?.isOpen === false) {
+    return;
+  }
+  router.push(`/vendors/${item.vendor?._id || item._id}`);
+};
 
 useHead({ title: 'Search - Errandr' });
 </script>

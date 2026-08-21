@@ -21,15 +21,15 @@
  </div>
  
  <div class="flex items-center justify-end sm:justify-start">
- <button 
- v-if="order?.type !== 'custom_errand'"
- @click="reorder" 
- :disabled="reordering"
- class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-gray-900 text-white rounded-xl text-xs sm:text-sm font-medium hover:bg-parentPrimary hover: hover:shadow-parentPrimary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
- >
- <RefreshCw v-if="reordering" class="w-3.5 h-3.5 animate-spin" />
- <span>{{ reordering ? 'Processing' : 'Reorder Items' }}</span>
- </button>
+ <!-- <button 
+         v-if="order?.type !== 'custom_errand'"
+         @click="reorder" 
+         :disabled="reordering"
+         class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-gray-900 text-white rounded-xl text-xs sm:text-sm font-medium hover:bg-parentPrimary hover: hover:shadow-parentPrimary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+         >
+         <RefreshCw v-if="reordering" class="w-3.5 h-3.5 animate-spin" />
+         <span>{{ reordering ? 'Processing' : 'Reorder Items' }}</span>
+         </button> -->
  </div>
  </div>
  </div>
@@ -372,15 +372,34 @@
  @click="openChat((order.vendor?.owner?._id || order.vendor?.owner || '') + ',' + (order.vendor?._id || ''), order.vendor?.storeName || 'Vendor', order.vendor?.logo)"
  class="w-full py-4 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 border border-gray-100"
  >
- <MessageSquare class="w-3.5 h-3.5" /> Message Store
+ <MessageSquare class="w-3.5 h-3.5" /> Message Store (In-App)
  </button>
+
+ <a 
+ v-if="order.type !== 'custom_errand'"
+ :href="getWhatsAppLink(order.vendor?.phone || order.vendor?.owner?.phone || '2348000000000')"
+ target="_blank"
+ class="w-full py-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm shadow-[#25D366]/30"
+ >
+ <MessageSquare class="w-3.5 h-3.5" /> WhatsApp Store
+ </a>
+
  <button 
  v-if="order.errander?._id"
  @click="openChat(order.errander?.user?._id || order.errander?.user || order.errander._id, (order.errander?.user?.firstName || order.errander?.firstName) + ' (Rider)', order.errander?.user?.avatar)"
  class="w-full py-4 bg-parentPrimary/5 hover:bg-parentPrimary/10 text-parentPrimary rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 border border-parentPrimary/10"
  >
- <MessageSquare class="w-3.5 h-3.5" /> Message Rider
+ <MessageSquare class="w-3.5 h-3.5" /> Message Rider (In-App)
  </button>
+
+ <a 
+ v-if="order.errander?._id"
+ :href="getWhatsAppLink(order.errander?.user?.phone || order.errander?.phone || '2348000000000')"
+ target="_blank"
+ class="w-full py-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm shadow-[#25D366]/30"
+ >
+ <MessageSquare class="w-3.5 h-3.5" /> WhatsApp Rider
+ </a>
  <button 
  v-if="order.type !== 'custom_errand'"
  @click="navigateTo(`/vendors/${order.vendor?._id}`)"
@@ -743,6 +762,34 @@ const isChatOpen = ref(false);
 const chatReceiverId = ref<string>('');
 const chatReceiverName = ref('');
 const chatReceiverAvatar = ref('');
+
+const getWhatsAppLink = (phone: string) => {
+  if (!phone) return '#';
+  let formattedPhone = phone;
+  if (phone.startsWith('0')) {
+    formattedPhone = '234' + phone.slice(1);
+  } else if (!phone.startsWith('+')) {
+    formattedPhone = '+' + phone;
+  }
+  
+  let text = `Hi, I am reaching out regarding my Erranders order #${order.value?.orderNumber || order.value?._id}.\n\n`;
+  if (order.value) {
+    if (order.value.type !== 'custom_errand') {
+       const itemsCount = order.value.items?.length || order.value.packs?.reduce((acc: number, p: any) => acc + (p.items?.length || 0), 0) || 0;
+       text += `Order Type: Normal Order\n`;
+       text += `Items: ${itemsCount} items\n`;
+       text += `Total: ₦${(order.value.total || 0).toLocaleString()}\n`;
+    } else {
+       text += `Order Type: Custom Errand\n`;
+       text += `Details: ${order.value.customDetails?.description}\n`;
+    }
+    if (order.value.deliveryAddress) {
+       text += `Delivery Address: ${order.value.deliveryAddress}\n`;
+    }
+  }
+  
+  return `https://wa.me/${formattedPhone.replace(/\+/g, '')}?text=${encodeURIComponent(text)}`;
+};
 const showSupportModal = ref(false);
 const { user } = useUser();
 

@@ -179,12 +179,12 @@
                   Track Errand <ArrowRight class="w-3.5 h-3.5" />
                 </button>
 
-                <button
+                <!-- <button
                   @click="handleReorder(selectedOrder)"
                   class="w-full py-3.5 bg-white text-gray-900 rounded-xl text-xs font-medium uppercase tracking-wider border border-gray-200 hover:bg-gray-50 transition-all flex items-center justify-center gap-2 active:scale-95"
                 >
                   Order Again
-                </button>
+                </button> -->
                 
                 <button
                   v-if="['pending', 'confirmed'].includes(selectedOrder.status)"

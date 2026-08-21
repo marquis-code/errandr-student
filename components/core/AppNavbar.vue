@@ -6,8 +6,8 @@
         <button v-if="showBack" @click="router.back()" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all">
           <ArrowLeft class="w-4 h-4 text-gray-900" />
         </button>
-        <NuxtLink to="/" class="flex items-center gap-2 group">
-          <img src="@/assets/img/logo-light.png" alt="Errandr Logo" class="h-7.5 w-32 sm:h-9 object-contain transition-transform duration-500 group-hover:scale-105" />
+        <NuxtLink to="/" class="flex items-center -ml-12 gap-2 group">
+          <img src="@/assets/img/erranders.png" alt="Errandr Logo" class="h-7 w-32 sm:h-9 object-contain transition-transform duration-500 group-hover:scale-105" />
         </NuxtLink>
       </div>
 
@@ -216,7 +216,7 @@ import { computed } from 'vue'
 import { useGroupOrder } from '@/composables/modules/group-order'
 
 defineProps({
-  showBack: { type: Boolean, default: false },
+  showBack: { type: Boolean, default: true },
   showCart: { type: Boolean, default: true }
 })
 

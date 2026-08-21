@@ -46,15 +46,34 @@
                     <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Order Total</span>
                     <span class="text-sm font-bold text-gray-900">₦{{ order.total?.toLocaleString() }}</span>
                   </div>
-                  <div class="flex items-center justify-between">
+                  <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Items</span>
                     <span class="text-sm font-medium text-gray-700">{{ order.items?.length || 0 }} items</span>
+                  </div>
+                  
+                  <div v-if="order.items && order.items.length" class="mt-3 pt-3 border-t border-gray-200/50 max-h-32 overflow-y-auto space-y-2">
+                    <div v-for="(item, idx) in order.items" :key="idx" class="flex justify-between items-start text-sm">
+                      <div class="flex items-start gap-2">
+                        <span class="font-bold text-gray-800 bg-white px-1.5 py-0.5 rounded text-xs border border-gray-100 shadow-sm">{{ item.quantity }}x</span>
+                        <div class="flex flex-col">
+                          <span class="text-gray-700 font-medium">{{ item.name }}</span>
+                          <span v-if="item.customizations && item.customizations.length" class="text-[10px] text-gray-400 leading-tight">
+                            {{ item.customizations.map(c => c.selected).join(', ') }}
+                          </span>
+                        </div>
+                      </div>
+                      <span class="font-bold text-gray-900 text-xs mt-0.5">₦{{ (item.subtotal || (item.price * item.quantity)).toLocaleString() }}</span>
+                    </div>
                   </div>
                 </div>
 
                 <div class="w-full mt-6 space-y-3">
-                  <button @click="goToCheckout" class="w-full py-4 bg-gray-900 hover:bg-black text-white rounded-2xl text-sm font-bold tracking-wide transition-colors">
+                  <button @click="goToCheckout" class="w-full py-4 bg-gray-900 hover:bg-black text-white rounded-2xl text-sm font-bold tracking-wide transition-all shadow-md shadow-gray-900/20 active:scale-[0.98]">
                     Complete Payment Now
+                  </button>
+                  
+                  <button @click="editOrder" class="w-full py-3.5 bg-orange-50 hover:bg-orange-100 text-orange-600 rounded-2xl text-sm font-bold tracking-wide transition-all border border-orange-100 active:scale-[0.98]">
+                    Edit Order
                   </button>
                   
                   <button @click="showFeedback = !showFeedback" class="w-full py-3 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
@@ -89,6 +108,7 @@ import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } fro
 import { X, ShoppingCart } from 'lucide-vue-next'
 import { orders_api } from '@/api_factory/modules/orders'
 import { useCustomToast } from '@/composables/core/useCustomToast'
+import { useCart } from '@/composables/modules/cart'
 
 const props = defineProps<{
   isOpen: boolean
@@ -101,6 +121,7 @@ const showFeedback = ref(false)
 const feedback = ref('')
 const submitting = ref(false)
 const { showToast } = useCustomToast()
+const cartStore = useCart()
 
 const closeModal = () => {
   emit('close')
@@ -112,9 +133,38 @@ const closeModal = () => {
 
 const goToCheckout = () => {
   if (props.order?._id) {
-    navigateTo(`/dashboard/orders/${props.order._id}`)
+    navigateTo(`/orders/${props.order._id}`)
     closeModal()
   }
+}
+
+const editOrder = () => {
+  if (!props.order) return
+  
+  const vendorId = props.order.vendor?._id || props.order.vendor
+  
+  // Clear any existing cart for this vendor to avoid conflicts
+  if (vendorId) {
+    cartStore.clearCart(vendorId)
+  }
+
+  // Restore items into cart
+  if (props.order.items && props.order.items.length) {
+    props.order.items.forEach((item: any) => {
+      cartStore.addItem({
+        productId: item.product?._id || item.product,
+        vendorId: vendorId,
+        name: item.name,
+        price: item.price,
+        image: item.image || '',
+        quantity: item.quantity,
+        customizations: item.customizations || []
+      })
+    })
+  }
+  
+  closeModal()
+  navigateTo('/cart')
 }
 
 const submitFeedback = async () => {

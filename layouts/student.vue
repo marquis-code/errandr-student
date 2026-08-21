@@ -9,13 +9,9 @@
 
         <!-- Brand row -->
         <div class="px-5 pt-5 pb-4 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <img src="@/assets/img/logo-light.png" class="h-10 w-auto" />
-            <!-- <div class="w-7 h-7 rounded-md bg-[#171310] flex items-center justify-center shrink-0">
-              <span class="ff-mono text-[#FF5C1A] text-[11px] font-bold">E</span>
-            </div>
-            <span class="ff-display font-bold text-[15px] text-[#171310] tracking-tight">Errandr</span> -->
-          </div>
+          <NuxtLink to="/" class="flex items-center gap-2">
+            <img src="@/assets/img/logo-light.png" class="h-8 w-auto" />
+          </NuxtLink>
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -109,27 +105,51 @@
     </aside>
 
     <!-- Mobile Header -->
-    <header class="lg:hidden bg-white/95 backdrop-blur-xl border-b border-[#E7E2DA] sticky top-0 z-40 w-full shrink-0 animate-fade-in">
-      <div class="flex items-center justify-between px-5 py-3">
-        <div class="flex items-center gap-2.5">
+    <header class="lg:hidden bg-white/95 backdrop-blur-2xl border-b border-gray-100 sticky top-0 z-40 w-full shrink-0">
+      <div class="flex items-center justify-between px-4 py-3 sm:py-4">
+        
+        <!-- Left: Menu & Logo -->
+        <div class="flex items-center gap-3">
           <button
+            v-if="isDashboard"
             @click="isMobileSidebarOpen = true"
-            class="w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center border border-[#E7E2DA] hover:bg-[#F0ECE5] transition-colors"
+            class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-colors active:scale-95"
           >
-            <Menu class="w-4 h-4 text-[#171310]" />
+            <Menu class="w-5 h-5 text-gray-700" />
           </button>
-          <div v-if="!isDashboard" @click="router.back()" class="w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center border border-[#E7E2DA] cursor-pointer animate-fade-in-left">
-            <ArrowLeft class="w-4 h-4 text-[#171310]"></ArrowLeft>
+          <div v-else @click="router.back()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 cursor-pointer active:scale-95 transition-colors">
+            <ArrowLeft class="w-5 h-5 text-gray-700"></ArrowLeft>
           </div>
-          <span class="ff-display text-[17px] font-bold text-[#171310] tracking-tight">{{ isDashboard ? 'Errandr' : pageTitle }}</span>
+          
+          <NuxtLink to="/" class="flex items-center" v-if="isDashboard">
+            <img src="@/assets/img/logo-light.png" class="h-6 sm:h-7 w-auto object-contain" alt="Errandr Logo" />
+          </NuxtLink>
+          <span v-else class="text-base sm:text-lg font-bold text-gray-900 tracking-tight">{{ pageTitle }}</span>
         </div>
 
-        <NuxtLink to="/notifications" class="relative w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center border border-[#E7E2DA] hover:bg-[#F0ECE5] transition-colors">
-          <Bell class="w-4 h-4 text-[#171310]"></Bell>
-          <div v-if="unreadCount > 0" class="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 bg-[#FF5C1A] border-2 border-white rounded-full flex items-center justify-center">
-            <span class="text-[8px] font-bold text-white">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
-          </div>
-        </NuxtLink>
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Search Icon -->
+          <NuxtLink to="/dashboard/search" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all active:scale-95">
+            <Search class="w-4 h-4 sm:w-4.5 sm:h-4.5 text-gray-700" />
+          </NuxtLink>
+
+          <!-- Cart Icon -->
+          <NuxtLink to="/cart" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all active:scale-95">
+            <ShoppingBag class="w-4 h-4 sm:w-4.5 sm:h-4.5 text-gray-700"></ShoppingBag>
+            <div v-if="totalCartItems > 0" class="absolute top-0 right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-parentPrimary border-2 border-white rounded-full flex items-center justify-center shadow-sm">
+              <span class="text-[7px] sm:text-[8px] font-bold text-white">{{ totalCartItems > 9 ? '9+' : totalCartItems }}</span>
+            </div>
+          </NuxtLink>
+
+          <!-- Notifications Icon -->
+          <NuxtLink to="/notifications" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all active:scale-95">
+            <Bell class="w-4 h-4 sm:w-4.5 sm:h-4.5 text-gray-700"></Bell>
+            <div v-if="unreadCount > 0" class="absolute top-0 right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-parentPrimary border-2 border-white rounded-full flex items-center justify-center shadow-sm">
+              <span class="text-[7px] sm:text-[8px] font-bold text-white">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+            </div>
+          </NuxtLink>
+        </div>
       </div>
     </header>
 
@@ -157,13 +177,9 @@
 
           <!-- Brand row -->
           <div class="px-5 pt-5 pb-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <img src="@/assets/img/logo-light.png" class="h-10 w-auto" />
-              <!-- <div class="w-7 h-7 rounded-md bg-[#171310] flex items-center justify-center shrink-0">
-                <span class="ff-mono text-[#FF5C1A] text-[11px] font-bold">E</span>
-              </div>
-              <span class="ff-display font-bold text-[15px] text-[#171310] tracking-tight">Errandr</span> -->
-            </div>
+            <NuxtLink to="/" @click="isMobileSidebarOpen = false" class="flex items-center gap-2">
+              <img src="@/assets/img/logo-light.png" class="h-8 w-auto" />
+            </NuxtLink>
             <button @click="isMobileSidebarOpen = false" class="p-2 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-[#E7E2DA]">
               <X class="w-4.5 h-4.5 text-[#171310]" />
             </button>
@@ -284,6 +300,11 @@
             </div>
           </div>
           <div class="flex items-center gap-3">
+            <NuxtLink to="/cart" class="relative w-11 h-11 bg-[#FAF8F5] rounded-lg flex items-center justify-center text-[#9C968E] hover:bg-[#171310] hover:text-white transition-all border border-[#E7E2DA]">
+              <ShoppingBag class="w-[18px] h-[18px]"></ShoppingBag>
+              <div v-if="totalCartItems > 0" class="absolute top-2.5 right-2.5 w-2 h-2 bg-[#FF5C1A] border border-white rounded-full"></div>
+            </NuxtLink>
+
             <NuxtLink to="/notifications" class="relative w-11 h-11 bg-[#FAF8F5] rounded-lg flex items-center justify-center text-[#9C968E] hover:bg-[#171310] hover:text-white transition-all border border-[#E7E2DA]">
               <Bell class="w-[18px] h-[18px]"></Bell>
               <div v-if="unreadCount > 0" class="absolute top-2.5 right-2.5 w-2 h-2 bg-[#FF5C1A] border border-white rounded-full"></div>
@@ -320,6 +341,7 @@
       :order="reviewOrder"
       @close="reviewOrderModalOpen = false"
     />
+    <CoreWhatsAppWidget />
   </div>
 </template>
 
@@ -353,6 +375,7 @@ import {
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
 import { useAuth } from '@/composables/modules/auth'
+import { useCart } from '@/composables/modules/cart'
 import { useStudentOrders } from '@/composables/modules/orders'
 import PendingOrderModal from '@/components/core/PendingOrderModal.vue'
 import ReviewOrderModal from '@/components/core/ReviewOrderModal.vue'
@@ -364,7 +387,12 @@ const route = useRoute()
 const router = useRouter()
 const { user } = useUser()
 const { logOut } = useAuth()
+const cartStore = useCart()
 const { orders: studentOrders, fetchOrders: fetchStudentOrders } = useStudentOrders()
+
+const totalCartItems = computed(() => {
+  return cartStore.allPacks.value.reduce((total, pack) => total + pack.items.length, 0);
+})
 
 const isMobileSidebarOpen = ref(false)
 const logoutModalOpen = ref(false)

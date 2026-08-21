@@ -11,7 +11,7 @@
       <img v-else-if="vendor.banner || vendor.logo" :src="vendor.banner || vendor.logo" class="absolute inset-0 w-full h-full object-cover opacity-90" />
       <div class="absolute inset-0 bg-[#0B0906] bg-opacity-20" v-else></div>
       <!-- Closed Padlock Overlay -->
-      <div v-if="!vendor.isOpen" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
+      <div v-if="!vendor.isOpen && route.query.schedule !== 'true'" class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center">
         <Lock class="w-12 h-12 text-white mb-2" />
         <span class="text-white font-bold text-base tracking-wide text-center">STORE<br/>CLOSED</span>
       </div>

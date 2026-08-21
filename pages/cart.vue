@@ -13,6 +13,10 @@
             <span class="text-lg font-bold text-gray-900 tracking-tighter">Errandr</span> -->
             <img src="@/assets/img/logo-light.png" class="w-32" />
           </NuxtLink>
+          
+          <NuxtLink to="/dashboard/search" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all active:scale-95 text-gray-900">
+            <Search class="w-4.5 h-4.5" />
+          </NuxtLink>
         </div>
       </header>
 
@@ -26,7 +30,7 @@
       </div>
 
       <!-- Campus Favorites -->
-      <div class="max-w-5xl mx-auto w-full px-4 md:px-4 pb-12">
+      <div v-if="loadingVendors || popularVendors.length > 0" class="max-w-5xl mx-auto w-full px-4 md:px-4 pb-12">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-lg font-medium text-gray-900 tracking-tight">Campus Favorites 🔥</h3>
           <NuxtLink to="/vendors" class="text-xs font-medium text-parentPrimary hover:underline px-3 py-1.5 rounded-lg bg-parentPrimary/5">See all</NuxtLink>
@@ -52,13 +56,13 @@
               <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
               <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 z-20">
                 <Star class="w-3 h-3 text-amber-500 fill-current" />
-                <span class="text-[10px] font-medium text-gray-900">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
+                <span class="text-xs font-medium text-gray-900">{{ vendor.rating?.toFixed(1) || '5.0' }}</span>
               </div>
             </div>
             <div class="p-4 flex items-center justify-between gap-3">
               <div class="min-w-0">
                 <h4 class="text-sm font-medium text-gray-900 truncate tracking-tight">{{ vendor.storeName }}</h4>
-                <p class="text-[10px] font-bold text-gray-400 mt-0.5">{{ vendor.preparationTime || 20 }} min · {{ vendor.category }}</p>
+                <p class="text-xs font-bold text-gray-400 mt-0.5">{{ vendor.preparationTime || 20 }} min · {{ vendor.category }}</p>
               </div>
               <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-parentPrimary group-hover:text-white transition-colors shrink-0">
                 <ArrowRight class="w-3.5 h-3.5" />
@@ -81,17 +85,23 @@
             </button>
             <div>
               <h1 class="text-base font-medium text-gray-900 tracking-tight leading-none">{{ checkoutStep === 'cart' ? 'Your Cart' : 'Checkout' }}</h1>
-              <p class="text-[10px] font-bold text-gray-400 mt-0.5">{{ cartStore.itemCount }} items</p>
+              <p class="text-xs font-bold text-gray-400 mt-0.5">{{ cartStore.itemCount }} items</p>
             </div>
           </div>
-          <button 
-            v-if="checkoutStep === 'checkout'"
-            @click="showOrderBreakdown = true"
-            class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs font-medium text-gray-900 hover:bg-gray-100 transition-all lg:hidden active:scale-95"
-          >
-            <ShoppingCart class="w-3.5 h-3.5" />
-            Review
-          </button>
+          <div class="flex items-center gap-2">
+            <NuxtLink to="/dashboard/search" class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all active:scale-95 text-gray-900">
+              <Search class="w-4 h-4" />
+            </NuxtLink>
+            
+            <button 
+              v-if="checkoutStep === 'checkout'"
+              @click="showOrderBreakdown = true"
+              class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs font-medium text-gray-900 hover:bg-gray-100 transition-all lg:hidden active:scale-95"
+            >
+              <ShoppingCart class="w-3.5 h-3.5" />
+              Review
+            </button>
+          </div>
         </div>
       </header>
 
@@ -111,7 +121,7 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-gray-900 tracking-tight">Payment Progress</h3>
-                  <p class="text-[10px] font-bold text-gray-400">Waiting for everyone to pay their share</p>
+                  <p class="text-xs font-bold text-gray-400">Waiting for everyone to pay their share</p>
                 </div>
               </div>
               <div class="p-4 space-y-2">
@@ -123,17 +133,17 @@
                     </div>
                     <div>
                       <p class="text-xs font-medium text-gray-900 leading-none mb-1">{{ p.user?.firstName || 'Guest' }} {{ p.user?.lastName || '' }}</p>
-                      <p class="text-[10px] font-bold text-gray-400">₦{{ p.total?.toLocaleString() }}</p>
+                      <p class="text-xs font-bold text-gray-400">₦{{ p.total?.toLocaleString() }}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-1.5">
                     <div v-if="p.hasPaid" class="flex items-center gap-1 text-emerald-500 bg-emerald-50 px-2 py-1 rounded-md">
                       <CheckCircle class="w-3.5 h-3.5" />
-                      <span class="text-[10px] font-bold">Paid</span>
+                      <span class="text-xs font-bold">Paid</span>
                     </div>
                     <div v-else class="flex items-center gap-1 text-amber-500 bg-amber-50 px-2 py-1 rounded-md">
                       <Loader2 class="w-3.5 h-3.5 animate-spin" />
-                      <span class="text-[10px] font-bold">Waiting</span>
+                      <span class="text-xs font-bold">Waiting</span>
                     </div>
                   </div>
                 </div>
@@ -148,7 +158,7 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-gray-900 tracking-tight">Delivery Details</h3>
-                  <p class="text-[10px] font-bold text-gray-400">Where should we drop it?</p>
+                  <p class="text-xs font-bold text-gray-400">Where should we drop it?</p>
                 </div>
               </div>
               <div class="p-4 sm:p-5 space-y-4">
@@ -156,7 +166,7 @@
                 <AnimatedInput v-model="recipientPhone" label="Phone Number" type="tel" />
                 <!-- Delivery Option is fixed to use_an_errander -->
                 <div class="mb-5 space-y-3">
-                  <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-1 pl-1">Delivery Method</label>
+                  <label class="text-xs font-medium text-gray-400 tracking-wider block mb-1 pl-1">Delivery Method</label>
                   <div class="grid grid-cols-2 gap-3">
                     <button 
                       @click="deliveryMode = 'room_delivery'"
@@ -183,16 +193,28 @@
                 </div>
 
                 <div class="animate-fade-in relative z-50">
-                  <div class="mb-4">
-                    <label class="flex items-center gap-2 cursor-pointer group">
-                      <input type="checkbox" v-model="isWithinLuth" class="sr-only peer" />
-                      <div class="relative w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:bg-parentPrimary dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-                      <span class="text-[11px] font-bold text-gray-700 group-hover:text-gray-900">Do you stay within LUTH and College of Medicine?</span>
-                    </label>
+                  <div class="mb-5 space-y-3">
+                    <label class="text-xs font-medium text-gray-400 tracking-wider block mb-1 pl-1">Order Location Type</label>
+                    <div class="grid grid-cols-2 gap-3">
+                      <button 
+                        @click="isWithinLuth = true"
+                        class="flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all"
+                        :class="isWithinLuth ? 'border-parentPrimary bg-parentPrimary/5 text-parentPrimary' : 'border-gray-100 bg-white hover:border-gray-200'"
+                      >
+                        <span class="text-xs font-bold" :class="isWithinLuth ? 'text-parentPrimary' : 'text-gray-900'">Inside Campus</span>
+                      </button>
+                      <button 
+                        @click="isWithinLuth = false"
+                        class="flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all"
+                        :class="!isWithinLuth ? 'border-parentPrimary bg-parentPrimary/5 text-parentPrimary' : 'border-gray-100 bg-white hover:border-gray-200'"
+                      >
+                        <span class="text-xs font-bold" :class="!isWithinLuth ? 'text-parentPrimary' : 'text-gray-900'">Outside Campus</span>
+                      </button>
+                    </div>
                   </div>
                   
                   <div v-if="isWithinLuth">
-                    <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Hostel / Campus Location</label>
+                    <label class="text-xs font-medium text-gray-400 tracking-wider block mb-2 pl-1">Hostel / Campus Location</label>
                     <input 
                       v-model="specificAddress"
                       type="text"
@@ -201,13 +223,35 @@
                     />
                   </div>
                   
-                  <div v-else>
-                    <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Delivery Address</label>
-                    <UiMapboxAutocomplete 
-                      v-model="specificAddress" 
-                      @select="handleAddressSelect" 
-                      placeholder="e.g. Moremi Hall, Room 302, Unilag" 
-                    />
+                  <div v-else class="space-y-4">
+                    <div>
+                      <label class="text-xs font-medium text-gray-400 tracking-wider block mb-2 pl-1">Full Delivery Address</label>
+                      <!-- <UiMapboxAutocomplete 
+                        v-model="specificAddress" 
+                        @select="handleAddressSelect" 
+                        placeholder="e.g. Moremi Hall, Room 302, Unilag" 
+                      /> -->
+                      <input 
+                        v-model="specificAddress"
+                        type="text"
+                        placeholder="e.g. 123 Main Street, Phase 2, Yaba, Lagos"
+                        class="w-full bg-white border border-gray-100 focus:border-parentPrimary/50 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all shadow-sm"
+                      />
+                    </div>
+                    <div>
+                      <div class="flex items-center justify-between mb-2 pl-1">
+                        <label class="text-xs font-medium text-gray-400 tracking-wider block">Proposed Delivery Fee (₦)</label>
+                        <span class="text-[10px] font-bold text-parentPrimary">Min: ₦{{ minOutsideCampusFee }}</span>
+                      </div>
+                      <input 
+                        v-model.number="proposedDeliveryFee"
+                        type="number"
+                        :min="minOutsideCampusFee"
+                        placeholder="Enter your offer"
+                        class="w-full bg-white border border-gray-100 focus:border-parentPrimary/50 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all shadow-sm"
+                      />
+                      <p class="text-[10px] text-gray-500 mt-1 pl-1">Enter a fair amount. Riders will bid based on this offer.</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -221,20 +265,56 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-gray-900 tracking-tight">Delivery Schedule</h3>
-                  <p class="text-[10px] font-bold text-gray-400">When do you want this pre-order?</p>
+                  <p class="text-xs font-bold text-gray-400">When do you want this pre-order?</p>
                 </div>
               </div>
               <div class="p-4 sm:p-5">
-                <label class="text-[10px] font-medium text-gray-400 tracking-wider block mb-2 pl-1">Select Delivery Date</label>
+                <label class="text-xs font-medium text-gray-400 tracking-wider block mb-2 pl-1">Select Delivery Date</label>
                 <input 
                   v-model="scheduledDate"
                   type="datetime-local"
                   :min="minPreOrderDate"
                   class="w-full bg-gray-50 border-2 border-transparent focus:border-parentPrimary/20 rounded-xl px-4 py-3 text-base font-bold text-gray-900 outline-none transition-all"
                 />
-                <div class="mt-3 text-[10px] font-bold text-gray-400 space-y-1">
+                <div class="mt-3 text-xs font-bold text-gray-400 space-y-1">
                   <p>• Requires a minimum of {{ maxLeadTime }} hours notice.</p>
                   <p v-if="allowedDays && allowedDays.length > 0">• Deliveries available only on: {{ allowedDays.join(', ') }}</p>
+                </div>
+
+                <div class="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                  <p class="text-[11px] font-medium text-blue-800 leading-relaxed">
+                    <strong>Note:</strong> Your payment will be processed immediately upon checkout. The vendor will receive and prepare your order exactly at their opening time on your selected date.
+                  </p>
+                </div>
+
+                <div class="mt-4">
+                  <label class="flex items-center gap-2 cursor-pointer group">
+                    <div class="relative flex items-center justify-center">
+                      <input type="checkbox" v-model="wantsNotification" class="w-4 h-4 rounded border-gray-300 text-parentPrimary focus:ring-parentPrimary/20 transition-all cursor-pointer z-10 opacity-0 peer" />
+                      <div class="absolute inset-0 bg-white border-2 border-gray-200 rounded peer-checked:bg-parentPrimary peer-checked:border-parentPrimary peer-focus:ring-2 peer-focus:ring-parentPrimary/20 transition-all flex items-center justify-center">
+                        <Check class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+                      </div>
+                    </div>
+                    <span class="text-xs font-bold text-gray-600 group-hover:text-gray-900 transition-colors">Also notify me when the vendor opens</span>
+                  </label>
+                  
+                  <Transition
+                    enter-active-class="transition-all duration-300 ease-out"
+                    enter-from-class="opacity-0 -translate-y-2 max-h-0"
+                    enter-to-class="opacity-100 translate-y-0 max-h-[100px]"
+                    leave-active-class="transition-all duration-200 ease-in"
+                    leave-from-class="opacity-100 translate-y-0 max-h-[100px]"
+                    leave-to-class="opacity-0 -translate-y-2 max-h-0"
+                  >
+                    <div v-if="wantsNotification" class="mt-3 overflow-hidden">
+                      <input 
+                        v-model="notifyEmail"
+                        type="email"
+                        placeholder="Enter your email address"
+                        class="w-full bg-white border border-gray-200 focus:border-parentPrimary/50 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all shadow-sm"
+                      />
+                    </div>
+                  </Transition>
                 </div>
               </div>
             </div>
@@ -324,7 +404,7 @@
               <div class="absolute -right-4 -top-4 w-32 h-32 bg-parentPrimary/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
               <div class="flex-1 relative z-10">
                 <h4 class="text-sm font-black text-white mb-1 drop-shadow-sm flex items-center gap-2">Save on delivery? <span class="text-lg">💰</span></h4>
-                <p class="text-[10px] font-medium text-gray-400 leading-relaxed">Invite roommates to this order and split the fee!</p>
+                <p class="text-sm font-medium text-white leading-relaxed">Invite roommates to this order and split the fee!</p>
               </div>
               <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md text-white flex items-center justify-center shrink-0 ml-4 shadow-sm relative z-10">
                 <Users class="w-4 h-4" />
@@ -381,7 +461,7 @@
                   <span class="text-lg">🦉</span>
                   <div>
                     <p class="text-xs font-bold text-indigo-700">Night Owl Active!</p>
-                    <p class="text-[10px] font-medium text-indigo-600">Enjoy free delivery till 2 AM</p>
+                    <p class="text-xs font-medium text-indigo-600">Enjoy free delivery till 2 AM</p>
                   </div>
                 </div>
 
@@ -449,7 +529,7 @@
                   <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0 && !cartStore.getVendorStats(vendorId).packs.flatMap(p => p.items).every(i => i.isPackagingFeeIncluded)" class="mb-6 p-4 bg-gray-50/80 rounded-2xl border border-gray-100/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <h5 class="text-xs font-bold text-gray-900 flex items-center gap-1.5"><Box class="w-3.5 h-3.5 text-gray-500"/> Packaging Type</h5>
-                      <p class="text-[10px] text-gray-500 mt-0.5">Choose how you want your items packed</p>
+                      <p class="text-xs text-gray-500 mt-0.5">Choose how you want your items packed</p>
                     </div>
                     <SelectInput
                       v-model="selectedPacks[vendorId]"
@@ -465,7 +545,7 @@
                     <div class="absolute left-[1.35rem] top-10 bottom-4 w-px bg-gradient-to-b from-gray-200 to-transparent z-0"></div>
                     
                     <div class="flex items-center gap-3 relative z-10">
-                      <div class="w-11 h-7 bg-gray-900 text-white rounded-lg flex items-center justify-center text-[10px] font-black tracking-wider shadow-md">{{ pack.name || `P${pIndex + 1}` }}</div>
+                      <div class="h-7 px-3 bg-gray-900 text-white rounded-lg flex items-center justify-center text-xs font-black tracking-wider shadow-md whitespace-nowrap">{{ pack.name || `P${pIndex + 1}` }}</div>
                       <div class="h-px flex-1 bg-gradient-to-r from-gray-100 to-transparent"></div>
                     </div>
                     
@@ -480,7 +560,7 @@
                           <div class="flex justify-between items-start mb-1 gap-2">
                             <div class="flex-1 min-w-0">
                               <h5 class="text-sm font-bold text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
-                              <p v-if="item.customizations && item.customizations.length > 0" class="text-[10px] font-bold text-parentPrimary mt-0.5 bg-parentPrimary/10 inline-block px-2 py-0.5 rounded-full">Base: ₦{{ item.price?.toLocaleString() }}</p>
+                              <p v-if="item.customizations && item.customizations.length > 0" class="text-xs font-bold text-parentPrimary mt-0.5 bg-parentPrimary/10 inline-block px-2 py-0.5 rounded-full">Base: ₦{{ item.price?.toLocaleString() }}</p>
                             </div>
                             <div class="text-right shrink-0">
                               <p class="text-sm font-black text-gray-900 leading-none">₦{{ ((item.subtotal || (item.price * item.quantity)) / item.quantity).toLocaleString() }}</p>
@@ -494,12 +574,12 @@
                                 <div class="w-1 h-1 rounded-full bg-gray-300 group-hover/cust:bg-parentPrimary transition-colors"></div>
                                 {{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}
                               </span>
-                              <span v-if="c.price > 0" class="text-gray-900 font-bold bg-white px-1.5 rounded shadow-sm border border-gray-100 text-[10px] shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+                              <span v-if="c.price > 0" class="text-gray-900 font-bold bg-white px-1.5 rounded shadow-sm border border-gray-100 text-xs shrink-0">+₦{{ c.price.toLocaleString() }}</span>
                             </p>
                           </div>
                           
                           <div class="flex justify-between items-end mt-3 pt-3 border-t border-gray-100/50">
-                            <div class="text-[10px] text-gray-400 font-medium flex items-center gap-1"><Info class="w-3 h-3"/> Subtotal</div>
+                            <div class="text-xs text-gray-400 font-medium flex items-center gap-1"><Info class="w-3 h-3"/> Subtotal</div>
                             <span class="text-sm font-black text-parentPrimary drop-shadow-sm">₦{{ (item.subtotal || (item.price * item.quantity)).toLocaleString() }}</span>
                           </div>
                         </div>
@@ -520,7 +600,7 @@
                 <div class="absolute -right-4 -top-4 w-32 h-32 bg-parentPrimary/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div class="flex-1 relative z-10">
                   <h4 class="text-sm font-black text-white mb-1 drop-shadow-sm flex items-center gap-2">Save on delivery? <span class="text-lg">💰</span></h4>
-                  <p class="text-[10px] font-medium text-gray-400 leading-relaxed">Invite roommates to this order and split the fee!</p>
+                  <p class="text-sm font-medium text-white leading-relaxed">Invite roommates to this order and split the fee!</p>
                 </div>
                 <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md text-white flex items-center justify-center shrink-0 ml-4 group-hover:bg-parentPrimary transition-colors shadow-sm relative z-10">
                   <Users class="w-4 h-4" />
@@ -600,7 +680,7 @@
                     <span class="text-lg">🦉</span>
                     <div>
                       <p class="text-xs font-bold text-indigo-700">Night Owl Active!</p>
-                      <p class="text-[10px] font-medium text-indigo-600">Enjoy free delivery till 2 AM</p>
+                      <p class="text-xs font-medium text-indigo-600">Enjoy free delivery till 2 AM</p>
                     </div>
                   </div>
 
@@ -624,7 +704,7 @@
                   <div v-if="user && user.freeDeliveryTokens > 0 && !isBirthday" class="flex items-center justify-between p-3 bg-gradient-to-r from-orange-500/20 to-orange-600/10 border border-orange-500/30 rounded-xl cursor-pointer hover:bg-orange-500/30 transition-all backdrop-blur-md" @click="useFreeDeliveryToken = !useFreeDeliveryToken">
                     <div class="flex flex-col">
                       <span class="text-sm font-bold text-orange-400 flex items-center gap-1.5"><Ticket class="w-4 h-4"/> Use Free Delivery</span>
-                      <span class="text-[10px] text-orange-300/80 font-medium mt-0.5">You have {{ user.freeDeliveryTokens }} left</span>
+                      <span class="text-xs text-orange-300/80 font-medium mt-0.5">You have {{ user.freeDeliveryTokens }} left</span>
                     </div>
                     <div class="w-10 h-5 rounded-full transition-all relative border" :class="useFreeDeliveryToken ? 'bg-orange-500 border-orange-400' : 'bg-black/40 border-white/20'">
                       <div class="absolute top-[3px] w-3 h-3 rounded-full bg-white transition-all shadow-sm" :class="useFreeDeliveryToken ? 'left-[22px]' : 'left-1'"></div>
@@ -711,7 +791,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <h2 class="text-lg font-medium text-gray-900 tracking-tight">Review Items</h2>
-                <p class="text-[10px] font-bold text-gray-400">Check your packs & quantities</p>
+                <p class="text-xs font-bold text-gray-400">Check your packs & quantities</p>
               </div>
               <button @click="showOrderBreakdown = false" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
                 <X class="w-4 h-4" />
@@ -729,7 +809,7 @@
               </div>
               
               <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0 && !cartStore.getVendorStats(vendorId).packs.flatMap(p => p.items).every(i => i.isPackagingFeeIncluded)" class="pl-3 border-l-2 border-gray-50 space-y-1">
-                <label class="block text-[10px] font-bold text-gray-400">Packaging Type</label>
+                <label class="block text-xs font-bold text-gray-400">Packaging Type</label>
                 <select v-model="selectedPacks[vendorId]" class="w-full bg-white text-xs p-2 rounded-lg border border-gray-200 focus:outline-none focus:border-parentPrimary text-gray-700 font-medium">
                   <option v-for="(packOption, idx) in vendorsMetadata[vendorId].packs" :key="idx" :value="packOption">
                     {{ packOption.name }} (₦{{ packOption.price }})
@@ -739,7 +819,7 @@
               <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="'mb-pack-' + pack.id" class="pl-3 border-l-2 border-gray-50 space-y-3">
                 <div class="flex items-center justify-between">
                   <span class="text-[9px] font-medium bg-gray-900 text-white px-2.5 py-1 rounded-md">{{ pack.name || `Pack ${pIndex + 1}` }}</span>
-                  <button @click="cartStore.removePack(vendorId, pack.id)" class="text-[10px] font-medium text-rose-400 hover:text-rose-500">Remove</button>
+                  <button @click="cartStore.removePack(vendorId, pack.id)" class="text-xs font-medium text-rose-400 hover:text-rose-500">Remove</button>
                 </div>
                 <div v-for="(item, iIndex) in pack.items" :key="'mb-item-'+iIndex" class="flex items-start gap-3">
                   <div class="w-11 h-11 bg-gray-50 rounded-lg overflow-hidden border border-gray-100 shrink-0 mt-1">
@@ -750,13 +830,13 @@
                     <div class="flex justify-between items-start mb-1 gap-2">
                       <div class="flex-1 min-w-0">
                         <h5 class="text-xs font-medium text-gray-900 truncate">{{ toTitleCase(item.name) }}</h5>
-                        <p v-if="item.customizations && item.customizations.length > 0" class="text-[10px] font-medium text-gray-400 mt-0.5">Base: ₦{{ item.price?.toLocaleString() }}</p>
+                        <p v-if="item.customizations && item.customizations.length > 0" class="text-xs font-medium text-gray-400 mt-0.5">Base: ₦{{ item.price?.toLocaleString() }}</p>
                       </div>
                       <p class="text-xs font-bold text-gray-900 shrink-0">₦{{ ((item.subtotal || (item.price * item.quantity)) / item.quantity).toLocaleString() }}</p>
                     </div>
                     
                     <div v-if="item.customizations && item.customizations.length > 0" class="mt-1.5 mb-2 pl-2 border-l-2 border-gray-100 space-y-1">
-                      <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[10px] font-medium text-gray-500 flex justify-between">
+                      <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-xs font-medium text-gray-500 flex justify-between">
                         <span class="truncate pr-2">{{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}</span>
                         <span v-if="c.price > 0" class="text-gray-400 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
                       </p>
@@ -804,7 +884,7 @@
             <p class="text-xs font-medium text-gray-400 mb-6">Enter the amount to add. You'll be redirected to Paystack.</p>
             <div class="space-y-4">
               <div class="text-left">
-                <p class="text-[10px] font-medium text-gray-400 tracking-wider mb-2 pl-1">Amount (NGN)</p>
+                <p class="text-xs font-medium text-gray-400 tracking-wider mb-2 pl-1">Amount (NGN)</p>
                 <input 
                   v-model="formattedTopupAmount" 
                   type="text"
@@ -963,6 +1043,8 @@ const config = useRuntimeConfig();
 const recipientName = ref('');
 const recipientPhone = ref('');
 const isWithinLuth = ref(true);
+const proposedDeliveryFee = ref<number | null>(null);
+const minOutsideCampusFee = ref(450);
 const specificAddress = ref('');
 const deliveryCoordinates = ref<[number, number] | null>(null);
 
@@ -1015,6 +1097,8 @@ const selectedPacks = ref<Record<string, any>>({});
 const isMysteryBox = ref(false);
 const isDormDelivery = ref(false);
 const scheduledDate = ref('');
+const wantsNotification = ref(false);
+const notifyEmail = ref('');
 const useFreeDeliveryToken = ref(false);
 
 const getGroupedCustomizations = (customizations: any[]) => {
@@ -1066,7 +1150,10 @@ const fetchPlatformSettings = async () => {
 };
 
 const isPreOrderCart = computed(() => {
-  return cartStore.allVendorIds.value.some(id => vendorsMetadata.value[id]?.preOrderOnly);
+  return cartStore.allVendorIds.value.some(id => {
+    const meta = vendorsMetadata.value[id];
+    return meta?.preOrderOnly || (meta && meta.isOpen === false);
+  });
 });
 
 const hasFoodVendor = computed(() => {
@@ -1406,6 +1493,15 @@ onMounted(async () => {
   cartStore.initCart();
   if (cartStore.isEmpty.value) fetchPopularVendors();
   
+  try {
+    const res = await orders_api.getCustomErrandSettings();
+    if (res?.data?.minOutsideCampusFee) {
+      minOutsideCampusFee.value = res.data.minOutsideCampusFee;
+    }
+  } catch (e) {
+    console.error('Failed to fetch custom errand settings:', e);
+  }
+  
   watch(() => user.value, (u) => {
     if (u) fetchWallet();
   }, { immediate: true });
@@ -1456,11 +1552,7 @@ onMounted(async () => {
         }
 
         const orderIds = data?.metadata?.orderIds || [];
-        if (data?.metadata?.vendorIds) {
-           data.metadata.vendorIds.forEach((vId: string) => cartStore.clearCart(vId));
-        } else {
-           cartStore.clearCart();
-        }
+        cartStore.clearCart();
         if (orderIds.length > 0) navigateTo(`/orders/${orderIds[0]}`);
       } else {
         paymentError.value = 'Payment failed. Please try again.';
@@ -1574,6 +1666,12 @@ const startPayment = async () => {
   if (!specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Delivery address required', toastType: 'error' });
   if (!user.value?.email && !guestEmail.value) return (showAuthModal.value = true);
 
+  if (!isWithinLuth.value) {
+    if (!proposedDeliveryFee.value || proposedDeliveryFee.value < minOutsideCampusFee.value) {
+      return showToast({ title: 'Invalid Fee', message: `Proposed delivery fee must be at least ₦${minOutsideCampusFee.value}`, toastType: 'error' });
+    }
+  }
+
   if (paymentMethod.value === 'wallet') {
     placing.value = true;
     try {
@@ -1594,6 +1692,13 @@ const startPayment = async () => {
     if (!groupOrder.value) {
        orderIds = await preCreateOrders();
        if (!orderIds || orderIds.length === 0) throw new Error('Failed to create order');
+    }
+
+    if (!isWithinLuth.value && !groupOrder.value) {
+      cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
+      navigateTo(`/negotiation?orderIds=${orderIds.join(',')}`);
+      placing.value = false;
+      return;
     }
 
     if (paymentMethod.value === 'wallet') {
@@ -1671,7 +1776,8 @@ const preCreateOrders = async (): Promise<string[]> => {
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value,
         vendorNote: cartStore.vendorNotes.value[vendorId] || '',
         promoCode: promoCodeObj.value?.code || undefined,
-        isWithinLuth: isWithinLuth.value,
+        locationType: isWithinLuth.value ? 'inside_campus' : 'outside_campus',
+        proposedDeliveryFee: !isWithinLuth.value ? proposedDeliveryFee.value : undefined,
       });
       if (res?._id || res?.data?._id) createdIds.push(res?._id || res?.data?._id);
       isFirstOrder = false;
@@ -1688,10 +1794,11 @@ const preCreateOrders = async (): Promise<string[]> => {
         vendorId: vId, packs: stats.packs.map((p: any, i: number) => ({ packId: p.id, name: p.name || `Pack ${i + 1}`, packType: p.packType, items: p.items.map((item: any) => ({ product: item.productId, name: item.name, price: item.price, image: item.image, quantity: item.quantity, subtotal: item.subtotal, customizations: item.customizations || [] })) })),
         subtotal: stats.subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: actualPackFee, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: actualPackFee },
         isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, deliveryMode: deliveryMode.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
-        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
+        isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, wantsNotification: wantsNotification.value, notifyEmail: notifyEmail.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
         vendorNote: cartStore.vendorNotes.value[vId] || '',
         promoCode: promoCodeObj.value?.code || undefined,
-        isWithinLuth: isWithinLuth.value,
+        locationType: isWithinLuth.value ? 'inside_campus' : 'outside_campus',
+        proposedDeliveryFee: !isWithinLuth.value ? proposedDeliveryFee.value : undefined,
       });
       if (res?._id || res?.data?._id) { 
         createdIds.push(res?._id || res?.data?._id); 
