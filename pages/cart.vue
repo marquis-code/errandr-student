@@ -1279,7 +1279,15 @@ const validatePromo = async () => {
   isValidatingPromo.value = true;
   try {
     const firstVendorId = cartStore.items.value[0]?.vendor?._id || cartStore.items.value[0]?.vendor || '';
-    const { data } = await api.get(`/promo-codes/validate?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}`);
+    
+    // Compute current context
+    const isGroupOrderQuery = (groupOrder.value && !!groupId.value) ? 'true' : 'false';
+    const locType = isWithinLuth.value ? 'inside_campus' : 'outside_campus';
+    // The student app usually treats normal food checkout as NOT custom errand. 
+    // Custom errand has a separate flow, but just in case, we'll set it to false for food cart.
+    const isCustomErrandQuery = 'false';
+
+    const { data } = await api.get(`/promo-codes/validate?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`);
     if (data) {
       promoCodeObj.value = data;
       showToast({ title: 'Promo Applied!', message: `${data.code} applied successfully.`, toastType: 'success' });
@@ -1444,14 +1452,25 @@ const computedBrethrenDiscount = computed(() => {
 
 const computedPromoDiscount = computed(() => {
   if (!promoCodeObj.value) return 0;
+  
+  const discountTarget = promoCodeObj.value.appliesToDeliveryFeeOnly ? computedTotalDeliveryFee.value : currentSubtotal.value;
+  let pDiscount = 0;
+
   if (promoCodeObj.value.discountType === 'percentage') {
-    let pDiscount = Math.round(currentSubtotal.value * (promoCodeObj.value.value / 100));
+    pDiscount = Math.round(discountTarget * (promoCodeObj.value.value / 100));
     if (promoCodeObj.value.maxDiscountAmount && pDiscount > promoCodeObj.value.maxDiscountAmount) {
       pDiscount = promoCodeObj.value.maxDiscountAmount;
     }
-    return pDiscount;
+  } else {
+    pDiscount = promoCodeObj.value.value;
   }
-  return promoCodeObj.value.value;
+
+  // Cap at the target it applies to
+  if (pDiscount > discountTarget) {
+    pDiscount = discountTarget;
+  }
+
+  return pDiscount;
 });
 
 const computedTokenDiscount = computed(() => {
