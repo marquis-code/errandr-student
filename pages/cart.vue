@@ -1278,7 +1278,8 @@ const validatePromo = async () => {
   if (!promoCodeInput.value.trim()) return;
   isValidatingPromo.value = true;
   try {
-    const { data } = await api.get(`/promo-codes/validate?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}`);
+    const firstVendorId = cartStore.items.value[0]?.vendor?._id || cartStore.items.value[0]?.vendor || '';
+    const { data } = await api.get(`/promo-codes/validate?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}`);
     if (data) {
       promoCodeObj.value = data;
       showToast({ title: 'Promo Applied!', message: `${data.code} applied successfully.`, toastType: 'success' });
