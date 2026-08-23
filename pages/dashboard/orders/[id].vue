@@ -715,7 +715,8 @@ const acceptBid = async (bidId: string) => {
 const payForErrand = async () => {
   isInitializingPayment.value = true;
   try {
-     const amount = order.value.deliveryFee + 50;
+     // Use order.total which was already correctly set by acceptBid
+     const amount = order.value.total;
      const data = await initializePayment({
         amount,
         customer: { name: user.value?.firstName || 'Student', email: user.value?.email || 'student@erranders.com' },

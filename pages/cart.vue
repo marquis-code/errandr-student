@@ -1031,7 +1031,12 @@ const { createOrder } = useStudentOrders();
 watch(() => groupOrder.value?.status, (newStatus) => {
   if (newStatus === 'completed') {
     cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
-    if (typeof window !== 'undefined') localStorage.removeItem('errandr_active_group_code');
+    cartStore.clearCart();
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('errandr_active_group_code');
+      localStorage.removeItem('errandr_checkout_data');
+      localStorage.removeItem('errandr_pending_order_ids');
+    }
     groupOrder.value = null;
     activeCode.value = null;
     navigateTo('/orders');
@@ -1543,18 +1548,39 @@ onMounted(async () => {
         if (data?.metadata?.isGroupCheckout || data?.data?.metadata?.isGroupCheckout) {
            await submitGroupCheckout(route.query.reference as string);
            showToast({ title: 'Payment Successful', message: 'Group Order updated!', toastType: 'success' });
+           // Clear cart aggressively after successful group checkout payment
+           cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
+           cartStore.clearCart();
+           localStorage.removeItem('errandr_checkout_data');
+           localStorage.removeItem('errandr_pending_order_ids');
            placing.value = false;
-           // If the order becomes completed, the socket will push us to the final screen, 
-           // but we can also just clear the query param.
            const url = new URL(window.location.href);
            url.searchParams.delete('reference');
            window.history.replaceState({}, '', url.toString());
            return;
         }
 
-        const orderIds = data?.metadata?.orderIds || [];
+        // Try multiple sources for orderIds: metadata from Paystack, or our localStorage fallback
+        let orderIds = data?.metadata?.orderIds || data?.data?.metadata?.orderIds || [];
+        if ((!orderIds || orderIds.length === 0) && typeof window !== 'undefined') {
+          try {
+            const fallback = localStorage.getItem('errandr_pending_order_ids');
+            if (fallback) orderIds = JSON.parse(fallback);
+          } catch (_) {}
+        }
+
+        // AGGRESSIVELY clear cart — both per-vendor and full reset
+        cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
         cartStore.clearCart();
-        if (orderIds.length > 0) navigateTo(`/orders/${orderIds[0]}`);
+        localStorage.removeItem('errandr_checkout_data');
+        localStorage.removeItem('errandr_pending_order_ids');
+
+        // Always navigate away from cart after successful payment
+        if (orderIds && orderIds.length > 0) {
+          navigateTo(`/orders/${orderIds[0]}`);
+        } else {
+          navigateTo('/orders');
+        }
       } else {
         paymentError.value = 'Payment failed. Please try again.';
         placing.value = false;
@@ -1693,10 +1719,17 @@ const startPayment = async () => {
     if (!groupOrder.value) {
        orderIds = await preCreateOrders();
        if (!orderIds || orderIds.length === 0) throw new Error('Failed to create order');
+       // Persist orderIds as fallback in case Paystack metadata doesn't round-trip
+       if (typeof window !== 'undefined') {
+         localStorage.setItem('errandr_pending_order_ids', JSON.stringify(orderIds));
+       }
     }
 
     if (!isWithinLuth.value && !groupOrder.value) {
       cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
+      cartStore.clearCart();
+      localStorage.removeItem('errandr_checkout_data');
+      localStorage.removeItem('errandr_pending_order_ids');
       navigateTo(`/negotiation?orderIds=${orderIds.join(',')}`);
       placing.value = false;
       return;
@@ -1706,10 +1739,19 @@ const startPayment = async () => {
       if (groupOrder.value) {
          await submitGroupCheckout('WALLET_PAYMENT');
          showToast({ title: 'Success', message: 'Group Order payment successful!', toastType: 'success' });
+         // Clear cart aggressively after successful group wallet payment
+         cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
+         cartStore.clearCart();
+         localStorage.removeItem('errandr_checkout_data');
+         localStorage.removeItem('errandr_pending_order_ids');
       } else {
          for (const orderId of orderIds) await payWithWallet(orderId);
          showToast({ title: 'Success', message: 'Order placed using wallet!', toastType: 'success' });
+         // Clear cart aggressively — both per-vendor and full reset
          cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
+         cartStore.clearCart();
+         localStorage.removeItem('errandr_checkout_data');
+         localStorage.removeItem('errandr_pending_order_ids');
          navigateTo(`/orders/${orderIds[0]}`);
       }
     } else {

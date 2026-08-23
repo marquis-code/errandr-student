@@ -344,7 +344,7 @@
                           class="w-full bg-transparent outline-none py-2 text-xl font-sans font-bold border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
                         />
                       </div>
-                      <p v-if="form.runnerFee > 0 && form.runnerFee < 200" class="font-sans text-sm font-bold text-[#FF5C1A]">Minimum runner fee is ₦200</p>
+                      <p v-if="form.runnerFee > 0 && form.runnerFee < minRunnerFee" class="font-sans text-sm font-bold text-[#FF5C1A]">Minimum runner fee is ₦{{ minRunnerFee.toLocaleString() }}</p>
 
                       <div class="flex flex-wrap gap-1.5 pt-2">
                         <button v-for="amt in [500,1000,2000,3500]" :key="amt" @click="form.runnerFee = amt"
@@ -498,6 +498,7 @@ const isSubmitting = ref(false)
 const isAuthModalOpen = ref(false)
 const justAuthenticated = ref(false)
 const failedPaymentReference = ref('')
+const minRunnerFee = ref(400)
 
 const errandType = ref<'custom' | 'market'>('custom')
 const isRecording = ref(false)
@@ -607,6 +608,17 @@ onMounted(() => {
 })
 
 onMounted(async () => {
+  // Fetch admin-configurable minimum runner fee
+  try {
+    const settingsRes = await orders_api.getCustomErrandSettings()
+    const settings = settingsRes?.data || settingsRes
+    if (settings?.minCustomErrandFee) {
+      minRunnerFee.value = settings.minCustomErrandFee
+    }
+  } catch (e) {
+    console.error('Failed to fetch custom errand settings:', e)
+  }
+
   const saved = localStorage.getItem('recentDropoffs')
   if (saved) {
     try {
@@ -761,7 +773,7 @@ const isStep1Valid = computed(() => {
 })
 
 const isStep2Valid = computed(() => {
-  return form.value.runnerFee >= 200 // Minimum 200 NGN runner fee
+  return form.value.runnerFee >= minRunnerFee.value
 })
 
 const transferFee = computed(() => {

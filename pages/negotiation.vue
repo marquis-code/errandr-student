@@ -126,14 +126,15 @@ const acceptBid = async (bid: any) => {
       const order = res.data?.data || res.data || res;
       showToast({ title: 'Bid Accepted', message: 'Proceeding to secure payment...', toastType: 'success' });
       
+      // Use order.total which acceptBid already computed correctly (deliveryFee + serviceFee)
       const amount = Math.round(order.total);
       
       // Initialize real Paystack payment
       const paymentData = await initializePayment({
         amount,
         customer: { name: user.value?.firstName || 'Student', email: user.value?.email || 'user@example.com' },
-        callback_url: `${window.location.origin}/orders/${primaryOrderId}`,
-        metadata: { orderIds: [primaryOrderId] }
+        callback_url: `${window.location.origin}/dashboard/orders/${primaryOrderId}`,
+        metadata: { isCustomErrand: true, orderId: primaryOrderId }
       });
       
       const authUrl = paymentData?.data?.authorization_url || paymentData?.authorization_url;

@@ -15,6 +15,7 @@
     <CorePushNotificationPrompt />
     <CoreCallOverlay />
     <RequirePhoneModal />
+    <GenderSetupModal />
     
     <!-- Background Audio - Bottom Left -->
     <!-- <ClientOnly>

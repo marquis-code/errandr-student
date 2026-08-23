@@ -21,6 +21,7 @@ interface User {
   faculty?: string;
   dateOfBirth?: string;
   gender?: string;
+  erranderGenderPreference?: string;
   homeAddress?: string;
   workAddress?: string;
   preferences?: {
