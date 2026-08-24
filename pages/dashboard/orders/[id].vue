@@ -15,11 +15,11 @@
           <p class="text-gray-400 text-xs mt-1">We're updating your delivery status in real-time.</p>
         </div>
 
-        <div v-if="order.status !== 'pending' && order.status !== 'delivered'" class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#FF5C1A] text-white self-start sm:self-auto">
+        <div v-if="order.status !== 'pending' && order.status !== 'delivered' && order.status !== 'cancelled' && order.status !== 'awaiting_payment' && order.status !== 'negotiating'" class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#FF5C1A] text-white self-start sm:self-auto">
            <Clock class="w-5 h-5 text-white/80" />
            <div>
-             <p class="text-[9px] font-bold text-white/70 uppercase tracking-widest leading-none mb-1">Est. Arrival</p>
-             <p class="text-base font-bold tracking-tight leading-none">12-15 <span class="text-[10px] font-medium">mins</span></p>
+             <p class="text-[9px] font-bold text-white/70 uppercase tracking-widest leading-none mb-1">Status</p>
+             <p class="text-base font-bold tracking-tight leading-none capitalize">{{ order.status?.replace(/_/g, ' ') }}</p>
            </div>
         </div>
       </div>
@@ -157,7 +157,7 @@
              </div>
 
              <!-- AWAITING PAYMENT -->
-             <div v-if="order.type === 'custom_errand' && order.status === 'awaiting_payment'" class="p-4 rounded-2xl bg-gray-900 text-white flex flex-col items-center text-center">
+             <div v-if="order.status === 'awaiting_payment'" class="p-4 rounded-2xl bg-gray-900 text-white flex flex-col items-center text-center">
                 <div class="w-12 h-12 rounded-xl bg-[#FF5C1A] flex items-center justify-center mb-4">
                    <Check class="w-6 h-6 text-white" />
                 </div>
@@ -266,11 +266,11 @@
                       <h3 class="text-base font-bold text-gray-900">{{ order.vendor?.storeName || 'Vendor' }}</h3>
                    </div>
                    <div class="flex flex-col gap-2">
-                     <div v-if="order.vendor?.phone" class="flex gap-2">
-                       <a :href="`tel:${order.vendor.phone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
+                     <div v-if="vendorPhone" class="flex gap-2">
+                       <a :href="`tel:${vendorPhone}`" class="flex-1 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold text-center hover:bg-gray-50 transition-colors">
                          Call
                        </a>
-                       <a :href="getWhatsAppLink(order.vendor.phone, 'vendor')" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors flex justify-center items-center gap-1.5">
+                       <a :href="getWhatsAppLink(vendorPhone, 'vendor')" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors flex justify-center items-center gap-1.5">
                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.82 9.82 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 0 0-3.48-8.413z" />
                          </svg>
@@ -293,7 +293,8 @@
                      <div v-for="item in order.items" :key="item._id" class="flex items-center justify-between gap-3">
                        <div class="flex items-center gap-2.5">
                          <div class="w-9 h-9 rounded-lg bg-gray-50 border border-gray-100 overflow-hidden shrink-0">
-                           <img :src="item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'" class="w-full h-full object-cover" />
+                           <img v-if="item.image" :src="item.image" class="w-full h-full object-cover" />
+                           <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center"><Utensils class="w-4 h-4 text-gray-300" /></div>
                          </div>
                          <div>
                            <h5 class="text-xs font-bold text-gray-900 line-clamp-1">{{ item.name }}</h5>
@@ -309,9 +310,29 @@
                        <span class="text-gray-400">Subtotal</span>
                        <span class="text-gray-900 font-bold">₦{{ order.subtotal?.toLocaleString() }}</span>
                      </div>
-                     <div class="flex justify-between text-xs">
-                       <span class="text-gray-400">Fees & delivery</span>
-                       <span class="text-gray-900 font-bold">₦{{ (order.total - order.subtotal)?.toLocaleString() }}</span>
+                     <div v-if="order.deliveryFee" class="flex justify-between text-xs">
+                       <span class="text-gray-400">Delivery Fee</span>
+                       <span class="text-gray-900 font-bold">₦{{ order.deliveryFee?.toLocaleString() }}</span>
+                     </div>
+                     <div v-if="order.serviceFee" class="flex justify-between text-xs">
+                       <span class="text-gray-400">Service Fee</span>
+                       <span class="text-gray-900 font-bold">₦{{ order.serviceFee?.toLocaleString() }}</span>
+                     </div>
+                     <div v-if="order.packagingFee" class="flex justify-between text-xs">
+                       <span class="text-gray-400">Packaging Fee</span>
+                       <span class="text-gray-900 font-bold">₦{{ order.packagingFee?.toLocaleString() }}</span>
+                     </div>
+                     <div v-if="order.platformProcessingFee" class="flex justify-between text-xs">
+                       <span class="text-gray-400">Processing Fee</span>
+                       <span class="text-gray-900 font-bold">₦{{ order.platformProcessingFee?.toLocaleString() }}</span>
+                     </div>
+                     <div v-if="order.discount && order.discount > 0" class="flex justify-between text-xs">
+                       <span class="text-emerald-600">Discount</span>
+                       <span class="text-emerald-600 font-bold">-₦{{ order.discount?.toLocaleString() }}</span>
+                     </div>
+                     <div v-if="order.promoDiscount && order.promoDiscount > 0" class="flex justify-between text-xs">
+                       <span class="text-emerald-600">Promo Discount</span>
+                       <span class="text-emerald-600 font-bold">-₦{{ order.promoDiscount?.toLocaleString() }}</span>
                      </div>
                    </div>
 
@@ -563,7 +584,7 @@ const route = useRoute();
 const router = useRouter();
 const order = ref<any>(null);
 const { showToast } = useCustomToast();
-const { initializePayment } = usePayments();
+const { initializePayment, verifyPayment } = usePayments();
 const { user } = useUser();
 const isSubmittingRating = ref(false);
 const newFee = ref(0);
@@ -591,6 +612,13 @@ const pendingBids = computed(() => {
   if (!order.value?.bids) return [];
   return order.value.bids.filter((b: any) => b.status === 'pending');
 });
+
+// Resolve vendor phone: try vendor.phone → vendor.owner.phone → whatsappLinks
+const vendorPhone = computed(() => {
+  if (!order.value?.vendor) return null;
+  return order.value.vendor.phone || order.value.vendor.owner?.phone || null;
+});
+
 const { socket } = useRealtimeSocket();
 
 const ratingForm = reactive({
@@ -612,18 +640,36 @@ const fetchOrder = async () => {
 }
 
 onMounted(async () => {
+  startPolling();
   try {
     await fetchOrder();
     checkAutoOpenChat();
 
-    if (route.query.reference && order.value.type === 'custom_errand' && order.value.status === 'awaiting_payment') {
-       await api.post(`/orders/${order.value._id}/custom/pay`, { paymentReference: route.query.reference });
-       showToast({ title: 'Payment Successful', message: 'Chat is now open!', toastType: 'success' });
-       // reload
+    if (route.query.reference && (order.value.status === 'awaiting_payment' || route.query.trxref)) {
+       try {
+         // Any order in awaiting_payment with a reference needs payForCustomErrand to confirm
+         if (order.value.status === 'awaiting_payment') {
+           await api.post(`/orders/${order.value._id}/custom/pay`, { paymentReference: route.query.reference });
+         } else {
+           await verifyPayment(route.query.reference as string);
+         }
+         showToast({ title: 'Payment Successful', message: 'Payment confirmed! Your order is being processed.', toastType: 'success' });
+       } catch (e: any) {
+         console.error('Payment verification error:', e);
+         // Try the other method as fallback
+         try {
+           await verifyPayment(route.query.reference as string);
+           showToast({ title: 'Payment Successful', message: 'Payment confirmed!', toastType: 'success' });
+         } catch (e2) {
+           console.error('Fallback verification also failed:', e2);
+         }
+       }
+       // Reload order to get updated status
        const res2 = await orders_api.getOrder(route.params.id as string);
        order.value = res2.data;
        const url = new URL(window.location.href);
        url.searchParams.delete('reference');
+       url.searchParams.delete('trxref');
        window.history.replaceState({}, '', url.toString());
     }
   } catch (e) {
@@ -632,11 +678,35 @@ onMounted(async () => {
 });
 
 let currentSocket: any = null;
+let pollingInterval: ReturnType<typeof setInterval> | null = null;
+
+// Polling fallback: re-fetch order every 15 seconds to catch any missed events
+const startPolling = () => {
+  if (pollingInterval) return;
+  pollingInterval = setInterval(async () => {
+    try {
+      const res = await orders_api.getOrder(route.params.id as string);
+      const newOrder = res.data;
+      // Only update if status changed
+      if (newOrder && newOrder.status !== order.value?.status) {
+        order.value = newOrder;
+        showToast({ title: 'Order Updated', message: `Status: ${newOrder.status?.replace(/_/g, ' ')}`, toastType: 'info' });
+      } else if (newOrder) {
+        // Silently update data without toast
+        order.value = newOrder;
+      }
+    } catch (e) {
+      // Silently fail
+    }
+  }, 15000);
+};
 
 watch(() => socket.value, (newSocket) => {
   if (currentSocket) {
     currentSocket.off('errand:viewers_update');
     currentSocket.off('notification:new');
+    currentSocket.off('notification:order-status-update');
+    currentSocket.off('notification:order-accepted');
   }
 
   if (newSocket) {
@@ -648,12 +718,19 @@ watch(() => socket.value, (newSocket) => {
       }
     });
 
+    // Listen for ALL notification types that could affect this order
     newSocket.on('notification:new', async (payload: any) => {
       const { type, data, title, body } = payload;
-      if (type === 'ORDER_BIDS_UPDATE' || type === 'ORDER_ACCEPTED' || type === 'ORDER_STATUS_UPDATE' || type === 'ERRAND_VIEWER_ADDED') {
+      const relevantTypes = [
+        'ORDER_BIDS_UPDATE', 'ORDER_ACCEPTED', 'ORDER_STATUS_UPDATE', 
+        'ERRAND_VIEWER_ADDED', 'ORDER_BID_ACCEPTED', 'ORDER_CONFIRMED',
+        'ORDER_PREPARING', 'ORDER_READY', 'ORDER_IN_TRANSIT', 'ORDER_DELIVERED',
+        'ORDER_CANCELLED', 'ORDER_PAID', 'PAYMENT_CONFIRMED'
+      ];
+      if (relevantTypes.includes(type)) {
         if (data?.orderId === route.params.id || data?.order?._id === route.params.id) {
            if (type !== 'ERRAND_VIEWER_ADDED') {
-             showToast({ title: title || 'New Update', message: body || 'Your order has been updated.', toastType: 'info' });
+             showToast({ title: title || 'Order Updated', message: body || 'Your order has been updated.', toastType: 'info' });
            }
            const res = await orders_api.getOrder(route.params.id as string);
            order.value = res.data;
@@ -672,7 +749,12 @@ watch(() => socket.value, (newSocket) => {
     newSocket.on('notification:order-status-update', refreshOrder);
     newSocket.on('notification:order-accepted', refreshOrder);
   }
+
+  // Start polling as a fallback regardless of socket state
+  startPolling();
 }, { immediate: true });
+
+// startPolling already called in main onMounted
 
 onUnmounted(() => {
   if (currentSocket) {
@@ -680,6 +762,10 @@ onUnmounted(() => {
     currentSocket.off('notification:new');
     currentSocket.off('notification:order-status-update');
     currentSocket.off('notification:order-accepted');
+  }
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+    pollingInterval = null;
   }
 });
 
@@ -721,7 +807,7 @@ const payForErrand = async () => {
         amount,
         customer: { name: user.value?.firstName || 'Student', email: user.value?.email || 'student@erranders.com' },
         callback_url: `${window.location.origin}/dashboard/orders/${order.value._id}`,
-        metadata: { isCustomErrand: true, orderId: order.value._id }
+        metadata: { isCustomErrand: order.value.type === 'custom_errand', orderId: order.value._id, orderIds: [order.value._id] }
      });
      const authUrl = data?.data?.authorization_url || data?.authorization_url;
      if (authUrl) window.location.href = authUrl;
@@ -807,6 +893,18 @@ const orderSteps = computed(() => {
   }
   
   const status = order.value?.status;
+  const isNegotiated = order.value?.locationType === 'campus_environs' || order.value?.proposedDeliveryFee;
+  const hasErrander = !!order.value?.errander;
+  
+  // For negotiated marketplace orders, the flow includes awaiting_payment
+  const completedStatuses = ['confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'delivered'];
+  const isCompleted = (s: string) => {
+    const statusOrder = ['pending', 'negotiating', 'awaiting_payment', 'confirmed', 'preparing', 'ready_for_pickup', 'picked_up', 'in_transit', 'delivered'];
+    const currentIdx = statusOrder.indexOf(status);
+    const stepIdx = statusOrder.indexOf(s);
+    return stepIdx < currentIdx;
+  };
+  
   return [
     { 
       label: 'Order Placed', 
@@ -819,9 +917,9 @@ const orderSteps = computed(() => {
       _current: ['confirmed', 'preparing'].includes(status)
     },
     {
-      label: !order.value?.errander ? 'Finding Rider...' : 'Rider Assigned',
-      _completed: !!order.value?.errander,
-      _current: !order.value?.errander && ['confirmed', 'preparing', 'ready_for_pickup'].includes(status)
+      label: hasErrander ? 'Rider Assigned' : (isNegotiated && ['negotiating', 'awaiting_payment'].includes(status) ? 'Finding Rider...' : 'Rider Assigned'),
+      _completed: hasErrander && completedStatuses.includes(status),
+      _current: (hasErrander && ['confirmed', 'preparing'].includes(status)) || ['negotiating', 'awaiting_payment'].includes(status)
     },
     { 
       label: 'On Way', 

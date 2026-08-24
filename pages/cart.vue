@@ -218,12 +218,33 @@
                     <input 
                       v-model="specificAddress"
                       type="text"
-                      placeholder="e.g. BLOCK 4 COMMON ROOM"
+                      placeholder="e.g. Block 4 Common Room"
                       class="w-full bg-white border border-gray-100 focus:border-parentPrimary/50 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all shadow-sm"
                     />
                   </div>
                   
                   <div v-else class="space-y-4">
+                    <div class="mb-4">
+                      <label class="text-xs font-medium text-gray-400 tracking-wider block mb-2 pl-1">Distance / Area</label>
+                      <div class="grid grid-cols-2 gap-3">
+                        <button 
+                          @click="outsideCampusLocation = 'campus_environs'"
+                          class="flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all"
+                          :class="outsideCampusLocation === 'campus_environs' ? 'border-parentPrimary bg-parentPrimary/5 text-parentPrimary' : 'border-gray-100 bg-white hover:border-gray-200'"
+                        >
+                          <span class="text-[11px] font-bold" :class="outsideCampusLocation === 'campus_environs' ? 'text-parentPrimary' : 'text-gray-900'">Campus Environs</span>
+                          <span class="text-[9px]" :class="outsideCampusLocation === 'campus_environs' ? 'text-parentPrimary' : 'text-gray-500'">Just Outside</span>
+                        </button>
+                        <button 
+                          @click="outsideCampusLocation = 'outside_campus'"
+                          class="flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all"
+                          :class="outsideCampusLocation === 'outside_campus' ? 'border-parentPrimary bg-parentPrimary/5 text-parentPrimary' : 'border-gray-100 bg-white hover:border-gray-200'"
+                        >
+                          <span class="text-[11px] font-bold" :class="outsideCampusLocation === 'outside_campus' ? 'text-parentPrimary' : 'text-gray-900'">Far Off-Campus</span>
+                          <span class="text-[9px]" :class="outsideCampusLocation === 'outside_campus' ? 'text-parentPrimary' : 'text-gray-500'">City / Town</span>
+                        </button>
+                      </div>
+                    </div>
                     <div>
                       <label class="text-xs font-medium text-gray-400 tracking-wider block mb-2 pl-1">Full Delivery Address</label>
                       <!-- <UiMapboxAutocomplete 
@@ -241,12 +262,13 @@
                     <div>
                       <div class="flex items-center justify-between mb-2 pl-1">
                         <label class="text-xs font-medium text-gray-400 tracking-wider block">Proposed Delivery Fee (₦)</label>
-                        <span class="text-[10px] font-bold text-parentPrimary">Min: ₦{{ minOutsideCampusFee }}</span>
+                        <span class="text-[10px] font-bold text-parentPrimary">Min: ₦{{ activeMinOutsideFee }}</span>
                       </div>
                       <input 
                         v-model.number="proposedDeliveryFee"
                         type="number"
-                        :min="minOutsideCampusFee"
+                        :min="activeMinOutsideFee"
+                        @blur="() => { if (!proposedDeliveryFee || proposedDeliveryFee < activeMinOutsideFee) proposedDeliveryFee = activeMinOutsideFee }"
                         placeholder="Enter your offer"
                         class="w-full bg-white border border-gray-100 focus:border-parentPrimary/50 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all shadow-sm"
                       />
@@ -468,6 +490,7 @@
                 <div v-if="!promoCodeObj" class="flex gap-2">
                   <input 
                     v-model="promoCodeInput"
+                    @input="handlePromoInput"
                     type="text"
                     placeholder="Promo Code"
                     class="flex-1 px-4 py-3 bg-gray-50 border border-transparent focus:border-parentPrimary/20 rounded-xl text-xs font-medium text-gray-900 outline-none uppercase"
@@ -480,6 +503,38 @@
                     <Loader2 v-if="isValidatingPromo" class="w-3 h-3 animate-spin" />
                     <span v-else>Apply</span>
                   </button>
+                </div>
+
+                <div v-if="debugPromoMsg" class="mt-2 p-2 bg-yellow-50 border border-yellow-200 text-yellow-800 text-[10px] rounded">
+                  {{ debugPromoMsg }}
+                </div>
+
+                <!-- Mobile Promo Preview Area -->
+                <div v-if="isPreviewingPromo" class="flex justify-center mt-2">
+                   <Loader2 class="w-4 h-4 text-parentPrimary animate-spin" />
+                </div>
+                <div v-else-if="promoPreview && !promoCodeObj" class="mt-3 p-4 rounded-xl" :class="promoPreview.eligibility.isEligible ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'">
+                  <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="promoPreview.eligibility.isEligible ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'">
+                      <CheckCircle v-if="promoPreview.eligibility.isEligible" class="w-4 h-4" />
+                      <XCircle v-else class="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p class="text-sm font-bold" :class="promoPreview.eligibility.isEligible ? 'text-emerald-800' : 'text-red-800'">
+                        {{ promoPreview.eligibility.isEligible ? 'Promo Code Eligible!' : 'Promo Code Not Eligible' }}
+                      </p>
+                      <p class="text-xs mt-1 leading-relaxed" :class="promoPreview.eligibility.isEligible ? 'text-emerald-700' : 'text-red-700'">
+                        <template v-if="promoPreview.eligibility.isEligible">
+                          Use code <strong>{{ promoPreview.promo.code }}</strong> to get 
+                          <strong>{{ promoPreview.promo.discountType === 'percentage' ? promoPreview.promo.value + '% off' : '₦' + promoPreview.promo.value?.toLocaleString() + ' off' }}</strong> your order{{ promoPreview.promo.minOrderAmount ? '. Minimum order of ₦' + promoPreview.promo.minOrderAmount?.toLocaleString() + ' required' : '' }}.
+                          {{ promoPreview.promo.maxDiscount ? 'Maximum discount: ₦' + promoPreview.promo.maxDiscount?.toLocaleString() + '.' : '' }}
+                        </template>
+                        <template v-else>
+                          {{ promoPreviewReason }}
+                        </template>
+                      </p>
+                    </div>
+                  </div>
                 </div>
                 <div v-if="user && user.freeDeliveryTokens > 0 && !isBirthday" class="flex items-center justify-between p-3 bg-orange-50 border border-orange-100 rounded-xl cursor-pointer hover:bg-orange-100/50 transition-colors" @click="useFreeDeliveryToken = !useFreeDeliveryToken">
                   <div class="flex flex-col">
@@ -688,6 +743,7 @@
                     <div class="absolute inset-0 bg-gradient-to-r from-parentPrimary/20 to-purple-500/20 rounded-xl blur transition-opacity opacity-0 group-hover/promo:opacity-100"></div>
                     <input 
                       v-model="promoCodeInput"
+                      @input="handlePromoInput"
                       type="text"
                       placeholder="Enter Promo Code"
                       class="relative flex-1 px-4 py-3.5 bg-white/10 border border-white/20 focus:border-parentPrimary/50 focus:bg-white/15 focus:ring-2 focus:ring-parentPrimary/20 rounded-xl text-sm font-bold text-white outline-none uppercase placeholder:text-gray-400 placeholder:normal-case transition-all backdrop-blur-sm"
@@ -700,6 +756,38 @@
                       <Loader2 v-if="isValidatingPromo" class="w-4 h-4 animate-spin" />
                       <span v-else>Apply</span>
                     </button>
+                  </div>
+                  
+                  <div v-if="debugPromoMsg" class="mt-2 p-2 bg-yellow-50 border border-yellow-200 text-yellow-800 text-[10px] rounded">
+                    {{ debugPromoMsg }}
+                  </div>
+
+                  <!-- Promo Preview Area -->
+                  <div v-if="isPreviewingPromo" class="flex justify-center mt-2">
+                     <Loader2 class="w-4 h-4 text-parentPrimary animate-spin" />
+                  </div>
+                  <div v-else-if="promoPreview && !promoCodeObj" class="mt-3 p-4 rounded-xl border" :class="promoPreview.eligibility.isEligible ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'">
+                    <div class="flex items-start gap-3">
+                      <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="promoPreview.eligibility.isEligible ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'">
+                        <CheckCircle v-if="promoPreview.eligibility.isEligible" class="w-4 h-4" />
+                        <XCircle v-else class="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold" :class="promoPreview.eligibility.isEligible ? 'text-emerald-400' : 'text-red-400'">
+                          {{ promoPreview.eligibility.isEligible ? 'Promo Code Eligible!' : 'Promo Code Not Eligible' }}
+                        </p>
+                        <p class="text-xs mt-1 leading-relaxed" :class="promoPreview.eligibility.isEligible ? 'text-emerald-300/80' : 'text-red-300/80'">
+                          <template v-if="promoPreview.eligibility.isEligible">
+                            Use code <strong>{{ promoPreview.promo.code }}</strong> to get 
+                            <strong>{{ promoPreview.promo.discountType === 'percentage' ? promoPreview.promo.value + '% off' : '₦' + promoPreview.promo.value?.toLocaleString() + ' off' }}</strong> your order{{ promoPreview.promo.minOrderAmount ? '. Minimum order of ₦' + promoPreview.promo.minOrderAmount?.toLocaleString() + ' required' : '' }}.
+                            {{ promoPreview.promo.maxDiscount ? 'Maximum discount: ₦' + promoPreview.promo.maxDiscount?.toLocaleString() + '.' : '' }}
+                          </template>
+                          <template v-else>
+                            {{ promoPreviewReason }}
+                          </template>
+                        </p>
+                      </div>
+                    </div>
                   </div>
                   <div v-if="user && user.freeDeliveryTokens > 0 && !isBirthday" class="flex items-center justify-between p-3 bg-gradient-to-r from-orange-500/20 to-orange-600/10 border border-orange-500/30 rounded-xl cursor-pointer hover:bg-orange-500/30 transition-all backdrop-blur-md" @click="useFreeDeliveryToken = !useFreeDeliveryToken">
                     <div class="flex flex-col">
@@ -1051,6 +1139,10 @@ const recipientPhone = ref('');
 const isWithinLuth = ref(true);
 const proposedDeliveryFee = ref<number | null>(null);
 const minOutsideCampusFee = ref(450);
+const minCampusEnvironsFee = ref(350);
+const outsideCampusLocation = ref('campus_environs');
+
+const activeMinOutsideFee = computed(() => outsideCampusLocation.value === 'campus_environs' ? minCampusEnvironsFee.value : minOutsideCampusFee.value);
 const specificAddress = ref('');
 const deliveryCoordinates = ref<[number, number] | null>(null);
 
@@ -1096,6 +1188,67 @@ const promoCodeInput = ref('');
 const promoCodeObj = ref<any>(null);
 const promoDiscount = ref(0);
 const isValidatingPromo = ref(false);
+
+const promoPreview = ref<any>(null);
+const isPreviewingPromo = ref(false);
+const debugPromoMsg = ref('');
+
+// Generate a human-readable reason for why a promo code is not eligible
+const promoPreviewReason = computed(() => {
+  if (!promoPreview.value?.eligibility) return 'This promo code cannot be applied to your order.';
+  const elig = promoPreview.value.eligibility;
+  if (!elig.isActive) return 'This promo code is currently inactive and cannot be used.';
+  if (elig.isExpired) return 'This promo code has expired and is no longer valid.';
+  if (!elig.minAmountMet) return `Your order subtotal doesn't meet the minimum of ₦${promoPreview.value.promo?.minOrderAmount?.toLocaleString() || 0} required for this promo.`;
+  if (elig.usageLimitReached) return 'This promo code has reached its maximum usage limit.';
+  if (!elig.vendorAllowed) return 'This promo code is not valid for the vendor you are ordering from.';
+  if (!elig.userAllowed) return 'This promo code is restricted and not available for your account.';
+  if (!elig.orderTypeAllowed) return 'This promo code does not apply to this type of order.';
+  return 'This promo code cannot be applied to your order.';
+});
+let previewTimeout: any = null;
+
+const handlePromoInput = () => {
+  const newVal = promoCodeInput.value;
+  if (!newVal || !newVal.trim()) {
+    promoPreview.value = null;
+    debugPromoMsg.value = '';
+    return;
+  }
+  
+  if (previewTimeout) clearTimeout(previewTimeout);
+  
+  previewTimeout = setTimeout(async () => {
+    isPreviewingPromo.value = true;
+    debugPromoMsg.value = `Checking ${newVal}...`;
+    try {
+      const firstVendorId = cartStore.allVendorIds.value[0] || '';
+      const isGroupOrderQuery = (groupOrder.value && !!groupId.value) ? 'true' : 'false';
+      const locType = isWithinLuth.value ? 'inside_campus' : 'outside_campus';
+      const isCustomErrandQuery = 'false';
+      
+      const res = await api.get(`/promo-codes/preview?code=${newVal.trim()}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`);
+      
+      const previewData = res?.data;
+      if (previewData && previewData.found && previewData.promo) {
+        promoPreview.value = previewData;
+        debugPromoMsg.value = ''; // Clear debug if success
+      } else {
+        promoPreview.value = null;
+        debugPromoMsg.value = `Code not found or invalid format: ${JSON.stringify(previewData)}`;
+      }
+    } catch (e: any) {
+      promoPreview.value = null;
+      debugPromoMsg.value = `Error: ${e?.response?.data?.message || e?.message || 'Unknown API Error'}`;
+    } finally {
+      isPreviewingPromo.value = false;
+    }
+  }, 500);
+};
+
+watch(promoCodeInput, () => {
+  handlePromoInput();
+});
 
 const showSplitModeModal = ref(false);
 const splitGroupType = ref('split_bill');
@@ -1277,24 +1430,49 @@ onMounted(() => {
 const validatePromo = async () => {
   if (!promoCodeInput.value.trim()) return;
   isValidatingPromo.value = true;
+  promoPreview.value = null;
+  promoCodeObj.value = null;
   try {
-    const firstVendorId = cartStore.items.value[0]?.vendor?._id || cartStore.items.value[0]?.vendor || '';
-    
-    // Compute current context
+    const firstVendorId = cartStore.allVendorIds.value[0] || '';
     const isGroupOrderQuery = (groupOrder.value && !!groupId.value) ? 'true' : 'false';
     const locType = isWithinLuth.value ? 'inside_campus' : 'outside_campus';
-    // The student app usually treats normal food checkout as NOT custom errand. 
-    // Custom errand has a separate flow, but just in case, we'll set it to false for food cart.
     const isCustomErrandQuery = 'false';
 
-    const { data } = await api.get(`/promo-codes/validate?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`);
-    if (data) {
-      promoCodeObj.value = data;
-      showToast({ title: 'Promo Applied!', message: `${data.code} applied successfully.`, toastType: 'success' });
+    // Step 1: Call preview endpoint first to get eligibility details
+    isPreviewingPromo.value = true;
+    const previewRes = await api.get(`/promo-codes/preview?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`) as any;
+    isPreviewingPromo.value = false; console.log("PROMO DEBUG FINISHED", promoPreview.value);
+
+    if (previewRes?.data) {
+      promoPreview.value = previewRes.data;
+
+      // Step 2: If eligible, auto-apply via validate endpoint
+      if (previewRes.data.eligibility?.isEligible) {
+        const res = await api.get(`/promo-codes/validate?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`) as any;
+        
+        if (res?.data && !res?.data?.error) {
+          promoCodeObj.value = res.data;
+          showToast({ title: 'Promo Applied!', message: `${res.data.code} applied successfully.`, toastType: 'success' });
+        }
+      } else {
+        // Show why it's not eligible
+        const reasons: string[] = [];
+        const elig = previewRes.data.eligibility;
+        if (!elig.isActive) reasons.push('This promo code is not active');
+        if (elig.isExpired) reasons.push('This promo code has expired');
+        if (!elig.minAmountMet) reasons.push(`Minimum order of ₦${previewRes.data.promo?.minOrderAmount || 0} not met`);
+        if (elig.usageLimitReached) reasons.push('Usage limit has been reached');
+        if (!elig.vendorAllowed) reasons.push('Not valid for this vendor');
+        if (!elig.userAllowed) reasons.push('Not valid for your account');
+        if (!elig.orderTypeAllowed) reasons.push('Not valid for this order type');
+        showToast({ title: 'Code Not Eligible', message: reasons[0] || 'This promo code cannot be applied.', toastType: 'error' });
+      }
     }
   } catch (e: any) {
+    isPreviewingPromo.value = false; console.log("PROMO DEBUG FINISHED", promoPreview.value);
     showToast({ title: 'Invalid Code', message: e.response?.data?.message || 'Code is invalid or expired', toastType: 'error' });
     promoCodeObj.value = null;
+    promoPreview.value = null;
   } finally {
     isValidatingPromo.value = false;
   }
@@ -1305,6 +1483,7 @@ const examBrethrenActive = ref(false);
 const isNightOwl = computed(() => false);
 
 const computedTotalDeliveryFee = computed(() => {
+  if (!isWithinLuth.value) return proposedDeliveryFee.value || 0;
   if (isNightOwl.value) return 0;
   const currentUser = user.value as any;
   if (currentUser?.campusPrimeActive && currentUser?.campusPrimeExpiry && new Date(currentUser.campusPrimeExpiry) > new Date()) return 0;
@@ -1521,6 +1700,9 @@ onMounted(async () => {
   
   try {
     const res = await orders_api.getCustomErrandSettings();
+    if (res?.data?.minCampusEnvironsFee) {
+      minCampusEnvironsFee.value = res.data.minCampusEnvironsFee;
+    }
     if (res?.data?.minOutsideCampusFee) {
       minOutsideCampusFee.value = res.data.minOutsideCampusFee;
     }
@@ -1644,6 +1826,12 @@ watch([recipientName, recipientPhone, specificAddress, deliveryOption, deliveryM
   localStorage.setItem('errandr_checkout_data', JSON.stringify({ name, phone, address, delivery, deliveryMode: dMode, mystery, dorm, paymentMethod: method, scheduledDate: date }));
 });
 
+watch([isWithinLuth, outsideCampusLocation], ([inside, loc]) => {
+  if (!inside) {
+    proposedDeliveryFee.value = activeMinOutsideFee.value;
+  }
+});
+
 let syncTimeout: any;
 watch(
   () => cartStore.carts.value,
@@ -1714,9 +1902,27 @@ const startPayment = async () => {
   if (!user.value?.email && !guestEmail.value) return (showAuthModal.value = true);
 
   if (!isWithinLuth.value) {
-    if (!proposedDeliveryFee.value || proposedDeliveryFee.value < minOutsideCampusFee.value) {
-      return showToast({ title: 'Invalid Fee', message: `Proposed delivery fee must be at least ₦${minOutsideCampusFee.value}`, toastType: 'error' });
+    if (!proposedDeliveryFee.value || proposedDeliveryFee.value < activeMinOutsideFee.value) {
+      return showToast({ title: 'Invalid Fee', message: `Proposed delivery fee must be at least ₦${activeMinOutsideFee.value}`, toastType: 'error' });
     }
+  }
+
+  if (!isWithinLuth.value && !groupOrder.value) {
+    placing.value = true;
+    try {
+      const orderIds = await preCreateOrders();
+      if (!orderIds || orderIds.length === 0) throw new Error('Failed to create order');
+      cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
+      cartStore.clearCart();
+      localStorage.removeItem('errandr_checkout_data');
+      localStorage.removeItem('errandr_pending_order_ids');
+      navigateTo(`/negotiation?orderIds=${orderIds.join(',')}`);
+    } catch (e: any) {
+      showToast({ title: 'Error', message: e.message || 'Failed to submit order', toastType: 'error' });
+    } finally {
+      placing.value = false;
+    }
+    return;
   }
 
   if (paymentMethod.value === 'wallet') {
@@ -1743,16 +1949,6 @@ const startPayment = async () => {
        if (typeof window !== 'undefined') {
          localStorage.setItem('errandr_pending_order_ids', JSON.stringify(orderIds));
        }
-    }
-
-    if (!isWithinLuth.value && !groupOrder.value) {
-      cartStore.allVendorIds.value.forEach(vId => cartStore.clearCart(vId));
-      cartStore.clearCart();
-      localStorage.removeItem('errandr_checkout_data');
-      localStorage.removeItem('errandr_pending_order_ids');
-      navigateTo(`/negotiation?orderIds=${orderIds.join(',')}`);
-      placing.value = false;
-      return;
     }
 
     if (paymentMethod.value === 'wallet') {
@@ -1839,7 +2035,7 @@ const preCreateOrders = async (): Promise<string[]> => {
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value,
         vendorNote: cartStore.vendorNotes.value[vendorId] || '',
         promoCode: promoCodeObj.value?.code || undefined,
-        locationType: isWithinLuth.value ? 'inside_campus' : 'outside_campus',
+        locationType: isWithinLuth.value ? 'inside_campus' : outsideCampusLocation.value,
         proposedDeliveryFee: !isWithinLuth.value ? proposedDeliveryFee.value : undefined,
       });
       if (res?._id || res?.data?._id) createdIds.push(res?._id || res?.data?._id);
@@ -1849,7 +2045,7 @@ const preCreateOrders = async (): Promise<string[]> => {
     for (const vId of [...cartStore.allVendorIds.value]) {
       const stats = cartStore.getVendorStats(vId) as any;
       const vendor = vendorsMetadata.value[vId];
-      const deliveryFee = vendor?.deliveryFee ?? 150;
+      const deliveryFee = !isWithinLuth.value ? (proposedDeliveryFee.value || 0) : (vendor?.deliveryFee ?? 150);
       const sFee = platformConvenienceFee.value;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const actualPackFee = getVendorPackagingFee(vId, stats, vendor);
@@ -1860,7 +2056,7 @@ const preCreateOrders = async (): Promise<string[]> => {
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, wantsNotification: wantsNotification.value, notifyEmail: notifyEmail.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
         vendorNote: cartStore.vendorNotes.value[vId] || '',
         promoCode: promoCodeObj.value?.code || undefined,
-        locationType: isWithinLuth.value ? 'inside_campus' : 'outside_campus',
+        locationType: isWithinLuth.value ? 'inside_campus' : outsideCampusLocation.value,
         proposedDeliveryFee: !isWithinLuth.value ? proposedDeliveryFee.value : undefined,
       });
       if (res?._id || res?.data?._id) { 

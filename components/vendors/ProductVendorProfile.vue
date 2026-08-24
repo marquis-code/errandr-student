@@ -1281,7 +1281,7 @@
     <UiModal :isOpen="showGroupNamingModal" @close="showGroupNamingModal = false" title="Start a Group Order">
       <div class="space-y-4">
         <p class="text-sm text-gray-500">Give your group order a name so friends know what they're joining.</p>
-        <UiAnimatedInput v-model="groupName" label="Group Name" placeholder="e.g. Room 201 Lunch" />
+        <UiAnimatedInput v-model="groupName" label="Group Name"  />
         <button 
           @click="confirmStartGroupOrder"
           :disabled="!groupName.trim() || groupLoading"
