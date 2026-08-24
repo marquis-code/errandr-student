@@ -414,7 +414,7 @@
  View Store Details
  </button>
  <button 
- v-if="order.status === 'pending' || order.status === 'accepted'"
+ v-if="order.status === 'pending' || order.status === 'awaiting_payment' || order.status === 'negotiating' || order.status === 'scheduled'"
  @click="handleCancelOrderClick"
  class="w-full py-4 text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-xl text-sm font-bold transition-colors mt-2"
  >
