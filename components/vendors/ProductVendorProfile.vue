@@ -1815,7 +1815,28 @@ const openProductModal = (product: any) => {
   selectedCustomizations.value = {};
   productNote.value = '';
   
-  // Pre-select defaults if any (future enhancement)
+  // Pre-select defaults for required options
+  if (product.modifiers && product.modifiers.length > 0) {
+    product.modifiers.forEach((mod: any) => {
+      if (mod.isRequired && mod.options && mod.options.length > 0) {
+        handleCustomizationChange(mod, mod.options[0], true, true);
+      }
+    });
+  }
+  
+  if (product.addOnGroupIds && product.addOnGroupIds.length > 0) {
+    product.addOnGroupIds.forEach((addon: any) => {
+      if (addon.minSelect > 0 && addon.options && addon.options.length > 0) {
+        // Pre-select the minimum required amount
+        for (let i = 0; i < Math.min(addon.minSelect, addon.options.length); i++) {
+          handleCustomizationChange(addon, addon.options[i], true, false);
+        }
+      } else if (addon.selectionType === 'single' && addon.options && addon.options.length > 0) {
+        // If it's a single selection add-on, it's often meant to be required, but 
+        // we'll stick to explicitly required add-ons only based on minSelect.
+      }
+    });
+  }
 };
 
 const handleListAdd = (product: any) => {
