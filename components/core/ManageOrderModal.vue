@@ -367,7 +367,7 @@ const handleCancel = async () => {
 
 const canCancel = computed(() => {
   if (!order.value) return false;
-  return ['pending', 'confirmed', 'awaiting_payment'].includes(order.value.status);
+  return ['pending', 'awaiting_payment', 'negotiating', 'scheduled'].includes(order.value.status);
 });
 
 const formatDate = (iso: string) => {
