@@ -1476,7 +1476,7 @@
                     >
                       <div class="flex flex-col">
                         <span class="text-sm font-medium text-gray-700" :class="selectedCustomizations[mod._id]?.[item.name] ? 'text-gray-900 font-bold' : ''">{{ item.name }}</span>
-                        <span v-if="(item.priceDelta || item.price) > 0" class="text-xs mt-0.5" :class="selectedCustomizations[mod._id]?.[item.name] ? 'text-parentPrimary font-bold' : 'text-gray-500'">+₦{{ (item.priceDelta || item.price).toLocaleString() }}</span>
+                        <span v-if="formatModifierPrice(item, mod, selectedProduct)" class="text-xs mt-0.5" :class="selectedCustomizations[mod._id]?.[item.name] ? 'text-parentPrimary font-bold' : 'text-gray-500'">{{ formatModifierPrice(item, mod, selectedProduct) }}</span>
                       </div>
                       
                       <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors shrink-0" :class="selectedCustomizations[mod._id]?.[item.name] ? 'border-parentPrimary' : 'border-gray-200'">
@@ -1505,7 +1505,7 @@
                     >
                       <div class="flex flex-col">
                         <span class="text-sm font-medium text-gray-700" :class="selectedCustomizations[addon._id]?.[item.name] ? 'text-gray-900 font-bold' : ''">{{ item.name }}</span>
-                        <span v-if="(item.priceDelta || item.price) > 0" class="text-xs mt-0.5" :class="selectedCustomizations[addon._id]?.[item.name] ? 'text-parentPrimary font-bold' : 'text-gray-500'">+₦{{ (item.priceDelta || item.price).toLocaleString() }}</span>
+                        <span v-if="formatModifierPrice(item, addon, selectedProduct)" class="text-xs mt-0.5" :class="selectedCustomizations[addon._id]?.[item.name] ? 'text-parentPrimary font-bold' : 'text-gray-500'">{{ formatModifierPrice(item, addon, selectedProduct) }}</span>
                       </div>
                       
                       <!-- Single Select Radio -->
@@ -1829,6 +1829,34 @@ const handleListAdd = (product: any) => {
   }
 };
 
+const getBasePrice = (product: any) => {
+  if (!product) return 0;
+  return product.discountPrice || product.pricePerPortion || product.bundlePrice || product.price || 0;
+};
+
+const isAbsolutePricingGroup = (group: any, product: any) => {
+  if (!group || !group.options || !product) return false;
+  const base = getBasePrice(product);
+  if (base === 0) return false;
+  return group.options.some((opt: any) => opt.price === base);
+};
+
+const getModifierPriceDelta = (option: any, group: any, product: any) => {
+  if (isAbsolutePricingGroup(group, product)) {
+    return option.price - getBasePrice(product);
+  }
+  return option.priceDelta || option.price || 0;
+};
+
+const formatModifierPrice = (option: any, group: any, product: any) => {
+  if (isAbsolutePricingGroup(group, product)) {
+    return `₦${option.price.toLocaleString()}`;
+  } else {
+    const p = option.priceDelta || option.price || 0;
+    return p > 0 ? `+₦${p.toLocaleString()}` : '';
+  }
+};
+
 const handleCustomizationChange = (group: any, option: any, isAdd: boolean, isModifier: boolean = false) => {
   if (!selectedCustomizations.value[group._id]) {
     selectedCustomizations.value[group._id] = {};
@@ -1845,7 +1873,7 @@ const handleCustomizationChange = (group: any, option: any, isAdd: boolean, isMo
     if (totalInGroup >= maxSel) {
       if (isSingleSelect) {
         selectedCustomizations.value[group._id] = {};
-        selectedCustomizations.value[group._id][optionName] = { price: option.priceDelta || option.price || 0, quantity: 1, name: optionName, groupName: group.name };
+        selectedCustomizations.value[group._id][optionName] = { price: getModifierPriceDelta(option, group, selectedProduct.value), quantity: 1, name: optionName, groupName: group.name };
         return;
       }
       showToast(`You can only select up to ${maxSel} for ${group.name}`, 'error');
@@ -1853,7 +1881,7 @@ const handleCustomizationChange = (group: any, option: any, isAdd: boolean, isMo
     }
     
     if (!currentSelections[optionName]) {
-      currentSelections[optionName] = { price: option.priceDelta || option.price || 0, quantity: 1, name: optionName, groupName: group.name };
+      currentSelections[optionName] = { price: getModifierPriceDelta(option, group, selectedProduct.value), quantity: 1, name: optionName, groupName: group.name };
     } else {
       currentSelections[optionName].quantity += 1;
     }
