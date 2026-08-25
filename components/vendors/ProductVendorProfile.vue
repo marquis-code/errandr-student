@@ -1053,36 +1053,37 @@
                   </div>
 
                   <!-- Items inside Pack -->
-                  <div class="p-5 space-y-6 flex-1">
-                    <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex gap-4 border-b border-gray-50 pb-5 last:border-0 last:pb-0">
+                  <div class="p-4 space-y-0 flex-1">
+                    <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="flex gap-3 border-b border-gray-100/60 py-3 last:border-0 last:pb-1 first:pt-1">
                       <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-start gap-2 mb-1.5">
-                          <div>
-                            <p class="text-[15px] font-bold text-gray-900 leading-tight">{{ toTitleCase(item.name) }}</p>
+                        <div class="flex justify-between items-start gap-3">
+                          <!-- Left: Name & Customizations -->
+                          <div class="flex-1 min-w-0 pr-1">
+                            <p class="text-sm font-bold text-gray-900 leading-tight">{{ toTitleCase(item.name) }}</p>
+                            
+                            <div v-if="item.customizations && item.customizations.length > 0" class="mt-1 space-y-0.5">
+                              <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-[11px] font-medium text-gray-500 leading-tight">
+                                <span class="truncate">{{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}</span>
+                                <span v-if="c.price > 0" class="text-gray-400 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
+                              </p>
+                              <button @click="editCartItem(vendor._id, pack.id, iIndex, item)" class="text-[10px] font-bold text-parentPrimary hover:underline mt-1 pt-0.5 block">Edit</button>
+                            </div>
                           </div>
-                          <div class="text-right">
-                            <p class="text-[15px] font-bold text-gray-900 shrink-0">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
-                          </div>
-                        </div>
-                        
-                        <div v-if="item.customizations && item.customizations.length > 0" class="mt-2 mb-3 pl-3 border-l-2 border-gray-100 space-y-1.5">
-                          <p v-for="(c, cIdx) in getGroupedCustomizations(item.customizations)" :key="cIdx" class="text-xs font-medium text-gray-500 flex justify-between">
-                            <span class="truncate pr-2">{{ c.quantity > 1 ? c.quantity + 'x ' : '' }}{{ c.name }}</span>
-                            <span v-if="c.price > 0" class="text-gray-400 shrink-0">+₦{{ c.price.toLocaleString() }}</span>
-                          </p>
-                          <button @click="editCartItem(vendor._id, pack.id, iIndex, item)" class="text-[11px] font-bold text-parentPrimary hover:underline mt-1 pt-1 block">Edit customizations</button>
-                        </div>
-                        
-                        <div class="flex items-center mt-3">
-                          <!-- Quantity Control Pill -->
-                          <div class="flex items-center bg-gray-50 border border-gray-200 rounded-full p-0.5 shadow-sm">
-                            <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-8 h-8 rounded-full bg-white hover:bg-gray-100 flex items-center justify-center text-gray-700 font-bold transition-colors shadow-sm border border-gray-100">
-                              <Minus class="w-3.5 h-3.5" />
-                            </button>
-                            <span class="text-sm font-bold text-gray-900 w-8 text-center">{{ item.quantity }}</span>
-                            <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-8 h-8 rounded-full bg-white hover:bg-gray-100 flex items-center justify-center text-gray-700 font-bold transition-colors shadow-sm border border-gray-100">
-                              <Plus class="w-3.5 h-3.5" />
-                            </button>
+                          
+                          <!-- Right: Price & Quantity Pill -->
+                          <div class="flex flex-col items-end gap-2 shrink-0">
+                            <p class="text-sm font-bold text-gray-900 shrink-0">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
+                            
+                            <!-- Compact Quantity Control -->
+                            <div class="flex items-center bg-gray-50 border border-gray-200 rounded-full overflow-hidden shadow-sm">
+                              <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors">
+                                <Minus class="w-3 h-3" />
+                              </button>
+                              <span class="text-[13px] font-bold text-gray-900 w-6 text-center select-none">{{ item.quantity }}</span>
+                              <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity + 1)" class="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors">
+                                <Plus class="w-3 h-3" />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1090,9 +1091,9 @@
                   </div>
                   
                   <!-- Pack Actions -->
-                  <div v-if="isFoodVendor" class="px-5 pb-5 pt-4 bg-gray-50/30 border-t border-gray-50 flex items-center gap-3">
-                    <button @click="addNewPack(vendor._id)" class="flex-1 py-2.5 bg-parentPrimary/10 text-parentPrimary rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-parentPrimary/20 transition-colors">
-                      <Plus class="w-4 h-4" /> Add Item
+                  <div v-if="isFoodVendor" class="px-5 pb-5 pt-3 bg-gray-50/30 flex items-center gap-3">
+                    <button @click="cart.setActivePack(vendor._id, pack.id); showMobileCartDrawer = false" class="flex-1 py-2 bg-parentPrimary/10 text-parentPrimary rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-parentPrimary/20 transition-colors">
+                      <Plus class="w-3.5 h-3.5" /> Add Item
                     </button>
                     <button @click="cart.duplicatePack(vendor._id, pack.id)" class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
                       <Copy class="w-4 h-4" /> Duplicate

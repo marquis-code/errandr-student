@@ -203,17 +203,19 @@
                         <Mic class="w-4 h-4 z-10" />
                       </button>
                       <label class="w-8 h-8 rounded-sm flex items-center justify-center cursor-pointer transition-colors border border-[#170D08]/15 text-[#766A61] hover:border-[#FF5C1A] hover:text-[#FF5C1A]" title="Attach Photo">
-                        <input type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+                        <input type="file" accept="image/*" class="hidden" multiple @change="handleImageUpload" />
                         <ImageIcon class="w-4 h-4" />
                       </label>
                       <span class="font-sans text-sm  tracking-wide text-[#766A61]">attach evidence (optional)</span>
                     </div>
 
-                    <div v-if="attachedImageBase64" class="relative inline-block mt-1">
-                      <img :src="attachedImageBase64" class="h-16 w-16 object-cover rounded-sm border border-[#170D08]/15" />
-                      <button @click="removeImage" class="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-white bg-[#FF5C1A] hover:bg-[#C7460F] transition-colors">
-                        <X class="w-3 h-3" />
-                      </button>
+                    <div v-if="attachedImagesBase64.length > 0" class="flex flex-wrap gap-2 mt-2">
+                      <div v-for="(img, idx) in attachedImagesBase64" :key="idx" class="relative inline-block">
+                        <img :src="img" class="h-16 w-16 object-cover rounded-sm border border-[#170D08]/15" />
+                        <button @click="removeImage(idx)" class="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-white bg-[#FF5C1A] hover:bg-[#C7460F] transition-colors">
+                          <X class="w-3 h-3" />
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -503,7 +505,7 @@ const minRunnerFee = ref(400)
 const errandType = ref<'custom' | 'market'>('custom')
 const isRecording = ref(false)
 const recentDropoffs = ref<string[]>([])
-const attachedImageBase64 = ref('')
+const attachedImagesBase64 = ref<string[]>([])
 const waybillNumber = ref('')
 
 // Pooling feature state
@@ -673,7 +675,7 @@ let mediaRecorder: MediaRecorder | null = null
 let audioChunks: Blob[] = []
 let timerInterval: any = null
 let recordedAudioBlob: Blob | null = null
-let selectedImageFile: File | null = null
+let selectedImageFiles: File[] = []
 
 const startRecording = async () => {
   try {
@@ -746,19 +748,24 @@ const removeVoiceNote = () => {
 }
 
 const handleImageUpload = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (!file) return
-  selectedImageFile = file
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    attachedImageBase64.value = e.target?.result as string
-  }
-  reader.readAsDataURL(file)
+  const files = Array.from((event.target as HTMLInputElement).files || [])
+  if (!files.length) return
+  
+  files.forEach(file => {
+    selectedImageFiles.push(file)
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      attachedImagesBase64.value.push(e.target?.result as string)
+    }
+    reader.readAsDataURL(file)
+  })
+  // reset input value so the same file can be selected again if removed
+  ;(event.target as HTMLInputElement).value = ''
 }
 
-const removeImage = () => {
-  attachedImageBase64.value = ''
-  selectedImageFile = null
+const removeImage = (index: number) => {
+  attachedImagesBase64.value.splice(index, 1)
+  selectedImageFiles.splice(index, 1)
 }
 
 const isStep1Valid = computed(() => {
@@ -806,16 +813,18 @@ const buildErrandPayload = async () => {
     localStorage.setItem('recentDropoffs', JSON.stringify(updated))
   }
 
-  let uploadedImageUrl = ''
+  let uploadedImageUrls: string[] = []
   let uploadedVoiceNoteUrl = ''
 
-  if (selectedImageFile) {
-    const formData = new FormData()
-    formData.append('file', selectedImageFile)
-    const uploadRes = await api.post('/upload?resourceType=image', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    uploadedImageUrl = uploadRes.data.url
+  if (selectedImageFiles.length > 0) {
+    for (const file of selectedImageFiles) {
+      const formData = new FormData()
+      formData.append('file', file)
+      const uploadRes = await api.post('/upload?resourceType=image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      uploadedImageUrls.push(uploadRes.data.url)
+    }
   }
 
   if (recordedAudioBlob) {
@@ -837,11 +846,14 @@ const buildErrandPayload = async () => {
     pickupLocation: finalPickup,
     dropoffLocation: form.value.dropoffLocation,
     description: finalDescription,
-    attachedImage: uploadedImageUrl || undefined,
+    attachedImage: uploadedImageUrls.length > 0 ? uploadedImageUrls[0] : undefined,
+    attachedImages: uploadedImageUrls.length > 0 ? uploadedImageUrls : undefined,
     attachedVoiceNote: uploadedVoiceNoteUrl || undefined,
     estimatedItemCost: form.value.estimatedItemCost || 0,
     runnerFee: form.value.runnerFee,
-    urgency: 'standard'
+    urgency: 'standard',
+    intendedPoolId: selectedPoolId.value || undefined,
+    intendsToCreatePool: allowPoolJoin.value || false
   }
 }
 
@@ -860,40 +872,9 @@ const submitErrand = async () => {
     const response = await api.post('/orders', payload)
     const orderId = response.data._id || response.data.id
 
-    // 1.5 Handle Pooling
-    try {
-      if (selectedPoolId.value) {
-        await orders_api.joinPool(orderId, selectedPoolId.value)
-      } else if (allowPoolJoin.value) {
-        await orders_api.createPool(orderId, { title: payload.description.substring(0, 50) || 'Custom Errand Pool' })
-      }
-    } catch (e) {
-      console.error('Pooling logic failed:', e)
-    }
 
-    // 2. Initialize Paystack payment with the created orderId
-    const amount = grandTotal.value
-    const customerEmail = user.value?.email || 'customer@erranders.org'
-    const customerName = user.value ? `${user.value.firstName} ${user.value.lastName}` : 'Customer'
-
-    const data = await initializePayment({
-      amount,
-      customer: { name: customerName, email: customerEmail },
-      callback_url: `${window.location.origin}/errands/custom`,
-      metadata: { 
-        type: 'custom_errand', 
-        orderId, 
-        estimatedItemCost: payload.estimatedItemCost, 
-        runnerFee: payload.runnerFee 
-      },
-    })
-
-    const authUrl = data?.data?.authorization_url || data?.authorization_url
-    if (authUrl) {
-      window.location.href = authUrl
-    } else {
-      showToast({ title: 'Error', message: 'Payment gateway unavailable. Please try again.', toastType: 'error' })
-    }
+    // 2. Redirect to Negotiation Gateway to allow erranders to submit counter-bids
+    navigateTo(`/negotiation?orderIds=${orderId}`)
   } catch (error: any) {
     console.error(error)
     showToast({ title: 'Error', message: error.response?.data?.message || 'Failed to process errand.', toastType: 'error' })

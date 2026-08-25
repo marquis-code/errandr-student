@@ -128,6 +128,11 @@
             </div>
           </div>
         </div>
+      <!-- Full Screen Loading Modal for Accepting Bid -->
+      <div v-if="accepting" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm text-white transition-opacity">
+        <Loader2 class="w-12 h-12 animate-spin text-[#FF5C1A] mb-4" />
+        <h2 class="text-2xl font-bold tracking-tight mb-2">Accepting Offer...</h2>
+        <p class="text-white/60 font-medium text-sm">Please wait while we secure this errand for you.</p>
       </div>
     </div>
   </div>
@@ -139,6 +144,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
 import { orders_api } from '~/api_factory/modules/orders';
 import { useCustomToast } from '~/composables/core/useCustomToast';
+import { Loader2 } from 'lucide-vue-next';
 import { usePayments } from '~/composables/modules/payments/index';
 import { useUser } from '~/composables/modules/auth/user';
 
