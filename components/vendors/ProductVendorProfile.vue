@@ -1607,7 +1607,7 @@
               
               <div class="space-y-4 flex-1 flex flex-col">
                 <div class="flex-1 flex flex-col">
-                  <p class="text-xs font-bold text-gray-900 tracking-widest uppercase mb-3">INSTRUCTIONS FOR VENDOR</p>
+                  <p class="text-xs font-bold text-gray-900 mb-3">Instructions For Vendor</p>
                   <textarea 
                     v-model="tempVendorNote"
                     placeholder="Example: Please I want extra pepper"
