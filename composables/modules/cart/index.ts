@@ -105,13 +105,14 @@ export const useCart = () => {
 
     if (existingIndex !== -1) {
       activePack.items[existingIndex].quantity += item.quantity;
-      const customTotal = activePack.items[existingIndex].customizations.reduce((s, c) => s + c.price, 0);
+      const customTotal = (activePack.items[existingIndex].customizations || []).reduce((s: number, c: any) => s + (c.price || 0), 0);
       activePack.items[existingIndex].subtotal =
         (activePack.items[existingIndex].price + customTotal) * activePack.items[existingIndex].quantity;
     } else {
-      const customTotal = item.customizations.reduce((s, c) => s + c.price, 0);
+      const customTotal = (item.customizations || []).reduce((s: number, c: any) => s + (c.price || 0), 0);
       activePack.items.push({
         ...item,
+        customizations: item.customizations || [],
         subtotal: (item.price + customTotal) * item.quantity,
       });
     }
@@ -205,8 +206,8 @@ export const useCart = () => {
     }
 
     pack.items[itemIndex].quantity = quantity;
-    const customTotal = pack.items[itemIndex].customizations.reduce((s, c) => s + c.price, 0);
-    pack.items[itemIndex].subtotal = (pack.items[itemIndex].price + customTotal) * quantity;
+    const customTotal = (pack.items[itemIndex].customizations || []).reduce((s: number, c: any) => s + (c.price || 0), 0);
+    pack.items[itemIndex].subtotal = (pack.items[itemIndex].price + customTotal) * pack.items[itemIndex].quantity;
     saveToStorage();
   };
 

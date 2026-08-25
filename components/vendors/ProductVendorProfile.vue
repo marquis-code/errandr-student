@@ -879,7 +879,9 @@
                               + {{ c.name }} <span v-if="c.price > 0">(₦{{ c.price.toLocaleString() }})</span>
                             </p>
                           </div>
-                          <p class="text-xs font-medium text-parentPrimary">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
+                          <div class="text-right">
+                            <p class="text-xs font-medium text-parentPrimary">₦{{ ((item.subtotal || item.price || 0) / (item.quantity || 1)).toLocaleString() }}</p>
+                          </div>
                         </div>
                         <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100 shrink-0">
                           <button @click="cart.updateItemQuantity(vendor._id, pack.id, iIndex, item.quantity - 1)" class="w-6 h-6 rounded-md bg-white text-gray-500 flex items-center justify-center hover:text-rose-500 transition-all text-xs font-bold shadow-sm">−</button>
@@ -1072,7 +1074,7 @@
                           
                           <!-- Right: Price & Quantity Pill -->
                           <div class="flex flex-col items-end gap-2 shrink-0">
-                            <p class="text-sm font-bold text-gray-900 shrink-0">₦{{ ((item.subtotal || item.price) / (item.quantity || 1)).toLocaleString() }}</p>
+                            <p class="text-sm font-bold text-gray-900 shrink-0">₦{{ ((item.subtotal || item.price || 0) / (item.quantity || 1)).toLocaleString() }}</p>
                             
                             <!-- Compact Quantity Control -->
                             <div class="flex items-center bg-gray-50 border border-gray-200 rounded-full overflow-hidden shadow-sm">
