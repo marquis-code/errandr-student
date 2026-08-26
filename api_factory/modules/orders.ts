@@ -90,4 +90,8 @@ export const orders_api = {
   rejectBid: (orderId: string, bidId: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/custom/bid/${bidId}/reject`);
   },
+
+  approveReconciliation: (orderId: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/reconcile/approve`);
+  },
 };

@@ -104,7 +104,7 @@ const confirmLogout = async () => {
   loading.value = true
   try {
     await logOut()
-    window.location.reload()
+    window.location.href = '/'
   } catch (error) {
     console.error(error)
   } finally {

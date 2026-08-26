@@ -398,6 +398,11 @@
                     <span class="flex-1 mx-2 border-b border-dashed border-[#D8D2C4]"></span>
                     <span class="font-bold text-[#170D08]">₦{{ formatMoney(form.estimatedItemCost) }}</span>
                   </div>
+                  <div v-if="form.estimatedItemCost > 0" class="flex justify-between items-baseline">
+                    <span class="flex items-center gap-2 text-[#766A61]"><ShieldCheck class="w-3.5 h-3.5" /> Safety Buffer ({{ safetyBufferPercent }}%)</span>
+                    <span class="flex-1 mx-2 border-b border-dashed border-[#D8D2C4]"></span>
+                    <span class="font-bold text-[#170D08]">₦{{ formatMoney(itemCostBuffer) }}</span>
+                  </div>
                   <div class="flex justify-between items-baseline">
                     <span class="flex items-center gap-2 text-[#766A61]"><Target class="w-3.5 h-3.5" /> Runner Fee</span>
                     <span class="flex-1 mx-2 border-b border-dashed border-[#D8D2C4]"></span>
@@ -617,6 +622,9 @@ onMounted(async () => {
     if (settings?.minCustomErrandFee) {
       minRunnerFee.value = settings.minCustomErrandFee
     }
+    if (settings?.customErrandSafetyBufferPercentage) {
+      safetyBufferPercent.value = settings.customErrandSafetyBufferPercentage
+    }
   } catch (e) {
     console.error('Failed to fetch custom errand settings:', e)
   }
@@ -779,18 +787,24 @@ const isStep1Valid = computed(() => {
   }
 })
 
+const safetyBufferPercent = ref(20)
+
 const isStep2Valid = computed(() => {
   return form.value.runnerFee >= minRunnerFee.value
 })
 
+const itemCostBuffer = computed(() => {
+  return Math.round((form.value.estimatedItemCost || 0) * (safetyBufferPercent.value / 100))
+})
+
 const transferFee = computed(() => {
-  const itemCost = form.value.estimatedItemCost || 0
+  const itemCost = (form.value.estimatedItemCost || 0) + itemCostBuffer.value
   if (itemCost <= 0) return 0
   return itemCost <= 5000 ? 10 : 25
 })
 
 const grandTotal = computed(() => {
-  return (form.value.estimatedItemCost || 0) + form.value.runnerFee + 50 + transferFee.value
+  return (form.value.estimatedItemCost || 0) + itemCostBuffer.value + form.value.runnerFee + 50 + transferFee.value
 })
 
 const formatMoney = (amount: number) => {
