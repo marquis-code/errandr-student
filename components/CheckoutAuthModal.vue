@@ -28,7 +28,7 @@
             <h2 class="text-xl font-bold text-gray-900 tracking-tight leading-none mb-2">
               {{ view === 'options' ? 'Checkout' : view === 'login' ? 'Welcome Back!' : view === 'register' ? 'Join Errandr' : view === 'guest' ? 'Guest Checkout' : view === 'forgot' ? 'Reset Password' : view === 'verify_reset' ? 'Enter Code' : view === 'reset' ? 'New Password' : 'Verify Email' }}
             </h2>
-            <p class="text-xs font-medium text-gray-500 leading-relaxed px-2">
+            <p class="text-sm font-medium text-gray-500 leading-relaxed px-2">
               {{ view === 'options' ? 'How would you like to continue?' : view === 'login' ? 'Sign in to continue your checkout.' : view === 'register' ? 'Create an account to track your orders!' : view === 'guest' ? 'Enter details to continue as guest.' : view === 'forgot' ? 'Enter email for a reset code.' : view === 'verify_reset' ? `Code sent to ${forgotEmail}.` : view === 'reset' ? 'Choose a strong password.' : 'Enter the code sent to your email.' }}
             </p>
           </div>
@@ -79,7 +79,7 @@
             >
               Create New Account
             </button>
-            <div class="relative py-2 flex items-center justify-center">
+            <!-- <div class="relative py-2 flex items-center justify-center">
               <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
               <span class="relative bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">or</span>
             </div>
@@ -88,7 +88,7 @@
               class="w-full py-3 bg-white text-gray-600 border border-gray-200 hover:border-gray-300 rounded-xl text-sm font-bold transition-all"
             >
               Continue as Guest
-            </button>
+            </button> -->
           </div>
 
           <!-- Forms -->
@@ -119,7 +119,7 @@
                   </button>
                 </div>
                 <div class="text-right">
-                  <button type="button" @click="view = 'forgot'" class="text-[10px] font-bold text-parentPrimary hover:underline">Forgot Password?</button>
+                  <button type="button" @click="view = 'forgot'" class="text-sm font-bold text-parentPrimary hover:underline">Forgot Password?</button>
                 </div>
               </div>
             </template>
@@ -219,7 +219,7 @@
             </div>
           </form>
 
-          <p v-if="view === 'options'" class="mt-6 text-center text-[10px] font-bold text-gray-400">
+          <p v-if="view === 'options'" class="mt-6 text-center text-sm font-bold text-gray-400">
             By continuing, you agree to Errandr's <span class="text-gray-900 hover:underline cursor-pointer">Terms</span> & <span class="text-gray-900 hover:underline cursor-pointer">Privacy</span>
           </p>
         </div>
