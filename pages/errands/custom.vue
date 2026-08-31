@@ -325,7 +325,7 @@
                   <div class="space-y-1.5">
                     <div class="flex justify-between items-baseline">
                       <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Runner fee (labor)</label>
-                      <span v-if="!selectedPoolId" class="font-sans text-sm text-[#766A61]">min ₦200</span>
+                      <span v-if="!selectedPoolId" class="font-sans text-sm text-[#766A61]">min ₦{{ minRunnerFee.toLocaleString() }}</span>
                     </div>
                     
                     <div v-if="selectedPoolId" class="bg-[#FF5C1A]/10 border border-dashed border-[#FF5C1A] p-4 rounded-sm flex items-center justify-between">
@@ -397,11 +397,6 @@
                     <span class="flex items-center gap-2 text-[#766A61]"><Package class="w-3.5 h-3.5" /> Item Cost</span>
                     <span class="flex-1 mx-2 border-b border-dashed border-[#D8D2C4]"></span>
                     <span class="font-bold text-[#170D08]">₦{{ formatMoney(form.estimatedItemCost) }}</span>
-                  </div>
-                  <div v-if="form.estimatedItemCost > 0" class="flex justify-between items-baseline">
-                    <span class="flex items-center gap-2 text-[#766A61]"><ShieldCheck class="w-3.5 h-3.5" /> Safety Buffer ({{ safetyBufferPercent }}%)</span>
-                    <span class="flex-1 mx-2 border-b border-dashed border-[#D8D2C4]"></span>
-                    <span class="font-bold text-[#170D08]">₦{{ formatMoney(itemCostBuffer) }}</span>
                   </div>
                   <div class="flex justify-between items-baseline">
                     <span class="flex items-center gap-2 text-[#766A61]"><Target class="w-3.5 h-3.5" /> Runner Fee</span>
@@ -622,9 +617,6 @@ onMounted(async () => {
     if (settings?.minCustomErrandFee) {
       minRunnerFee.value = settings.minCustomErrandFee
     }
-    if (settings?.customErrandSafetyBufferPercentage) {
-      safetyBufferPercent.value = settings.customErrandSafetyBufferPercentage
-    }
   } catch (e) {
     console.error('Failed to fetch custom errand settings:', e)
   }
@@ -787,24 +779,22 @@ const isStep1Valid = computed(() => {
   }
 })
 
-const safetyBufferPercent = ref(20)
-
 const isStep2Valid = computed(() => {
   return form.value.runnerFee >= minRunnerFee.value
 })
 
-const itemCostBuffer = computed(() => {
-  return Math.round((form.value.estimatedItemCost || 0) * (safetyBufferPercent.value / 100))
-})
-
 const transferFee = computed(() => {
-  const itemCost = (form.value.estimatedItemCost || 0) + itemCostBuffer.value
-  if (itemCost <= 0) return 0
-  return itemCost <= 5000 ? 10 : 25
+  const amountToTransfer = (form.value.estimatedItemCost || 0) + (form.value.runnerFee || 0)
+  if (amountToTransfer === 0) return 0
+  if (amountToTransfer <= 5000) return 10
+  if (amountToTransfer <= 50000) return 25
+  return 50
 })
 
 const grandTotal = computed(() => {
-  return (form.value.estimatedItemCost || 0) + itemCostBuffer.value + form.value.runnerFee + 50 + transferFee.value
+  return (form.value.estimatedItemCost || 0) + 
+         (form.value.runnerFee || 0) + 
+         transferFee.value + 50 // 50 NGN flat platform fee
 })
 
 const formatMoney = (amount: number) => {

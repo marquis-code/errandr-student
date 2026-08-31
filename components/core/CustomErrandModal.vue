@@ -130,7 +130,7 @@
 
                   <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Estimated Item Cost (₦)</label>
-                    <p class="text-xs text-gray-500 mb-2">How much do you think the items you are asking the runner to buy will cost? This goes into safe Escrow.</p>
+                    <p class="text-xs text-gray-500 mb-2">How much do you think the items you are asking the runner to buy will cost? This goes directly to the runner.</p>
                     <div class="relative">
                       <span class="absolute left-4 top-3 text-gray-500 font-bold">₦</span>
                       <input 
@@ -200,7 +200,7 @@
                   </div>
 
                   <div class="bg-orange-50 text-orange-800 text-xs p-4 rounded-xl border border-orange-100 leading-relaxed font-medium">
-                    You do not need to pay yet. Once a rider accepts your errand, you will pay the Labor & Convenience fee securely. The Item Cost is transferred directly to the rider later.
+                    You do not need to pay yet. Once a rider accepts your errand, you will pay them directly for both the Item Cost and the Runner Fee.
                   </div>
 
                   <div class="pt-2 flex flex-col gap-3">

@@ -97,30 +97,7 @@
                 </div>
              </div>
 
-             <!-- RECONCILIATION -->
-             <div v-if="order.type === 'custom_errand' && order.reconciliationStatus === 'submitted'" class="bg-orange-50 border border-orange-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm mb-4">
-               <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center shrink-0">
-                 <span class="font-bold text-lg">💰</span>
-               </div>
-               <div class="flex-1 text-left">
-                 <h4 class="text-sm font-bold text-orange-900">Item Cost Reconciliation</h4>
-                 <p class="text-[13px] text-orange-800 mt-1 leading-relaxed mb-3">
-                   Your rider submitted an actual item cost of <strong class="font-bold">₦{{ (order.actualItemCost || 0).toLocaleString() }}</strong>. 
-                   <span v-if="order.actualItemCost < (order.customDetails?.estimatedItemCost + (order.customDetails?.itemCostBuffer || 0))">
-                     Since you paid ₦{{ (order.customDetails?.estimatedItemCost + (order.customDetails?.itemCostBuffer || 0)).toLocaleString() }} (Estimate + Buffer), you will be refunded ₦{{ order.refundAmount?.toLocaleString() || ((order.customDetails?.estimatedItemCost + (order.customDetails?.itemCostBuffer || 0)) - order.actualItemCost).toLocaleString() }} to your wallet.
-                   </span>
-                   <span v-else-if="order.actualItemCost > (order.customDetails?.estimatedItemCost + (order.customDetails?.itemCostBuffer || 0))">
-                     This is more than your ₦{{ (order.customDetails?.estimatedItemCost + (order.customDetails?.itemCostBuffer || 0)).toLocaleString() }} estimate + buffer. The rider covered the difference out of pocket.
-                   </span>
-                   <span v-else>
-                     This exactly matches your ₦{{ (order.customDetails?.estimatedItemCost + (order.customDetails?.itemCostBuffer || 0)).toLocaleString() }} estimate + buffer.
-                   </span>
-                 </p>
-                 <button @click="approveReconciliation" :disabled="isApprovingReconciliation" class="w-full bg-orange-500 text-white font-bold py-2.5 rounded-lg text-xs hover:bg-orange-600 transition-colors disabled:opacity-50">
-                   {{ isApprovingReconciliation ? 'Approving...' : 'Approve Reconciliation' }}
-                 </button>
-               </div>
-             </div>
+
 
              <!-- PENDING NEGOTIATION -->
              <div v-if="order.type === 'custom_errand' && order.status === 'pending'" class="p-4 rounded-2xl border border-gray-100 flex flex-col items-center text-center">
@@ -173,7 +150,7 @@
                                <p class="text-[#FF5C1A] text-xs font-bold">Offer: ₦{{ bid.amount?.toLocaleString() }}</p>
                             </div>
                          </div>
-                         <button @click="acceptBid(bid._id)" :disabled="isAcceptingBid === bid._id" class="w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-900 text-white text-xs font-bold hover:bg-black transition-colors disabled:opacity-50">
+                         <button @click="promptAcceptBid(bid._id, bid)" :disabled="isAcceptingBid === bid._id" class="w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-900 text-white text-xs font-bold hover:bg-black transition-colors disabled:opacity-50">
                             {{ isAcceptingBid === bid._id ? 'Accepting...' : 'Accept Offer' }}
                          </button>
                       </div>
@@ -187,27 +164,62 @@
                    <Check class="w-6 h-6 text-white" />
                 </div>
                 <h3 class="text-lg font-bold tracking-tight mb-1">Rider Accepted</h3>
-                <p class="text-gray-400 text-xs max-w-sm mb-5">Secure the rider by paying the escrow fee. This covers their labor and our platform convenience fee.</p>
 
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-sm">
-                  <button @click="payForErrand" :disabled="isInitializingPayment || isPayingWithWallet" class="flex-1 w-full bg-[#FF5C1A] text-white font-bold px-4 h-11 rounded-lg hover:bg-[#e6511a] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-xs">
-                     <Zap v-if="!isInitializingPayment" class="w-3.5 h-3.5" />
-                     {{ isInitializingPayment ? 'Processing...' : 'Pay with Card' }}
-                  </button>
-                  <button 
-                    @click="payForErrandWithWallet" 
-                    :disabled="isInitializingPayment || isPayingWithWallet"
-                    class="flex-1 w-full bg-white text-gray-900 border border-gray-200 font-bold px-4 h-11 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center justify-between text-xs relative group shadow-sm"
-                  >
-                     <span class="flex items-center gap-1.5">
-                       <svg class="w-3.5 h-3.5 text-[#FF5C1A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                       </svg>
-                       <span>{{ isPayingWithWallet ? 'Processing...' : 'Pay with Wallet' }}</span>
-                     </span>
-                     <span class="text-[10px] text-gray-500 font-medium bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">₦{{ balance.toLocaleString() }}</span>
-                  </button>
-                </div>
+                <template v-if="order.type === 'custom_errand'">
+                   <template v-if="order.errander?.bankDetails">
+                     <p class="text-gray-400 text-xs max-w-sm mb-5">Please transfer the fee directly to your errander to begin.</p>
+                     
+                     <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 w-full max-w-sm mb-4 text-left">
+                       <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Direct Bank Transfer</p>
+                       <p class="text-sm text-gray-200 mb-3">Transfer <strong>₦{{ order.total.toLocaleString() }}</strong> to:</p>
+                       <div class="space-y-2 text-sm text-white bg-gray-900/50 p-3 rounded-lg border border-gray-700/50">
+                         <div class="flex justify-between items-center">
+                           <span class="opacity-70">Bank Name</span>
+                           <span class="font-semibold">{{ order.errander.bankDetails.bankName }}</span>
+                         </div>
+                         <div class="flex justify-between items-center">
+                           <span class="opacity-70">Account Name</span>
+                           <span class="font-semibold">{{ order.errander.bankDetails.accountName }}</span>
+                         </div>
+                         <div class="flex justify-between items-center">
+                           <span class="opacity-70">Account Number</span>
+                           <span class="font-bold font-mono tracking-wider">{{ order.errander.bankDetails.accountNumber }}</span>
+                         </div>
+                       </div>
+                     </div>
+   
+                     <button @click="markAsPaidP2P" :disabled="isPayingWithWallet" class="w-full max-w-sm bg-[#FF5C1A] text-white font-bold px-4 h-11 rounded-lg hover:bg-[#e6511a] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-xs">
+                        <Zap v-if="!isPayingWithWallet" class="w-3.5 h-3.5" />
+                        {{ isPayingWithWallet ? 'Processing...' : 'I Have Paid' }}
+                     </button>
+                   </template>
+                   <template v-else>
+                     <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 w-full max-w-sm mb-4 text-center">
+                       <p class="text-sm text-gray-300">The rider has not set up their bank account details yet. Please ask them to update their wallet settings to receive direct transfers.</p>
+                     </div>
+                   </template>
+                </template>
+
+                <template v-else>
+                  <p class="text-gray-400 text-xs max-w-sm mb-5">Secure the rider by paying the escrow fee. This covers their labor and our platform convenience fee.</p>
+                  <div class="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-sm">
+                    <button @click="payForErrand" :disabled="isInitializingPayment || isPayingWithWallet" class="flex-1 w-full bg-[#FF5C1A] text-white font-bold px-4 h-11 rounded-lg hover:bg-[#e6511a] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-xs">
+                       <Zap v-if="!isInitializingPayment" class="w-3.5 h-3.5" />
+                       {{ isInitializingPayment ? 'Processing...' : 'Pay with Card' }}
+                    </button>
+                    <button 
+                      @click="payForErrandWithWallet" 
+                      :disabled="isInitializingPayment || isPayingWithWallet"
+                      class="flex-1 w-full bg-white text-gray-900 border border-gray-200 font-bold px-4 h-11 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center justify-between text-xs relative group shadow-sm"
+                    >
+                      <div class="flex flex-col items-start text-left">
+                         <span class="font-bold flex items-center gap-1.5 leading-none">Wallet</span>
+                         <span class="text-[9px] font-medium text-gray-500 mt-1 uppercase tracking-widest leading-none">₦{{ walletBalance?.toLocaleString() || balance?.toLocaleString() || '0' }}</span>
+                      </div>
+                      <ArrowRight class="w-4 h-4 text-gray-400 group-hover:-translate-x-0.5 transition-transform" />
+                    </button>
+                  </div>
+                </template>
              </div>
 
              <!--
@@ -234,6 +246,20 @@
                         <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                       </div>
                       <span class="text-[10px] font-bold tracking-widest uppercase text-emerald-400">Live Tracking Active</span>
+                   </div>
+                </div>
+
+                <!-- Errandr Tracking (Live Location) -->
+                <div v-if="order.status !== 'pending' && order.status !== 'awaiting_payment'" class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden relative group h-[300px]">
+                   <MapboxMap 
+                      v-if="mapboxToken" 
+                      :order="order"
+                      :mapbox-token="mapboxToken" 
+                      :errander-location="erranderLocation" 
+                   />
+                   <div v-else class="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                      <Loader2 class="w-8 h-8 animate-spin text-gray-400 mb-2" />
+                      <p class="text-sm font-bold text-gray-400">Loading map...</p>
                    </div>
                 </div>
 
@@ -574,6 +600,114 @@
       </div>
     </Transition>
   </Teleport>
+
+  <!-- P2P Payment Confirmation Modal -->
+  <UiModal
+    :is-open="isConfirmPaymentModalOpen"
+    title="Confirm Payment"
+    description="Please verify you've sent the money"
+    size="sm"
+    @close="isConfirmPaymentModalOpen = false"
+  >
+    <div class="flex flex-col items-center text-center py-4">
+      <div class="w-16 h-16 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center mb-4">
+        <Zap class="w-8 h-8 text-[#FF5C1A]" />
+      </div>
+      <h4 class="text-lg font-bold text-gray-900 mb-2">Are you sure?</h4>
+      <p class="text-sm text-gray-500 leading-relaxed max-w-[260px]">
+        You are about to confirm that you have transferred 
+        <strong class="text-gray-900">₦{{ order?.total?.toLocaleString() }}</strong> 
+        to the rider's bank account.
+      </p>
+
+      <div class="bg-gray-50 border border-gray-100 p-3 rounded-xl w-full mt-6 flex flex-col gap-1.5 text-left text-xs text-gray-600">
+        <div class="flex justify-between items-center">
+          <span>Bank:</span>
+          <span class="font-bold text-gray-900">{{ order?.errander?.bankDetails?.bankName }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>Account:</span>
+          <span class="font-bold text-gray-900">{{ order?.errander?.bankDetails?.accountNumber }}</span>
+        </div>
+      </div>
+
+      <div class="w-full mt-4">
+        <p class="text-xs font-bold text-left text-gray-700 mb-2">Proof of Payment</p>
+        <label 
+          class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors bg-white relative overflow-hidden"
+          :class="{ 'opacity-50 pointer-events-none': isUploadingProof }"
+        >
+          <div v-if="!proofOfPaymentUrl" class="flex flex-col items-center justify-center pt-5 pb-6">
+            <Loader2 v-if="isUploadingProof" class="w-6 h-6 text-gray-400 mb-2 animate-spin" />
+            <ImagePlus v-else class="w-6 h-6 text-gray-400 mb-2" />
+            <p class="text-xs text-gray-500 font-medium">Click to upload receipt</p>
+          </div>
+          <div v-else class="w-full h-full relative">
+            <img :src="proofOfPaymentUrl" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+              <span class="text-white text-xs font-bold">Change Image</span>
+            </div>
+          </div>
+          <input type="file" accept="image/*" class="hidden" @change="handleProofUpload" />
+        </label>
+      </div>
+    </div>
+
+    <template #footer>
+      <button 
+        @click="isConfirmPaymentModalOpen = false" 
+        class="px-5 py-3 w-full rounded-xl bg-gray-100 text-gray-500 font-bold text-sm hover:bg-gray-100 transition-colors"
+      >
+        Cancel
+      </button>
+      <button 
+        @click="confirmP2PPayment" 
+        :disabled="isPayingWithWallet || !proofOfPaymentUrl"
+        class="px-6 py-3 w-full justify-center text-center rounded-xl bg-[#FF5C1A] text-white font-bold text-sm hover:bg-[#e6511a] transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Loader2 v-if="isPayingWithWallet" class="w-4 h-4 animate-spin" />
+        <span>Yes, I have paid</span>
+      </button>
+    </template>
+    </UiModal>
+
+    <!-- Accept Bid Confirmation Modal -->
+    <UiModal
+      :is-open="isAcceptBidModalOpen"
+      title="Accept Offer"
+      description="Confirm your selected rider"
+      size="sm"
+      @close="isAcceptBidModalOpen = false"
+    >
+      <div class="flex flex-col items-center text-center py-4">
+        <div class="w-16 h-16 rounded-full bg-[#FF5C1A]/10 border border-[#FF5C1A]/20 flex items-center justify-center mb-4">
+          <Zap class="w-8 h-8 text-[#FF5C1A]" />
+        </div>
+        <h4 class="text-lg font-bold text-gray-900 mb-2">Ready to proceed?</h4>
+        <p class="text-sm text-gray-500 leading-relaxed max-w-[260px]">
+          You are about to accept an offer of 
+          <strong class="text-gray-900">₦{{ selectedBid?.amount?.toLocaleString() }}</strong> 
+          from <strong class="text-gray-900">{{ selectedBid?.errander?.firstName || 'this rider' }}</strong>.
+        </p>
+      </div>
+
+      <template #footer>
+        <button 
+          @click="isAcceptBidModalOpen = false" 
+          class="px-5 py-2.5 rounded-xl text-gray-500 font-bold text-sm hover:bg-gray-100 transition-colors"
+        >
+          Cancel
+        </button>
+        <button 
+          @click="executeAcceptBid" 
+          :disabled="isAcceptingBid !== null"
+          class="px-6 py-2.5 rounded-xl bg-[#FF5C1A] text-white font-bold text-sm hover:bg-[#e6511a] transition-all flex items-center gap-2 disabled:opacity-50"
+        >
+          <Loader2 v-if="isAcceptingBid !== null" class="w-4 h-4 animate-spin" />
+          <span>Accept & Pay</span>
+        </button>
+      </template>
+    </UiModal>
 </template>
 
 <script setup lang="ts">
@@ -598,18 +732,21 @@ import {
   ArrowRight,
   Loader2,
   ClipboardList,
-  X
+  X,
+  ImagePlus
 } from 'lucide-vue-next';
 import { ref, onMounted, onUnmounted, reactive, computed, watch } from 'vue';
-import { useRoute, useRouter, useHead } from '#imports';
+import { useRoute, useRouter, useHead, useRuntimeConfig } from '#imports';
 import OrderChat from '@/components/core/OrderChat.vue';
 import { orders_api } from '@/api_factory/modules/orders';
+import { upload_api } from '@/api_factory/modules/upload';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 import { usePayments } from '@/composables/modules/payments';
 import { useUser } from '@/composables/modules/auth/user';
 import { useWallet } from '@/composables/modules/wallets';
 import { useRealtimeSocket } from '@/composables/core/useRealtimeSocket';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
+import MapboxMap from '@/components/ui/MapboxMap.vue';
 
 definePageMeta({
   layout: 'student'
@@ -627,6 +764,20 @@ const openChat = (receiverId: string | undefined, name: string, avatar?: string)
    chatReceiverName.value = name;
    chatReceiverAvatar.value = avatar || '';
    isChatOpen.value = true;
+};
+
+const mapboxToken = ref(useRuntimeConfig().public.mapboxToken);
+const erranderLocation = ref<[number, number] | undefined>(undefined);
+const { connect: connectTracking, on: onTracking, emit: emitTracking, disconnect: disconnectTracking } = useSocket('/tracking');
+
+const startTracking = () => {
+  connectTracking();
+  emitTracking('trackOrder', { orderId: route.params.id });
+  onTracking('locationUpdate', (data: any) => {
+    if (data.orderId === route.params.id && data.coordinates) {
+      erranderLocation.value = data.coordinates;
+    }
+  });
 };
 
 const getWhatsAppLink = (phone: string, type: 'vendor' | 'rider') => {
@@ -700,7 +851,6 @@ const handleFeeInput = (e: Event) => {
 const isIncreasingFee = ref(false);
 const isInitializingPayment = ref(false);
 const viewersCount = ref(0);
-const isAcceptingBid = ref<string | null>(null);
 
 const pendingBids = computed(() => {
   if (!order.value?.bids) return [];
@@ -738,6 +888,13 @@ onMounted(async () => {
   fetchWallet();
   try {
     await fetchOrder();
+    
+    if (order.value?.erranderLocation?.coordinates) {
+      erranderLocation.value = order.value.erranderLocation.coordinates;
+    }
+    
+    startTracking();
+    
     checkAutoOpenChat();
 
     if (route.query.reference && (order.value.status === 'awaiting_payment' || route.query.trxref)) {
@@ -852,6 +1009,7 @@ watch(() => socket.value, (newSocket) => {
 // startPolling already called in main onMounted
 
 onUnmounted(() => {
+  disconnectTracking();
   if (currentSocket) {
     currentSocket.off('errand:viewers_update');
     currentSocket.off('notification:new');
@@ -879,10 +1037,22 @@ const increaseFee = async () => {
   }
 };
 
-const acceptBid = async (bidId: string) => {
-  isAcceptingBid.value = bidId;
+const isAcceptingBid = ref<string | null>(null);
+const isAcceptBidModalOpen = ref(false);
+const selectedBidId = ref<string | null>(null);
+const selectedBid = ref<any>(null);
+
+const promptAcceptBid = (bidId: string, bidObj: any) => {
+  selectedBidId.value = bidId;
+  selectedBid.value = bidObj;
+  isAcceptBidModalOpen.value = true;
+};
+
+const executeAcceptBid = async () => {
+  if (!selectedBidId.value) return;
+  isAcceptingBid.value = selectedBidId.value;
   try {
-    const res = await api.put(`/orders/${order.value._id}/custom/bid/${bidId}/accept`);
+    const res = await api.put(`/orders/${order.value._id}/custom/bid/${selectedBidId.value}/accept`);
     showToast({ title: 'Success', message: 'Counter-offer accepted! Please complete payment.', toastType: 'success' });
     const freshOrder = await orders_api.getOrder(route.params.id as string);
     order.value = freshOrder.data;
@@ -890,6 +1060,32 @@ const acceptBid = async (bidId: string) => {
     showToast({ title: 'Error', message: e.response?.data?.message || 'Could not accept bid', toastType: 'error' });
   } finally {
     isAcceptingBid.value = null;
+    isAcceptBidModalOpen.value = false;
+  }
+};
+
+const markAsPaidP2P = async () => {
+  if (!order.value?._id) return;
+  proofOfPaymentUrl.value = ''; // Reset when opening
+  isConfirmPaymentModalOpen.value = true;
+};
+
+const confirmP2PPayment = async () => {
+  if (!order.value?._id) return;
+  isPayingWithWallet.value = true;
+  try {
+    const res = await api.post(`/orders/${order.value._id}/custom/p2p-pay`, {
+      proofOfPayment: proofOfPaymentUrl.value
+    });
+    if (res.data) {
+      order.value = res.data;
+      showToast({ title: 'Success', message: 'Payment marked as sent. Awaiting errander confirmation.', toastType: 'success' });
+      isConfirmPaymentModalOpen.value = false;
+    }
+  } catch (e: any) {
+    showToast({ title: 'Payment Error', message: e.response?.data?.message || 'Failed to mark as paid', toastType: 'error' });
+  } finally {
+    isPayingWithWallet.value = false;
   }
 };
 
@@ -917,7 +1113,25 @@ const payForErrand = async () => {
 const isPayingWithWallet = ref(false);
 
 const isFundModalOpen = ref(false);
+const isConfirmPaymentModalOpen = ref(false);
+const isUploadingProof = ref(false);
+const proofOfPaymentUrl = ref('');
 const fundAmountNeeded = ref(0);
+
+const handleProofUpload = async (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+  
+  isUploadingProof.value = true;
+  try {
+    const res = await upload_api.uploadFile(file, 'image');
+    proofOfPaymentUrl.value = res?.data?.url || res?.url;
+  } catch (err: any) {
+    showToast({ title: 'Error', message: err.response?.data?.message || 'Failed to upload image', toastType: 'error' });
+  } finally {
+    isUploadingProof.value = false;
+  }
+};
 
 const initiateWalletTopup = async () => {
   try {
@@ -1018,13 +1232,17 @@ const copyVerificationCode = async () => {
 // Order Tracking Stepper Logic
 const CUSTOM_ERRAND_STEPS = [
   { status: 'pending', label: 'Errand Broadcasted', description: 'Waiting for riders to respond' },
-  { status: 'awaiting_payment', label: 'Rider Negotiated', description: 'Waiting for escrow payment' },
+  { status: 'awaiting_payment', label: 'Rider Negotiated', description: 'Waiting for payment' },
   { status: 'confirmed', label: 'In Progress', description: 'Rider is currently running your errand' },
+  { status: 'picked_up', label: 'Picked Up', description: 'Rider has picked up the items' },
   { status: 'in_transit', label: 'Heading to you', description: 'Rider is on their way with the items' },
   { status: 'delivered', label: 'Delivered', description: 'Errand completed successfully' }
 ];
 
-const getStatusIndex = (status: string, stepsArray: any[]) => stepsArray.findIndex(s => s.status === status);
+const getStatusIndex = (status: string, stepsArray: any[]) => {
+  const mappedStatus = status === 'awaiting_payment_confirmation' ? 'awaiting_payment' : status;
+  return stepsArray.findIndex(s => s.status === mappedStatus);
+};
 
 const isStepCompletedCustom = (stepStatus: string, stepsArray: any[]) => {
   if (!order.value?.status) return false;
@@ -1036,7 +1254,8 @@ const isStepCompletedCustom = (stepStatus: string, stepsArray: any[]) => {
 
 const isStepCurrentCustom = (stepStatus: string) => {
   if (!order.value?.status) return false;
-  return stepStatus === order.value.status;
+  const currentMappedStatus = order.value.status === 'awaiting_payment_confirmation' ? 'awaiting_payment' : order.value.status;
+  return stepStatus === currentMappedStatus;
 };
 
 const orderSteps = computed(() => {
