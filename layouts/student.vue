@@ -324,6 +324,17 @@
       <div class="rounded-3xl min-h-[calc(100vh-12rem)] relative">
         <slot></slot>
       </div>
+      
+      <!-- Footer -->
+      <footer class="mt-10 pt-6 border-t border-[#E7E2DA] flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in">
+        <p class="text-xs font-bold text-[#9C968E]">© {{ new Date().getFullYear() }} Errandr</p>
+        <div class="flex items-center gap-4">
+          <NuxtLink to="/terms" class="text-xs font-bold text-[#9C968E] hover:text-[#171310] transition-colors">Terms</NuxtLink>
+          <NuxtLink to="/privacy" class="text-xs font-bold text-[#9C968E] hover:text-[#171310] transition-colors">Privacy</NuxtLink>
+          <NuxtLink to="/refund" class="text-xs font-bold text-[#9C968E] hover:text-[#171310] transition-colors">Refunds</NuxtLink>
+          <NuxtLink to="/contact" class="text-xs font-bold text-[#9C968E] hover:text-[#171310] transition-colors">Contact</NuxtLink>
+        </div>
+      </footer>
     </main>
 
     <!-- Logout Modal -->

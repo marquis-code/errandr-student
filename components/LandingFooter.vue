@@ -7,9 +7,9 @@
       
       <!-- Big Bold CTA inside Footer -->
       <div class="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-10">
-        <div>
+        <div class="min-h-[160px]">
           <h2 class="text-6xl md:text-8xl font-medium text-slate-900 tracking-tighter leading-[0.9]">
-            Hungry? <br/> <span class="text-parentPrimary">Let's fix that.</span>
+            {{ dynamicHeading }}<span class="text-slate-800">?</span><span class="animate-pulse text-parentPrimary font-light ml-1">|</span> <br/> <span class="text-parentPrimary">Let's fix that.</span>
           </h2>
         </div>
         <NuxtLink to="/vendors" class="inline-flex flex justify-center items-center items-center gap-4 px-10 py-3 bg-parentPrimary text-white rounded-full font-medium text-lg shadow-[0_20px_50px_rgba(255,92,26,0.3)] hover:scale-105 transition-transform group">
@@ -27,7 +27,7 @@
             <img src="@/assets/img/erranders.png" alt="Errander Logo" class="h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
           </NuxtLink>
           <p class="text-slate-500 text-lg leading-relaxed font-medium max-w-md">
-            The premium food delivery network built exclusively for the modern student community. Fast, reliable, and perfectly tailored to your campus life.
+            The premium lifestyle, logistics, and delivery network built exclusively for the modern student community. Fast, reliable, and perfectly tailored to your campus life.
           </p>
           <div class="flex items-center gap-4 pt-4">
             <a href="#" class="w-14 h-14 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-white hover:bg-parentPrimary hover:border-parentPrimary hover:scale-110 transition-all shadow-sm">
@@ -57,7 +57,8 @@
             <h4 class="font-medium text-slate-900 tracking-tight text-lg">Legal</h4>
             <ul class="space-y-4">
               <li><NuxtLink to="/terms" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">Terms of Service</NuxtLink></li>
-              <li><NuxtLink to="/terms" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">Privacy Policy</NuxtLink></li>
+              <li><NuxtLink to="/privacy" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">Privacy Policy</NuxtLink></li>
+              <li><NuxtLink to="/refund" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">Refund Policy</NuxtLink></li>
               <li><NuxtLink to="/faq" class="text-slate-500 font-medium hover:text-parentPrimary hover:translate-x-1 inline-block transition-all">FAQ</NuxtLink></li>
             </ul>
           </div>
@@ -70,7 +71,7 @@
                   <div class="w-8 h-8 rounded-lg bg-parentPrimary/10 flex items-center justify-center text-parentPrimary group-hover:scale-110 transition-transform">
                     <Store class="w-4 h-4" />
                   </div>
-                  Sell Food
+                  Become a Vendor
                 </a>
               </li>
               <li>
@@ -78,7 +79,7 @@
                   <div class="w-8 h-8 rounded-lg bg-parentPrimary/10 flex items-center justify-center text-parentPrimary group-hover:scale-110 transition-transform">
                     <Bike class="w-4 h-4" />
                   </div>
-                  Become Rider
+                  Become a Rider
                 </a>
               </li>
             </ul>
@@ -102,5 +103,51 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { Twitter, Instagram, Facebook, Store, Bike, ArrowUpRight } from 'lucide-vue-next'
+
+// Easily configure these phrases to showcase what Erranders stands for!
+const headings = [
+  "Hungry",
+  "Ready",
+  "Need Groceries", 
+  "Out of Cash", 
+  "Running Late", 
+  "Need a Ride",
+  "Got Errands",
+  "Craving Snacks"
+]
+
+const dynamicHeading = ref('')
+let headingIndex = 0
+
+const typeHeading = async () => {
+  while (true) {
+    const currentWord = headings[headingIndex]
+    
+    // Type word
+    for (let i = 0; i <= currentWord.length; i++) {
+      dynamicHeading.value = currentWord.substring(0, i)
+      await new Promise(r => setTimeout(r, 80))
+    }
+    
+    // Pause at end
+    await new Promise(r => setTimeout(r, 2000))
+    
+    // Delete word
+    for (let i = currentWord.length; i >= 0; i--) {
+      dynamicHeading.value = currentWord.substring(0, i)
+      await new Promise(r => setTimeout(r, 40))
+    }
+    
+    // Next word
+    headingIndex = (headingIndex + 1) % headings.length
+    await new Promise(r => setTimeout(r, 500))
+  }
+}
+
+onMounted(() => {
+  // Start the heading typewriter
+  typeHeading()
+})
 </script>

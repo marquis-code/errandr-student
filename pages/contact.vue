@@ -55,7 +55,7 @@
             </div>
             <h3 class="text-xl font-medium text-gray-900 tracking-tight mb-3">Instant Hotline</h3>
             <p class="text-[13px] text-gray-500 font-bold leading-relaxed mb-6">Mon–Sat, 8AM–9PM local time.</p>
-            <a href="tel:+23412345678" class="text-sm font-medium text-indigo-600 hover:underline">+234 (0) 123 456 78</a>
+            <a href="tel:09040303103" class="text-sm font-medium text-indigo-600 hover:underline">09040303103</a>
           </div>
 
           <!-- Social Card -->
@@ -84,7 +84,7 @@
             <div class="space-y-4">
               <div class="flex items-center gap-4 text-gray-900 font-medium">
                 <MapPin class="w-5 h-5 text-parentPrimary" />
-                42 Innovation Drive, Yaba, Lagos
+                38, Immam memudu Coker, Lagos.
               </div>
             </div>
           </div>
