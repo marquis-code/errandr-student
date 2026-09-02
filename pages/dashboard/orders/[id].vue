@@ -95,6 +95,32 @@
                     </p>
                   </div>
                 </div>
+
+                <!-- Interception Pending (hand-off requested) -->
+                <div v-else-if="order.status === 'interception_pending'" class="bg-purple-50 border border-purple-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm mb-4">
+                  <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center shrink-0">
+                    🤝
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-purple-900">Package Hand-off In Progress</h4>
+                    <p class="text-[13px] text-purple-800 mt-1 leading-relaxed">
+                      Your rider has arrived at a hand-off point<span v-if="order.interception?.point"> ({{ order.interception.point }})</span> and is waiting for a second rider to continue the delivery to you.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Interception In Progress (second errander accepted) -->
+                <div v-else-if="order.status === 'interception_in_progress'" class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 flex gap-4 items-start shadow-sm mb-4">
+                  <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
+                    <Bike class="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-indigo-900">New Rider On The Way!</h4>
+                    <p class="text-[13px] text-indigo-800 mt-1 leading-relaxed">
+                      Your package has been handed off to a new rider who is now on the way to deliver it to you. Almost there!
+                    </p>
+                  </div>
+                </div>
              </div>
 
 
@@ -315,6 +341,36 @@
                    </div>
                 </div>
 
+                <!-- Second Rider (Interception) -->
+                <div v-if="order.interception?.secondErrander && (order.status === 'interception_in_progress' || order.interception?.status === 'accepted' || order.interception?.status === 'completed')" class="p-5 rounded-2xl border-2 border-purple-200 bg-purple-50/30 flex flex-col justify-between">
+                   <div class="flex items-center justify-between mb-4">
+                      <h4 class="text-[11px] font-bold text-purple-500 uppercase tracking-widest">Second Rider (Hand-off)</h4>
+                      <div class="inline-flex items-center gap-1 text-purple-600 text-[10px] font-bold">
+                         🤝 Active
+                      </div>
+                   </div>
+                   <div class="flex items-center gap-3 mb-4">
+                      <div class="w-11 h-11 rounded-full bg-purple-100 overflow-hidden flex items-center justify-center text-purple-600 font-bold text-sm shrink-0">
+                         <img v-if="order.interception.secondErrander.avatar" :src="order.interception.secondErrander.avatar" class="w-full h-full object-cover" />
+                         <span v-else>{{ order.interception.secondErrander.firstName?.[0] }}{{ order.interception.secondErrander.lastName?.[0] }}</span>
+                      </div>
+                      <div>
+                        <h3 class="text-base font-bold text-gray-900">{{ order.interception.secondErrander.firstName }} {{ order.interception.secondErrander.lastName }}</h3>
+                        <p class="text-[10px] text-purple-600 font-medium">Completing your delivery</p>
+                      </div>
+                   </div>
+                   <div class="flex gap-2">
+                     <a :href="`tel:${order.interception.secondErrander.phone}`" class="flex-1 py-2.5 rounded-lg border border-purple-200 text-purple-700 text-xs font-bold text-center hover:bg-purple-50 transition-colors">
+                       Call
+                     </a>
+                     <a v-if="order.interception.secondErrander.phone" :href="getWhatsAppLink(order.interception.secondErrander.phone, 'rider')" target="_blank" class="flex-1 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] text-xs font-bold text-center hover:bg-[#25D366]/20 transition-colors flex justify-center items-center gap-1.5">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.82 9.82 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 0 0-3.48-8.413z" />
+                       </svg>
+                       WhatsApp
+                     </a>
+                   </div>
+                </div>
                 <!-- Vendor -->
                 <div v-if="order.status !== 'pending' && order.status !== 'awaiting_payment' && order.type !== 'custom_errand' && order.vendor" class="p-5 rounded-2xl border border-gray-100 flex flex-col justify-between">
                    <div class="flex items-center justify-between mb-4">
