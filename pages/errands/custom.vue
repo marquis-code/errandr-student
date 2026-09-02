@@ -540,8 +540,32 @@ const selectPool = (pool: any) => {
   }
 }
 
-onMounted(() => {
+const fetchInitialData = async () => {
   fetchPools()
+  // Fetch admin-configurable minimum runner fee
+  try {
+    const settingsRes = await orders_api.getCustomErrandSettings()
+    const settings = settingsRes?.data || settingsRes
+    if (settings?.minCustomErrandFee) {
+      minRunnerFee.value = settings.minCustomErrandFee
+    }
+  } catch (e) {
+    console.error('Failed to fetch custom errand settings:', e)
+  }
+}
+
+watch(isLoggedIn, (newVal) => {
+  if (newVal) {
+    fetchInitialData()
+  }
+})
+
+onMounted(() => {
+  if (!isLoggedIn.value) {
+    isAuthModalOpen.value = true
+  } else {
+    fetchInitialData()
+  }
 })
 
 const form = ref({
@@ -610,16 +634,7 @@ onMounted(() => {
 })
 
 onMounted(async () => {
-  // Fetch admin-configurable minimum runner fee
-  try {
-    const settingsRes = await orders_api.getCustomErrandSettings()
-    const settings = settingsRes?.data || settingsRes
-    if (settings?.minCustomErrandFee) {
-      minRunnerFee.value = settings.minCustomErrandFee
-    }
-  } catch (e) {
-    console.error('Failed to fetch custom errand settings:', e)
-  }
+  // Settings fetch moved to fetchInitialData
 
   const saved = localStorage.getItem('recentDropoffs')
   if (saved) {
@@ -889,6 +904,7 @@ const submitErrand = async () => {
 
 const handleAuthSuccess = () => {
   justAuthenticated.value = true
+  fetchInitialData()
 }
 </script>
 

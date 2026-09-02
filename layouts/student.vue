@@ -513,7 +513,10 @@ watch(mode, (newMode) => {
 
 const checkOrders = () => {
   // 1. Check for Pending Orders (Abandoned Cart)
-  const pending = studentOrders.value.find((o: any) => o.status === 'pending' || o.status === 'awaiting_payment' || o.status === 'PENDING' || o.status === 'AWAITING_PAYMENT')
+  const pending = studentOrders.value.find((o: any) => 
+    o.type !== 'custom_errand' && 
+    (o.status === 'pending' || o.status === 'awaiting_payment' || o.status === 'PENDING' || o.status === 'AWAITING_PAYMENT')
+  )
   if (pending && route.path !== `/dashboard/orders/${pending._id}` && route.path !== '/cart' && !pendingOrderModalOpen.value) {
     pendingOrder.value = pending
     pendingOrderModalOpen.value = true

@@ -96,38 +96,96 @@
             <div 
               v-for="bid in bids" 
               :key="bid._id"
-              class="group relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-parentPrimary/40 transition-all duration-300 flex justify-between items-center"
+              class="group relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-parentPrimary/40 transition-all duration-300 flex flex-col gap-3"
             >
               <div class="absolute inset-0 bg-gradient-to-r from-parentPrimary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
               
-              <div class="flex items-center gap-4 relative z-10">
-                <img :src="bid.rider?.avatar || `https://ui-avatars.com/api/?name=${bid.rider?.firstName || 'Rider'}&background=random`" class="w-12 h-12 rounded-full object-cover shadow-sm ring-2 ring-white" />
-                <div>
-                  <p class="text-base font-bold text-gray-900">{{ bid.rider?.firstName }} {{ bid.rider?.lastName }}</p>
-                  <div class="flex items-center gap-2 mt-0.5">
-                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                      <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                      4.9
-                    </span>
+              <!-- Top Row: Profile & Price -->
+              <div class="flex justify-between items-center relative z-10 w-full">
+                <div class="flex items-center gap-3">
+                  <img :src="bid.rider?.avatar || `https://ui-avatars.com/api/?name=${bid.rider?.firstName || 'Rider'}&background=random`" class="w-10 h-10 rounded-full object-cover shadow-sm ring-2 ring-white" />
+                  <div>
+                    <p class="text-sm font-bold text-gray-900">{{ bid.rider?.firstName }} {{ bid.rider?.lastName }}</p>
+                    <div class="flex items-center gap-1 mt-0.5">
+                      <span class="inline-flex items-center gap-1 text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-md">
+                        <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        4.9
+                      </span>
+                    </div>
                   </div>
                 </div>
+                
+                <p class="text-lg font-black text-gray-900">₦{{ bid.bidAmount?.toLocaleString() }}</p>
               </div>
               
-              <div class="relative z-10 flex flex-col items-end gap-2">
-                <p class="text-xl font-black text-gray-900">₦{{ bid.bidAmount?.toLocaleString() }}</p>
-                <button 
-                  @click="acceptBid(bid)"
-                  :disabled="accepting"
-                  class="px-5 py-2 bg-parentPrimary text-white text-sm font-bold rounded-xl hover:bg-parentPrimary/90 active:scale-95 transition-all disabled:opacity-50 shadow-sm shadow-parentPrimary/30"
-                >
-                  Accept
-                </button>
+              <!-- Bottom Row: Actions -->
+              <div class="relative z-10 w-full pt-2 border-t border-gray-50">
+                <div v-if="bid.lastNegotiatorRole === 'student'" class="text-xs text-center text-amber-500 font-bold bg-amber-50 px-3 py-2 rounded-xl animate-pulse w-full">Waiting for rider response...</div>
+                <div v-else class="flex gap-2 w-full">
+                  <button 
+                    @click="rejectBid(bid)"
+                    :disabled="accepting"
+                    class="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 active:scale-95 transition-all disabled:opacity-50 border border-red-100 flex items-center justify-center"
+                    title="Decline Offer"
+                  >
+                    <X class="w-4 h-4" />
+                  </button>
+                  <button 
+                    @click="openCounterModal(bid)"
+                    :disabled="accepting"
+                    class="flex-1 py-2.5 bg-gray-50 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-100 active:scale-95 transition-all disabled:opacity-50 border border-gray-200"
+                  >
+                    Counter
+                  </button>
+                  <button 
+                    @click="acceptBid(bid)"
+                    :disabled="accepting"
+                    class="flex-[2] py-2.5 bg-parentPrimary text-white text-sm font-bold rounded-xl hover:bg-parentPrimary/90 active:scale-95 transition-all disabled:opacity-50 shadow-sm shadow-parentPrimary/30"
+                  >
+                    Accept
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      <!-- Counter Offer Modal -->
+      <div v-if="counterBidData" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Counter Offer</h3>
+            <p class="text-sm text-gray-500 mb-4">
+              Enter a new proposed fee for this delivery.
+            </p>
+            <input 
+              v-model.number="counterAmount"
+              type="number" 
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-xl font-black text-center text-gray-900 mb-6 focus:ring-2 focus:ring-parentPrimary/50 outline-none"
+              placeholder="₦ 0.00"
+            />
+            <div class="flex flex-col gap-3">
+              <button 
+                @click="submitCounterBid"
+                :disabled="!counterAmount || counterAmount <= 0 || countering"
+                class="w-full py-3 bg-parentPrimary text-white font-bold rounded-xl hover:bg-parentPrimary/90 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                <span v-if="countering" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <span>Send Counter Offer</span>
+              </button>
+              <button 
+                @click="counterBidData = null"
+                :disabled="countering"
+                class="w-full py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 active:scale-95 transition-all disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Full Screen Loading Modal for Accepting Bid -->
       <div v-if="accepting" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm text-white transition-opacity">
         <Loader2 class="w-12 h-12 animate-spin text-[#FF5C1A] mb-4" />
@@ -162,6 +220,9 @@ const primaryOrderId = orderIds[0];
 const viewerCount = ref(0);
 const bids = ref<any[]>([]);
 const accepting = ref(false);
+const countering = ref(false);
+const counterBidData = ref<any>(null);
+const counterAmount = ref<number | null>(null);
 const cancelling = ref(false);
 const showCancelModal = ref(false);
 let socket: Socket | null = null;
@@ -234,9 +295,21 @@ onMounted(() => {
     accepting.value = true;
     showToast({ title: 'Rider Found!', message: 'A rider accepted your proposed fee. Redirecting to your order...', toastType: 'success' });
     
-    // Redirect immediately to order details page
-    router.push(`/dashboard/orders/${primaryOrderId}`);
+    // Aggressively redirect to order details page without using Nuxt router which causes crashes
+    setTimeout(() => {
+      window.location.href = `/dashboard/orders/${primaryOrderId}`;
+    }, 100);
   });
+  socket.on('bidCountered', (bid: any) => {
+    const index = bids.value.findIndex(b => b._id === bid._id);
+    if (index !== -1) {
+      bids.value[index] = { ...bids.value[index], ...bid };
+    } else {
+      // Just in case it's a new bid that we somehow missed
+      bids.value.unshift(bid);
+    }
+  });
+
 });
 
 onUnmounted(() => {
@@ -280,6 +353,40 @@ const confirmCancelOrder = async () => {
   }
 };
 
+const openCounterModal = (bid: any) => {
+  counterBidData.value = bid;
+  counterAmount.value = bid.bidAmount;
+};
+
+const submitCounterBid = async () => {
+  if (!counterBidData.value || !counterAmount.value) return;
+  if (countering.value) return;
+  
+  countering.value = true;
+  try {
+    await orders_api.counterBid(primaryOrderId, counterBidData.value._id, counterAmount.value, 'student');
+    showToast({ title: 'Counter Offer Sent!', message: 'Waiting for rider to respond.', toastType: 'success' });
+    
+    // Update local state immediately before socket fires
+    const index = bids.value.findIndex(b => b._id === counterBidData.value._id);
+    if (index !== -1) {
+      bids.value[index] = {
+        ...bids.value[index],
+        bidAmount: counterAmount.value,
+        status: 'counter_offer',
+        lastNegotiatorRole: 'student'
+      };
+    }
+    
+    counterBidData.value = null;
+  } catch (e: any) {
+    const msg = e.response?.data?.message || e.message || 'Failed to send counter offer.';
+    showToast({ title: 'Error', message: msg, toastType: 'error' });
+  } finally {
+    countering.value = false;
+  }
+};
+
 const acceptBid = async (bid: any) => {
   if (accepting.value) return;
   accepting.value = true;
@@ -291,11 +398,24 @@ const acceptBid = async (bid: any) => {
     showToast({ title: 'Bid Accepted!', message: 'Redirecting to your order...', toastType: 'success' });
     
     // Redirect immediately to order details page
-    router.push(`/dashboard/orders/${primaryOrderId}`);
+    window.location.href = `/dashboard/orders/${primaryOrderId}`;
   } catch (e: any) {
     const msg = e.response?.data?.message || e.message || 'Failed to accept bid.';
     showToast({ title: 'Error', message: msg, toastType: 'error' });
     accepting.value = false;
+  }
+};
+
+const rejectBid = async (bid: any) => {
+  if (accepting.value) return;
+  try {
+    await orders_api.rejectBid(primaryOrderId, bid._id);
+    showToast({ title: 'Offer Declined', message: 'You have declined this offer.', toastType: 'info' });
+    // update local state
+    bids.value = bids.value.filter(b => b._id !== bid._id);
+  } catch (e: any) {
+    const msg = e.response?.data?.message || e.message || 'Failed to decline offer.';
+    showToast({ title: 'Error', message: msg, toastType: 'error' });
   }
 };
 </script>

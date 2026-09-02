@@ -87,6 +87,10 @@ export const orders_api = {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/custom/bid/${bidId}/accept`);
   },
 
+  counterBid: (orderId: string, bidId: string, amount: number, role: 'student' | 'errander' = 'student') => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/custom/bid/${bidId}/counter`, { amount, role });
+  },
+
   rejectBid: (orderId: string, bidId: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/custom/bid/${bidId}/reject`);
   },

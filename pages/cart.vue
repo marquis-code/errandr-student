@@ -1558,7 +1558,7 @@ const computedTotalPackagingFee = computed(() => {
   return Math.round(total);
 });
 
-const computedTotalServiceFee = computed(() => cartStore.allVendorIds.value.length === 0 ? 0 : platformConvenienceFee.value * cartStore.allVendorIds.value.length);
+const computedTotalServiceFee = computed(() => cartStore.allVendorIds.value.length === 0 ? 0 : platformConvenienceFee.value);
 
 const computedBirthdayDiscount = computed(() => {
   if (!isBirthday.value) return 0;
@@ -2025,7 +2025,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const vendorMeta = vendorsMetadata.value[vendorId];
       const subtotal = participant.items.reduce((s: number, i: any) => s + (i.price * i.quantity), 0);
       const deliveryFee = vendorMeta?.deliveryFee ?? 150;
-      const sFee = platformConvenienceFee.value;
+      const sFee = isFirstOrder ? platformConvenienceFee.value : 0;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const actualPackFee = getVendorPackagingFee(vendorId, { packs: [] }, vendorMeta);
       const res = await createOrder({
@@ -2046,7 +2046,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       const stats = cartStore.getVendorStats(vId) as any;
       const vendor = vendorsMetadata.value[vId];
       const deliveryFee = !isWithinLuth.value ? (proposedDeliveryFee.value || 0) : (vendor?.deliveryFee ?? 150);
-      const sFee = platformConvenienceFee.value;
+      const sFee = isFirstOrder ? platformConvenienceFee.value : 0;
       const pFee = isFirstOrder ? platformProcessingFee.value : 0;
       const actualPackFee = getVendorPackagingFee(vId, stats, vendor);
       const res = await createOrder({

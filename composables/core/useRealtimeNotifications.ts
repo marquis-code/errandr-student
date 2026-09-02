@@ -5,13 +5,31 @@ import { useNotifications } from '@/composables/modules/notifications/useNotific
 
 const LISTENERS_KEY = 'realtime_notification_listeners'
 
-const playNotificationSound = () => {
+const playSound = (path: string) => {
   try {
-    const audio = new Audio('/sounds/order-alert.mp3')
-    audio.play().catch(e => console.warn('Audio playback failed', e))
+    const audio = new Audio(path)
+    const playPromise = audio.play()
+    if (playPromise !== undefined) {
+      playPromise.catch(e => console.warn('Audio playback failed', e))
+    }
   } catch (error) {
-    // ignore
+    console.error(error)
   }
+}
+
+const playNotificationSound = () => playSound('/sounds/new_notification.m4a')
+const playOrderAcceptedSound = () => playSound('/sounds/order_accepted.m4a')
+const playOrderStatusUpdateSound = () => playSound('/sounds/order_status_update.m4a')
+const playCounterOfferSound = () => playSound('/sounds/counter_offer.m4a')
+
+if (typeof document !== 'undefined') {
+  const unlockAudio = () => {
+    const audio = new Audio('/sounds/new_notification.m4a')
+    audio.volume = 0;
+    audio.play().catch(() => {});
+    document.removeEventListener('click', unlockAudio);
+  };
+  document.addEventListener('click', unlockAudio);
 }
 
 export const useRealtimeNotifications = () => {
@@ -23,7 +41,19 @@ export const useRealtimeNotifications = () => {
   const handleNotification = (payload: any) => {
     if (!payload) return
 
-    playNotificationSound()
+    if (payload.type === 'ORDER_BIDS_UPDATE' || payload.type === 'BID_COUNTERED') {
+      playCounterOfferSound()
+    } else {
+      playNotificationSound()
+    }
+
+    // Aggressively push student to details page if their order was accepted
+    if (payload.type === 'ORDER_ACCEPTED' && payload.data?.orderId) {
+      setTimeout(() => {
+        window.location.href = `/dashboard/orders/${payload.data.orderId}`
+      }, 500)
+    }
+
     addNotification({
       id: payload.id || `notif_${Date.now()}`,
       ...payload
@@ -37,12 +67,7 @@ export const useRealtimeNotifications = () => {
       action: payload.type === 'NEW_CHAT_MESSAGE' && payload.data?.orderId ? () => {
         // Navigate to the order page with a query parameter indicating we should open the chat
         // We also pass the senderId to ensure the correct chat room opens
-        const router = useRouter()
-        if (router) {
-          router.push(`/orders/${payload.data.orderId}?openChat=${payload.data.senderId || 'true'}`)
-        } else {
-          window.location.href = `/orders/${payload.data.orderId}?openChat=${payload.data.senderId || 'true'}`
-        }
+        window.location.href = `/orders/${payload.data.orderId}?openChat=${payload.data.senderId || 'true'}`
       } : undefined
     })
   }
@@ -63,26 +88,33 @@ export const useRealtimeNotifications = () => {
   const handleOrderAccepted = (payload: any) => {
     if (!payload) return
 
-    playNotificationSound()
+    playOrderAcceptedSound()
     addNotification({
       id: payload.id || `accepted_${Date.now()}`,
       title: 'Order Accepted',
-      body: `Your order #${payload.orderNumber} has been accepted`,
+      body: `Your order #${payload.orderNumber || payload.data?.orderId || ''} has been accepted`,
       ...payload
     })
 
     showToast({
       title: '✅ Order Accepted!',
-      message: `${payload.errander?.firstName || 'A rider'} has accepted your order #${payload.orderNumber}!`,
+      message: `${payload.errander?.firstName || 'A rider'} has accepted your order #${payload.orderNumber || ''}!`,
       toastType: 'success',
       duration: 6000,
     })
+
+    const orderId = payload.data?.orderId || payload.orderId || payload.orderNumber;
+    if (orderId) {
+      setTimeout(() => {
+        window.location.href = `/dashboard/orders/${orderId}`
+      }, 500)
+    }
   }
 
   const handleOrderStatusUpdate = (payload: any) => {
     if (!payload) return
 
-    playNotificationSound()
+    playOrderStatusUpdateSound()
     addNotification({
       id: payload.id || `status_${Date.now()}`,
       title: 'Order Update',
