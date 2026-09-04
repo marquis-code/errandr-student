@@ -64,8 +64,8 @@
  </div>
  </section>
 
- <!-- Quick Actions -->
- <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <!-- Quick Actions -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
  <NuxtLink to="/meal-planner" class="bg-white border border-[#E7E2DA] rounded-xl p-4 md:p-4 flex items-center justify-between group hover:border-[#FF5C1A]/30 transition-all">
  <div>
  <div class="w-10 h-10 bg-[#FAF8F5] border border-[#E7E2DA] rounded-lg flex items-center justify-center mb-3">
@@ -79,19 +79,32 @@
  </div>
  </NuxtLink>
 
- <NuxtLink to="/dashboard/group-orders" class="bg-white border border-[#E7E2DA] rounded-xl p-4 md:p-4 flex items-center justify-between group hover:border-[#FF5C1A]/30 transition-all">
- <div>
- <div class="w-10 h-10 bg-[#FAF8F5] border border-[#E7E2DA] rounded-lg flex items-center justify-center mb-3">
- <Users class="w-5 h-5 text-[#9C968E] group-hover:text-[#FF5C1A] transition-colors" />
- </div>
- <h3 class="ff-display text-base font-bold text-[#171310] tracking-tight mb-1">Group Orders</h3>
- <p class="text-xs text-[#9C968E] font-bold">Order with friends and split the bill</p>
- </div>
- <div class="w-10 h-10 bg-[#FAF8F5] text-[#9C968E] rounded-lg flex items-center justify-center shrink-0 group-hover:text-[#FF5C1A] group-hover:bg-[#FF5C1A]/10 transition-colors">
- <ArrowRight class="w-4 h-4" />
- </div>
- </NuxtLink>
- </section>
+  <NuxtLink to="/dashboard/group-orders" class="bg-white border border-[#E7E2DA] rounded-xl p-4 md:p-4 flex items-center justify-between group hover:border-[#FF5C1A]/30 transition-all">
+  <div>
+  <div class="w-10 h-10 bg-[#FAF8F5] border border-[#E7E2DA] rounded-lg flex items-center justify-center mb-3">
+  <Users class="w-5 h-5 text-[#9C968E] group-hover:text-[#FF5C1A] transition-colors" />
+  </div>
+  <h3 class="ff-display text-base font-bold text-[#171310] tracking-tight mb-1">Group Orders</h3>
+  <p class="text-xs text-[#9C968E] font-bold">Order with friends and split the bill</p>
+  </div>
+  <div class="w-10 h-10 bg-[#FAF8F5] text-[#9C968E] rounded-lg flex items-center justify-center shrink-0 group-hover:text-[#FF5C1A] group-hover:bg-[#FF5C1A]/10 transition-colors">
+  <ArrowRight class="w-4 h-4" />
+  </div>
+  </NuxtLink>
+
+  <NuxtLink to="/market-pool" class="bg-white border border-[#E7E2DA] rounded-xl p-4 md:p-4 flex items-center justify-between group hover:border-[#FF5C1A]/30 transition-all">
+  <div>
+  <div class="w-10 h-10 bg-[#FAF8F5] border border-[#E7E2DA] rounded-lg flex items-center justify-center mb-3">
+  <ShoppingCart class="w-5 h-5 text-[#9C968E] group-hover:text-[#FF5C1A] transition-colors" />
+  </div>
+  <h3 class="ff-display text-base font-bold text-[#171310] tracking-tight mb-1">Market Pool</h3>
+  <p class="text-xs text-[#9C968E] font-bold">Buy food in bulk at wholesale prices</p>
+  </div>
+  <div class="w-10 h-10 bg-[#FAF8F5] text-[#9C968E] rounded-lg flex items-center justify-center shrink-0 group-hover:text-[#FF5C1A] group-hover:bg-[#FF5C1A]/10 transition-colors">
+  <ArrowRight class="w-4 h-4" />
+  </div>
+  </NuxtLink>
+  </section>
 
  <!-- Popular Vendors -->
  <section class="space-y-4 pt-4">
@@ -193,12 +206,7 @@
 <script setup lang="ts">
 import { useLandingPage } from '@/composables/modules/landing';
 import { useUser } from '@/composables/modules/auth/user';
-import { 
- Search, Star, Timer, MapPin, ArrowRight, ShieldCheck, 
- Check, Trophy, Flame, BarChart3, UtensilsCrossed, 
- PackageSearch, Clock, RefreshCw, WifiOff, MoonStar,
- Rocket, Users, Lock
-} from 'lucide-vue-next';
+import { MapPin, Search, ArrowRight, PackageSearch, Tag, Star, Clock, Heart, Users, UtensilsCrossed, ShoppingCart, ShieldCheck, Trophy, Flame, BarChart3, RefreshCw, WifiOff, MoonStar, Rocket, Lock } from 'lucide-vue-next';
 import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCustomToast } from '@/composables/core/useCustomToast';
