@@ -501,6 +501,7 @@ const isAuthModalOpen = ref(false)
 const justAuthenticated = ref(false)
 const failedPaymentReference = ref('')
 const minRunnerFee = ref(400)
+const enableTransferFee = ref(false)
 
 const errandType = ref<'custom' | 'market'>('custom')
 const isRecording = ref(false)
@@ -548,6 +549,9 @@ const fetchInitialData = async () => {
     const settings = settingsRes?.data || settingsRes
     if (settings?.minCustomErrandFee) {
       minRunnerFee.value = settings.minCustomErrandFee
+    }
+    if (settings?.enableTransferFee !== undefined) {
+      enableTransferFee.value = settings.enableTransferFee
     }
   } catch (e) {
     console.error('Failed to fetch custom errand settings:', e)
@@ -799,6 +803,7 @@ const isStep2Valid = computed(() => {
 })
 
 const transferFee = computed(() => {
+  if (!enableTransferFee.value) return 0
   const amountToTransfer = (form.value.estimatedItemCost || 0) + (form.value.runnerFee || 0)
   if (amountToTransfer === 0) return 0
   if (amountToTransfer <= 5000) return 10

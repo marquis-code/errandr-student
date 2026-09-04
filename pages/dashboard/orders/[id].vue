@@ -727,6 +727,34 @@
     </template>
     </UiModal>
 
+    <!-- Order Completed Modal -->
+    <UiModal
+      :is-open="isOrderCompletedModalOpen"
+      title="Errand Completed!"
+      description="Your custom errand has been successfully delivered."
+      size="sm"
+      @close="isOrderCompletedModalOpen = false"
+    >
+      <div class="flex flex-col items-center text-center py-4">
+        <div class="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4">
+          <Check class="w-8 h-8 text-emerald-500" />
+        </div>
+        <h4 class="text-lg font-bold text-gray-900 mb-2">Delivery Successful</h4>
+        <p class="text-sm text-gray-500 leading-relaxed max-w-[260px]">
+          Your errander has completed the request. Thank you for using Erranders!
+        </p>
+      </div>
+
+      <template #footer>
+        <button 
+          @click="router.replace('/dashboard')" 
+          class="px-6 py-3 w-full justify-center text-center rounded-xl bg-[#FF5C1A] text-white font-bold text-sm hover:bg-[#e6511a] transition-all flex items-center gap-2"
+        >
+          Return to Dashboard
+        </button>
+      </template>
+    </UiModal>
+
     <!-- Accept Bid Confirmation Modal -->
     <UiModal
       :is-open="isAcceptBidModalOpen"
@@ -1094,6 +1122,14 @@ const increaseFee = async () => {
 };
 
 const isAcceptingBid = ref<string | null>(null);
+const isConfirmPaymentModalOpen = ref(false);
+const isOrderCompletedModalOpen = ref(false);
+
+watch(() => order.value?.status, (newStatus) => {
+  if (order.value?.type === 'custom_errand' && newStatus === 'delivered') {
+    isOrderCompletedModalOpen.value = true;
+  }
+}, { immediate: true });
 const isAcceptBidModalOpen = ref(false);
 const selectedBidId = ref<string | null>(null);
 const selectedBid = ref<any>(null);
@@ -1169,7 +1205,6 @@ const payForErrand = async () => {
 const isPayingWithWallet = ref(false);
 
 const isFundModalOpen = ref(false);
-const isConfirmPaymentModalOpen = ref(false);
 const isUploadingProof = ref(false);
 const proofOfPaymentUrl = ref('');
 const fundAmountNeeded = ref(0);

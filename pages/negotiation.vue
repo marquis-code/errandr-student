@@ -65,7 +65,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <h2 class="text-2xl font-black text-gray-900 tracking-tight">Finding Riders</h2>
+          <h2 class="text-2xl font-black text-gray-900 tracking-tight">Finding Errand Ninjas 🥷</h2>
           <p class="text-gray-500 mt-2 text-sm max-w-[250px] mx-auto leading-relaxed">
             Please wait while erranders view your request and submit their delivery bids.
           </p>
@@ -127,10 +127,9 @@
                   <button 
                     @click="rejectBid(bid)"
                     :disabled="accepting"
-                    class="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 active:scale-95 transition-all disabled:opacity-50 border border-red-100 flex items-center justify-center"
-                    title="Decline Offer"
+                    class="flex-1 py-2.5 bg-red-50 text-red-600 text-sm font-bold rounded-xl hover:bg-red-100 active:scale-95 transition-all disabled:opacity-50 border border-red-100"
                   >
-                    <X class="w-4 h-4" />
+                    Decline
                   </button>
                   <button 
                     @click="openCounterModal(bid)"
@@ -142,9 +141,10 @@
                   <button 
                     @click="acceptBid(bid)"
                     :disabled="accepting"
-                    class="flex-[2] py-2.5 bg-parentPrimary text-white text-sm font-bold rounded-xl hover:bg-parentPrimary/90 active:scale-95 transition-all disabled:opacity-50 shadow-sm shadow-parentPrimary/30"
+                    class="flex-[1.2] py-2.5 bg-[#FF5C1A] text-white text-sm font-bold rounded-xl shadow-sm hover:bg-[#E04B12] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                   >
-                    Accept
+                    <Loader2 v-if="accepting" class="w-4 h-4 animate-spin" />
+                    <span v-else>Accept</span>
                   </button>
                 </div>
               </div>
@@ -255,6 +255,8 @@ const handleTimeout = async () => {
   await cancelOrder();
 };
 
+let statusPollingInterval: any = null;
+
 onMounted(() => {
   if (!primaryOrderId) {
     showToast({ title: 'Error', message: 'No active negotiation.', toastType: 'error' });
@@ -264,6 +266,30 @@ onMounted(() => {
 
   // Start the 5 min countdown
   startTimer();
+
+  // Robust fallback: Poll the order status every 5 seconds to ensure we don't get stuck
+  statusPollingInterval = setInterval(async () => {
+    try {
+      const res = await orders_api.getOrder(primaryOrderId);
+      if (res?.data) {
+        const status = res.data.status;
+        if (['awaiting_payment', 'confirmed', 'in_progress', 'completed'].includes(status)) {
+          if (accepting.value || cancelling.value) return;
+          accepting.value = true;
+          if (timerInterval) clearInterval(timerInterval);
+          if (statusPollingInterval) clearInterval(statusPollingInterval);
+          
+          showToast({ title: 'Rider Found!', message: 'A rider accepted your offer. Redirecting to your order...', toastType: 'success' });
+          
+          setTimeout(() => {
+            window.location.replace(`/dashboard/orders/${primaryOrderId}`);
+          }, 100);
+        }
+      }
+    } catch (e) {
+      // Ignore polling errors
+    }
+  }, 5000);
 
   // Connect to negotiation namespace
   const wsUrl = config.public.apiBase.replace('/v1', '').replace('/api', '');
@@ -293,13 +319,17 @@ onMounted(() => {
   socket.on('orderAcceptedDirectly', async (payload: any) => {
     if (accepting.value || cancelling.value) return;
     accepting.value = true;
+    if (timerInterval) clearInterval(timerInterval);
+    if (statusPollingInterval) clearInterval(statusPollingInterval);
+    
     showToast({ title: 'Rider Found!', message: 'A rider accepted your proposed fee. Redirecting to your order...', toastType: 'success' });
     
     // Aggressively redirect to order details page without using Nuxt router which causes crashes
     setTimeout(() => {
-      window.location.href = `/dashboard/orders/${primaryOrderId}`;
+      window.location.replace(`/dashboard/orders/${primaryOrderId}`);
     }, 100);
   });
+  
   socket.on('bidCountered', (bid: any) => {
     const index = bids.value.findIndex(b => b._id === bid._id);
     if (index !== -1) {
@@ -314,6 +344,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (timerInterval) clearInterval(timerInterval);
+  if (statusPollingInterval) clearInterval(statusPollingInterval);
   if (socket) {
     socket.emit('leaveNegotiation', { orderId: primaryOrderId, role: 'student' });
     socket.disconnect();

@@ -524,6 +524,7 @@ const checkOrders = () => {
   
   // 2. Check for Recently Delivered Orders (Unrated)
   const delivered = studentOrders.value.find((o: any) => 
+    o.type !== 'custom_errand' &&
     (o.status === 'delivered' || o.status === 'picked_up' || o.status === 'DELIVERED' || o.status === 'COMPLETED') && 
     (!o.hasRatedVendor || !o.hasRatedErrander)
   )

@@ -58,7 +58,7 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: "en" },
       meta: [
         { charset: "utf-8" },
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
         { name: "format-detection", content: "telephone=no" },
         { name: "description", content: 'Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.' },
         { name: "keywords", content: 'Student delivery, campus food delivery, Errander, food ordering, university delivery' },
