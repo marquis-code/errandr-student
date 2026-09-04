@@ -52,9 +52,8 @@
 <script setup>
 import { ShoppingCart, ArrowRight } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
-import { useNuxtApp } from '#app'
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 
-const { $api } = useNuxtApp()
 const campaign = ref(null)
 
 const getEmoji = (name) => {
@@ -69,7 +68,7 @@ const getEmoji = (name) => {
 
 onMounted(async () => {
   try {
-    const res = await $api.get('/market-pool/active')
+    const res = await api.get('/market-pool/active')
     if (res.data?.campaign) {
       campaign.value = res.data.campaign
     }

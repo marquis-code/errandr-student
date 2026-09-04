@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 
 export const useMarketPoolStore = defineStore('marketPool', {
   state: () => ({
@@ -13,8 +14,7 @@ export const useMarketPoolStore = defineStore('marketPool', {
   actions: {
     async fetchActiveCampaign() {
       try {
-        const { $api } = useNuxtApp()
-        const response = await $api.get('/market-pool/active')
+        const response = await api.get('/market-pool/active')
         if (response.data) {
           this.campaign = response.data.campaign
           this.items = response.data.items
@@ -52,9 +52,8 @@ export const useMarketPoolStore = defineStore('marketPool', {
     },
     async checkout() {
       try {
-        const { $api } = useNuxtApp()
         const itemsPayload = this.cart.map(i => ({ itemId: i._id, quantity: i.quantity }))
-        await $api.post('/market-pool/checkout', {
+        await api.post('/market-pool/checkout', {
           campaignId: this.campaign._id,
           items: itemsPayload
         })
