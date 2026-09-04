@@ -54,20 +54,20 @@
 
     <!-- Info Modal -->
     <Teleport to="body">
-      <div v-if="showInfoModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 sm:p-6 animate-fade-in" @click="showInfoModal = false">
-        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative flex flex-col max-h-full" @click.stop>
-          <div class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] px-6 py-8 text-center text-white relative">
+      <div v-if="showInfoModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center sm:p-6 animate-fade-in" @click="showInfoModal = false">
+        <div class="bg-white w-full h-full sm:h-auto sm:max-h-[90vh] sm:rounded-3xl sm:max-w-lg shadow-2xl overflow-hidden relative flex flex-col" @click.stop>
+          <div class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] px-6 py-8 text-center text-white relative shrink-0">
             <button @click="showInfoModal = false" class="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors">
               <X class="w-5 h-5" />
             </button>
             <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-12 shadow-inner">
               <ShoppingCart class="w-8 h-8 text-white" />
             </div>
-            <h2 class="text-2xl font-black uppercase tracking-tight text-[#FFE066]">Campus Wholesale Pool</h2>
+            <h2 class="text-2xl font-black tracking-tight text-[#FFE066]">Campus Wholesale Pool</h2>
             <p class="text-sm font-bold text-white/90 mt-2">Why pay retail when you can pay wholesale?</p>
           </div>
           
-          <div class="p-6 overflow-y-auto space-y-6">
+          <div class="p-6 overflow-y-auto space-y-6 flex-1">
             <div class="flex gap-4 items-start">
               <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
                 <Users class="w-5 h-5 text-[#FF5C1A]" />
@@ -99,8 +99,8 @@
             </div>
           </div>
           
-          <div class="p-6 bg-gray-50 border-t border-gray-100">
-            <NuxtLink to="/market-pool" @click="showInfoModal = false" class="w-full flex items-center justify-center gap-2 bg-[#FF5C1A] text-white py-3.5 rounded-xl font-bold uppercase tracking-wide hover:bg-[#E54D12] active:scale-95 transition-all shadow-lg shadow-orange-500/30">
+          <div class="p-4 sm:p-6 bg-gray-50 border-t border-gray-100 shrink-0 mb-4 sm:mb-0">
+            <NuxtLink to="/market-pool" @click="showInfoModal = false" class="w-full flex items-center justify-center gap-2 bg-[#FF5C1A] text-white py-3.5 rounded-xl font-bold tracking-wide hover:bg-[#E54D12] active:scale-95 transition-all shadow-lg shadow-orange-500/30">
               Join the Current Pool <ArrowRight class="w-5 h-5" />
             </NuxtLink>
           </div>
