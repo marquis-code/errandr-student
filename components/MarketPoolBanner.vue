@@ -46,9 +46,9 @@
       </div>
 
       <!-- Action Button -->
-      <NuxtLink to="/market-pool" class="flex-shrink-0 w-full md:w-auto bg-white text-[#FF5C1A] font-extrabold px-6 py-3 md:py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+      <button @click="navigateToPool" class="flex-shrink-0 w-full md:w-auto bg-white text-[#FF5C1A] font-extrabold px-6 py-3 md:py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
         Join the Pool <ArrowRight class="w-4 h-4" />
-      </NuxtLink>
+      </button>
 
     </div>
 
@@ -100,9 +100,9 @@
           </div>
           
           <div class="p-4 sm:p-6 bg-gray-50 border-t border-gray-100 shrink-0 mb-4 sm:mb-0">
-            <NuxtLink to="/market-pool" @click="showInfoModal = false" class="w-full flex items-center justify-center gap-2 bg-[#FF5C1A] text-white py-3.5 rounded-xl font-bold tracking-wide hover:bg-[#E54D12] active:scale-95 transition-all shadow-lg shadow-orange-500/30">
+            <button @click="navigateToPool" class="w-full flex items-center justify-center gap-2 bg-[#FF5C1A] text-white py-3.5 rounded-xl font-bold tracking-wide hover:bg-[#E54D12] active:scale-95 transition-all shadow-lg shadow-orange-500/30">
               Join the Current Pool <ArrowRight class="w-5 h-5" />
-            </NuxtLink>
+            </button>
           </div>
         </div>
       </div>
@@ -114,10 +114,17 @@
 <script setup>
 import { ShoppingCart, ArrowRight, Info, X, Users, TrendingDown, CalendarCheck } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 
+const router = useRouter()
 const campaign = ref(null)
 const showInfoModal = ref(false)
+
+const navigateToPool = () => {
+  showInfoModal.value = false
+  router.push('/market-pool')
+}
 
 const getEmoji = (name) => {
   const n = name.toLowerCase()
