@@ -1,6 +1,6 @@
 <template>
-  <div v-if="campaign" class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] text-white shadow-md border-b border-[#D8450F] relative overflow-hidden z-50">
-    <div class="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex flex-col md:flex-row items-center gap-4">
+  <div v-if="campaign" class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] text-white shadow-xl rounded-2xl relative overflow-hidden z-50 border border-[#D8450F]">
+    <div class="px-5 py-4 flex flex-col md:flex-row items-center gap-4">
       
       <!-- CTA Section -->
       <div class="flex-shrink-0 flex items-center gap-3 w-full md:w-auto justify-center md:justify-start">
@@ -11,7 +11,7 @@
           <h3 class="font-black text-lg sm:text-xl tracking-tight leading-none uppercase italic text-[#FFE066] drop-shadow-sm">
             Campus Wholesale Pool
           </h3>
-          <p class="text-[11px] sm:text-xs font-bold text-white/90 mt-1 uppercase tracking-widest">
+          <p class="text-[10px] sm:text-xs font-bold text-white/90 mt-1 uppercase tracking-widest bg-black/10 px-2 py-0.5 rounded inline-block">
             Don't buy retail. Buy Bulk & Save 40%
           </p>
         </div>

@@ -17,9 +17,6 @@
     <!-- Navbar -->
     <LandingNavbar />
 
-    <!-- Market Pool Banner -->
-    <MarketPoolBanner />
-
     <!-- Search Overlay (Invisible, just for catching clicks to close) -->
     <Teleport to="body">
       <div 
@@ -37,9 +34,15 @@
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
 
       <div class="max-w-7xl mx-auto sm:px-4  relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
-        <div class="max-w-3xl mx-auto space-y-6">
+        <div class="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
+          
+          <!-- Market Pool Embedded Banner -->
+          <div class="w-full relative z-50 mb-4 animate-fade-in-up">
+            <MarketPoolBanner />
+          </div>
+
           <!-- Badge -->
-          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-medium -[0.2em]  animate-fade-in-up hover:bg-parentPrimary/10 transition-colors">
+          <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-medium -[0.2em] hover:bg-parentPrimary/10 transition-colors">
             <Zap class="w-3.5 h-3.5 fill-current" /> Campus Services & Delivery, Redefined
           </NuxtLink>
           
