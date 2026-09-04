@@ -930,7 +930,7 @@ const executeCancelOrder = async () => {
  fetchOrder();
  } catch (error) {
  console.error('Cancellation failed', error);
- alert('Failed to cancel order. Please try again later.');
+ showToast({ title: 'Error', message: 'Failed to cancel order. Please try again later.', toastType: 'error' });
  } finally {
  cancelling.value = false;
  }

@@ -26,22 +26,19 @@ export const useMarketPoolStore = defineStore('marketPool', {
         return null
       }
     },
-    addToCart(item) {
-      const existing = this.cart.find(i => i._id === item._id)
-      if (existing) {
-        existing.quantity++
-      } else {
-        this.cart.push({ ...item, quantity: 1 })
-      }
+    addToCart(item, preferences = '', quantity = 1) {
+      // Create a unique cart ID to allow same items with different preferences
+      const cartId = `${item._id}_${Date.now()}`
+      this.cart.push({ ...item, quantity, preferences, cartId })
     },
-    removeFromCart(itemId) {
-      this.cart = this.cart.filter(i => i._id !== itemId)
+    removeFromCart(cartId) {
+      this.cart = this.cart.filter(i => i.cartId !== cartId)
     },
-    updateQuantity(itemId, quantity) {
-      const item = this.cart.find(i => i._id === itemId)
+    updateQuantity(cartId, quantity) {
+      const item = this.cart.find(i => i.cartId === cartId)
       if (item) {
         if (quantity <= 0) {
-          this.removeFromCart(itemId)
+          this.removeFromCart(cartId)
         } else {
           item.quantity = quantity
         }
@@ -50,15 +47,20 @@ export const useMarketPoolStore = defineStore('marketPool', {
     clearCart() {
       this.cart = []
     },
-    async checkout() {
+    async checkout(deliveryDetails = {}) {
       try {
-        const itemsPayload = this.cart.map(i => ({ itemId: i._id, quantity: i.quantity }))
-        await api.post('/market-pool/checkout', {
+        const itemsPayload = this.cart.map(i => ({ 
+          itemId: i._id, 
+          quantity: i.quantity,
+          preferences: i.preferences || '' 
+        }))
+        const response = await api.post('/market-pool/checkout', {
           campaignId: this.campaign._id,
-          items: itemsPayload
+          items: itemsPayload,
+          deliveryDetails
         })
         this.clearCart()
-        return true
+        return response.data
       } catch (error) {
         console.error('Checkout failed', error)
         throw error

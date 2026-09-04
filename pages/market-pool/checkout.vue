@@ -19,22 +19,25 @@
           <h2 class="font-bold text-gray-900">Your Pool Order</h2>
         </div>
         <div class="p-4 space-y-4">
-          <div v-for="item in marketStore.cart" :key="item._id" class="flex justify-between items-center">
+          <div v-for="item in marketStore.cart" :key="item.cartId" class="flex justify-between items-center">
             <div class="flex items-center gap-3">
               <div class="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden shrink-0">
                 <img v-if="item.imageUrl" :src="item.imageUrl" class="w-full h-full object-cover" />
               </div>
               <div>
                 <p class="font-medium text-sm text-gray-900">{{ item.name }}</p>
-                <p class="text-xs text-gray-500">{{ item.studentQuantity }} x {{ item.quantity }}</p>
+                <p class="text-[10px] text-gray-500">{{ item.studentQuantity }} x {{ item.quantity }}</p>
+                <p v-if="item.preferences" class="text-[10px] text-primary bg-primary/5 px-1.5 py-0.5 rounded mt-0.5 max-w-[150px] truncate" :title="item.preferences">
+                  {{ item.preferences }}
+                </p>
               </div>
             </div>
             <div class="text-right">
               <p class="font-bold text-sm text-gray-900">₦{{ (item.appPrice * item.quantity).toLocaleString() }}</p>
-              <div class="flex items-center gap-2 mt-1">
-                <button @click="marketStore.updateQuantity(item._id, item.quantity - 1)" class="w-5 h-5 rounded bg-gray-100 flex items-center justify-center text-gray-600">-</button>
+              <div class="flex items-center gap-2 mt-1 justify-end">
+                <button @click="marketStore.updateQuantity(item.cartId, item.quantity - 1)" class="w-5 h-5 rounded bg-gray-100 flex items-center justify-center text-gray-600">-</button>
                 <span class="text-xs font-medium w-3 text-center">{{ item.quantity }}</span>
-                <button @click="marketStore.updateQuantity(item._id, item.quantity + 1)" class="w-5 h-5 rounded bg-gray-100 flex items-center justify-center text-gray-600">+</button>
+                <button @click="marketStore.updateQuantity(item.cartId, item.quantity + 1)" class="w-5 h-5 rounded bg-gray-100 flex items-center justify-center text-gray-600">+</button>
               </div>
             </div>
           </div>
@@ -59,6 +62,51 @@
         </div>
       </div>
 
+      <!-- Delivery Preferences -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6 p-5">
+        <h3 class="font-bold text-gray-900 mb-4">Delivery Preferences</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Select Saturday Time Slot</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center justify-between p-3 border rounded-xl cursor-pointer transition-colors" :class="deliveryDetails.deliverySlot === 'morning' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:bg-gray-50'">
+                <span class="text-sm font-medium text-gray-900">Morning (8am - 12pm)</span>
+                <input type="radio" v-model="deliveryDetails.deliverySlot" value="morning" class="text-primary focus:ring-primary hidden">
+                <div class="w-4 h-4 rounded-full border flex items-center justify-center" :class="deliveryDetails.deliverySlot === 'morning' ? 'border-primary' : 'border-gray-300'">
+                  <div v-if="deliveryDetails.deliverySlot === 'morning'" class="w-2 h-2 rounded-full bg-primary"></div>
+                </div>
+              </label>
+              <label class="flex items-center justify-between p-3 border rounded-xl cursor-pointer transition-colors" :class="deliveryDetails.deliverySlot === 'afternoon' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:bg-gray-50'">
+                <span class="text-sm font-medium text-gray-900">Afternoon (1pm - 5pm)</span>
+                <input type="radio" v-model="deliveryDetails.deliverySlot" value="afternoon" class="text-primary focus:ring-primary hidden">
+                <div class="w-4 h-4 rounded-full border flex items-center justify-center" :class="deliveryDetails.deliverySlot === 'afternoon' ? 'border-primary' : 'border-gray-300'">
+                  <div v-if="deliveryDetails.deliverySlot === 'afternoon'" class="w-2 h-2 rounded-full bg-primary"></div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <label class="flex items-center gap-2 mb-3 cursor-pointer">
+              <input type="checkbox" v-model="useProxy" class="rounded text-primary focus:ring-primary w-4 h-4">
+              <span class="text-sm font-semibold text-gray-700">Someone else will receive this (Proxy)</span>
+            </label>
+            
+            <div v-if="useProxy" class="space-y-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Receiver Name</label>
+                <input v-model="deliveryDetails.proxyName" type="text" placeholder="e.g. John Doe (Roommate)" class="w-full bg-white border-gray-200 text-gray-900 rounded-lg focus:ring-primary px-3 py-2 border outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Receiver Phone Number</label>
+                <input v-model="deliveryDetails.proxyPhone" type="tel" placeholder="080..." class="w-full bg-white border-gray-200 text-gray-900 rounded-lg focus:ring-primary px-3 py-2 border outline-none text-sm">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Action -->
       <button 
         @click="processCheckout" 
@@ -66,7 +114,7 @@
         class="w-full bg-primary text-white font-bold rounded-xl py-4 flex items-center justify-center gap-2 shadow-lg shadow-primary/30 disabled:opacity-70"
       >
         <div v-if="loading" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-        <span v-else>Pay from Wallet & Join Pool</span>
+        <span v-else>Confirm Order & Proceed to Payment</span>
       </button>
       <p class="text-center text-[10px] text-gray-400 mt-3 px-4">
         By joining the pool, you agree to our Market Pool terms. Delivery will be made on Saturday.
@@ -93,19 +141,38 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMarketPoolStore } from '~/stores/marketPool'
+import { useCustomToast } from '@/composables/core/useCustomToast'
 
 const router = useRouter()
 const marketStore = useMarketPoolStore()
+const { showToast } = useCustomToast()
 const loading = ref(false)
+const useProxy = ref(false)
+const deliveryDetails = ref({
+  deliverySlot: 'morning',
+  proxyName: '',
+  proxyPhone: ''
+})
 
 const processCheckout = async () => {
   try {
     loading.value = true
-    await marketStore.checkout()
-    alert('Successfully joined the Market Pool! Your order will be delivered on Saturday.')
-    router.push('/market-pool')
+    const payload = {
+      deliverySlot: deliveryDetails.value.deliverySlot,
+      ...(useProxy.value && {
+        proxyName: deliveryDetails.value.proxyName,
+        proxyPhone: deliveryDetails.value.proxyPhone
+      })
+    }
+    const order = await marketStore.checkout(payload)
+    showToast({ title: 'Success', message: 'Order created! Please proceed to payment.', toastType: 'success' })
+    if (order && order._id) {
+      router.push(`/market-pool/payment/${order._id}`)
+    } else {
+      router.push('/market-pool')
+    }
   } catch (error) {
-    alert(error.response?.data?.message || 'Checkout failed. Please ensure you have sufficient wallet balance.')
+    showToast({ title: 'Checkout Failed', message: error.response?.data?.message || 'Please ensure you have sufficient wallet balance.', toastType: 'error' })
   } finally {
     loading.value = false
   }
