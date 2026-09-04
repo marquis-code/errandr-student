@@ -8,9 +8,14 @@
           <ShoppingCart class="w-6 h-6 text-white" />
         </div>
         <div>
-          <h3 class="font-black text-lg sm:text-xl tracking-tight leading-none uppercase italic text-[#FFE066] drop-shadow-sm">
-            Campus Wholesale Pool
-          </h3>
+          <div class="flex items-center gap-2">
+            <h3 class="font-black text-lg sm:text-xl tracking-tight leading-none uppercase text-[#FFE066] drop-shadow-sm">
+              Campus Wholesale Pool
+            </h3>
+            <button @click="showInfoModal = true" class="p-1 bg-white/20 hover:bg-white/30 rounded-full transition-colors" title="Learn More">
+              <Info class="w-4 h-4 text-white" />
+            </button>
+          </div>
           <p class="text-[11px] sm:text-xs font-bold text-white/90 mt-1 uppercase tracking-widest">
             Don't buy retail. Buy Bulk & Save 40%
           </p>
@@ -46,15 +51,73 @@
       </NuxtLink>
 
     </div>
+
+    <!-- Info Modal -->
+    <Teleport to="body">
+      <div v-if="showInfoModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 sm:p-6 animate-fade-in" @click="showInfoModal = false">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative flex flex-col max-h-full" @click.stop>
+          <div class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] px-6 py-8 text-center text-white relative">
+            <button @click="showInfoModal = false" class="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors">
+              <X class="w-5 h-5" />
+            </button>
+            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-12 shadow-inner">
+              <ShoppingCart class="w-8 h-8 text-white" />
+            </div>
+            <h2 class="text-2xl font-black uppercase tracking-tight text-[#FFE066]">Campus Wholesale Pool</h2>
+            <p class="text-sm font-bold text-white/90 mt-2">Why pay retail when you can pay wholesale?</p>
+          </div>
+          
+          <div class="p-6 overflow-y-auto space-y-6">
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+                <Users class="w-5 h-5 text-[#FF5C1A]" />
+              </div>
+              <div>
+                <h4 class="font-bold text-gray-900 text-lg">Group Buying Power</h4>
+                <p class="text-gray-600 text-sm mt-1">We aggregate orders from hundreds of students across campus to unlock massive wholesale discounts directly from major distributors.</p>
+              </div>
+            </div>
+            
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+                <TrendingDown class="w-5 h-5 text-[#FF5C1A]" />
+              </div>
+              <div>
+                <h4 class="font-bold text-gray-900 text-lg">Save Up to 40%</h4>
+                <p class="text-gray-600 text-sm mt-1">Because we cut out the middleman and buy in extreme bulk, you pay significantly less for your everyday staples like Rice, Beans, Garri, and Noodles.</p>
+              </div>
+            </div>
+            
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+                <CalendarCheck class="w-5 h-5 text-[#FF5C1A]" />
+              </div>
+              <div>
+                <h4 class="font-bold text-gray-900 text-lg">Weekly Delivery</h4>
+                <p class="text-gray-600 text-sm mt-1">Place your order during the active campaign window. Once the pool closes, we fulfill the entire batch and deliver it straight to your hostel.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-6 bg-gray-50 border-t border-gray-100">
+            <NuxtLink to="/market-pool" @click="showInfoModal = false" class="w-full flex items-center justify-center gap-2 bg-[#FF5C1A] text-white py-3.5 rounded-xl font-bold uppercase tracking-wide hover:bg-[#E54D12] active:scale-95 transition-all shadow-lg shadow-orange-500/30">
+              Join the Current Pool <ArrowRight class="w-5 h-5" />
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
   </div>
 </template>
 
 <script setup>
-import { ShoppingCart, ArrowRight } from 'lucide-vue-next'
+import { ShoppingCart, ArrowRight, Info, X, Users, TrendingDown, CalendarCheck } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 
 const campaign = ref(null)
+const showInfoModal = ref(false)
 
 const getEmoji = (name) => {
   const n = name.toLowerCase()
