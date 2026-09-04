@@ -105,6 +105,47 @@
           </div>
         </div>
       </div>
+      
+      <!-- Custom Request CTA -->
+      <div class="mt-8 p-5 bg-orange-50 rounded-2xl border border-orange-100 flex flex-col items-center text-center">
+        <h3 class="font-bold text-gray-900 mb-1">Don't see what you want?</h3>
+        <p class="text-xs text-gray-600 mb-4">Request a custom item and we'll try to add it to the pool or source it for you.</p>
+        <button @click="showRequestModal = true" class="px-5 py-2.5 bg-primary text-white text-sm font-bold rounded-xl shadow-sm hover:bg-primary/90 transition-colors w-full sm:w-auto">
+          Request Custom Item
+        </button>
+      </div>
+    </div>
+
+    <!-- Request Modal -->
+    <div v-if="showRequestModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in" @click="showRequestModal = false">
+      <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden" @click.stop>
+        <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+          <h3 class="font-bold text-gray-900">Request Custom Item</h3>
+          <button @click="showRequestModal = false" class="text-gray-400 hover:text-gray-600 p-1.5 hover:bg-gray-100 rounded-full transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div class="p-5 space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Item Name</label>
+            <input v-model="requestForm.itemName" type="text" placeholder="e.g. Sweet Potatoes" class="w-full bg-gray-50 text-gray-900 rounded-xl focus:ring-primary px-3 py-2.5 border border-gray-200 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Target Quantity/Measurement</label>
+            <input v-model="requestForm.desiredQuantity" type="text" placeholder="e.g. 1 Paint Bucket" class="w-full bg-gray-50 text-gray-900 rounded-xl focus:ring-primary px-3 py-2.5 border border-gray-200 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Additional Details</label>
+            <textarea v-model="requestForm.description" placeholder="Any specific brand or preference?" class="w-full bg-gray-50 text-gray-900 rounded-xl focus:ring-primary px-3 py-2.5 border border-gray-200 outline-none resize-none h-20"></textarea>
+          </div>
+        </div>
+        <div class="p-4 bg-gray-50 border-t border-gray-100 flex gap-3">
+          <button @click="showRequestModal = false" class="flex-1 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-colors">Cancel</button>
+          <button @click="submitRequest" :disabled="submittingRequest" class="flex-1 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primary/90 rounded-xl transition-all shadow-sm disabled:opacity-50">
+            {{ submittingRequest ? 'Sending...' : 'Submit Request' }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -138,5 +179,32 @@ const cartStore = ref({ itemCount: 0 })
 const addToCart = (item) => {
   marketStore.addToCart(item)
   cartStore.value.itemCount = marketStore.cart.length
+  alert(`Added ${item.name} to cart.`)
+}
+
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
+
+const showRequestModal = ref(false)
+const submittingRequest = ref(false)
+const requestForm = ref({ itemName: '', desiredQuantity: '', description: '' })
+
+const submitRequest = async () => {
+  if (!requestForm.value.itemName || !requestForm.value.desiredQuantity) {
+    alert('Please provide the item name and desired quantity.')
+    return
+  }
+  
+  try {
+    submittingRequest.value = true
+    await api.post(`/market-pool/campaigns/${campaign.value._id}/custom-requests`, requestForm.value)
+    alert('Request submitted successfully! We will review it shortly.')
+    showRequestModal.value = false
+    requestForm.value = { itemName: '', desiredQuantity: '', description: '' }
+  } catch (error) {
+    console.error('Failed to submit request', error)
+    alert('Failed to submit request. Please try again.')
+  } finally {
+    submittingRequest.value = false
+  }
 }
 </script>
