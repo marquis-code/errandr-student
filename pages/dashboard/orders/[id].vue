@@ -125,6 +125,19 @@
 
 
 
+             <!-- RESUME NEGOTIATION -->
+             <div v-if="order.status === 'negotiating'" class="p-4 rounded-2xl border border-gray-100 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-xl bg-gray-900 flex items-center justify-center mb-4">
+                   <Zap class="w-6 h-6 text-[#FF5C1A]" />
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 tracking-tight mb-1">Active Negotiation</h3>
+                <p class="text-gray-400 text-xs max-w-sm mb-5">You are currently negotiating the delivery fee with a rider. Don't leave them waiting!</p>
+
+                <button @click="router.push({ path: '/negotiation', query: { orderIds: order._id } })" class="w-full max-w-sm bg-[#FF5C1A] text-white font-bold px-5 h-12 rounded-xl hover:bg-[#e6511a] transition-colors shadow-sm flex items-center justify-center gap-2">
+                   Resume Negotiation <ArrowRight class="w-4 h-4" />
+                </button>
+             </div>
+
              <!-- PENDING NEGOTIATION -->
              <div v-if="order.type === 'custom_errand' && order.status === 'pending'" class="p-4 rounded-2xl border border-gray-100 flex flex-col items-center text-center">
                 <div class="w-12 h-12 rounded-xl bg-gray-900 flex items-center justify-center mb-4">
