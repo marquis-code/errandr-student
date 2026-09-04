@@ -70,7 +70,10 @@ onMounted(async () => {
   try {
     const res = await api.get('/market-pool/active')
     if (res.data?.campaign) {
-      campaign.value = res.data.campaign
+      campaign.value = {
+        ...res.data.campaign,
+        items: res.data.items || []
+      }
     }
   } catch (e) {
     console.error(e)
