@@ -74,7 +74,7 @@
         </button>
       </div>
 
-      <div class="flex-1 overflow-y-auto sm:px-5 sm:py-10 md:px-16 md:py-16 flex flex-col justify-center">
+      <div class="flex-1 overflow-y-auto pb-28 sm:px-5 sm:py-10 md:px-16 md:py-16 flex flex-col justify-center">
         <div class="max-w-xl w-full mx-auto">
 
           <!-- The waybill card, with duplicate/triplicate sheets peeking behind -->
