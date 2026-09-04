@@ -295,7 +295,8 @@ onMounted(() => {
   const wsUrl = config.public.apiBase.replace(/\/v1\/?$/, '').replace(/\/api\/?$/, '');
   socket = io(`${wsUrl}/negotiation`, {
     withCredentials: true,
-    transports: ['websocket'],
+    transports: ['polling'],
+    reconnection: true
   });
 
   socket.on('connect', () => {
