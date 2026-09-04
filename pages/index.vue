@@ -1,7 +1,8 @@
 <template>
-  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
+  <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth pb-24">
   <CoreExamPromoBanner />
   <BatchDeliveryBanner />
+  <MarketPoolBanner />
  
  <!-- Birthday Banner -->
  <div v-if="isBirthday" class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] text-white py-3 px-4 text-center shadow-sm border border-gray-100 relative z-[51]">
@@ -34,13 +35,8 @@
       <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70 z-0 pointer-events-none"></div>
 
       <div class="max-w-7xl mx-auto sm:px-4  relative text-center" :class="showSuggestions ? 'z-[9999]' : 'z-10'">
-        <div class="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
+        <div class="max-w-3xl mx-auto space-y-6">
           
-          <!-- Market Pool Embedded Banner -->
-          <div class="w-full relative z-50 mb-4 animate-fade-in-up">
-            <MarketPoolBanner />
-          </div>
-
           <!-- Badge -->
           <NuxtLink to="/vendors" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/5 border border-parentPrimary/10 text-parentPrimary text-sm font-medium -[0.2em] hover:bg-parentPrimary/10 transition-colors">
             <Zap class="w-3.5 h-3.5 fill-current" /> Campus Services & Delivery, Redefined
