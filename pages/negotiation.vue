@@ -292,7 +292,7 @@ onMounted(() => {
   }, 5000);
 
   // Connect to negotiation namespace
-  const wsUrl = config.public.apiBase.replace('/v1', '').replace('/api', '');
+  const wsUrl = config.public.apiBase.replace(/\/v1\/?$/, '').replace(/\/api\/?$/, '');
   socket = io(`${wsUrl}/negotiation`, {
     withCredentials: true,
     transports: ['websocket'],
