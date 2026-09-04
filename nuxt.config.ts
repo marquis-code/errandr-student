@@ -94,6 +94,7 @@ export default defineNuxtConfig({
     "@nuxtjs/sitemap",
     "@nuxtjs/seo",
     "@vite-pwa/nuxt",
+    "@pinia/nuxt",
   ],
 
   pwa: {
