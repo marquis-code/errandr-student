@@ -69,15 +69,65 @@
         </div>
 
         <!-- Delivery Details -->
-        <div class="p-4 bg-gray-50/50 border-t border-gray-100 text-xs text-gray-600 flex justify-between items-end">
-          <div>
-            <p><span class="font-medium">Delivery Slot:</span> {{ order.deliverySlot === 'morning' ? 'Morning (8am-12pm)' : 'Afternoon (1pm-5pm)' }}</p>
+        <div class="p-4 bg-gray-50/50 border-t border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-end gap-3">
+          <div class="text-xs text-gray-600">
+            <p><span class="font-medium">Delivery Slot:</span> {{ order.deliverySlot }}</p>
             <p v-if="order.proxyName"><span class="font-medium">Receiver:</span> {{ order.proxyName }} ({{ order.proxyPhone }})</p>
             <p v-else><span class="font-medium">Receiver:</span> You</p>
+            <p class="text-[10px] text-gray-400 mt-1">{{ new Date(order.createdAt).toLocaleDateString() }}</p>
           </div>
-          <span class="text-[10px] text-gray-400">{{ new Date(order.createdAt).toLocaleDateString() }}</span>
+          <button 
+            v-if="['pending_payment', 'paid', 'procuring', 'repackaging'].includes(order.status)"
+            @click="openEditModal(order)" 
+            class="text-xs font-bold text-primary hover:underline"
+          >
+            Edit Preferences
+          </button>
         </div>
 
+      </div>
+    </div>
+
+    <!-- Edit Preferences Modal -->
+    <div v-if="showEditModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <h3 class="font-bold text-lg text-gray-900 mb-4">Edit Delivery Preference</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Delivery Time Slot</label>
+            <div class="space-y-2">
+              <label v-for="(slot, idx) in availableSlots" :key="idx" class="flex items-center gap-3 p-3 border rounded-xl cursor-pointer" :class="editForm.deliverySlot === slot ? 'border-primary bg-primary/5' : 'border-gray-200 hover:bg-gray-50'">
+                <input type="radio" v-model="editForm.deliverySlot" :value="slot" class="text-primary focus:ring-primary">
+                <span class="text-sm font-medium text-gray-900">{{ slot }}</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="pt-2">
+            <label class="flex items-center gap-2 mb-3 cursor-pointer">
+              <input type="checkbox" v-model="editForm.useProxy" class="rounded text-primary focus:ring-primary w-4 h-4">
+              <span class="text-sm font-semibold text-gray-700">Someone else will receive this (Proxy)</span>
+            </label>
+            
+            <div v-if="editForm.useProxy" class="space-y-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Receiver Name</label>
+                <input v-model="editForm.proxyName" type="text" placeholder="e.g. John Doe" class="w-full bg-white border-gray-200 text-gray-900 rounded-lg focus:ring-primary px-3 py-2 border outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">Receiver Phone</label>
+                <input v-model="editForm.proxyPhone" type="tel" placeholder="080..." class="w-full bg-white border-gray-200 text-gray-900 rounded-lg focus:ring-primary px-3 py-2 border outline-none text-sm">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 mt-6">
+          <button @click="showEditModal = false" class="px-4 py-2 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg">Cancel</button>
+          <button @click="submitEditPreference" :disabled="saving" class="px-5 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50">
+            {{ saving ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -98,11 +148,59 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
+import { useCustomToast } from '@/composables/core/useCustomToast'
 
+const { showToast } = useCustomToast()
 const orders = ref([])
 const loading = ref(true)
+const marketConfig = ref(null)
+
+const availableSlots = computed(() => {
+  return marketConfig.value?.slots || ['Morning (8am - 12pm)', 'Afternoon (1pm - 5pm)']
+})
+
+const showEditModal = ref(false)
+const saving = ref(false)
+const activeOrder = ref(null)
+const editForm = ref({
+  deliverySlot: '',
+  useProxy: false,
+  proxyName: '',
+  proxyPhone: ''
+})
+
+const openEditModal = (order) => {
+  activeOrder.value = order
+  editForm.value = {
+    deliverySlot: order.deliverySlot,
+    useProxy: !!order.proxyName,
+    proxyName: order.proxyName || '',
+    proxyPhone: order.proxyPhone || ''
+  }
+  showEditModal.value = true
+}
+
+const submitEditPreference = async () => {
+  if (!activeOrder.value) return
+  try {
+    saving.value = true
+    const payload = {
+      deliverySlot: editForm.value.deliverySlot,
+      proxyName: editForm.value.useProxy ? editForm.value.proxyName : '',
+      proxyPhone: editForm.value.useProxy ? editForm.value.proxyPhone : ''
+    }
+    await api.put(`/market-pool/orders/${activeOrder.value._id}/delivery-details`, payload)
+    showToast({ title: 'Success', message: 'Delivery preference updated', toastType: 'success' })
+    showEditModal.value = false
+    await fetchOrders()
+  } catch (err) {
+    showToast({ title: 'Error', message: err.response?.data?.message || 'Update failed', toastType: 'error' })
+  } finally {
+    saving.value = false
+  }
+}
 
 const milestones = [
   { value: 'paid', label: 'Paid' },
@@ -136,7 +234,17 @@ const fetchOrders = async () => {
   }
 }
 
+const fetchConfig = async () => {
+  try {
+    const res = await api.get('/settings/market-pool/config')
+    marketConfig.value = res.data
+  } catch (error) {
+    console.error('Failed to load config', error)
+  }
+}
+
 onMounted(() => {
+  fetchConfig()
   fetchOrders()
 })
 </script>

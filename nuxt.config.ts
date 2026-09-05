@@ -63,7 +63,7 @@ export default defineNuxtConfig({
         { name: "description", content: 'Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.' },
         { name: "keywords", content: 'Student delivery, campus food delivery, Errander, food ordering, university delivery' },
         { name: "author", content: "Errander" },
-        { property: "og:title", content: "Errander — Student Portal" },
+        { property: "og:title", content: "Errander" },
         { property: "og:description", content: "Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel." },
         { property: "og:type", content: "website" },
       ],

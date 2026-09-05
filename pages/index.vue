@@ -908,12 +908,12 @@ const heroHeadings = [
 const slangSlogans = [
   "Sapa is real, but hunger is realer. 💸",
   "No leave, no transfer—just chop. 🍽️",
-  "Awoof dey run belle, but Errandr dey save life. 🏃‍♂️",
+  "Awoof dey run belle, but Errander dey save life. 🏃‍♂️",
   "Body go tell you if you no chop. 💪",
   "E choke! Best meals and services on campus. 🔥",
   "Who no chop, no fit read. 📚",
-  "Fresh cut? Beautiful nails? Errandr got you. 💅",
-  "Ẹ̀wà mà jẹ́ kó dùn. Errandr got you. 🫡",
+  "Fresh cut? Beautiful nails? Errander got you. 💅",
+  "Ẹ̀wà mà jẹ́ kó dùn. Errander got you. 🫡",
   "Nwanne, order nri gị ugbu a! 🍛",
   "Abinci mai kyau — cikin dakika! ⚡",
   "Level up your food and lifestyle game. No capping. 🧢"

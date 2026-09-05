@@ -52,12 +52,12 @@
             <span class="font-medium text-gray-900">₦{{ marketStore.cartTotal.toLocaleString() }}</span>
           </div>
           <div class="flex justify-between text-sm">
-            <span class="text-gray-500">Delivery Fee (Flat Rate)</span>
-            <span class="font-medium text-gray-900">₦500</span>
+            <span class="text-gray-500">Delivery Fee</span>
+            <span class="font-medium text-gray-900">₦{{ deliveryFee.toLocaleString() }}</span>
           </div>
           <div class="pt-3 border-t border-gray-100 flex justify-between">
             <span class="font-bold text-gray-900">Total to Pay</span>
-            <span class="font-bold text-primary text-lg">₦{{ (marketStore.cartTotal + 500).toLocaleString() }}</span>
+            <span class="font-bold text-primary text-lg">₦{{ (marketStore.cartTotal + deliveryFee).toLocaleString() }}</span>
           </div>
         </div>
       </div>
@@ -69,19 +69,12 @@
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Select Saturday Time Slot</label>
-            <div class="grid grid-cols-2 gap-3">
-              <label class="flex items-center justify-between p-3 border rounded-xl cursor-pointer transition-colors" :class="deliveryDetails.deliverySlot === 'morning' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:bg-gray-50'">
-                <span class="text-sm font-medium text-gray-900">Morning (8am - 12pm)</span>
-                <input type="radio" v-model="deliveryDetails.deliverySlot" value="morning" class="text-primary focus:ring-primary hidden">
-                <div class="w-4 h-4 rounded-full border flex items-center justify-center" :class="deliveryDetails.deliverySlot === 'morning' ? 'border-primary' : 'border-gray-300'">
-                  <div v-if="deliveryDetails.deliverySlot === 'morning'" class="w-2 h-2 rounded-full bg-primary"></div>
-                </div>
-              </label>
-              <label class="flex items-center justify-between p-3 border rounded-xl cursor-pointer transition-colors" :class="deliveryDetails.deliverySlot === 'afternoon' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:bg-gray-50'">
-                <span class="text-sm font-medium text-gray-900">Afternoon (1pm - 5pm)</span>
-                <input type="radio" v-model="deliveryDetails.deliverySlot" value="afternoon" class="text-primary focus:ring-primary hidden">
-                <div class="w-4 h-4 rounded-full border flex items-center justify-center" :class="deliveryDetails.deliverySlot === 'afternoon' ? 'border-primary' : 'border-gray-300'">
-                  <div v-if="deliveryDetails.deliverySlot === 'afternoon'" class="w-2 h-2 rounded-full bg-primary"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <label v-for="(slot, idx) in availableSlots" :key="idx" class="flex items-center justify-between p-3 border rounded-xl cursor-pointer transition-colors" :class="deliveryDetails.deliverySlot === slot ? 'border-primary bg-primary/5' : 'border-gray-200 hover:bg-gray-50'">
+                <span class="text-sm font-medium text-gray-900">{{ slot }}</span>
+                <input type="radio" v-model="deliveryDetails.deliverySlot" :value="slot" class="text-primary focus:ring-primary hidden">
+                <div class="w-4 h-4 rounded-full border flex items-center justify-center shrink-0" :class="deliveryDetails.deliverySlot === slot ? 'border-primary' : 'border-gray-300'">
+                  <div v-if="deliveryDetails.deliverySlot === slot" class="w-2 h-2 rounded-full bg-primary"></div>
                 </div>
               </label>
             </div>
@@ -138,20 +131,47 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMarketPoolStore } from '~/stores/marketPool'
 import { useCustomToast } from '@/composables/core/useCustomToast'
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
 
 const router = useRouter()
 const marketStore = useMarketPoolStore()
 const { showToast } = useCustomToast()
 const loading = ref(false)
 const useProxy = ref(false)
+const marketConfig = ref(null)
+
 const deliveryDetails = ref({
-  deliverySlot: 'morning',
+  deliverySlot: '',
   proxyName: '',
   proxyPhone: ''
+})
+
+const availableSlots = computed(() => {
+  return marketConfig.value?.slots || ['Morning (8am - 12pm)', 'Afternoon (1pm - 5pm)']
+})
+
+const deliveryFee = computed(() => {
+  if (!marketConfig.value) return 500
+  if (marketConfig.value.feeType === 'percentage') {
+    return Math.round((marketStore.cartTotal * marketConfig.value.feeValue) / 100)
+  }
+  return marketConfig.value.feeValue
+})
+
+onMounted(async () => {
+  try {
+    const res = await api.get('/settings/market-pool/config')
+    marketConfig.value = res.data
+    if (availableSlots.value.length > 0) {
+      deliveryDetails.value.deliverySlot = availableSlots.value[0]
+    }
+  } catch (error) {
+    console.error('Failed to load market config', error)
+  }
 })
 
 const processCheckout = async () => {
