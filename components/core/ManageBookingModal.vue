@@ -228,6 +228,7 @@ import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessu
 import { X as XIcon, Info as InfoIcon, Loader2, Calendar as CalendarIcon, Clock as ClockIcon } from 'lucide-vue-next';
 import { appointments_api } from '@/api_factory/modules/appointments';
 import { useCustomToast } from '@/composables/core/useCustomToast';
+import { useConfirmModal } from '@/composables/core/useConfirmModal';
 
 const props = defineProps({
   isOpen: {
@@ -239,6 +240,7 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const { showToast } = useCustomToast();
+const { confirm } = useConfirmModal();
 
 const form = ref({
   reference: '',
@@ -271,7 +273,13 @@ const handleTrackBooking = async () => {
 };
 
 const handleCancel = async () => {
-  if (!confirm('Are you sure you want to cancel this appointment? This action cannot be undone.')) return;
+  const isConfirmed = await confirm({
+    title: 'Cancel Appointment',
+    message: 'Are you sure you want to cancel this appointment? This action cannot be undone.',
+    variant: 'danger',
+    confirmText: 'Yes, Cancel'
+  });
+  if (!isConfirmed) return;
   
   cancelling.value = true;
   try {

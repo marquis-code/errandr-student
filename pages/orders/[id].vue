@@ -771,6 +771,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { orders_api } from '@/api_factory/modules/orders';
 import OrderChat from '@/components/core/OrderChat.vue';
 import UiModal from '@/components/ui/UiModal.vue';
+import { useCustomToast } from '@/composables/core/useCustomToast';
+import { useConfirmModal } from '@/composables/core/useConfirmModal';
 import { useUser } from '@/composables/modules/auth/user';
 import { usePayments } from '@/composables/modules/payments';
 import { Loader2 } from 'lucide-vue-next';
@@ -862,8 +864,13 @@ const payForOrder = async () => {
 
 const handleMarkAsPaid = async () => {
   if (!order.value?._id) return;
-  const confirmed = confirm('Are you sure you have transferred the money to the errander?');
-  if (!confirmed) return;
+  const isConfirmed = await confirm({
+    title: 'Confirm Payment Transfer',
+    message: 'Are you sure you have transferred the money to the errander?',
+    variant: 'warning',
+    confirmText: 'Yes, I transferred'
+  });
+  if (!isConfirmed) return;
 
   processingPayment.value = true;
   try {

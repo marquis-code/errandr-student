@@ -274,6 +274,8 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const { showToast } = useCustomToast();
+import { useConfirmModal } from '@/composables/core/useConfirmModal';
+const { confirm } = useConfirmModal();
 
 const form = ref({
   orderNumber: '',
@@ -351,7 +353,13 @@ const handleTrackOrder = async () => {
 };
 
 const handleCancel = async () => {
-  if (!confirm('Are you sure you want to cancel this order? This action cannot be undone.')) return;
+  const isConfirmed = await confirm({
+    title: 'Cancel Order',
+    message: 'Are you sure you want to cancel this order? This action cannot be undone.',
+    variant: 'danger',
+    confirmText: 'Yes, Cancel'
+  });
+  if (!isConfirmed) return;
   
   cancelling.value = true;
   try {

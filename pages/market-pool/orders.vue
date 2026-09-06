@@ -1,8 +1,8 @@
 <template>
   <div class="bg-gray-50 min-h-screen pb-24">
     <!-- Header -->
-    <div class="bg-primary px-4 pt-12 pb-6 rounded-b-3xl shadow-sm text-white sticky top-0 z-50">
-      <div class="flex items-center gap-3">
+    <div class="bg-primary px-4 pt-12 pb-6 shadow-sm text-white sticky top-0 z-50">
+      <div class="max-w-4xl mx-auto flex items-center gap-3">
         <button @click="$router.back()" class="p-2 hover:bg-white/20 rounded-full transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -11,6 +11,8 @@
         <h1 class="text-xl font-bold">My Pool Orders</h1>
       </div>
     </div>
+
+    <div class="max-w-4xl mx-auto w-full">
 
     <!-- Loading State -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-20 gap-3">
@@ -88,6 +90,22 @@
       </div>
     </div>
 
+    <!-- Empty State -->
+    <div v-else class="p-8 flex flex-col items-center justify-center text-center space-y-3 mt-10 bg-white mx-4 rounded-3xl shadow-sm border border-gray-100 py-16">
+      <div class="w-20 h-20 bg-[#FF5C1A]/10 rounded-full flex items-center justify-center mb-2">
+        <svg class="w-10 h-10 text-[#FF5C1A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+      </div>
+      <h3 class="font-black text-gray-900 text-2xl tracking-tight">No Pool Orders</h3>
+      <p class="text-sm font-medium text-gray-500 mb-6 max-w-sm">You haven't participated in any market pool campaigns yet. Buy in bulk and save up to 40%!</p>
+      <button @click="$router.push('/market-pool')" class="bg-gradient-to-r from-[#FF5C1A] to-[#E54D12] text-white font-extrabold px-8 py-3 rounded-xl shadow-lg shadow-orange-500/30 hover:scale-105 transition-all">
+        Explore Market Pool
+      </button>
+    </div>
+    
+    </div>
+
     <!-- Edit Preferences Modal -->
     <div v-if="showEditModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
@@ -129,20 +147,6 @@
           </button>
         </div>
       </div>
-    </div>
-
-    <!-- Empty State -->
-    <div v-else class="p-8 flex flex-col items-center justify-center text-center space-y-3 mt-10">
-      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-2">
-        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-        </svg>
-      </div>
-      <h3 class="font-bold text-gray-900 text-lg">No Orders Yet</h3>
-      <p class="text-sm text-gray-500 mb-4">You haven't participated in any market pool campaigns yet.</p>
-      <button @click="$router.push('/market-pool')" class="bg-primary/10 text-primary font-bold px-6 py-2 rounded-lg">
-        Explore Market Pool
-      </button>
     </div>
   </div>
 </template>

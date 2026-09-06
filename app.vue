@@ -2,6 +2,7 @@
   <div>
     <VitePwaManifest />
     <UiToast />
+    <CoreGlobalConfirmModal />
     <CoreNetworkStatusBanner />
     <UiGlobalLoader />
     <NuxtLayout class="z-10">
@@ -42,14 +43,17 @@ import { useUser } from '@/composables/modules/auth/user'
 import { useWebRTC } from '@/composables/useWebRTC'
 
 import { useAuth } from '@/composables/modules/auth'
+import { useMarketPoolStore } from '@/stores/marketPool'
 
 const { initCart } = useCart()
+const marketPoolStore = useMarketPoolStore()
 const { isLoggedIn } = useUser()
 const { requestPermissionAndRegister, listenForNotifications } = useStudentNotifications()
 const { initSocketListeners } = useWebRTC()
 const { checkRedirectResult } = useAuth()
 
 initCart()
+marketPoolStore.initCart()
 useRealtimeNotifications()
 
 onMounted(() => {
