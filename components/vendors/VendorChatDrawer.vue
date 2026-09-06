@@ -17,7 +17,8 @@
         <div class="flex-1 min-w-0">
           <h3 class="text-base font-bold truncate leading-tight">{{ vendorName }}</h3>
           <p class="text-[11px] text-white/70 font-medium truncate">
-            <span v-if="isTyping" class="text-emerald-300 italic">typing...</span>
+            <span v-if="serviceName" class="text-emerald-100">Enquiry: {{ serviceName }}</span>
+            <span v-else-if="isTyping" class="text-emerald-300 italic">typing...</span>
             <span v-else>Vendor • Tap here for info</span>
           </p>
         </div>
@@ -107,6 +108,8 @@ const props = defineProps<{
   vendorName: string;
   vendorAvatar?: string;
   prefillMessage?: string;
+  serviceId?: string;
+  serviceName?: string;
 }>();
 
 const emit = defineEmits(['close']);
@@ -120,7 +123,7 @@ const loading = ref(false);
 const inputRef = ref<HTMLTextAreaElement | null>(null);
 const messagesContainer = ref<HTMLElement | null>(null);
 
-let chatTracker: ReturnType<typeof useDirectChat> | null = null;
+let chatTracker: any = null;
 const messages = ref<any[]>([]);
 const isTyping = ref(false);
 
@@ -161,16 +164,6 @@ const submitMessage = async () => {
   sending.value = true;
 
   const text = newMessage.value.trim();
-  
-  // Optimistic push
-  messages.value.push({
-    _id: Date.now().toString(),
-    senderId: currentUserId.value,
-    receiverId: props.vendorOwnerId,
-    message: text,
-    content: text,
-    createdAt: new Date().toISOString()
-  });
 
   chatTracker.sendMessage(text);
   newMessage.value = '';
@@ -187,7 +180,7 @@ const initChat = async () => {
   if (!currentUserId.value || !props.vendorOwnerId) return;
   
   loading.value = true;
-  chatTracker = useDirectChat(currentUserId.value, props.vendorOwnerId);
+  chatTracker = useDirectChat(currentUserId.value, props.vendorOwnerId, props.serviceId);
   chatTracker.setupListeners();
   
   await chatTracker.fetchMessages();
@@ -197,6 +190,7 @@ const initChat = async () => {
   // Prefill if provided
   if (props.prefillMessage) {
     newMessage.value = props.prefillMessage;
+    adjustHeight();
   }
 
   scrollToBottom();

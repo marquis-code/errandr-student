@@ -415,6 +415,10 @@ const reviewOrder = ref<any>(null)
 // Mode toggle: 'errands' or 'services'
 const mode = ref<'errands' | 'services'>('errands')
 
+const setMode = (newMode: 'errands' | 'services') => {
+  mode.value = newMode
+}
+
 // `code` is a short manifest-style tag rendered on the right of each nav
 // row (visual only, mirrors the courier/dispatch waybill language used
 // elsewhere in the app) — it does not affect routing or active-state logic.

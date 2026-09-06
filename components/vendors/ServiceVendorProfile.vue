@@ -24,10 +24,10 @@
           <ArrowLeft class="w-4.5 h-4.5 text-white" />
         </button>
         <div class="flex items-center gap-2.5">
-          <button @click="scrollToDetails" title="Store details" aria-label="Store details" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors border border-white/15 active:scale-90">
+          <button @click="showDetailsDrawer = true" title="Store details" aria-label="Store details" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors border border-white/15 active:scale-90">
             <Info class="w-4.5 h-4.5 text-white" />
           </button>
-          <button @click="handleShare" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors border border-white/15 active:scale-90">
+          <button @click="showShareModal = true" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors border border-white/15 active:scale-90">
             <Share2 class="w-4.5 h-4.5 text-white" />
           </button>
           <button @click="handleToggleFavorite" :disabled="togglingFavorite" class="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center transition-all border border-white/15 active:scale-90" :class="isFavorited ? 'bg-rose-500 hover:bg-rose-600' : 'bg-white/10 hover:bg-white/20'">
@@ -37,7 +37,7 @@
       </div>
 
       <!-- Store Identity -->
-      <div class="absolute bottom-0 inset-x-0 p-4 md:p-5 max-w-7xl mx-auto animate-hero-in">
+      <div class="absolute bottom-0 inset-x-0 p-4 md:p-5 max-w-7xl mx-auto animate-hero-in z-20">
         <div class="flex items-center gap-2 mb-3">
           <span class="w-1.5 h-1.5 rounded-full" :class="vendor.isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'"></span>
           <span class="text-[11px] font-bold uppercase tracking-[0.14em]" :class="vendor.isOnline ? 'text-emerald-300' : 'text-rose-300'">
@@ -208,10 +208,18 @@
                 <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
                   <Clock class="w-4 h-4 text-emerald-500" />
                 </div>
-                <div>
+                <div class="w-full">
                   <h4 class="text-[10px] font-bold text-[#9A9284] uppercase tracking-wider mb-0.5">Availability</h4>
-                  <p v-if="vendor.isOnline" class="text-xs font-bold text-emerald-600">Currently open</p>
-                  <p v-else class="text-xs font-bold text-rose-600">Closed right now</p>
+                  <p v-if="vendor.isOnline" class="text-xs font-bold text-emerald-600 mb-3">Currently open</p>
+                  <p v-else class="text-xs font-bold text-rose-600 mb-3">Closed right now</p>
+
+                  <div v-if="vendor.businessHours && vendor.businessHours.length > 0" class="mt-2 space-y-2 border-t border-[#ECE6DC] pt-3 pr-2">
+                    <div v-for="day in vendor.businessHours" :key="day.day" class="flex justify-between items-center text-xs">
+                      <span class="text-[#3A352E] capitalize font-medium">{{ day.day.slice(0,3) }}</span>
+                      <span v-if="day.isClosed" class="text-rose-500 font-bold">Closed</span>
+                      <span v-else class="text-[#6B6558] font-mono tabular-nums">{{ day.open || '09:00' }} - {{ day.close || '17:00' }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -304,8 +312,74 @@
       :vendorName="vendor.storeName || vendor.businessName || 'Vendor'"
       :vendorAvatar="vendor.profilePicture || vendor.logo || ''"
       :prefillMessage="chatPrefill"
+      :serviceId="chatServiceId"
+      :serviceName="chatServiceName"
       @close="isChatDrawerOpen = false"
     />
+    
+    <!-- Share Modal -->
+    <ShareModal 
+      :isOpen="showShareModal"
+      @update:isOpen="showShareModal = $event"
+      :vendor="vendor" 
+    />
+    
+    <!-- Store Details Drawer (Mobile view for Info) -->
+    <UiSideDrawer :isOpen="showDetailsDrawer" @close="showDetailsDrawer = false">
+      <div class="p-2 space-y-6">
+        <h2 class="text-xl font-bold text-[#14110F]">Store Details</h2>
+        
+        <div v-if="vendor.description">
+          <h4 class="text-[10px] font-bold text-[#9A9284] uppercase tracking-wider mb-2">About us</h4>
+          <p class="text-sm text-[#3A352E] leading-relaxed">{{ vendor.description }}</p>
+        </div>
+
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+            <Clock class="w-4 h-4 text-emerald-500" />
+          </div>
+          <div class="w-full">
+            <h4 class="text-[10px] font-bold text-[#9A9284] uppercase tracking-wider mb-0.5">Availability</h4>
+            <p v-if="vendor.isOnline" class="text-xs font-bold text-emerald-600 mb-3">Currently open</p>
+            <p v-else class="text-xs font-bold text-rose-600 mb-3">Closed right now</p>
+            
+            <div v-if="vendor.businessHours && vendor.businessHours.length > 0" class="mt-2 space-y-2 border-t border-[#ECE6DC] pt-3">
+              <div v-for="day in vendor.businessHours" :key="day.day" class="flex justify-between items-center text-xs">
+                <span class="text-[#3A352E] capitalize font-medium">{{ day.day.slice(0,3) }}</span>
+                <span v-if="day.isClosed" class="text-rose-500 font-bold">Closed</span>
+                <span v-else class="text-[#6B6558] font-mono tabular-nums">{{ day.open || '09:00' }} - {{ day.close || '17:00' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3" v-if="vendor.address">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+            <MapPin class="w-4 h-4 text-blue-500" />
+          </div>
+          <div>
+            <h4 class="text-[10px] font-bold text-[#9A9284] uppercase tracking-wider mb-0.5">Location</h4>
+            <p class="text-xs font-bold text-[#14110F] leading-relaxed">{{ vendor.address }}</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3" v-if="vendor.serviceLocation">
+          <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
+            <Navigation class="w-4 h-4 text-purple-500" />
+          </div>
+          <div>
+            <h4 class="text-[10px] font-bold text-[#9A9284] uppercase tracking-wider mb-0.5">Service type</h4>
+            <p class="text-xs font-bold text-[#14110F] capitalize">
+              {{ vendor.serviceLocation === 'mobile_operator' ? 'Mobile \u2013 comes to you' : vendor.serviceLocation.replace(/_/g, ' ') }}
+            </p>
+          </div>
+        </div>
+        
+        <div class="pt-6 border-t border-[#ECE6DC]">
+          <p class="text-xs text-center text-[#9A9284] font-medium">Joined Errandr {{ memberSince }}</p>
+        </div>
+      </div>
+    </UiSideDrawer>
   </div>
 </template>
 
@@ -315,9 +389,12 @@ import { ArrowLeft, Share2, Heart, Star, Clock, MapPin, Sparkles, Navigation, Li
 import { services_api } from '@/api_factory/modules/services';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { useFavorites } from '@/composables/modules/favorites';
+import { useToast } from '@/composables/useToast';
 import BookingFlow from '@/components/vendors/booking/BookingFlow.vue';
 import VendorReviewsModal from '@/components/vendors/VendorReviewsModal.vue';
 import VendorChatDrawer from '@/components/vendors/VendorChatDrawer.vue';
+import ShareModal from '@/components/ui/ShareModal.vue';
+import UiSideDrawer from '@/components/ui/SideDrawer.vue';
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
@@ -326,19 +403,17 @@ const props = defineProps<{
 }>();
 
 const { toggleFavorite, isVendorFavorited, fetchFavorites, favoriteVendorIds } = useFavorites();
+const { showToast } = useToast();
 
 const vendorServices = ref<any[]>([]);
 const activeCategory = ref('Featured');
 const isBookingFlowOpen = ref(false);
 const showReviewsModal = ref(false);
+const showShareModal = ref(false);
+const showDetailsDrawer = ref(false);
 const selectedServiceForBooking = ref<any>(null);
 const togglingFavorite = ref(false);
-const linkCopied = ref(false);
 const aboutSectionRef = ref<HTMLElement | null>(null);
-
-const scrollToDetails = () => {
-  aboutSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
 
 const isFavorited = computed(() => isVendorFavorited(props.vendor._id));
 
@@ -371,69 +446,15 @@ const fetchVendorDetails = async () => {
   }
 };
 
-// --- Share URLs ---
-const shareUrl = computed(() => {
-  const protocol = window.location.protocol;
-  const host = window.location.host;
-  if (props.vendor.subdomain) {
-    // If we're already on the vendor's subdomain, just use the current origin
-    if (host.startsWith(props.vendor.subdomain + '.')) {
-      return `${protocol}//${host}`;
-    }
-    // Build subdomain-based URL
-    const parts = host.split('.');
-    let baseHost = host;
-    if (parts.length >= 2) {
-      // Remove any existing subdomain prefix (student., vendor., admin., etc.)
-      const knownPrefixes = ['student', 'vendor', 'admin', 'www'];
-      if (knownPrefixes.includes(parts[0])) {
-        baseHost = parts.slice(1).join('.');
-      }
-    }
-    return `${protocol}//${props.vendor.subdomain}.${baseHost}`;
-  }
-  return `${protocol}//${host}/vendors/${props.vendor._id}`;
-});
-
-const shareText = computed(() => `Check out ${props.vendor.storeName} on Errandr! ${props.vendor.description ? props.vendor.description.slice(0, 80) : ''}`);
-
-const whatsappShareUrl = computed(() => `https://wa.me/?text=${encodeURIComponent(shareText.value + ' ' + shareUrl.value)}`);
-const twitterShareUrl = computed(() => `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText.value)}&url=${encodeURIComponent(shareUrl.value)}`);
-const facebookShareUrl = computed(() => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl.value)}`);
-
-const handleShare = async () => {
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: props.vendor.storeName,
-        text: shareText.value,
-        url: shareUrl.value,
-      });
-    } catch (e: any) {
-      if (e.name !== 'AbortError') {
-        console.error('Share failed:', e);
-      }
-    }
-  } else {
-    // Fallback: copy to clipboard
-    await copyShareLink();
-  }
-};
-
-const copyShareLink = async () => {
-  try {
-    await navigator.clipboard.writeText(shareUrl.value);
-    linkCopied.value = true;
-    setTimeout(() => { linkCopied.value = false; }, 2000);
-  } catch (e) {
-    console.error('Clipboard copy failed:', e);
-  }
-};
-
 const handleToggleFavorite = async () => {
   togglingFavorite.value = true;
   try {
     await toggleFavorite({ vendorId: props.vendor._id });
+    if (isFavorited.value) {
+      showToast('Added to favorites', 'success');
+    } else {
+      showToast('Removed from favorites', 'info');
+    }
   } finally {
     togglingFavorite.value = false;
   }
@@ -456,9 +477,13 @@ const router = useRouter();
 
 const isChatDrawerOpen = ref(false);
 const chatPrefill = ref('');
+const chatServiceId = ref('');
+const chatServiceName = ref('');
 
 const messageVendor = (service: any) => {
   chatPrefill.value = `Hi, I have a question about the service: ${service.name}.`;
+  chatServiceId.value = service._id;
+  chatServiceName.value = service.name;
   isChatDrawerOpen.value = true;
 };
 
@@ -468,7 +493,6 @@ const openBookingFlow = (service: any = null) => {
 };
 
 onMounted(async () => {
-  // Load favorites so we know if this vendor is already favorited
   fetchFavorites();
 
   try {

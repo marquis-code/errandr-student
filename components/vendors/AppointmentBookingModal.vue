@@ -96,11 +96,14 @@ const submitBooking = async () => {
 
     const payload = {
       vendor: props.vendorId,
-      service: props.service._id,
+      items: [{
+        service: props.service._id,
+        price: props.service.price,
+        durationInMinutes: props.service.durationInMinutes || 30
+      }],
       scheduledDate: bookingForm.value.scheduledDate,
       startTime: bookingForm.value.startTime,
       endTime,
-      price: props.service.price,
       notes: bookingForm.value.notes
     };
 

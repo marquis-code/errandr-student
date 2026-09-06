@@ -19,20 +19,21 @@ interface Message {
   createdAt: string;
 }
 
-export const useDirectChat = (currentUserId: string, targetUserId: string) => {
+export const useDirectChat = (currentUserId: string, targetUserId: string, serviceId?: string) => {
   const { connect, emit, on, off } = useSocket('chat');
   const messages = ref<Message[]>([]);
   const loading = ref(false);
   const isTyping = ref(false);
   const typingTimeout = ref<any>(null);
 
-  // Use a predictable room ID between these two users
-  const roomId = [currentUserId, targetUserId].sort().join('_');
+  // Use a predictable room ID between these two users and the service
+  const roomId = `${[currentUserId, targetUserId].sort().join('_')}_${serviceId || 'general'}`;
 
   const fetchMessages = async () => {
     loading.value = true;
     try {
-      const res = await api.get(`/chat/direct/${targetUserId}`);
+      const url = serviceId ? `/chat/direct/${targetUserId}?serviceId=${serviceId}` : `/chat/direct/${targetUserId}`;
+      const res = await api.get(url);
       messages.value = Array.isArray(res.data) ? res.data.map((m: any) => ({
         ...m,
         senderId: m.senderId || m.sender?._id || m.sender,
@@ -53,7 +54,8 @@ export const useDirectChat = (currentUserId: string, targetUserId: string) => {
       receiverId: targetUserId,
       message: text,
       messageType: type,
-      attachment
+      attachment,
+      serviceId
     });
   };
 
@@ -97,9 +99,13 @@ export const useDirectChat = (currentUserId: string, targetUserId: string) => {
       const rId = String(message.receiverId || message.receiver?._id || message.receiver || '');
       const cId = String(currentUserId);
       const tId = String(targetUserId);
-      const isRelevant = (sId === cId && rId === tId) || (sId === tId && rId === cId);
+      const isRelevantUser = (sId === cId && rId === tId) || (sId === tId && rId === cId);
       
-      if (isRelevant) {
+      const msgServiceId = String(message.serviceId || message.service?._id || message.service || '');
+      const currentServiceIdStr = String(serviceId || '');
+      const isRelevantService = msgServiceId === currentServiceIdStr;
+
+      if (isRelevantUser && isRelevantService) {
         if (!message._id || !messages.value.some(m => m._id === message._id)) {
           messages.value.push(message);
         }

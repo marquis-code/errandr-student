@@ -180,8 +180,15 @@
                             : 'bg-white border-gray-200 text-gray-900 hover:border-gray-300')
                     ]"
                   >
-                    {{ time }}
-                    <span v-if="isTimeBooked(time) && selectedTime === time" class="block text-[10px] mt-0.5">Waitlist</span>
+                    <div class="flex items-center justify-between w-full">
+                      <div>
+                        {{ time }}
+                        <span v-if="isTimeBooked(time) && selectedTime === time" class="block text-[10px] mt-0.5">Waitlist</span>
+                      </div>
+                      <span class="text-[9px] px-2 py-1 rounded-full font-bold uppercase tracking-wider opacity-90" :class="getTimeTagColor(time, selectedTime === time)">
+                        {{ getTimeTag(time) }}
+                      </span>
+                    </div>
                   </button>
                 </div>
                 <div v-else class="flex flex-col items-center justify-center py-10 px-4 text-center bg-gray-50/50 rounded-[2rem] border border-gray-100/80 border-dashed">
@@ -252,14 +259,83 @@
               </div>
 
               <!-- Payment Method -->
-              <div class="bg-white p-4 rounded-xl border border-gray-100/80">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
-                    <CreditCard class="w-4 h-4 text-green-600" />
+              <div class="bg-white p-4 rounded-xl border border-gray-100/80 space-y-4">
+                <h3 class="font-semibold text-gray-900 text-sm">Payment Method</h3>
+                
+                <div class="flex flex-col gap-3">
+                  <!-- Paystack Option -->
+                  <label class="flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors" :class="paymentMethod === 'paystack' ? 'border-parentPrimary bg-parentPrimary/5' : 'border-gray-100 hover:border-gray-200'">
+                    <input type="radio" v-model="paymentMethod" value="paystack" class="hidden" />
+                    <div class="w-4 h-4 rounded-full border flex items-center justify-center shrink-0" :class="paymentMethod === 'paystack' ? 'border-parentPrimary' : 'border-gray-300'">
+                      <div v-if="paymentMethod === 'paystack'" class="w-2 h-2 rounded-full bg-parentPrimary"></div>
+                    </div>
+                    <div class="flex-1">
+                      <h4 class="text-sm font-semibold text-gray-900">Pay Online (Paystack)</h4>
+                      <p class="text-xs text-gray-500 mt-0.5">Pay securely with your card or bank transfer.</p>
+                    </div>
+                  </label>
+
+                  <!-- Direct Transfer Option -->
+                  <label class="flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors" :class="paymentMethod === 'direct_transfer' ? 'border-parentPrimary bg-parentPrimary/5' : 'border-gray-100 hover:border-gray-200'">
+                    <input type="radio" v-model="paymentMethod" value="direct_transfer" class="hidden" />
+                    <div class="w-4 h-4 rounded-full border flex items-center justify-center shrink-0" :class="paymentMethod === 'direct_transfer' ? 'border-parentPrimary' : 'border-gray-300'">
+                      <div v-if="paymentMethod === 'direct_transfer'" class="w-2 h-2 rounded-full bg-parentPrimary"></div>
+                    </div>
+                    <div class="flex-1">
+                      <h4 class="text-sm font-semibold text-gray-900">Direct Bank Transfer</h4>
+                      <p class="text-xs text-gray-500 mt-0.5">Transfer directly to the vendor's bank account.</p>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Direct Transfer Details -->
+                <div v-if="paymentMethod === 'direct_transfer'" class="mt-4 p-4 bg-gray-50 rounded-xl space-y-4 animate-fade-in border border-gray-100">
+                  <div class="space-y-2">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Vendor Account Details</h4>
+                    <div class="bg-white p-3 rounded-lg border border-gray-100 shadow-sm relative group">
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs text-gray-500">Bank Name</span>
+                        <span class="text-sm font-semibold text-gray-900">{{ vendor.bankDetails?.bankName || vendor.bankName || 'Not specified' }}</span>
+                      </div>
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs text-gray-500">Account Number</span>
+                        <div class="flex items-center gap-2">
+                          <span class="text-sm font-bold text-gray-900">{{ vendor.bankDetails?.accountNumber || vendor.accountNumber || 'Not specified' }}</span>
+                          <button @click="copyAccountDetails" class="text-gray-400 hover:text-parentPrimary transition-colors" title="Copy Account Number">
+                            <Copy class="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div class="flex justify-between items-center">
+                        <span class="text-xs text-gray-500">Account Name</span>
+                        <span class="text-xs font-medium text-gray-900">{{ vendor.bankDetails?.accountName || vendor.accountName || 'Not specified' }}</span>
+                      </div>
+                      
+                      <!-- Share button floating on hover for desktop, or static for mobile -->
+                      <button @click="shareAccountDetails" class="absolute top-3 right-3 text-gray-400 hover:text-parentPrimary transition-colors sm:opacity-0 sm:group-hover:opacity-100" title="Share Account Details">
+                        <Share2 class="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <h3 class="font-semibold text-gray-900 text-xs">Payment via Paystack</h3>
-                    <p class="text-[11px] text-gray-400 mt-0.5">Secure redirect to Paystack checkout.</p>
+                  
+                  <div class="space-y-2">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Upload Payment Receipt</h4>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      @change="handleProofUpload"
+                      class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-parentPrimary/10 file:text-parentPrimary hover:file:bg-parentPrimary/20 cursor-pointer"
+                    />
+                    
+                    <!-- Preview -->
+                    <div v-if="proofOfPaymentPreview" class="mt-3 relative rounded-lg overflow-hidden border border-gray-200 group w-fit">
+                      <img :src="proofOfPaymentPreview" class="w-full max-w-[200px] h-auto object-cover rounded-lg" />
+                      <button @click="clearProof" class="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-black/90 transition-colors opacity-0 group-hover:opacity-100">
+                        <X class="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <p class="text-[10px] text-gray-400">Please upload a screenshot of your successful transfer.</p>
                   </div>
                 </div>
               </div>
@@ -421,7 +497,11 @@
               :class="cart.length && step !== 'confirm' ? 'flex-[1.2]' : 'w-full'"
             >
               <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
-              <template v-else-if="step === 'confirm'">Pay ₦{{ commitmentFee.toLocaleString() }} <ArrowRight class="w-4 h-4" /></template>
+              <template v-else-if="step === 'confirm'">
+                <span v-if="paymentMethod === 'direct_transfer'">Submit Booking</span>
+                <span v-else>Pay ₦{{ commitmentFee.toLocaleString() }}</span> 
+                <ArrowRight class="w-4 h-4" />
+              </template>
               <template v-else-if="step === 'time' && isTimeBooked(selectedTime)">Waitlist <ArrowRight class="w-4 h-4" /></template>
               <template v-else>Continue <ArrowRight class="w-4 h-4" /></template>
             </button>
@@ -478,8 +558,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { ArrowLeft, ChevronLeft, ChevronRight, ChevronUp, X, Calendar, Plus, Clock, MapPin, Star, ArrowRight, Loader2, CreditCard, CalendarX } from 'lucide-vue-next';
+import { ArrowLeft, ChevronLeft, ChevronRight, ChevronUp, X, Calendar, Plus, Clock, MapPin, Star, ArrowRight, Loader2, CreditCard, CalendarX, Copy, Share2 } from 'lucide-vue-next';
 import { appointments_api } from '@/api_factory/modules/appointments';
+import { upload_api } from '@/api_factory/modules/upload';
 import VariantSelectionModal from './VariantSelectionModal.vue';
 import ExtraServiceModal from './ExtraServiceModal.vue';
 import CheckoutAuthModal from '@/components/CheckoutAuthModal.vue';
@@ -496,6 +577,7 @@ const props = defineProps<{
 const emit = defineEmits(['close']);
 const { showToast } = useCustomToast();
 const { user } = useUser();
+const router = useRouter();
 
 const step = ref<'services'|'time'|'confirm'>('services');
 const loading = ref(false);
@@ -504,6 +586,10 @@ const activeCategory = ref('Featured');
 const bookingNotes = ref('');
 const commitmentFeePercentage = ref(30);
 const showMobileSummary = ref(false);
+
+const paymentMethod = ref<'paystack'|'direct_transfer'>('paystack');
+const proofOfPaymentFile = ref<File | null>(null);
+const proofOfPaymentPreview = ref<string | null>(null);
 
 // Cart State
 const cart = ref<any[]>([]);
@@ -559,7 +645,12 @@ const totalDurationMins = computed(() => {
 const canContinue = computed(() => {
   if (step.value === 'services') return cart.value.length > 0;
   if (step.value === 'time') return !!selectedDate.value && !!selectedTime.value;
-  if (step.value === 'confirm') return true;
+  if (step.value === 'confirm') {
+    if (paymentMethod.value === 'direct_transfer' && !proofOfPaymentFile.value) {
+      return false;
+    }
+    return true;
+  }
   return false;
 });
 
@@ -809,6 +900,32 @@ const isTimeBooked = (timeStr: string) => {
   return bookedTimes.value.includes(startTime24);
 };
 
+const getTimeTag = (timeStr: string) => {
+  const parts = timeStr.split(' ');
+  if (parts.length < 2) return '';
+  const time = parts[0];
+  const modifier = parts[1].toLowerCase();
+  
+  const [hourStr] = time.split(':');
+  let hour = parseInt(hourStr, 10);
+  
+  if (modifier === 'pm' && hour !== 12) hour += 12;
+  if (modifier === 'am' && hour === 12) hour = 0;
+  
+  if (hour < 12) return 'Morning';
+  if (hour < 17) return 'Afternoon';
+  return 'Evening';
+};
+
+const getTimeTagColor = (timeStr: string, isSelected: boolean) => {
+  if (isSelected) return 'bg-white/20 text-white';
+  
+  const tag = getTimeTag(timeStr);
+  if (tag === 'Morning') return 'bg-amber-50 text-amber-600 border border-amber-100';
+  if (tag === 'Afternoon') return 'bg-orange-50 text-orange-600 border border-orange-100';
+  return 'bg-indigo-50 text-indigo-600 border border-indigo-100';
+};
+
 import { watch } from 'vue';
 
 watch(selectedDate, async (newDate) => {
@@ -888,12 +1005,13 @@ const processBooking = async () => {
     
     const startTime24 = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
-    const payload = {
+    const payload: any = {
       vendor: props.vendor._id,
       scheduledDate: selectedDate.value,
       startTime: startTime24,
       endTime: endTime,
       notes: bookingNotes.value,
+      paymentMethod: paymentMethod.value,
       items: cart.value.map(item => ({
         service: item.service._id,
         variantName: item.variantName,
@@ -903,12 +1021,18 @@ const processBooking = async () => {
       }))
     };
 
+    if (paymentMethod.value === 'direct_transfer' && proofOfPaymentFile.value) {
+      const uploadRes = await upload_api.uploadFile(proofOfPaymentFile.value, 'image');
+      payload.proofOfPayment = uploadRes.data.url;
+    }
+
     const res = await appointments_api.createAppointment(payload);
     if (res.data?.authorization_url) {
       window.location.href = res.data.authorization_url;
     } else {
       showToast({ title: 'Success', message: 'Appointment submitted successfully.', toastType: 'success' });
       emit('close');
+      router.push('/dashboard');
     }
   } catch (e: any) {
     showFullLoadingOverlay.value = false;
@@ -942,13 +1066,14 @@ const processGuestBooking = async (guestDetails: any) => {
     
     const startTime24 = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
-    const payload = {
+    const payload: any = {
       vendor: props.vendor._id,
       scheduledDate: selectedDate.value,
       startTime: startTime24,
       endTime: endTime,
       notes: bookingNotes.value,
       guestInfo: guestData.value,
+      paymentMethod: paymentMethod.value,
       items: cart.value.map(item => ({
         service: item.service._id,
         variantName: item.variantName,
@@ -958,12 +1083,18 @@ const processGuestBooking = async (guestDetails: any) => {
       }))
     };
 
+    if (paymentMethod.value === 'direct_transfer' && proofOfPaymentFile.value) {
+      const uploadRes = await upload_api.uploadFile(proofOfPaymentFile.value, 'image');
+      payload.proofOfPayment = uploadRes.data.url;
+    }
+
     const res = await appointments_api.createGuestAppointment(payload);
     if (res.data?.authorization_url) {
       window.location.href = res.data.authorization_url;
     } else {
-      showToast({ title: 'Success', message: 'Appointment submitted successfully.', toastType: 'success' });
+      showToast({ title: 'Success', message: 'Appointment submitted successfully. Please wait for the vendor to verify.', toastType: 'success' });
       emit('close');
+      router.push('/dashboard');
     }
   } catch (e: any) {
     showFullLoadingOverlay.value = false;
@@ -971,6 +1102,57 @@ const processGuestBooking = async (guestDetails: any) => {
   } finally {
     loading.value = false;
   }
+};
+
+const copyAccountDetails = async () => {
+  const bankName = props.vendor.bankDetails?.bankName || props.vendor.bankName || 'Not specified';
+  const accNo = props.vendor.bankDetails?.accountNumber || props.vendor.accountNumber || 'Not specified';
+  const accName = props.vendor.bankDetails?.accountName || props.vendor.accountName || 'Not specified';
+  const text = `Bank: ${bankName}\nAccount No: ${accNo}\nAccount Name: ${accName}`;
+  
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast({ title: 'Copied!', description: 'Account details copied to clipboard.', type: 'success' });
+  } catch (err) {
+    showToast({ title: 'Failed to copy', description: 'Could not copy account details.', type: 'error' });
+  }
+};
+
+const shareAccountDetails = async () => {
+  const bankName = props.vendor.bankDetails?.bankName || props.vendor.bankName || 'Not specified';
+  const accNo = props.vendor.bankDetails?.accountNumber || props.vendor.accountNumber || 'Not specified';
+  const accName = props.vendor.bankDetails?.accountName || props.vendor.accountName || 'Not specified';
+  const text = `Please pay to ${props.vendor.storeName}:\n\nBank: ${bankName}\nAccount No: ${accNo}\nAccount Name: ${accName}`;
+  
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: `${props.vendor.storeName} Account Details`,
+        text: text
+      });
+    } catch (err) {
+      console.log('Error sharing:', err);
+    }
+  } else {
+    copyAccountDetails();
+  }
+};
+
+const handleProofUpload = (e: any) => {
+  const file = e.target.files[0];
+  if (file) {
+    proofOfPaymentFile.value = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      proofOfPaymentPreview.value = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const clearProof = () => {
+  proofOfPaymentFile.value = null;
+  proofOfPaymentPreview.value = null;
 };
 
 onMounted(async () => {

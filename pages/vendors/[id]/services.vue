@@ -129,7 +129,7 @@ const fetchData = async () => {
   try {
     const [vendorRes, servicesRes] = await Promise.all([
       vendors_api.getById(vendorId),
-      services_api.getServicesByVendorId(vendorId)
+      services_api.getVendorServices(vendorId)
     ]);
     
     vendor.value = vendorRes.data;
