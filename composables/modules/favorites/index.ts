@@ -10,7 +10,8 @@ export const useFavorites = () => {
     loading.value = true;
     try {
       const res = await favorites_api.getFavorites();
-      favorites.value = res.data || [];
+      const data = res?.data?.data || res?.data;
+      favorites.value = Array.isArray(data) ? data : [];
       favoriteVendorIds.value = favorites.value
         .filter((f: any) => f.vendor)
         .map((f: any) => f.vendor._id || f.vendor);

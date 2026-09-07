@@ -171,7 +171,9 @@ export const useOrderChat = (
       
       console.log(`[useOrderChat] Received message event. msgOrderId=${msgOrderId}, expected=${orderId}, msg=`, message.message?.substring(0, 30));
       
-      if (msgOrderId === String(orderId)) {
+      const cleanReceiverId = extractObjectId(toValue(targetUserIdArg));
+      
+      if (msgOrderId === String(orderId) || (cleanReceiverId === 'admin_support_channel' && message.roomType === 'support')) {
         if (currentUserId) {
           const sId = String(message.senderId || message.sender?._id || message.sender || '');
           const cIds = String(currentUserId).split(',').map(id => id.trim());
