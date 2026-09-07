@@ -176,7 +176,7 @@
                       selectedTime === time 
                         ? 'bg-parentPrimary border-parentPrimary text-white shadow-sm' 
                         : (isTimeBooked(time) 
-                            ? 'bg-gray-50 border-gray-100 text-gray-400 line-through' 
+                            ? 'bg-gray-50 border-gray-100 text-gray-400' 
                             : 'bg-white border-gray-200 text-gray-900 hover:border-gray-300')
                     ]"
                   >
@@ -926,6 +926,7 @@ const isTimeBooked = (timeStr: string) => {
 };
 
 const getTimeTag = (timeStr: string) => {
+  if (isTimeBooked(timeStr)) return 'Booked';
   const parts = timeStr.split(' ');
   if (parts.length < 2) return '';
   const time = parts[0];
@@ -946,6 +947,7 @@ const getTimeTagColor = (timeStr: string, isSelected: boolean) => {
   if (isSelected) return 'bg-white/20 text-white';
   
   const tag = getTimeTag(timeStr);
+  if (tag === 'Booked') return 'bg-red-50 text-red-600 border border-red-100';
   if (tag === 'Morning') return 'bg-amber-50 text-amber-600 border border-amber-100';
   if (tag === 'Afternoon') return 'bg-orange-50 text-orange-600 border border-orange-100';
   return 'bg-indigo-50 text-indigo-600 border border-indigo-100';
