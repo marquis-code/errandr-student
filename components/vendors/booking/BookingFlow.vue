@@ -896,8 +896,33 @@ const isTimeBooked = (timeStr: string) => {
 
   if (modifier === 'pm' && hours !== 12) hours += 12;
   if (modifier === 'am' && hours === 12) hours = 0;
-  const startTime24 = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-  return bookedTimes.value.includes(startTime24);
+  
+  const slotStartMins = hours * 60 + minutes;
+  const slotEndMins = slotStartMins + (totalDurationMins.value || 10);
+
+  for (const booked of bookedTimes.value) {
+    if (typeof booked === 'string') {
+      const [h, m] = booked.split(':').map(Number);
+      const bookedStartMins = h * 60 + m;
+      const bookedEndMins = bookedStartMins + 10; // Fallback
+      if (slotStartMins < bookedEndMins && slotEndMins > bookedStartMins) return true;
+      continue;
+    }
+
+    if (booked.startTime && booked.endTime) {
+      const [startH, startM] = booked.startTime.split(':').map(Number);
+      const [endH, endM] = booked.endTime.split(':').map(Number);
+      const bookedStartMins = startH * 60 + startM;
+      const bookedEndMins = endH * 60 + endM;
+      
+      // Two intervals [A_start, A_end] and [B_start, B_end] overlap if A_start < B_end and A_end > B_start
+      if (slotStartMins < bookedEndMins && slotEndMins > bookedStartMins) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 };
 
 const getTimeTag = (timeStr: string) => {
@@ -941,7 +966,24 @@ watch(selectedDate, async (newDate) => {
       appointments_api.getVendorAvailability(props.vendor._id, newDate),
       new Promise(resolve => setTimeout(resolve, 800)) // Ensure spinner is visible for at least 800ms
     ]);
-    bookedTimes.value = res.data?.data || res.data || [];
+    const apiBookings = res.data?.data || res.data || [];
+    
+    // Inject vendor breaks for the selected day
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const selectedDayName = dayNames[new Date(newDate).getDay()];
+    
+    let breaks = [];
+    if (props.vendor && props.vendor.businessHours) {
+      const schedule = props.vendor.businessHours.find(h => h.day === selectedDayName);
+      if (schedule && schedule.breaks) {
+        breaks = schedule.breaks.map(b => ({
+          startTime: b.start,
+          endTime: b.end
+        }));
+      }
+    }
+    
+    bookedTimes.value = [...apiBookings, ...breaks];
   } catch (err) {
     console.error('Failed to fetch availability', err);
     bookedTimes.value = [];

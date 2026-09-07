@@ -214,10 +214,18 @@
                   <p v-else class="text-xs font-bold text-rose-600 mb-3">Closed right now</p>
 
                   <div v-if="vendor.businessHours && vendor.businessHours.length > 0" class="mt-2 space-y-2 border-t border-[#ECE6DC] pt-3 pr-2">
-                    <div v-for="day in vendor.businessHours" :key="day.day" class="flex justify-between items-center text-xs">
-                      <span class="text-[#3A352E] capitalize font-medium">{{ day.day.slice(0,3) }}</span>
-                      <span v-if="day.isClosed" class="text-rose-500 font-bold">Closed</span>
-                      <span v-else class="text-[#6B6558] font-mono tabular-nums">{{ day.open || '09:00' }} - {{ day.close || '17:00' }}</span>
+                    <div v-for="day in vendor.businessHours" :key="day.day" class="flex flex-col gap-1 border-b border-[#ECE6DC]/50 pb-2 last:border-0 last:pb-0">
+                      <div class="flex justify-between items-center text-xs">
+                        <span class="text-[#3A352E] capitalize font-medium">{{ day.day.slice(0,3) }}</span>
+                        <span v-if="day.isClosed" class="text-rose-500 font-bold">Closed</span>
+                        <span v-else class="text-[#6B6558] font-mono tabular-nums">{{ day.open || '09:00' }} - {{ day.close || '17:00' }}</span>
+                      </div>
+                      <div v-if="!day.isClosed && day.breaks && day.breaks.length > 0" class="flex flex-col gap-1 pl-4 mt-1 border-l-2 border-orange-200">
+                        <div v-for="(b, i) in day.breaks" :key="i" class="flex justify-between items-center text-[10px]">
+                          <span class="text-orange-600/80 italic font-medium truncate max-w-[80px]">{{ b.title || 'Break' }}</span>
+                          <span class="text-orange-500 font-mono font-medium opacity-80">{{ b.start }} - {{ b.end }}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -344,10 +352,18 @@
             <p v-else class="text-xs font-bold text-rose-600 mb-3">Closed right now</p>
             
             <div v-if="vendor.businessHours && vendor.businessHours.length > 0" class="mt-2 space-y-2 border-t border-[#ECE6DC] pt-3">
-              <div v-for="day in vendor.businessHours" :key="day.day" class="flex justify-between items-center text-xs">
-                <span class="text-[#3A352E] capitalize font-medium">{{ day.day.slice(0,3) }}</span>
-                <span v-if="day.isClosed" class="text-rose-500 font-bold">Closed</span>
-                <span v-else class="text-[#6B6558] font-mono tabular-nums">{{ day.open || '09:00' }} - {{ day.close || '17:00' }}</span>
+              <div v-for="day in vendor.businessHours" :key="day.day" class="flex flex-col gap-1 border-b border-[#ECE6DC]/50 pb-2 last:border-0 last:pb-0">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-[#3A352E] capitalize font-medium">{{ day.day.slice(0,3) }}</span>
+                  <span v-if="day.isClosed" class="text-rose-500 font-bold">Closed</span>
+                  <span v-else class="text-[#6B6558] font-mono tabular-nums">{{ day.open || '09:00' }} - {{ day.close || '17:00' }}</span>
+                </div>
+                <div v-if="!day.isClosed && day.breaks && day.breaks.length > 0" class="flex flex-col gap-1 pl-4 mt-1 border-l-2 border-orange-200">
+                  <div v-for="(b, i) in day.breaks" :key="i" class="flex justify-between items-center text-[10px]">
+                    <span class="text-orange-600/80 italic font-medium truncate max-w-[80px]">{{ b.title || 'Break' }}</span>
+                    <span class="text-orange-500 font-mono font-medium opacity-80">{{ b.start }} - {{ b.end }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

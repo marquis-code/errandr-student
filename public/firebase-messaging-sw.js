@@ -11,49 +11,45 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
 
-  const notificationTitle = payload.notification?.title || payload.data?.title || 'New Notification';
-  const notificationOptions = {
-    body: payload.notification?.body || payload.data?.body || 'You have a new message',
-    icon: '/icon.png',
-    data: payload.data || {},
-    requireInteraction: true // This ensures the notification stays until the vendor clicks it
-  };
+  try {
+    const title = payload?.notification?.title || payload?.data?.title || '🚨 NEW ALERT!';
+    const body = payload?.notification?.body || payload?.data?.body || 'You have a new update.';
+    
+    const notificationOptions = {
+      body: body,
+      icon: '/icon.png',
+      badge: '/icon.png',
+      requireInteraction: true, // This ensures the notification stays until clicked
+      vibrate: [500, 250, 500, 250, 500, 250, 500, 250, 500, 250, 500, 250, 500, 250, 500], // Heavy "ringing" vibration
+      data: payload?.data || {},
+      tag: 'order-alert-' + Date.now()
+    };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+    self.registration.showNotification(title, notificationOptions);
+  } catch (err) {
+    console.error('[firebase-messaging-sw.js] Error showing notification:', err);
+  }
 });
 
-self.addEventListener('notificationclick', (event) => {
+self.addEventListener('notificationclick', function(event) {
   event.notification.close();
-
-  const data = event.notification.data || {};
-  let urlToOpen = '/dashboard';
-
-  // If it's a chat message, open the chat page
-  if (data.type === 'NEW_CHAT_MESSAGE' && data.orderId) {
-    urlToOpen = `/chat/${data.orderId}?target=vendor`;
-  } else if (data.orderId) {
-    urlToOpen = `/dashboard/orders/${data.orderId}`;
-  }
-
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // Check if there is already a window/tab open with the target URL
-      for (let i = 0; i < windowClients.length; i++) {
-        const client = windowClients[i];
-        if (client.url.includes(urlToOpen) && 'focus' in client) {
-          return client.focus();
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      if (clientList.length > 0) {
+        let client = clientList[0];
+        for (let i = 0; i < clientList.length; i++) {
+          if (clientList[i].focused) {
+            client = clientList[i];
+          }
         }
+        return client.focus();
       }
-      // If not, open a new window/tab
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
+      return clients.openWindow('/');
     })
   );
 });

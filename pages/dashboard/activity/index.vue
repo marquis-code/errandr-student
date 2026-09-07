@@ -201,7 +201,7 @@
                 <Info class="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                 <div>
                   <h4 class="text-sm font-bold text-orange-900 mb-1">Cancellation Policy</h4>
-                  <p class="text-xs text-orange-700/80 leading-relaxed">Cancel up to 24 hours before your appointment for a full refund. Cancellations within 24 hours will incur a 50% fee.</p>
+                  <p class="text-xs text-orange-700/80 leading-relaxed">Cancel up to 24 hours before your appointment for a full refund. Cancellations within 24 hours will incur a cancellation fee equal to 50% of the total appointment cost.</p>
                 </div>
               </div>
             </div>
