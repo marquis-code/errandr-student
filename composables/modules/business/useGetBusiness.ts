@@ -1,3 +1,4 @@
+import { ref, onMounted, getCurrentInstance } from 'vue'
 import { business_api } from "@/api_factory/modules/business"
 import type { Business } from "@/types/business"
 import { useStorage } from "@vueuse/core"
@@ -39,13 +40,15 @@ export const useGetBusiness = () => {
         business.value = null
     }
 
-    onMounted(() => {
-        const route = useRoute()
-        const subdomain = route.query.subdomain as string
-        if (subdomain) {
-            getBusiness(subdomain)
-        }
-    })
+    if (getCurrentInstance()) {
+        onMounted(() => {
+            const route = useRoute()
+            const subdomain = route.query.subdomain as string
+            if (subdomain) {
+                getBusiness(subdomain)
+            }
+        })
+    }
 
     return { loading, error, business, getBusiness, clearCachedBusiness, cachedBusiness }
 }
