@@ -459,6 +459,66 @@
     </div>
   </section>
 
+  <!-- Meal Autopilot Section -->
+  <section class="py-20 bg-gradient-to-br from-orange-50/50 to-white overflow-hidden border-t border-slate-100 relative">
+    <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-50 z-0 pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+      <!-- Left: Text -->
+      <div class="space-y-6 max-w-xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-parentPrimary/10 border border-parentPrimary/20 text-parentPrimary text-sm font-bold shadow-sm">
+          <Repeat class="w-4 h-4 animate-spin-slow" /> New Feature
+        </div>
+        <h2 class="text-3xl md:text-5xl font-medium text-slate-900 -tighter leading-tight">
+          Meal <span class="text-parentPrimary">Autopilot.</span><br/> Set it & forget it.
+        </h2>
+        <p class="text-slate-500 text-lg font-medium leading-relaxed -tight">
+          Tired of deciding what to eat every day? Schedule your weekly meals across different campus vendors. We'll automatically place the orders and deliver them to your hostel, right on schedule. 
+        </p>
+        <div class="pt-4 flex flex-col sm:flex-row gap-4">
+          <NuxtLink to="/dashboard/recurring-orders" class="inline-flex items-center justify-center gap-2 px-5 py-4 bg-parentPrimary text-white rounded-2xl font-bold text-sm -wide hover:bg-orange-600 transition-colors shadow-sm shadow-parentPrimary/20 active:scale-95">
+            Setup Meal Autopilot <ArrowRight class="w-4 h-4" />
+          </NuxtLink>
+        </div>
+      </div>
+
+      <!-- Right: Visual -->
+      <div class="relative">
+        <div class="absolute inset-0 bg-parentPrimary/5 rounded-3xl transform rotate-3 scale-105"></div>
+        <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-xl relative z-10 space-y-4">
+          <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+            <div>
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Scheduled for</p>
+              <p class="text-lg font-black text-gray-900">Tomorrow, 1:00 PM</p>
+            </div>
+            <div class="w-10 h-10 bg-green-50 text-green-600 rounded-full flex items-center justify-center">
+              <Check class="w-5 h-5" />
+            </div>
+          </div>
+          <div class="flex items-center gap-4 py-2">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-2xl">🍛</div>
+            <div class="flex-1">
+              <p class="font-bold text-gray-900">Jollof Rice & Chicken</p>
+              <p class="text-sm font-medium text-gray-500">From Korede Spaghetti</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 py-2">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-2xl">🥤</div>
+            <div class="flex-1">
+              <p class="font-bold text-gray-900">Chilled Coke</p>
+              <p class="text-sm font-medium text-gray-500">Added to order</p>
+            </div>
+          </div>
+          <div class="pt-4 mt-2 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-sm font-bold text-gray-500 flex items-center gap-1">
+              <Repeat class="w-3.5 h-3.5" /> Recurs every Tuesday
+            </span>
+            <span class="px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full">Active</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Custom Errands + Why Choose Us (Merged & Condensed) -->
   <section class="py-20 bg-slate-50 overflow-hidden border-t border-slate-100">
     <div class="max-w-7xl mx-auto px-4 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -543,12 +603,12 @@ import BatchDeliveryBanner from '@/components/BatchDeliveryBanner.vue'
 import { useUser } from "@/composables/modules/auth/user"
 import { 
   ArrowRight, Twitter, Instagram, Facebook,
-  Utensils,
+  Utensils, Check,
   Clock, Star, Store, Bike, ChevronLeft, ChevronRight,
   ShieldCheck, Rocket, Megaphone,
   Menu as MenuIcon, X, Search, ArrowUpRight,
   Layers, Target, MessageCircle, Home, User, Bell, BellOff, LogOut, ChevronDown,
-  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart, Filter, Zap
+  Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart, Filter, Zap, Repeat
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';

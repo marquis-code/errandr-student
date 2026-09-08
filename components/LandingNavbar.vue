@@ -21,8 +21,12 @@
           <div class="hidden md:flex items-center gap-3">
             <template v-if="!user">
               <!-- Manage Buttons for Guests -->
-              <NuxtLink to="/errands/custom" class="px-5 py-2 text-sm font-bold text-white bg-parentPrimary hover:bg-orange-600 transition-colors rounded-full shadow-sm border border-gray-100 hover:shadow-sm border border-gray-100 whitespace-nowrap">
+              <NuxtLink to="/errands/custom" class="px-5 py-2 text-sm font-bold text-white bg-parentPrimary hover:bg-orange-600 transition-colors rounded-full shadow-sm border border-gray-100 hover:shadow-sm whitespace-nowrap">
                 Request Custom Errand
+              </NuxtLink>
+              <NuxtLink to="/dashboard/recurring-orders" class="px-5 py-2 text-sm font-bold text-parentPrimary bg-orange-50 hover:bg-orange-100 transition-colors rounded-full shadow-sm border border-orange-200 hover:shadow-sm whitespace-nowrap flex items-center gap-1.5">
+                <Repeat class="w-4 h-4" />
+                Meal Autopilot
               </NuxtLink>
               <div class="w-px h-4 bg-gray-300 mx-2"></div>
               <NuxtLink to="/auth/login" class="px-5 py-2 text-sm font-medium text-gray-900 hover:text-parentPrimary transition-colors rounded-full hover:bg-gray-50 whitespace-nowrap">
@@ -33,8 +37,12 @@
               </NuxtLink>
             </template>
             <template v-else>
-              <NuxtLink to="/errands/custom" class="px-5 py-2 text-sm font-bold text-white bg-parentPrimary hover:bg-orange-600 transition-colors rounded-full shadow-sm border border-gray-100 hover:shadow-sm border border-gray-100 whitespace-nowrap">
+              <NuxtLink to="/errands/custom" class="px-5 py-2 text-sm font-bold text-white bg-parentPrimary hover:bg-orange-600 transition-colors rounded-full shadow-sm border border-gray-100 hover:shadow-sm whitespace-nowrap">
                 Request Custom Errand
+              </NuxtLink>
+              <NuxtLink to="/dashboard/recurring-orders" class="px-5 py-2 text-sm font-bold text-parentPrimary bg-orange-50 hover:bg-orange-100 transition-colors rounded-full shadow-sm border border-orange-200 hover:shadow-sm whitespace-nowrap flex items-center gap-1.5">
+                <Repeat class="w-4 h-4" />
+                Meal Autopilot
               </NuxtLink>
               <div class="w-px h-4 bg-gray-300 mx-2"></div>
               
@@ -136,6 +144,18 @@
                     </button>
                   </MenuItem>
 
+                  <MenuItem v-slot="{ active }">
+                    <NuxtLink to="/dashboard/recurring-orders" :class="[active ? 'bg-orange-50 scale-95' : 'bg-gray-50/50 hover:bg-orange-50/50', 'group flex items-center gap-3 rounded-2xl p-3 col-span-2 transition-all border border-transparent hover:border-orange-100/50 text-left']">
+                      <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-parentPrimary">
+                        <Repeat class="w-4 h-4" />
+                      </div>
+                      <div class="flex-1">
+                        <span class="block text-sm font-bold text-gray-900 group-hover:text-parentPrimary transition-colors">Meal Autopilot</span>
+                        <span class="block text-[10px] text-gray-500 font-medium">Set your meals on a weekly schedule</span>
+                      </div>
+                    </NuxtLink>
+                  </MenuItem>
+
                   <!-- Partners & Actions -->
                   <div class="col-span-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 mt-3 px-2">Partner with us</div>
                   
@@ -209,7 +229,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { useUser } from "@/composables/modules/auth/user"
 import { useCart } from "@/composables/modules/cart"
-import { Home, User, LogOut, Menu as MenuIcon, Filter, ChevronDown, ShoppingCart, Info, Zap, Package, Calendar, Store, Bike, LayoutDashboard } from 'lucide-vue-next'
+import { Home, User, LogOut, Menu as MenuIcon, Filter, ChevronDown, ShoppingCart, Info, Zap, Package, Calendar, Store, Bike, LayoutDashboard, Repeat } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import { useGlobalFilter } from '@/composables/core/useGlobalFilter'
 

@@ -106,7 +106,7 @@
       </header>
 
       <!-- Main Content -->
-      <div class="flex-1 max-w-[1200px] mx-auto w-full px-0 sm:px-4 md:px-4 py-4 pb-40 lg:pb-10">
+      <div class="flex-1 max-w-[1200px] mx-auto w-full px-0 sm:px-4 md:px-4 py-4 pb-60 lg:pb-10">
         <div class="flex flex-col lg:flex-row gap-6">
 
           <!-- LEFT: Delivery + Payment -->
@@ -192,7 +192,7 @@
                   </div>
                 </div>
 
-                <div class="animate-fade-in relative z-50">
+                <div class="animate-fade-in relative z-30">
                   <div class="mb-5 space-y-3">
                     <label class="text-xs font-medium text-gray-400 tracking-wider block mb-1 pl-1">Order Location Type</label>
                     <div class="grid grid-cols-2 gap-3">
@@ -342,7 +342,7 @@
             </div>
 
             <!-- Step 2: Payment -->
-            <div class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-visible">
+            <div class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-visible mt-5">
               <div class="flex items-center gap-3 px-4 sm:px-5 py-4 bg-gray-50/50 border-b border-gray-100 sm:rounded-t-2xl">
                 <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500">
                   <CreditCard class="w-4.5 h-4.5" />
@@ -1084,7 +1084,7 @@
 </template>
 
 <script setup lang="ts">
-import { ShoppingCart, ArrowLeft, Moon, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users, Package, Ticket, Store, Receipt, Box, Info, ShoppingBag } from 'lucide-vue-next';
+import { ShoppingCart, Repeat, ArrowLeft, Moon, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users, Package, Ticket, Store, Receipt, Box, Info, ShoppingBag } from 'lucide-vue-next';
 import AnimatedInput from '@/components/ui/AnimatedInput.vue';
 import SelectInput from '@/components/ui/SelectInput.vue';
 import CheckoutAuthModal from '@/components/CheckoutAuthModal.vue';
@@ -1942,6 +1942,10 @@ const startPayment = async () => {
     }
   }
 
+  if (isRecurring.value && recurringSchedules.value.length === 0) {
+    return showToast({ title: 'Missing Info', message: 'Please select at least one day for your automated order.', toastType: 'error' });
+  }
+
   placing.value = true;
   try {
     let orderIds: string[] = [];
@@ -2066,6 +2070,7 @@ const preCreateOrders = async (): Promise<string[]> => {
       if (res?._id || res?.data?._id) { 
         createdIds.push(res?._id || res?.data?._id); 
       }
+
       isFirstOrder = false;
     }
   }

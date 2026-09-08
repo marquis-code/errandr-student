@@ -326,7 +326,7 @@
       </div>
       
       <!-- Footer -->
-      <footer class="mt-10 pt-6 border-t border-[#E7E2DA] flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in">
+      <!-- <footer class="mt-10 pt-6 border-t border-[#E7E2DA] flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in">
         <p class="text-xs font-bold text-[#9C968E]">© {{ new Date().getFullYear() }} Errandr</p>
         <div class="flex items-center gap-4">
           <NuxtLink to="/terms" class="text-xs font-bold text-[#9C968E] hover:text-[#171310] transition-colors">Terms</NuxtLink>
@@ -334,7 +334,7 @@
           <NuxtLink to="/refund" class="text-xs font-bold text-[#9C968E] hover:text-[#171310] transition-colors">Refunds</NuxtLink>
           <NuxtLink to="/contact" class="text-xs font-bold text-[#9C968E] hover:text-[#171310] transition-colors">Contact</NuxtLink>
         </div>
-      </footer>
+      </footer> -->
     </main>
 
     <!-- Logout Modal -->
@@ -381,7 +381,8 @@ import {
   Settings,
   Package,
   Scissors,
-  Sparkles
+  Sparkles,
+  Repeat
 } from 'lucide-vue-next'
 import { useRealtimeNotifications } from '@/composables/core/useRealtimeNotifications'
 import { useNotifications } from '@/composables/modules/notifications/useNotifications'
@@ -426,6 +427,7 @@ const errandsNavItems = [
   { path: '/dashboard', label: 'Home', icon: Home, code: 'HM' },
   { path: '/dashboard/search', label: 'Search', icon: Search, code: 'SR' },
   { path: '/dashboard/orders', label: 'Orders', icon: ShoppingBag, code: 'OR' },
+  { path: '/dashboard/recurring-orders', label: 'Meal Autopilot', icon: Repeat, code: 'RO' },
   { path: '/dashboard/group-orders', label: 'Group Orders', icon: Users, code: 'GO' },
   { path: '/dashboard/quests', label: 'Campus Quests', icon: Target, code: 'CQ' },
 ]
@@ -455,6 +457,7 @@ const pageTitles: Record<string, { title: string; description: string }> = {
   '/dashboard': { title: 'Dashboard', description: 'Welcome back to Errandr' },
   '/dashboard/search': { title: 'Search', description: 'Find anything on campus' },
   '/dashboard/orders': { title: 'My Errands', description: 'Track your active and past orders' },
+  '/dashboard/recurring-orders': { title: 'Meal Autopilot', description: 'Set it, forget it — your meals, on schedule' },
   '/dashboard/group-orders': { title: 'Group Orders', description: 'Manage your multiplayer carts and order history' },
   '/dashboard/favorites': { title: 'My Favorites', description: 'Your most loved items and venues' },
   '/dashboard/profile': { title: 'My Profile', description: 'Manage your Errandr account' },

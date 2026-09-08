@@ -185,13 +185,13 @@
             <Heart class="w-4 h-4" :class="{ 'fill-rose-500': isFavorited }" />
           </button>
           <button 
-            v-if="cart.itemCount > 0"
+            v-if="globalItemCount > 0"
             @click="showGlobalCartModal = true"
             class="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl transition-all border bg-gray-50 border-gray-100 text-gray-900 relative"
           >
             <ShoppingCart class="w-4 h-4" />
             <div class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white border-2 border-white rounded-full flex items-center justify-center">
-              <span class="text-[8px] font-bold">{{ cart.itemCount }}</span>
+              <span class="text-[8px] font-bold">{{ globalItemCount }}</span>
             </div>
           </button>
           <button 
@@ -204,8 +204,8 @@
           </button>
           <NuxtLink to="/cart" class="hidden lg:flex w-9 h-9 rounded-xl bg-gray-50 items-center justify-center border border-gray-100 hover:bg-gray-100 transition-all relative">
             <ShoppingCart class="w-4 h-4 text-gray-900" />
-            <div v-if="cart.itemCount > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white border-2 border-white rounded-full flex items-center justify-center">
-              <span class="text-[8px] font-bold">{{ cart.itemCount }}</span>
+            <div v-if="globalItemCount > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white border-2 border-white rounded-full flex items-center justify-center">
+              <span class="text-[8px] font-bold">{{ globalItemCount }}</span>
             </div>
           </NuxtLink>
         </div>
@@ -250,8 +250,8 @@
               class="relative w-10 h-10 rounded-2xl backdrop-blur-xl flex items-center justify-center border transition-all active:scale-95 bg-white/10 border-white/20 text-white hover:bg-white/20"
             >
               <ShoppingCart class="w-4 h-4" />
-              <div v-if="cart.itemCount > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white rounded-full flex items-center justify-center text-[9px] font-bold border border-white/20 shadow-sm">
-                {{ cart.itemCount }}
+              <div v-if="globalItemCount > 0" class="absolute -top-1 -right-1 w-4 h-4 bg-parentPrimary text-white rounded-full flex items-center justify-center text-[9px] font-bold border border-white/20 shadow-sm">
+                {{ globalItemCount }}
               </div>
             </button>
             <button 
@@ -1685,6 +1685,7 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const cart = useCart();
+const { itemCount: globalItemCount } = cart;
 const { user } = useUser();
 const { 
   groupOrder, activeCode, isLoading: groupLoading, createGroupOrder, 

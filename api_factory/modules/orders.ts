@@ -98,4 +98,18 @@ export const orders_api = {
   approveReconciliation: (orderId: string) => {
     return GATEWAY_ENDPOINT_WITH_AUTH.put(`/orders/${orderId}/reconcile/approve`);
   },
+
+  // Recurring Orders
+  createRecurringOrder: (payload: any) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.post('/recurring-orders', payload);
+  },
+  getRecurringOrders: () => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.get('/recurring-orders');
+  },
+  updateRecurringOrder: (id: string, payload: any) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.put(`/recurring-orders/${id}`, payload);
+  },
+  cancelRecurringOrder: (id: string) => {
+    return GATEWAY_ENDPOINT_WITH_AUTH.patch(`/recurring-orders/${id}/cancel`);
+  },
 };
