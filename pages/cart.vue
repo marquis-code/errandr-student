@@ -1101,6 +1101,7 @@ import { useWallet } from '@/composables/modules/wallets';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 import { orders_api } from '@/api_factory/modules/orders';
 import { settings_api } from '@/api_factory/modules/settings';
+import { useChat } from '@/composables/modules/chat/useChat';
 import { useDebounceFn } from '@vueuse/core';
 
 definePageMeta({ layout: false });
@@ -1115,6 +1116,7 @@ const { groupOrder, activeCode, fetchGroupOrder, isHost, isSponsor, getMyStatus,
 const { showToast } = useCustomToast();
 const { popularVendors, vendorsMetadata, fetchPopularVendors, fetchBulkMetadata, loading: loadingVendors } = useVendors();
 const { createOrder } = useStudentOrders();
+const { triggerOrderSuccessChat } = useChat();
 
 watch(() => groupOrder.value?.status, (newStatus) => {
   if (newStatus === 'completed') {
@@ -1778,6 +1780,7 @@ onMounted(async () => {
         localStorage.removeItem('errandr_pending_order_ids');
 
         // Always navigate away from cart after successful payment
+        triggerOrderSuccessChat();
         if (orderIds && orderIds.length > 0) {
           navigateTo(`/orders/${orderIds[0]}`);
         } else {
@@ -1968,6 +1971,7 @@ const startPayment = async () => {
          cartStore.clearCart();
          localStorage.removeItem('errandr_checkout_data');
          localStorage.removeItem('errandr_pending_order_ids');
+         triggerOrderSuccessChat();
          navigateTo(`/orders/${orderIds[0]}`);
       }
     } else {

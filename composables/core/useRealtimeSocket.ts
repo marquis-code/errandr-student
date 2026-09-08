@@ -43,7 +43,7 @@ export const useRealtimeSocket = () => {
 
     socket.value = io(`${baseUrl}/realtime`, {
       path: '/socket.io/',
-      transports: ['polling'], // Aggressively force polling only to bypass WebSocket handshake 500 errors on the LB
+      transports: ['websocket', 'polling'],
       auth: authPayload,
     })
 

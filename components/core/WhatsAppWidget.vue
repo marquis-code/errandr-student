@@ -1,5 +1,9 @@
 <template>
-  <div class="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[100] flex flex-col items-start">
+  <div 
+    ref="widgetRef"
+    :style="style"
+    class="fixed z-[100] flex flex-col items-start"
+  >
     <!-- Modal -->
     <Transition
       enter-active-class="transition duration-200 ease-out"
@@ -42,7 +46,7 @@
     <!-- Floating Button -->
     <button
       @click="isOpen = !isOpen"
-      class="w-14 h-14 rounded-full bg-[#128C7E] text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all focus:outline-none focus:ring-4 focus:ring-green-500/20"
+      class="w-14 h-14 rounded-full bg-[#128C7E] text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all focus:outline-none focus:ring-4 focus:ring-green-500/20 cursor-move"
       aria-label="WhatsApp Support"
     >
       <svg v-if="!isOpen" class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -56,11 +60,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { MessageCircle, X } from 'lucide-vue-next'
+import { useDraggable } from '@vueuse/core'
+
+const widgetRef = ref<HTMLElement | null>(null)
+const { style } = useDraggable(widgetRef, {
+  initialValue: { x: 24, y: typeof window !== 'undefined' ? window.innerHeight - 100 : 800 }
+})
 
 const isOpen = ref(false)
 
 const agents = [
   { name: 'Ruth', initial: 'R', number: '2348106600919' },
+  { name: 'Ife', initial: 'I', number: '2348179495795' },
   { name: 'Kim', initial: 'K', number: '2348052854256' },
   { name: 'Brandy', initial: 'B', number: '2348139908262' },
 ]

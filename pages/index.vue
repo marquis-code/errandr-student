@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-white font-sans text-gray-900 scroll-smooth pb-24">
-  <CoreExamPromoBanner />
+  <!-- <CoreExamPromoBanner /> -->
   <BatchDeliveryBanner />
   <MarketPoolBanner />
   <ActivePoolOrdersWidget />
@@ -361,7 +361,7 @@
 
 
   <!-- Promo Carousel -->
-  <CorePromoCarousel @open-closed-modal="navigateToVendor" />
+  <!-- <CorePromoCarousel @open-closed-modal="navigateToVendor" /> -->
 
   <!-- Book Again -->
   <VendorGroupCarousel
@@ -376,81 +376,29 @@
     @share-vendor="handleShareVendor"
   />
 
-  <!-- Favourites -->
+  <!-- The one most students use -->
+  <VendorGroupCarousel
+    title="Most Ordered"
+    subtitle="Highest Order Volume"
+    :icon="TrendingUp"
+    :vendors="trendingVendors"
+    :loading="loadingVendors"
+    :showStats="true"
+    carouselId="carousel-trending"
+    @select-vendor="navigateToVendor"
+    @notify="handleNotifyVendor"
+    @share-vendor="handleShareVendor"
+  />
+
+  <!-- Favorites by You -->
   <VendorGroupCarousel
     v-if="user && favoriteVendors.length > 0"
-    title="Favourites"
+    title="Favorites by You"
     subtitle="Your Saved Spots"
-    :icon="Star"
-    :vendors="favoriteVendors"
-    :loading="loadingFavorites"
-    carouselId="carousel-favourites"
-    @select-vendor="navigateToVendor"
-    @notify="handleNotifyVendor"
-    @share-vendor="handleShareVendor"
-  />
-
-  <!-- Top Rated Vendors -->
-  <VendorGroupCarousel
-    v-if="topRatedVendors.length > 0"
-    title="Top Rated"
-    subtitle="Best Reviews"
-    :icon="Star"
-    :vendors="topRatedVendors"
-    :loading="loadingVendors"
-    carouselId="carousel-top-rated"
-    @select-vendor="navigateToVendor"
-    @notify="handleNotifyVendor"
-    @share-vendor="handleShareVendor"
-  />
-
-  <!-- Your Favorites -->
-  <VendorGroupCarousel
-    v-if="favoriteVendors.length > 0"
-    title="Your Favorites"
-    subtitle="Loved by You"
     :icon="Heart"
     :vendors="favoriteVendors"
     :loading="loadingFavorites"
-    carouselId="carousel-favorites"
-    @select-vendor="navigateToVendor"
-    @notify="handleNotifyVendor"
-    @share-vendor="handleShareVendor"
-  />
-  <!-- Recently Viewed -->
-  <VendorGroupCarousel
-    v-if="recentlyViewedVendors.length > 0"
-    title="Recently viewed"
-    subtitle="Jump Back In"
-    :icon="Search"
-    :vendors="recentlyViewedVendors"
-    carouselId="carousel-recently-viewed"
-    @select-vendor="navigateToVendor"
-    @notify="handleNotifyVendor"
-    @share-vendor="handleShareVendor"
-  />
-
-  <!-- Recommended Vendors -->
-  <VendorGroupCarousel
-    title="Recommended"
-    subtitle="Campus Favorites"
-    :icon="Store"
-    :vendors="recommendedVendors"
-    :loading="loadingVendors"
-    carouselId="carousel-recommended"
-    @select-vendor="navigateToVendor"
-    @notify="handleNotifyVendor"
-    @share-vendor="handleShareVendor"
-  />
-
-  <!-- Trending Vendors -->
-  <VendorGroupCarousel
-    title="Trending on Campus"
-    subtitle="Hot Right Now"
-    :icon="Flame"
-    :vendors="trendingVendors"
-    :loading="loadingVendors"
-    carouselId="carousel-trending"
+    carouselId="carousel-favourites"
     @select-vendor="navigateToVendor"
     @notify="handleNotifyVendor"
     @share-vendor="handleShareVendor"

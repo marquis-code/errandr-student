@@ -69,6 +69,8 @@ export const useChat = () => {
   const loading = ref(false)
   const sending = ref(false)
   const loadingFaqs = ref(false)
+  const incomingMessageTrigger = ref(0)
+  const isOpen = useState<boolean>('chat_is_open', () => false)
 
   const guestProfile = useStorage('chat_guest_profile', {
     name: '',
@@ -263,13 +265,16 @@ export const useChat = () => {
     }, 500)
   }
 
-  const sendMessage = async (content: string) => {
-    if (!content.trim()) return
+  const sendMessage = async (content: string, options?: { messageType?: string, attachments?: string[] }) => {
+    if (!content.trim() && !(options?.attachments?.length)) return
     if (!room.value?._id) await ensureRoom()
     if (!room.value?._id) return
 
     sending.value = true
     try {
+      const type = options?.messageType || 'text'
+      const atts = options?.attachments || []
+      
       // Optimistically add message to UI immediately
       const optimisticMessage: ChatMessage = {
         id: `temp_${Date.now()}`,
@@ -278,7 +283,8 @@ export const useChat = () => {
         senderType: 'customer',
         senderName: displayName.value,
         content,
-        messageType: 'text',
+        messageType: type,
+        attachments: atts,
         createdAt: new Date().toISOString(),
         metadata: isGuest.value ? { guestId: mySessionId.value } : {},
       }
@@ -287,26 +293,23 @@ export const useChat = () => {
       // Try WebSocket first for real-time experience
       if (isConnected.value && socket.value) {
         const response = await emitWithAck<any>('chat:send-message', {
-             roomId: room.value._id,
+            roomId: room.value._id,
             content,
-            attachments: [],
+            attachments: atts,
             senderType: 'customer',
             senderId: isGuest.value ? mySessionId.value : userId.value,
             senderName: displayName.value,
-            messageType: 'text'
-          // roomId: room.value._id,
-          // content,
-          // attachments: [],
+            messageType: type
         })
 
         if (!response?.success) {
           // WebSocket failed, fall back to REST API
           console.warn('WebSocket send failed, falling back to REST:', response?.error)
-          await sendViaRest(content)
+          await sendViaRest(content, options)
         }
       } else {
         // Not connected via WebSocket, use REST API
-        await sendViaRest(content)
+        await sendViaRest(content, options)
       }
     } catch (error: any) {
       // Remove optimistic message on error
@@ -323,7 +326,7 @@ export const useChat = () => {
     }
   }
 
-  const sendViaRest = async (content: string) => {
+  const sendViaRest = async (content: string, options?: { messageType?: string, attachments?: string[] }) => {
     if (!room.value?._id) return
 
     const payload = {
@@ -331,7 +334,8 @@ export const useChat = () => {
       senderType: 'customer' as const,
       senderName: displayName.value,
       content,
-      messageType: 'text',
+      messageType: options?.messageType || 'text',
+      attachments: options?.attachments || []
     }
 
     const res = (await chat_api.sendMessage(room.value._id, payload)) as any
@@ -384,6 +388,11 @@ export const useChat = () => {
         // Safely append new message
         messages.value = [...messages.value, message]
       }
+
+      // If it's not our own message, increment the trigger
+      if (message.senderType !== 'customer') {
+         incomingMessageTrigger.value++
+      }
     })
 
     socket.value.on('chat:auto-response', (message: ChatMessage) => {
@@ -394,6 +403,7 @@ export const useChat = () => {
       })
       if (!exists) {
         messages.value = [...messages.value, message]
+        incomingMessageTrigger.value++
       }
     })
 
@@ -418,10 +428,35 @@ export const useChat = () => {
   }
 
   const isMine = (message: ChatMessage) => {
+    // Force messages from the admin dashboard or system bots to the left side
+    if (['bot', 'system', 'admin', 'staff'].includes(message?.senderType || '')) {
+      return false
+    }
+
     if (isGuest.value) {
       return message?.metadata?.guestId === mySessionId.value
     }
     return message?.senderId === userId.value
+  }
+
+  const triggerOrderSuccessChat = () => {
+    isOpen.value = true
+    
+    // Add a slight delay for better UX
+    setTimeout(() => {
+      // Check if message already exists to avoid duplicates
+      const exists = messages.value.some(m => m.content === 'Thanks for your order! We are assigning a dispatcher to your order shortly. Let us know if you need any help.')
+      if (!exists) {
+        messages.value.push({
+          _id: 'auto_' + Date.now(),
+          content: 'Thanks for your order! We are assigning a dispatcher to your order shortly. Let us know if you need any help.',
+          messageType: 'text',
+          senderType: 'system',
+          senderName: 'Erranders Support',
+          createdAt: new Date().toISOString()
+        } as any)
+      }
+    }, 1000)
   }
 
   return {
@@ -431,6 +466,7 @@ export const useChat = () => {
     autoResponses,
     loading,
     sending,
+    incomingMessageTrigger,
     loadingFaqs,
     isGuest,
     displayName,
@@ -448,5 +484,7 @@ export const useChat = () => {
     attachSocketListeners,
     detachSocketListeners,
     isMine,
+    isOpen,
+    triggerOrderSuccessChat
   }
 }

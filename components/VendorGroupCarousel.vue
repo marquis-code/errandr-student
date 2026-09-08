@@ -126,12 +126,16 @@
               </p>
 
               <!-- Category and Review Count -->
-              <div class="flex items-center gap-2 text-[12px] font-medium text-gray-400 mt-auto">
+              <div class="flex items-center gap-2 text-[12px] font-medium text-gray-400 mt-auto flex-wrap">
                 <span class="px-2 py-0.5 bg-gray-100 rounded-md text-gray-600 truncate max-w-[120px]">
                   {{ vendor.category || 'Vendor' }}
                 </span>
                 <span>•</span>
                 <span>{{ vendor.totalRatings || 0 }} reviews</span>
+                <template v-if="showStats && vendor.totalOrders">
+                  <span>•</span>
+                  <span class="text-parentPrimary font-bold flex items-center gap-1"><Flame class="w-3 h-3"/> {{ vendor.totalOrders }} orders</span>
+                </template>
               </div>
             </div>
           </div>
@@ -154,7 +158,8 @@ const props = defineProps({
   icon: { type: [Object, Function], required: true },
   vendors: { type: Array as () => any[], required: true },
   loading: { type: Boolean, default: false },
-  carouselId: { type: String, required: true }
+  carouselId: { type: String, required: true },
+  showStats: { type: Boolean, default: false }
 })
 
 defineEmits(['select-vendor', 'notify', 'share-vendor'])

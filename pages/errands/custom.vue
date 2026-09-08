@@ -165,22 +165,58 @@
                   </div>
                   <div class="flex flex-wrap gap-2">
                     <button
-                      v-for="tmpl in errandTemplates" :key="tmpl" @click="applyTemplate(tmpl)"
+                      v-for="tmpl in (showAllTemplates ? errandTemplates : errandTemplates.slice(0, 4))" :key="tmpl" @click="applyTemplate(tmpl)"
                       class="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-sm font-semibold rounded-full transition-colors flex items-center gap-2 shadow-sm"
                     >
                       <ListChecks class="w-4 h-4 text-gray-400" />
                       {{ tmpl }}
                     </button>
+                    
+                    <button
+                      v-if="!showAllTemplates && errandTemplates.length > 4"
+                      @click="showAllTemplates = true"
+                      class="px-4 py-2 bg-[#FF5C1A]/10 hover:bg-[#FF5C1A]/20 border border-transparent text-[#FF5C1A] text-sm font-semibold rounded-full transition-colors flex items-center gap-2 shadow-sm"
+                    >
+                      + {{ errandTemplates.length - 4 }} more ideas
+                    </button>
+                    
+                    <button
+                      v-if="showAllTemplates && errandTemplates.length > 4"
+                      @click="showAllTemplates = false"
+                      class="px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-transparent text-gray-600 text-sm font-semibold rounded-full transition-colors flex items-center gap-2 shadow-sm"
+                    >
+                      Show less
+                    </button>
                   </div>
 
                   <div class="space-y-2.5">
-                    <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">What do you need done?</label>
-                    <textarea
-                      v-model="form.description"
-                      rows="3"
-                      placeholder="e.g. Pick up my food from the market and drop it at Block hostel"
-                      class="w-full bg-transparent outline-none resize-none py-3 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] placeholder:font-normal placeholder:text-[#766A61]/50 transition-colors"
-                    ></textarea>
+                    <label class="block font-sans text-sm tracking-[0.15em] text-[#766A61]">What do you need done?</label>
+                    <div class="space-y-2 mt-2">
+                      <TransitionGroup name="list" tag="div" class="space-y-2">
+                        <div v-for="(item, idx) in checklistItems" :key="idx" class="flex items-start gap-2 relative group">
+                          <div class="mt-2 shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#170D08]/5 border border-[#170D08]/15 text-[#766A61] text-[10px] font-bold">
+                            {{ idx + 1 }}
+                          </div>
+                          <div class="flex-1 relative">
+                            <input
+                              v-model="checklistItems[idx]"
+                              type="text"
+                              :placeholder="idx === checklistItems.length - 1 ? 'e.g. 2 portions of Jollof rice' : ''"
+                              class="checklist-input w-full bg-transparent outline-none py-2 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] placeholder:font-normal placeholder:text-[#766A61]/80 transition-colors"
+                              @keydown="handleItemKeydown($event, idx)"
+                            />
+                          </div>
+                          <button
+                            v-if="checklistItems.length > 1"
+                            @click="removeItem(idx)"
+                            class="absolute right-0 top-2 opacity-0 group-hover:opacity-100 p-1 text-[#766A61] hover:text-[#FF5C1A] transition-all bg-white rounded-md border border-[#170D08]/15 shadow-sm"
+                            title="Remove item"
+                          >
+                            <X class="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </TransitionGroup>
+                    </div>
 
                     <div v-if="attachedVoiceNoteBase64" class="rounded-sm pr-1 pl-2 py-1 flex items-center gap-2 w-full justify-between bg-[#170D08]/5">
                       <audio :src="attachedVoiceNoteBase64" controls class="h-8 max-w-[220px]" />
@@ -227,7 +263,7 @@
                         v-model="form.pickupLocation"
                         type="text"
                         placeholder="e.g. College Library — leave blank if not applicable"
-                        class="w-full bg-transparent outline-none py-3 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
+                        class="w-full bg-transparent outline-none py-3 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] placeholder:font-normal placeholder:text-[#766A61]/80 transition-colors"
                       />
                     </div>
                   </div>
@@ -243,18 +279,38 @@
                           v-model="marketForm.marketName"
                           type="text"
                           placeholder="e.g. Yaba Market, Tejuosho"
-                          class="w-full bg-transparent outline-none py-3 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
+                          class="w-full bg-transparent outline-none py-3 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] placeholder:font-normal placeholder:text-[#766A61]/80 transition-colors"
                         />
                       </div>
                     </div>
                     <div class="space-y-2.5">
                       <label class="block font-sans text-sm  tracking-[0.15em] text-[#766A61]">Shopping list</label>
-                      <textarea
-                        v-model="marketForm.itemsList"
-                        rows="4"
-                        placeholder="1. 3 yards of black velvet material&#10;2. A pack of needles"
-                        class="w-full bg-transparent outline-none resize-none py-3 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] transition-colors"
-                      ></textarea>
+                      <div class="space-y-2 mt-2">
+                        <TransitionGroup name="list" tag="div" class="space-y-2">
+                          <div v-for="(item, idx) in marketChecklistItems" :key="idx" class="flex items-start gap-2 relative group">
+                            <div class="mt-2 shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#170D08]/5 border border-[#170D08]/15 text-[#766A61] text-[10px] font-bold">
+                              {{ idx + 1 }}
+                            </div>
+                            <div class="flex-1 relative">
+                              <input
+                                v-model="marketChecklistItems[idx]"
+                                type="text"
+                                :placeholder="idx === 0 ? 'e.g. 3 yards of black velvet material' : ''"
+                                class="market-checklist-input w-full bg-transparent outline-none py-2 text-base font-medium border-b-2 border-dashed border-[#D8D2C4] focus:border-b-[3px] focus:border-b-[#FF5C1A] focus:border-solid text-[#170D08] placeholder:font-normal placeholder:text-[#766A61]/80 transition-colors"
+                                @keydown="handleMarketItemKeydown($event, idx)"
+                              />
+                            </div>
+                            <button
+                              v-if="marketChecklistItems.length > 1"
+                              @click="removeMarketItem(idx)"
+                              class="absolute right-0 top-2 opacity-0 group-hover:opacity-100 p-1 text-[#766A61] hover:text-[#FF5C1A] transition-all bg-white rounded-md border border-[#170D08]/15 shadow-sm"
+                              title="Remove item"
+                            >
+                              <X class="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </TransitionGroup>
+                      </div>
                     </div>
                   </div>
                 </template>
@@ -463,7 +519,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useCustomToast } from '@/composables/core/useCustomToast'
 import { useRouter, useRoute } from '#imports'
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config'
@@ -515,6 +571,8 @@ const openPools = ref<any[]>([])
 const selectedPoolId = ref<string | null>(null)
 const allowPoolJoin = ref(false)
 const fetchingPools = ref(true)
+
+const showAllTemplates = ref(false)
 
 const fetchPools = async () => {
   fetchingPools.value = true
@@ -684,8 +742,88 @@ onMounted(async () => {
   }
 })
 
+const checklistItems = ref<string[]>([''])
+
+const addItem = (index: number) => {
+  checklistItems.value.splice(index + 1, 0, '')
+  nextTick(() => {
+    const inputs = document.querySelectorAll('.checklist-input')
+    if (inputs[index + 1]) (inputs[index + 1] as HTMLInputElement).focus()
+  })
+}
+
+const removeItem = (index: number) => {
+  if (checklistItems.value.length > 1) {
+    checklistItems.value.splice(index, 1)
+    nextTick(() => {
+      const inputs = document.querySelectorAll('.checklist-input')
+      if (inputs[Math.max(0, index - 1)]) (inputs[Math.max(0, index - 1)] as HTMLInputElement).focus()
+    })
+  } else {
+    checklistItems.value[0] = ''
+  }
+}
+
+const handleItemKeydown = (e: KeyboardEvent, index: number) => {
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    addItem(index)
+  } else if (e.key === 'Backspace' && checklistItems.value[index] === '') {
+    e.preventDefault()
+    removeItem(index)
+  }
+}
+
+watch(checklistItems, (newItems) => {
+  form.value.description = newItems.filter(i => i.trim() !== '').join('\n')
+}, { deep: true })
+
+const marketChecklistItems = ref<string[]>([''])
+
+const addMarketItem = (index: number) => {
+  marketChecklistItems.value.splice(index + 1, 0, '')
+  nextTick(() => {
+    const inputs = document.querySelectorAll('.market-checklist-input')
+    if (inputs[index + 1]) (inputs[index + 1] as HTMLInputElement).focus()
+  })
+}
+
+const removeMarketItem = (index: number) => {
+  if (marketChecklistItems.value.length > 1) {
+    marketChecklistItems.value.splice(index, 1)
+    nextTick(() => {
+      const inputs = document.querySelectorAll('.market-checklist-input')
+      if (inputs[Math.max(0, index - 1)]) (inputs[Math.max(0, index - 1)] as HTMLInputElement).focus()
+    })
+  } else {
+    marketChecklistItems.value[0] = ''
+  }
+}
+
+const handleMarketItemKeydown = (e: KeyboardEvent, index: number) => {
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    addMarketItem(index)
+  } else if (e.key === 'Backspace' && marketChecklistItems.value[index] === '') {
+    e.preventDefault()
+    removeMarketItem(index)
+  }
+}
+
+watch(marketChecklistItems, (newItems) => {
+  marketForm.value.itemsList = newItems.filter(i => i.trim() !== '').join('\n')
+}, { deep: true })
+
 const applyTemplate = (tmpl: string) => {
-  form.value.description = `${tmpl} `
+  if (checklistItems.value.length === 1 && !checklistItems.value[0]) {
+    checklistItems.value[0] = `${tmpl} `
+  } else {
+    checklistItems.value.push(`${tmpl} `)
+  }
+  nextTick(() => {
+    const inputs = document.querySelectorAll('.checklist-input')
+    if (inputs[inputs.length - 1]) (inputs[inputs.length - 1] as HTMLInputElement).focus()
+  })
 }
 
 const attachedVoiceNoteBase64 = ref('')
