@@ -108,7 +108,7 @@
           </div>
           
           <!-- Modal Body -->
-          <div class="p-4 sm:p-5 flex-1 overflow-y-auto bg-gray-50/30 pb-40">
+          <div class="p-4 sm:p-5 flex-1 overflow-y-auto bg-gray-50/30 pb-[250px]">
             
             <!-- Loading State -->
             <div v-if="modalLoading" class="flex flex-col items-center justify-center py-10 space-y-3">
