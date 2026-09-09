@@ -628,9 +628,9 @@ definePageMeta({
 })
 
 useHead({
- title: 'Errander | Premium Campus Delivery',
+ title: 'Errander - Making Campus Life Easier, One Errand at a time',
  meta: [
- { name: 'description', content: 'The fastest food delivery for students. From your favorite campus restaurants straight to your hostel door.' }
+{ name: 'description', content: 'Official Errander Student Portal. Order food, track deliveries, and manage your student campus services.' }
  ]
 })
 
