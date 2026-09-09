@@ -15,7 +15,7 @@ if (count($parts) >= 3) {
     $subdomain = $parts[0];
 }
 
-$title = "Errander — Student Portal";
+$title = "Errander - Making Campus Life Easier, One Errand at a time";
 $description = "Order food, groceries, and essentials from your favorite campus vendors. Delivered right to your hostel.";
 $imageUrl = "https://res.cloudinary.com/marquis/image/upload/v1780940566/logo-light_pyjwmn.png";
 

@@ -72,7 +72,7 @@ watch(isLoggedIn, (newVal) => {
 })
 
 useHead({
-  title: 'Errandr - Student Portal',
+  title: 'Errander - Making Campus Life Easier, One Errand at a time',
   htmlAttrs: {
     lang: 'en'
   },
@@ -91,18 +91,18 @@ useHead({
 })
 
 useSeoMeta({
-  title: 'Errandr — Student Portal',
-  ogTitle: 'Errandr — Student Portal',
-  description: 'Official Errandr Student Portal. Order food, track deliveries, and manage your student campus services.',
-  ogDescription: 'Official Errandr Student Portal. Order food, track deliveries, and manage your student campus services.',
+  title: 'Errander - Making Campus Life Easier, One Errand at a time',
+  ogTitle: 'Errander - Making Campus Life Easier, One Errand at a time',
+  description: 'Official Errander Student Portal. Order food, track deliveries, and manage your student campus services.',
+  ogDescription: 'Official Errander Student Portal. Order food, track deliveries, and manage your student campus services.',
   keywords: 'Errandr student, campus delivery, student services, order food, track orders',
   author: 'Errandr Team',
   ogType: 'website',
   ogUrl: 'https://errandr.com/student',
   ogImage: 'https://errandr.com/og-image.jpg',
   twitterCard: 'summary_large_image',
-  twitterTitle: 'Errandr — Student Portal',
-  twitterDescription: 'Official Errandr Student Portal. Order food, track deliveries, and manage your student campus services.',
+  twitterTitle: 'Errander - Making Campus Life Easier, One Errand at a time',
+  twitterDescription: 'Official Errander Student Portal. Order food, track deliveries, and manage your student campus services.',
   twitterImage: 'https://errandr.com/og-image.jpg'
 })
 </script>
