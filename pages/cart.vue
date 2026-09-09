@@ -1900,9 +1900,9 @@ const startPayment = async () => {
 
   // AT THIS POINT, THE USER IS ABOUT TO ACTUALLY PAY
   // Require delivery details and authentication
-  if (!recipientName.value.trim() || !recipientPhone.value.trim()) return showToast({ title: 'Missing Info', message: 'Name and phone required', toastType: 'error' });
-  if (!specificAddress.value.trim()) return showToast({ title: 'Missing Info', message: 'Delivery address required', toastType: 'error' });
-  if (!user.value?.email && !guestEmail.value) return (showAuthModal.value = true);
+  if (!recipientName.value?.trim() || !recipientPhone.value?.trim()) return showToast({ title: 'Missing Info', message: 'Name and phone required', toastType: 'error' });
+  if (!specificAddress.value?.trim()) return showToast({ title: 'Missing Info', message: 'Delivery address required', toastType: 'error' });
+  if (!user.value && !guestEmail.value) return (showAuthModal.value = true);
 
   if (!isWithinLuth.value) {
     if (!proposedDeliveryFee.value || proposedDeliveryFee.value < activeMinOutsideFee.value) {
@@ -1942,9 +1942,7 @@ const startPayment = async () => {
     }
   }
 
-  if (isRecurring.value && recurringSchedules.value.length === 0) {
-    return showToast({ title: 'Missing Info', message: 'Please select at least one day for your automated order.', toastType: 'error' });
-  }
+
 
   placing.value = true;
   try {
@@ -1986,7 +1984,7 @@ const startPayment = async () => {
          
       const data = await initializePayment({
         amount,
-        customer: { name: recipientName.value || guestName.value, email: user.value?.email || guestEmail.value },
+        customer: { name: recipientName.value || guestName.value, email: user.value?.email || guestEmail.value || 'guest@errandr.com' },
         callback_url: `${window.location.origin}/cart${route.query.group ? '?group=' + route.query.group : ''}`,
         metadata,
       });
