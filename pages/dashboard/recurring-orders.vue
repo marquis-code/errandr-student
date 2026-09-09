@@ -108,7 +108,7 @@
           </div>
           
           <!-- Modal Body -->
-          <div class="p-4 sm:p-5 flex-1 overflow-y-auto bg-gray-50/30 pb-28">
+          <div class="p-4 sm:p-5 flex-1 overflow-y-auto bg-gray-50/30 pb-40">
             
             <!-- Loading State -->
             <div v-if="modalLoading" class="flex flex-col items-center justify-center py-10 space-y-3">
@@ -332,7 +332,7 @@
               </div>
 
               <!-- Packaging Type (Dropdown like cart.vue) -->
-              <div v-if="vendorPackagingPacks.length > 0" class="bg-white border border-gray-100 rounded-2xl p-4">
+              <div v-if="vendorPackagingPacks.length > 0" class="bg-white border border-gray-100 rounded-2xl p-4 relative z-20">
                 <div class="flex items-center justify-between mb-1">
                   <div>
                     <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Packaging Type</h4>
@@ -340,17 +340,41 @@
                   </div>
                 </div>
                 <div class="relative mt-3">
-                  <select 
-                    v-model="selectedPackagingPackName"
-                    @change="onPackagingSelect"
-                    class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm font-bold text-gray-900 outline-none focus:border-parentPrimary/50 transition-all cursor-pointer"
+                  <div v-if="isPackagingDropdownOpen" @click="isPackagingDropdownOpen = false" class="fixed inset-0 z-20"></div>
+                  
+                  <div 
+                    @click="isPackagingDropdownOpen = !isPackagingDropdownOpen"
+                    class="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none hover:border-parentPrimary/50 transition-all cursor-pointer relative z-30"
                   >
-                    <option value="" disabled>Select Option</option>
-                    <option v-for="vp in vendorPackagingPacks" :key="vp.name" :value="vp.name">
-                      {{ vp.name }} (+₦{{ vp.price.toLocaleString() }})
-                    </option>
-                  </select>
-                  <ChevronDown class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <span>
+                      {{ selectedPackagingPackName ? `${selectedPackagingPackName} (+₦${selectedPackagingPack?.price?.toLocaleString()})` : 'Select Option' }}
+                    </span>
+                    <ChevronDown class="w-4 h-4 text-gray-400 transition-transform" :class="isPackagingDropdownOpen ? 'rotate-180' : ''" />
+                  </div>
+                  
+                  <Transition
+                    enter-active-class="transition duration-200 ease-out"
+                    enter-from-class="opacity-0 -translate-y-2"
+                    enter-to-class="opacity-100 translate-y-0"
+                    leave-active-class="transition duration-150 ease-in"
+                    leave-from-class="opacity-100 translate-y-0"
+                    leave-to-class="opacity-0 -translate-y-2"
+                  >
+                    <div v-if="isPackagingDropdownOpen" class="absolute top-full left-0 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden py-2 z-40 max-h-60 overflow-y-auto">
+                      <button 
+                        v-for="vp in vendorPackagingPacks" 
+                        :key="vp.name"
+                        @click="selectPackaging(vp)"
+                        class="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors group"
+                        :class="selectedPackagingPackName === vp.name ? 'bg-parentPrimary/5' : ''"
+                      >
+                        <span class="font-bold transition-colors text-sm" :class="selectedPackagingPackName === vp.name ? 'text-parentPrimary' : 'text-gray-700 group-hover:text-gray-900'">
+                          {{ vp.name }} (+₦{{ vp.price.toLocaleString() }})
+                        </span>
+                        <Check v-if="selectedPackagingPackName === vp.name" class="w-4 h-4 text-parentPrimary" />
+                      </button>
+                    </div>
+                  </Transition>
                 </div>
               </div>
 
@@ -489,7 +513,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Repeat, X, Plus, Clock, Trash2, Store, ChevronRight, ChevronLeft, Loader2, ChevronDown, Package, MapPin, Building } from 'lucide-vue-next'
+import { Repeat, X, Plus, Clock, Trash2, Store, ChevronRight, ChevronLeft, Loader2, ChevronDown, Package, MapPin, Building, Check } from 'lucide-vue-next'
 import { orders_api } from '@/api_factory/modules/orders'
 import { vendors_api } from '@/api_factory/modules/vendors'
 import { menu_items_api } from '@/api_factory/modules/menu-items'
@@ -547,6 +571,7 @@ const platformBaseFee = ref(0)
 const platformConvenienceFee = ref(0)
 const platformProcessingFee = ref(0)
 const selectedPackagingPackName = ref('')
+const isPackagingDropdownOpen = ref(false)
 
 // Packaging Packs from vendor
 const vendorPackagingPacks = ref([])
@@ -727,6 +752,7 @@ const resetModalState = () => {
   vendorPackagingPacks.value = []
   selectedPackagingPack.value = null
   selectedPackagingPackName.value = ''
+  isPackagingDropdownOpen.value = false
   previewItem.value = null
   saveDeliveryAsDefault.value = false
 }
@@ -850,6 +876,12 @@ const orderTotal = computed(() => cartSubtotal.value + serviceFee.value + packag
 const onPackagingSelect = () => {
   const match = vendorPackagingPacks.value.find(p => p.name === selectedPackagingPackName.value)
   selectedPackagingPack.value = match || null
+}
+
+const selectPackaging = (vp) => {
+  selectedPackagingPackName.value = vp.name
+  selectedPackagingPack.value = vp
+  isPackagingDropdownOpen.value = false
 }
 
 // ============ ITEM PREVIEW ============
