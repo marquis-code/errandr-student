@@ -436,29 +436,29 @@
 
 
             <!-- MOBILE: Order Summary -->
-            <div class="lg:hidden bg-gray-900 rounded-none sm:rounded-2xl border-y sm:border-x border-gray-800 overflow-hidden text-white shadow-xl shadow-gray-900/10">
-              <div class="px-4 sm:px-5 py-4 bg-gray-800/50 border-b border-gray-800 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
-                  <Receipt class="w-4 h-4 text-white" />
+            <div class="lg:hidden bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-hidden shadow-xl shadow-black/5">
+              <div class="px-4 sm:px-5 py-4 bg-gray-50/50 border-b border-gray-100 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center border border-gray-200">
+                  <Receipt class="w-4 h-4 text-gray-700" />
                 </div>
-                <h3 class="text-sm font-bold text-white tracking-tight">Order Summary</h3>
+                <h3 class="text-sm font-bold text-gray-900 tracking-tight">Order Summary</h3>
               </div>
               <div class="p-4 sm:p-5 space-y-3">
-                <div class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
+                <div class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
                   <span>Subtotal</span>
-                  <span class="text-white font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
+                  <span class="text-gray-900 font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
                 </div>
-                <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
+                <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
                   <span>Delivery</span>
-                  <span :class="isBirthday ? 'line-through text-gray-500' : 'text-white font-bold'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
+                  <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-bold'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
                 </div>
-                <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
+                <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
                   <span>Pack</span>
-                  <span class="text-white font-bold">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
+                  <span class="text-gray-900 font-bold">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
                 </div>
-                <div class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
+                <div class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
                   <span>Service Charge</span>
-                  <span class="text-white font-bold">₦{{ (computedTotalServiceFee + computedPaystackFee).toLocaleString() }}</span>
+                  <span class="text-gray-900 font-bold">₦{{ (computedTotalServiceFee + computedPaystackFee).toLocaleString() }}</span>
                 </div>
                 <div v-if="isBirthday" class="flex justify-between items-center text-xs font-bold text-[#008950]">
                   <span class="flex items-center gap-1">🎂 Birthday Treat</span>
@@ -481,7 +481,7 @@
                   <span class="font-bold">-₦{{ computedPromoDiscount.toLocaleString() }}</span>
                 </div>
               </div>
-              <div class="px-4 sm:px-5 pb-5 pt-3 border-t border-dashed border-gray-800 space-y-5">
+              <div class="px-4 sm:px-5 pb-5 pt-3 border-t border-dashed border-gray-300 space-y-5">
                 <div v-if="isNightOwl" class="p-3 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-3">
                   <span class="text-lg">🦉</span>
                   <div>
@@ -496,12 +496,12 @@
                     @input="handlePromoInput"
                     type="text"
                     placeholder="Enter Promo Code"
-                    class="flex-1 px-4 py-3 bg-gray-800/50 border border-gray-700/50 focus:border-white/20 rounded-xl text-xs font-medium text-white placeholder-gray-500 outline-none uppercase transition-all"
+                    class="flex-1 px-4 py-3 bg-white border border-gray-200 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 rounded-xl text-xs font-bold text-gray-900 placeholder-gray-400 outline-none uppercase transition-all shadow-sm"
                   />
                   <button 
                     @click="validatePromo"
                     :disabled="isValidatingPromo || !promoCodeInput"
-                    class="px-5 py-3 bg-white text-gray-900 rounded-xl text-xs font-bold hover:bg-gray-100 disabled:opacity-50 transition-colors"
+                    class="px-5 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-black disabled:opacity-50 transition-colors shadow-sm active:scale-95"
                   >
                     <Loader2 v-if="isValidatingPromo" class="w-3 h-3 animate-spin" />
                     <span v-else>Apply</span>
@@ -584,18 +584,15 @@
                   </div>
                   
                   <!-- Pack Items -->
-                  <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="pack.id" class="space-y-4 relative">
-                    <!-- Connective Line -->
-                    <div class="absolute left-[1.35rem] top-10 bottom-4 w-px bg-gradient-to-b from-gray-200 to-transparent z-0"></div>
-                    
+                  <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="pack.id" class="space-y-3 mb-6 relative">
                     <div class="flex items-center gap-3 relative z-10">
-                      <div class="h-7 px-3 bg-gray-900 text-white rounded-lg flex items-center justify-center text-xs font-black tracking-wider shadow-md whitespace-nowrap">{{ pack.name || `P${pIndex + 1}` }}</div>
-                      <div class="h-px flex-1 bg-gradient-to-r from-gray-100 to-transparent"></div>
+                      <div class="h-7 px-3 bg-gray-900 text-white rounded-lg flex items-center justify-center text-xs font-black tracking-wider shadow-sm whitespace-nowrap">{{ pack.name || `P${pIndex + 1}` }}</div>
+                      <div class="h-px flex-1 bg-gray-100"></div>
                     </div>
                     
-                    <div class="pl-12 space-y-4">
-                      <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="group/item flex items-start gap-4 p-3 -ml-3 rounded-2xl hover:bg-gray-50/80 transition-colors border border-transparent hover:border-gray-100">
-                        <div class="w-16 h-16 rounded-[1.25rem] overflow-hidden shrink-0 border border-gray-200/60 bg-white shadow-sm relative group-hover/item:shadow-md transition-shadow">
+                    <div class="space-y-3">
+                      <div v-for="(item, iIndex) in pack.items" :key="item.productId + iIndex" class="group/item flex items-start gap-4 p-3 bg-gray-50/50 rounded-2xl hover:bg-gray-50 transition-colors border border-gray-100 hover:border-gray-200">
+                        <div class="w-14 h-14 rounded-[1rem] overflow-hidden shrink-0 border border-gray-200/60 bg-white shadow-sm relative group-hover/item:shadow-md transition-shadow">
                           <video v-if="item.image && item.image.match(/\.(mp4|webm|ogg|mov)/i)" :src="item.image" class="w-full h-full object-cover" autoplay loop muted playsinline></video>
                           <img v-else :src="item.image || '/placeholder-store.jpg'" @error="$event.target.src = '/placeholder-store.jpg'" class="w-full h-full object-cover transform group-hover/item:scale-105 transition-transform duration-500" />
                           <div class="absolute top-0 right-0 bg-gray-900/80 backdrop-blur-sm text-white text-[9px] font-black px-1.5 py-0.5 rounded-bl-lg">x{{ item.quantity }}</div>
@@ -663,35 +660,31 @@
               </div>
 
               <!-- Premium Order Summary -->
-              <div class="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-[2rem] border border-gray-700/50 shadow-2xl overflow-hidden relative">
-                <!-- Glossy Overlay -->
-                <div class="absolute inset-0 bg-white/5 opacity-[0.02] mix-blend-overlay pointer-events-none"></div>
-                <div class="absolute -top-24 -right-24 w-48 h-48 bg-parentPrimary/30 rounded-full blur-3xl opacity-50"></div>
-                <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl opacity-50"></div>
+              <div class="bg-white rounded-[2rem] border border-gray-100 shadow-xl shadow-black/5 overflow-hidden relative">
 
-                <div class="px-6 py-5 border-b border-white/10 relative z-10 flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
-                    <Receipt class="w-4 h-4 text-white/80" />
+                <div class="px-6 py-5 border-b border-gray-100 relative z-10 flex items-center gap-3 bg-gray-50/50">
+                  <div class="w-8 h-8 rounded-full bg-gray-200/50 flex items-center justify-center backdrop-blur-sm">
+                    <Receipt class="w-4 h-4 text-gray-700" />
                   </div>
-                  <h3 class="text-base font-bold text-white tracking-tight">Order Summary</h3>
+                  <h3 class="text-base font-bold text-gray-900 tracking-tight">Order Summary</h3>
                 </div>
                 
                 <div class="p-6 space-y-4 relative z-10">
-                  <div class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
+                  <div class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
                     <span>Subtotal</span>
-                    <span class="text-white font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
+                    <span class="text-gray-900 font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
                   </div>
-                  <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
+                  <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
                     <span>Delivery</span>
-                    <span :class="isBirthday ? 'line-through text-gray-500' : 'text-white font-bold'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
+                    <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-bold'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
                   </div>
-                  <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
+                  <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
                     <span>Packaging Fee</span>
-                    <span class="text-white font-bold">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
+                    <span class="text-gray-900 font-bold">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
                   </div>
-                  <div class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
+                  <div class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
                     <span>Service Charge</span>
-                    <span class="text-white font-bold">₦{{ (computedTotalServiceFee + computedPaystackFee).toLocaleString() }}</span>
+                    <span class="text-gray-900 font-bold">₦{{ (computedTotalServiceFee + computedPaystackFee).toLocaleString() }}</span>
                   </div>
                   
                   <!-- Discounts Area -->
@@ -719,7 +712,7 @@
                   </div>
                 </div>
                 
-                <div class="px-6 pb-6 pt-4 border-t border-white/10 space-y-6 relative z-10 bg-black/20">
+                <div class="px-6 pb-6 pt-4 border-t border-gray-100 space-y-6 relative z-10 bg-gray-50/50">
                   <div v-if="isNightOwl" class="p-3 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-3">
                     <span class="text-lg">🦉</span>
                     <div>
@@ -735,12 +728,12 @@
                       @input="handlePromoInput"
                       type="text"
                       placeholder="Enter Promo Code"
-                      class="relative flex-1 px-4 py-3.5 bg-white/10 border border-white/20 focus:border-parentPrimary/50 focus:bg-white/15 focus:ring-2 focus:ring-parentPrimary/20 rounded-xl text-sm font-bold text-white outline-none uppercase placeholder:text-gray-400 placeholder:normal-case transition-all backdrop-blur-sm"
+                      class="relative flex-1 px-4 py-3.5 bg-white border border-gray-200 focus:border-parentPrimary/50 focus:ring-2 focus:ring-parentPrimary/20 rounded-xl text-sm font-bold text-gray-900 outline-none uppercase placeholder:text-gray-400 placeholder:normal-case transition-all shadow-sm"
                     />
                     <button 
                       @click="validatePromo"
                       :disabled="isValidatingPromo || !promoCodeInput"
-                      class="relative px-5 py-3.5 bg-white text-gray-900 rounded-xl text-sm font-black hover:bg-gray-100 disabled:opacity-50 transition-all shadow-sm shadow-white/10 active:scale-95 border border-white"
+                      class="relative px-5 py-3.5 bg-gray-900 text-white rounded-xl text-sm font-black hover:bg-gray-800 disabled:opacity-50 transition-all shadow-sm active:scale-95"
                     >
                       <Loader2 v-if="isValidatingPromo" class="w-4 h-4 animate-spin" />
                       <span v-else>Apply</span>

@@ -7,7 +7,12 @@
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
         <Clock class="w-4 h-4" :class="order ? 'text-parentPrimary' : 'text-gray-400'" />
-        <h4 class="text-sm font-bold tracking-tight" :class="order ? 'text-gray-900' : 'text-gray-500'">{{ timeLabel }}</h4>
+        <div>
+          <h4 class="text-sm font-bold tracking-tight" :class="order ? 'text-gray-900' : 'text-gray-500'">{{ timeLabel }}</h4>
+          <p v-if="order && getExactTime(order)" class="text-xs font-semibold text-parentPrimary mt-0.5">
+            Initiates at {{ getExactTime(order) }}
+          </p>
+        </div>
       </div>
       
       <!-- Status Badge if order exists -->
@@ -64,4 +69,19 @@ const props = defineProps({
 })
 
 defineEmits(['add', 'delete', 'edit'])
+
+const getExactTime = (orderObj) => {
+  if (!orderObj || !orderObj.schedules || !orderObj.schedules.length) return null
+  const scheduleForDay = orderObj.schedules.find(s => s.day === props.day.toLowerCase())
+  if (!scheduleForDay || !scheduleForDay.exactTime) return null
+  // format 14:30 to 02:30 PM
+  const timeStr = scheduleForDay.exactTime
+  const [hStr, mStr] = timeStr.split(':')
+  let h = parseInt(hStr, 10)
+  const ampm = h >= 12 ? 'PM' : 'AM'
+  h = h % 12
+  h = h ? h : 12 // the hour '0' should be '12'
+  const hDisplay = h < 10 ? '0'+h : h
+  return `${hDisplay}:${mStr} ${ampm}`
+}
 </script>

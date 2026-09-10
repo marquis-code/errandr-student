@@ -20,7 +20,7 @@
     <div class="relative mb-8 z-20">
       <div 
         @click="isDropdownOpen = !isDropdownOpen"
-        class="flex items-center justify-between bg-white border border-gray-100 rounded-2xl p-2 pl-4 shadow-sm relative cursor-pointer hover:border-parentPrimary/30 transition-colors"
+        class="flex items-center justify-between bg-white  rounded-2xl p-2 pl-4  relative cursor-pointer hover:border-parentPrimary/30 transition-colors"
       >
         <div class="flex flex-col">
           <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Viewing Schedule For</span>
@@ -44,7 +44,7 @@
         leave-from-class="opacity-100 translate-y-0"
         leave-to-class="opacity-0 -translate-y-2"
       >
-        <div v-if="isDropdownOpen" class="absolute top-full left-0 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2 z-30">
+        <div v-if="isDropdownOpen" class="absolute top-full left-0 w-full mt-2 bg-white  rounded-2xl shadow-xl overflow-hidden py-2 z-30">
           <button 
             v-for="day in daysOfWeek" 
             :key="day.value"
@@ -86,13 +86,13 @@
     <!-- ========================== -->
     <Teleport to="body">
       <div v-if="showAddModal" class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-gray-900/40 backdrop-blur-sm sm:p-4 animate-fade-in" @click.self="closeModal">
-        <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[92vh] sm:h-[88vh] animate-slide-up relative">
+        <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[90dvh] sm:h-[88vh] animate-slide-up relative">
           
           <!-- Modal Header -->
           <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 shrink-0">
             <div>
               <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                <button v-if="modalView !== 'vendors'" @click="goBack" class="w-6 h-6 flex items-center justify-center bg-white rounded-full text-gray-600 hover:text-gray-900 shadow-sm border border-gray-100 transition-colors">
+                <button v-if="modalView !== 'vendors'" @click="goBack" class="w-6 h-6 flex items-center justify-center bg-white rounded-full text-gray-600 hover:text-gray-900   transition-colors">
                   <ChevronLeft class="w-4 h-4"/>
                 </button>
                 <span v-if="modalView === 'vendors'">Select a Vendor</span>
@@ -100,15 +100,15 @@
                 <span v-else-if="modalView === 'delivery'">Delivery Details</span>
                 <span v-else>Review & Confirm</span>
               </h3>
-              <p class="text-[10px] font-bold text-parentPrimary uppercase tracking-wider mt-1">For {{ activeModalContext?.day }} • {{ activeModalContext?.time }}</p>
+              <p class="text-xs font-medium text-parentPrimary mt-1">For {{ activeModalContext?.day }} • {{ activeModalContext?.time }}</p>
             </div>
-            <button @click="closeModal" class="w-8 h-8 flex items-center justify-center bg-white rounded-full text-gray-400 hover:text-gray-900 shadow-sm border border-gray-100 transition-colors">
+            <button @click="closeModal" class="w-8 h-8 flex items-center justify-center bg-white rounded-full text-gray-400 hover:text-gray-900   transition-colors">
               <X class="w-4 h-4"/>
             </button>
           </div>
           
           <!-- Modal Body -->
-          <div class="p-4 sm:p-5 flex-1 overflow-y-auto bg-gray-50/30 pb-[250px]">
+          <div class="p-4 sm:p-5 flex-1 overflow-y-auto bg-gray-50/30">
             
             <!-- Loading State -->
             <div v-if="modalLoading" class="flex flex-col items-center justify-center py-10 space-y-3">
@@ -122,7 +122,7 @@
                 v-for="vendor in vendors" 
                 :key="vendor._id"
                 @click="selectVendor(vendor)"
-                class="bg-white p-4 rounded-2xl border border-gray-100 hover:border-parentPrimary/30 hover:shadow-md cursor-pointer transition-all flex items-center gap-4 group"
+                class="bg-white p-4 rounded-2xl  hover:border-parentPrimary/30 hover: cursor-pointer transition-all flex items-center gap-4 group"
               >
                 <img :src="vendor.logo || vendor.banner || 'https://via.placeholder.com/150'" class="w-12 h-12 rounded-xl object-cover" />
                 <div class="flex-1">
@@ -139,12 +139,12 @@
               
               <!-- Menu Packs (from menu_items_api.getPacks) -->
               <div v-if="vendorPacks.length" class="mb-6">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Meal Combos / Packs</h4>
+                <h4 class="text-sm font-bold text-gray-900 mb-3 px-1">Meal Combos / Packs</h4>
                 <div class="space-y-3">
                   <div 
                     v-for="pack in vendorPacks" 
                     :key="pack._id"
-                    class="bg-white p-4 rounded-2xl border border-gray-100 transition-all flex items-center gap-3 cursor-pointer hover:border-parentPrimary/30"
+                    class="bg-white p-4 rounded-2xl  transition-all flex items-center gap-3 cursor-pointer hover:border-parentPrimary/30"
                     @click="updatePackQty(pack, 1)"
                   >
                     <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-500 shrink-0">
@@ -155,12 +155,12 @@
                       <p class="text-xs text-gray-500 line-clamp-1">{{ pack.description || 'Curated meal pack' }}</p>
                       <p class="font-black text-gray-900 mt-1 text-sm">₦{{ pack.price?.toLocaleString() || 0 }}</p>
                     </div>
-                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border border-gray-100 shadow-inner shrink-0" v-if="getPackQty(pack) > 0">
-                      <button @click.stop="updatePackQty(pack, -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-parentPrimary font-bold">-</button>
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1   shrink-0" v-if="getPackQty(pack) > 0">
+                      <button @click.stop="updatePackQty(pack, -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded  text-gray-600 hover:text-parentPrimary font-bold">-</button>
                       <span class="w-4 text-center text-xs font-bold">{{ getPackQty(pack) }}</span>
-                      <button @click.stop="updatePackQty(pack, 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-parentPrimary font-bold">+</button>
+                      <button @click.stop="updatePackQty(pack, 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded  text-gray-600 hover:text-parentPrimary font-bold">+</button>
                     </div>
-                    <div v-else class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 border border-gray-100 shrink-0">
+                    <div v-else class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400  shrink-0">
                       <Plus class="w-4 h-4"/>
                     </div>
                   </div>
@@ -169,12 +169,12 @@
 
               <!-- Individual Meals -->
               <div v-if="menuItems.length">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Individual Meals</h4>
+                <h4 class="text-sm font-bold text-gray-900 mb-3 px-1">Individual Meals</h4>
                 <div class="space-y-3">
                   <div 
                     v-for="item in menuItems" 
                     :key="item._id"
-                    class="bg-white p-3 rounded-2xl border border-gray-100 transition-all flex items-center gap-3"
+                    class="bg-white p-3 rounded-2xl  transition-all flex items-center gap-3"
                   >
                     <!-- Tappable image to preview -->
                     <img 
@@ -187,15 +187,15 @@
                       <p v-if="item.description" class="text-[11px] text-gray-500 line-clamp-1 mt-0.5">{{ item.description }}</p>
                       <div class="flex items-center gap-2 mt-1">
                         <p class="font-black text-gray-900 text-sm">₦{{ (item.pricePerPortion || item.price || 0).toLocaleString() }}</p>
-                        <span v-if="item.portionUnit" class="text-[10px] font-bold text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded-full border border-gray-100">per {{ item.portionUnit }}</span>
+                        <span v-if="item.portionUnit" class="text-[10px] font-bold text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded-full ">per {{ item.portionUnit }}</span>
                       </div>
                     </div>
-                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border border-gray-100 shadow-inner shrink-0" v-if="getItemQty(item) > 0">
-                      <button @click.stop="updateItemQty(item, -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-parentPrimary font-bold">-</button>
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1   shrink-0" v-if="getItemQty(item) > 0">
+                      <button @click.stop="updateItemQty(item, -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded  text-gray-600 hover:text-parentPrimary font-bold">-</button>
                       <span class="w-4 text-center text-xs font-bold">{{ getItemQty(item) }}</span>
-                      <button @click.stop="updateItemQty(item, 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-parentPrimary font-bold">+</button>
+                      <button @click.stop="updateItemQty(item, 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded  text-gray-600 hover:text-parentPrimary font-bold">+</button>
                     </div>
-                    <div v-else @click="updateItemQty(item, 1)" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 border border-gray-100 cursor-pointer hover:bg-parentPrimary/10 hover:text-parentPrimary transition-colors shrink-0">
+                    <div v-else @click="updateItemQty(item, 1)" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400  cursor-pointer hover:bg-parentPrimary/10 hover:text-parentPrimary transition-colors shrink-0">
                       <Plus class="w-4 h-4"/>
                     </div>
                   </div>
@@ -208,8 +208,8 @@
             <!-- ========== STEP 3: DELIVERY DETAILS ========== -->
             <div v-else-if="modalView === 'delivery'" class="space-y-5">
               
-              <div class="bg-white border border-gray-100 rounded-2xl p-4">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-3">Recipient Info</label>
+              <div class="bg-white  rounded-2xl p-4">
+                <label class="text-sm font-bold text-gray-900 block mb-3">Recipient Info</label>
                 <div class="space-y-3">
                   <input 
                     v-model="recipientName" type="text" placeholder="Full Name"
@@ -222,8 +222,8 @@
                 </div>
               </div>
 
-              <div class="bg-white border border-gray-100 rounded-2xl p-4">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-3">Delivery Method</label>
+              <div class="bg-white  rounded-2xl p-4">
+                <label class="text-sm font-bold text-gray-900 block mb-3">Delivery Method</label>
                 <div class="grid grid-cols-2 gap-3">
                   <button 
                     @click="deliveryMode = 'room_delivery'"
@@ -250,8 +250,8 @@
                 </div>
               </div>
 
-              <div class="bg-white border border-gray-100 rounded-2xl p-4">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-3">Location Type</label>
+              <div class="bg-white  rounded-2xl p-4">
+                <label class="text-sm font-bold text-gray-900 block mb-3">Location Type</label>
                 <div class="grid grid-cols-2 gap-3 mb-4">
                   <button 
                     @click="locationType = 'inside_campus'"
@@ -275,8 +275,8 @@
                 />
               </div>
 
-              <div class="bg-white border border-gray-100 rounded-2xl p-4">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-3">Note for Vendor (Optional)</label>
+              <div class="bg-white  rounded-2xl p-4">
+                <label class="text-sm font-bold text-gray-900 block mb-3">Note for Vendor (Optional)</label>
                 <textarea 
                   v-model="vendorNote" rows="2" placeholder="e.g. Extra spicy, no onions..."
                   class="w-full bg-gray-50 border border-gray-100 focus:border-parentPrimary/50 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all resize-none"
@@ -301,18 +301,18 @@
             <div v-else-if="modalView === 'confirm'" class="space-y-5">
               
               <!-- Items Summary -->
-              <div class="bg-white border border-gray-100 rounded-2xl p-4">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 border-b border-gray-50 pb-2">Selected Items</h4>
+              <div class="bg-white  rounded-2xl p-4">
+                <h4 class="text-sm font-bold text-gray-900 mb-3 border-b border-gray-50 pb-2">Selected Items</h4>
                 <div class="space-y-3">
                   <div v-for="pack in selectedPacks" :key="`rp-${pack._id}`" class="flex justify-between items-center">
                     <div class="flex-1 min-w-0">
                       <h5 class="font-bold text-gray-900 text-sm line-clamp-1">{{ pack.name }}</h5>
                       <p class="text-[10px] text-gray-400 font-bold">PACK</p>
                     </div>
-                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border border-gray-100 shadow-inner shrink-0">
-                      <button @click.stop="updatePackQty(pack, -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-parentPrimary font-bold">-</button>
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1   shrink-0">
+                      <button @click.stop="updatePackQty(pack, -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded  text-gray-600 hover:text-parentPrimary font-bold">-</button>
                       <span class="w-4 text-center text-xs font-bold">{{ pack.cartQty }}</span>
-                      <button @click.stop="updatePackQty(pack, 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-parentPrimary font-bold">+</button>
+                      <button @click.stop="updatePackQty(pack, 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded  text-gray-600 hover:text-parentPrimary font-bold">+</button>
                     </div>
                     <span class="font-bold text-gray-900 text-sm ml-3 w-16 text-right shrink-0">₦{{ ((pack.price || 0) * pack.cartQty).toLocaleString() }}</span>
                   </div>
@@ -321,95 +321,116 @@
                       <h5 class="font-bold text-gray-900 text-sm line-clamp-1">{{ item.name }}</h5>
                       <p class="text-[10px] text-gray-400 font-bold">{{ item.portionUnit ? `PER ${item.portionUnit.toUpperCase()}` : 'MEAL' }}</p>
                     </div>
-                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border border-gray-100 shadow-inner shrink-0">
-                      <button @click.stop="updateItemQty(item, -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-parentPrimary font-bold">-</button>
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1   shrink-0">
+                      <button @click.stop="updateItemQty(item, -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded  text-gray-600 hover:text-parentPrimary font-bold">-</button>
                       <span class="w-4 text-center text-xs font-bold">{{ item.cartQty }}</span>
-                      <button @click.stop="updateItemQty(item, 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-parentPrimary font-bold">+</button>
+                      <button @click.stop="updateItemQty(item, 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded  text-gray-600 hover:text-parentPrimary font-bold">+</button>
                     </div>
                     <span class="font-bold text-gray-900 text-sm ml-3 w-16 text-right shrink-0">₦{{ ((item.pricePerPortion || item.price || 0) * item.cartQty).toLocaleString() }}</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Packaging Type (Dropdown like cart.vue) -->
-              <div v-if="vendorPackagingPacks.length > 0" class="bg-white border border-gray-100 rounded-2xl p-4 relative z-20">
-                <div class="flex items-center justify-between mb-1">
-                  <div>
-                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Packaging Type</h4>
-                    <p class="text-[11px] text-gray-400 mt-0.5">Choose how you want your items packed</p>
+              <!-- Packaging Selector -->
+              <div v-if="vendorPackagingPacks.length > 0" class="bg-white rounded-2xl p-4 relative z-30">
+                <h4 class="text-sm font-bold text-gray-900 mb-2">Packaging Type</h4>
+                <div class="relative z-30">
+                  <div @click="isPackagingDropdownOpen = !isPackagingDropdownOpen" class="w-full bg-gray-50 hover:bg-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 flex justify-between items-center cursor-pointer transition-all">
+                    <span :class="selectedPackagingPackName ? 'text-gray-900' : 'text-gray-500'">{{ selectedPackagingPackName || 'Select Packaging' }}</span>
+                    <ChevronDown class="w-4 h-4 text-gray-400" />
+                  </div>
+                  <!-- Dropdown Modal -->
+                  <div v-if="isPackagingDropdownOpen" class="absolute top-full left-0 w-full mt-2 bg-white/95 backdrop-blur-xl rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100/50 py-2 max-h-48 overflow-y-auto z-50">
+                    <div v-for="vp in vendorPackagingPacks" :key="vp.name" @click="selectPackaging(vp)" class="px-4 py-3 text-sm font-bold cursor-pointer transition-colors flex justify-between items-center" :class="selectedPackagingPackName === vp.name ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700 hover:bg-gray-50'">
+                      <div class="flex items-center gap-2">
+                        <span>{{ vp.name }}</span>
+                        <Check v-if="selectedPackagingPackName === vp.name" class="w-4 h-4 text-parentPrimary"/>
+                      </div>
+                      <span>₦{{ vp.price }}</span>
+                    </div>
                   </div>
                 </div>
-                <div class="relative mt-3">
-                  <div v-if="isPackagingDropdownOpen" @click="isPackagingDropdownOpen = false" class="fixed inset-0 z-20"></div>
-                  
-                  <div 
-                    @click="isPackagingDropdownOpen = !isPackagingDropdownOpen"
-                    class="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none hover:border-parentPrimary/50 transition-all cursor-pointer relative z-30"
-                  >
-                    <span>
-                      {{ selectedPackagingPackName ? `${selectedPackagingPackName} (+₦${selectedPackagingPack?.price?.toLocaleString()})` : 'Select Option' }}
-                    </span>
-                    <ChevronDown class="w-4 h-4 text-gray-400 transition-transform" :class="isPackagingDropdownOpen ? 'rotate-180' : ''" />
+              </div>
+              <div v-if="isPackagingDropdownOpen" @click="isPackagingDropdownOpen = false" class="fixed inset-0 z-20"></div>
+
+              <!-- Exact Time Picker -->
+              <div class="bg-white  rounded-2xl p-4 relative z-20">
+                <div class="flex items-center justify-between mb-2">
+                  <div>
+                    <h4 class="text-sm font-bold text-gray-900">Meal Delivery Time</h4>
+                    <p class="text-xs text-gray-500 mt-0.5">Pick the exact time we should process this order.</p>
+                  </div>
+                  <Clock class="w-4 h-4 text-gray-400" />
+                </div>
+                
+                <!-- Backdrop for closing custom dropdowns -->
+                <div v-if="showHourDropdown || showMinuteDropdown" @click="showHourDropdown = false; showMinuteDropdown = false" class="fixed inset-0 z-40"></div>
+
+                <div class="flex items-center gap-3 mt-2 relative z-50">
+                  <div class="relative flex-1">
+                    <div @click="showHourDropdown = !showHourDropdown; showMinuteDropdown = false" class="w-full bg-gray-50 hover:bg-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 flex justify-between items-center cursor-pointer transition-all">
+                      <span :class="selectedHour ? 'text-gray-900' : 'text-gray-500'">{{ selectedHour || 'Hour' }}</span>
+                      <ChevronDown class="w-4 h-4 text-gray-400" />
+                    </div>
+                    <!-- Custom Hour Dropdown -->
+                    <div v-if="showHourDropdown" class="absolute top-full left-0 w-full mt-2 bg-white/95 backdrop-blur-xl rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100/50 py-2 max-h-48 overflow-y-auto z-50">
+                      <div v-for="h in availableHours" :key="h" @click="selectedHour = h; showHourDropdown = false" class="px-4 py-2.5 text-sm font-bold cursor-pointer transition-colors flex justify-between items-center" :class="selectedHour === h ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700 hover:bg-gray-50'">
+                        <span>{{ h }}</span>
+                        <Check v-if="selectedHour === h" class="w-4 h-4 text-parentPrimary"/>
+                      </div>
+                    </div>
                   </div>
                   
-                  <Transition
-                    enter-active-class="transition duration-200 ease-out"
-                    enter-from-class="opacity-0 -translate-y-2"
-                    enter-to-class="opacity-100 translate-y-0"
-                    leave-active-class="transition duration-150 ease-in"
-                    leave-from-class="opacity-100 translate-y-0"
-                    leave-to-class="opacity-0 -translate-y-2"
-                  >
-                    <div v-if="isPackagingDropdownOpen" class="absolute top-full left-0 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden py-2 z-40 max-h-60 overflow-y-auto">
-                      <button 
-                        v-for="vp in vendorPackagingPacks" 
-                        :key="vp.name"
-                        @click="selectPackaging(vp)"
-                        class="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors group"
-                        :class="selectedPackagingPackName === vp.name ? 'bg-parentPrimary/5' : ''"
-                      >
-                        <span class="font-bold transition-colors text-sm" :class="selectedPackagingPackName === vp.name ? 'text-parentPrimary' : 'text-gray-700 group-hover:text-gray-900'">
-                          {{ vp.name }} (+₦{{ vp.price.toLocaleString() }})
-                        </span>
-                        <Check v-if="selectedPackagingPackName === vp.name" class="w-4 h-4 text-parentPrimary" />
-                      </button>
+                  <span class="font-bold text-gray-900 text-lg">:</span>
+                  
+                  <div class="relative flex-1">
+                    <div @click="showMinuteDropdown = !showMinuteDropdown; showHourDropdown = false" class="w-full bg-gray-50 hover:bg-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 flex justify-between items-center cursor-pointer transition-all">
+                      <span :class="selectedMinute ? 'text-gray-900' : 'text-gray-500'">{{ selectedMinute || 'Min' }}</span>
+                      <ChevronDown class="w-4 h-4 text-gray-400" />
                     </div>
-                  </Transition>
+                    <!-- Custom Minute Dropdown -->
+                    <div v-if="showMinuteDropdown" class="absolute top-full left-0 w-full mt-2 bg-white/95 backdrop-blur-xl rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100/50 py-2 max-h-48 overflow-y-auto z-50">
+                      <div v-for="m in availableMinutes" :key="m" @click="selectedMinute = m; showMinuteDropdown = false" class="px-4 py-2.5 text-sm font-bold cursor-pointer transition-colors flex justify-between items-center" :class="selectedMinute === m ? 'text-parentPrimary bg-parentPrimary/5' : 'text-gray-700 hover:bg-gray-50'">
+                        <span>{{ m }}</span>
+                        <Check v-if="selectedMinute === m" class="w-4 h-4 text-parentPrimary"/>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <!-- Delivery Summary -->
-              <div class="bg-white border border-gray-100 rounded-2xl p-4">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Delivery Summary</h4>
-                <div class="space-y-2 text-sm">
-                  <div class="flex justify-between"><span class="text-gray-500">Recipient</span><span class="font-bold text-gray-900">{{ recipientName || 'Not set' }}</span></div>
-                  <div class="flex justify-between"><span class="text-gray-500">Phone</span><span class="font-bold text-gray-900">{{ recipientPhone || 'Not set' }}</span></div>
-                  <div class="flex justify-between"><span class="text-gray-500">Method</span><span class="font-bold text-gray-900 capitalize">{{ deliveryMode.replace('_', ' ') }}</span></div>
-                  <div class="flex justify-between"><span class="text-gray-500">Location</span><span class="font-bold text-gray-900 capitalize">{{ locationType.replace('_', ' ') }}</span></div>
-                  <div class="flex justify-between"><span class="text-gray-500">Address</span><span class="font-bold text-gray-900 text-right max-w-[200px]">{{ specificAddress || 'Not set' }}</span></div>
+              <div class="bg-white  rounded-2xl p-4">
+                <h4 class="text-sm font-bold text-gray-900 mb-3">Delivery Summary</h4>
+                <div class="space-y-3 text-sm">
+                  <div class="flex justify-between"><span class="text-gray-500 flex items-center gap-1.5"><User class="w-4 h-4"/> Recipient</span><span class="font-bold text-gray-900">{{ recipientName || 'Not set' }}</span></div>
+                  <div class="flex justify-between"><span class="text-gray-500 flex items-center gap-1.5"><Phone class="w-4 h-4"/> Phone</span><span class="font-bold text-gray-900">{{ recipientPhone || 'Not set' }}</span></div>
+                  <div class="flex justify-between"><span class="text-gray-500 flex items-center gap-1.5"><Navigation class="w-4 h-4"/> Method</span><span class="font-bold text-gray-900 capitalize">{{ deliveryMode.replace('_', ' ') }}</span></div>
+                  <div class="flex justify-between"><span class="text-gray-500 flex items-center gap-1.5"><Building class="w-4 h-4"/> Location</span><span class="font-bold text-gray-900 capitalize">{{ locationType.replace('_', ' ') }}</span></div>
+                  <div class="flex justify-between"><span class="text-gray-500 flex items-center gap-1.5"><Map class="w-4 h-4"/> Address</span><span class="font-bold text-gray-900 text-right max-w-[200px]">{{ specificAddress || 'Not set' }}</span></div>
                 </div>
               </div>
 
               <!-- Price Breakdown -->
-              <div class="bg-white border border-gray-100 rounded-2xl p-4">
-                <div class="flex items-center justify-between text-sm mb-2 text-gray-500">
-                  <span>Subtotal</span>
+              <div class="bg-white  rounded-2xl p-4">
+                <div class="flex items-center justify-between text-sm mb-3 text-gray-500">
+                  <span class="flex items-center gap-1.5"><Receipt class="w-4 h-4"/> Subtotal</span>
                   <span class="font-bold text-gray-900">₦{{ cartSubtotal.toLocaleString() }}</span>
                 </div>
-                <div v-if="deliveryFee > 0" class="flex items-center justify-between text-sm mb-2 text-gray-500">
-                  <span>Delivery</span>
+                <div v-if="deliveryFee > 0" class="flex items-center justify-between text-sm mb-3 text-gray-500">
+                  <span class="flex items-center gap-1.5"><Truck class="w-4 h-4"/> Delivery</span>
                   <span class="font-bold text-gray-900">₦{{ deliveryFee.toLocaleString() }}</span>
                 </div>
-                <div v-if="packagingFee > 0" class="flex items-center justify-between text-sm mb-2 text-gray-500">
-                  <span>Packaging Fee</span>
+                <div v-if="packagingFee > 0" class="flex items-center justify-between text-sm mb-3 text-gray-500">
+                  <span class="flex items-center gap-1.5"><Package class="w-4 h-4"/> Packaging Fee</span>
                   <span class="font-bold text-gray-900">₦{{ packagingFee.toLocaleString() }}</span>
                 </div>
-                <div class="flex items-center justify-between text-sm mb-2 text-gray-500">
-                  <span>Service Charge</span>
+                <div class="flex items-center justify-between text-sm mb-3 text-gray-500">
+                  <span class="flex items-center gap-1.5"><ShieldCheck class="w-4 h-4"/> Service Charge</span>
                   <span class="font-bold text-gray-900">₦{{ serviceFee.toLocaleString() }}</span>
                 </div>
-                <div class="flex items-center justify-between text-lg mt-3 pt-3 border-t border-gray-100">
-                  <span class="font-bold text-gray-900">Total per run</span>
+                <div class="flex items-center justify-between text-lg mt-4 pt-3 border-t border-gray-100">
+                  <span class="font-bold text-gray-900 flex items-center gap-1.5"><Banknote class="w-5 h-5 text-parentPrimary"/> Total per run</span>
                   <span class="font-black text-parentPrimary">₦{{ orderTotal.toLocaleString() }}</span>
                 </div>
               </div>
@@ -418,7 +439,7 @@
 
           <!-- ========== STICKY FOOTER BUTTONS ========== -->
           <!-- Menu -> Delivery -->
-          <div v-if="modalView === 'menu' && totalCartItems > 0" class="absolute bottom-0 left-0 w-full p-4 bg-white border-t border-gray-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+          <div v-if="modalView === 'menu' && totalCartItems > 0" class="shrink-0 w-full p-4 bg-white border-t border-gray-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
             <button @click="modalView = 'delivery'" class="w-full bg-parentPrimary hover:bg-parentPrimary/90 text-white font-bold py-4 rounded-2xl transition-all flex justify-between items-center px-6">
               <div class="flex items-center gap-2">
                 <span class="bg-white/20 px-2 py-0.5 rounded-full text-sm">{{ totalCartItems }}</span>
@@ -429,7 +450,7 @@
           </div>
 
           <!-- Delivery -> Review -->
-          <div v-if="modalView === 'delivery'" class="absolute bottom-0 left-0 w-full p-4 bg-white border-t border-gray-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+          <div v-if="modalView === 'delivery'" class="shrink-0 w-full p-4 bg-white border-t border-gray-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
             <button @click="goToConfirm" :disabled="!recipientName || !specificAddress" class="w-full bg-parentPrimary hover:bg-parentPrimary/90 disabled:opacity-40 text-white font-bold py-4 rounded-2xl transition-all flex justify-center items-center gap-2">
               <span>Review Automation</span>
               <ChevronRight class="w-4 h-4"/>
@@ -437,14 +458,14 @@
           </div>
 
           <!-- Confirm -> Submit -->
-          <div v-if="modalView === 'confirm'" class="absolute bottom-0 left-0 w-full p-4 bg-white border-t border-gray-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+          <div v-if="modalView === 'confirm'" class="shrink-0 w-full p-4 bg-white border-t border-gray-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
             <div class="flex items-start gap-2 mb-3 px-1 text-orange-600 bg-orange-50 p-2 rounded-lg border border-orange-100">
               <Info class="w-4 h-4 shrink-0 mt-0.5" />
               <p class="text-[11px] font-bold leading-tight">Your wallet will be automatically charged ₦{{ orderTotal.toLocaleString() }} on the day of the delivery. Ensure you have sufficient balance.</p>
             </div>
             <button 
               @click="submitAutomation"
-              :disabled="isSubmitting"
+              :disabled="isSubmitting || !exactTime || !isTimeValid"
               class="w-full bg-parentPrimary hover:bg-parentPrimary/90 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-parentPrimary/30 flex justify-center items-center gap-2"
             >
               <Loader2 v-if="isSubmitting" class="w-5 h-5 animate-spin" />
@@ -471,7 +492,7 @@
             <p v-if="previewItem.description" class="text-sm text-gray-500 mb-3 leading-relaxed">{{ previewItem.description }}</p>
             <div class="flex items-center gap-3 mb-4">
               <span class="text-xl font-black text-parentPrimary">₦{{ (previewItem.pricePerPortion || previewItem.price || 0).toLocaleString() }}</span>
-              <span v-if="previewItem.portionUnit" class="text-xs font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">per {{ previewItem.portionUnit }}</span>
+              <span v-if="previewItem.portionUnit" class="text-xs font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-full ">per {{ previewItem.portionUnit }}</span>
             </div>
             <div v-if="previewItem.prepTimeMinutes" class="text-xs text-gray-500 mb-4 flex items-center gap-1">
               <Clock class="w-3 h-3"/>
@@ -513,7 +534,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Repeat, X, Plus, Clock, Trash2, Store, ChevronRight, ChevronLeft, Loader2, ChevronDown, Package, MapPin, Building, Check } from 'lucide-vue-next'
+import { Repeat, X, Plus, Clock, Trash2, Store, ChevronRight, ChevronLeft, Loader2, ChevronDown, Package, MapPin, Building, Check, Info, User, Phone, Navigation, Map, Receipt, Truck, ShieldCheck, Banknote } from 'lucide-vue-next'
 import { orders_api } from '@/api_factory/modules/orders'
 import { vendors_api } from '@/api_factory/modules/vendors'
 import { menu_items_api } from '@/api_factory/modules/menu-items'
@@ -573,9 +594,36 @@ const platformProcessingFee = ref(0)
 const selectedPackagingPackName = ref('')
 const isPackagingDropdownOpen = ref(false)
 
-// Packaging Packs from vendor
 const vendorPackagingPacks = ref([])
 const selectedPackagingPack = ref(null)
+
+// Exact Time Custom Picker
+const selectedHour = ref('')
+const selectedMinute = ref('')
+const showHourDropdown = ref(false)
+const showMinuteDropdown = ref(false)
+
+const availableHours = computed(() => {
+  if (!activeModalContext.value?.time) return []
+  const slot = activeModalContext.value.time
+  if (slot.includes('08:00 AM')) return ['08', '09', '10', '11', '12']
+  if (slot.includes('12:00 PM')) return ['12', '13', '14']
+  if (slot.includes('05:00 PM')) return ['17', '18', '19']
+  return ['20', '21', '22']
+})
+
+const availableMinutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'))
+
+const exactTime = computed(() => {
+  if (selectedHour.value && selectedMinute.value) {
+    return `${selectedHour.value}:${selectedMinute.value}`
+  }
+  return ''
+})
+
+const isTimeValid = computed(() => {
+  return !!exactTime.value
+})
 
 // Item Preview
 const previewItem = ref(null)
@@ -716,9 +764,16 @@ const openEditMealModal = async (day, time, order) => {
         locationType.value = rawOrder.locationType || 'inside_campus'
         specificAddress.value = rawOrder.specificAddress || rawOrder.deliveryAddress || ''
         vendorNote.value = rawOrder.vendorNote || ''
+        const scheduleForDay = (rawOrder.schedules || []).find(s => s.day === day)
+        if (scheduleForDay && scheduleForDay.exactTime) {
+          exactTime.value = scheduleForDay.exactTime
+        } else {
+          exactTime.value = '12:00'
+        }
       }
     } else {
       modalView.value = 'vendors'
+      exactTime.value = '12:00'
     }
   } catch (e) {
     console.error(e)
@@ -755,6 +810,7 @@ const resetModalState = () => {
   isPackagingDropdownOpen.value = false
   previewItem.value = null
   saveDeliveryAsDefault.value = false
+  exactTime.value = '12:00'
 }
 
 const closeModal = () => {
@@ -868,7 +924,7 @@ const cartSubtotal = computed(() => {
 })
 
 // Fee Calculations (matching cart.vue exactly — all from admin config)
-const serviceFee = computed(() => platformConvenienceFee.value)
+const serviceFee = computed(() => platformConvenienceFee.value + platformProcessingFee.value)
 const packagingFee = computed(() => selectedPackagingPack.value?.price || 0)
 const deliveryFee = computed(() => platformBaseFee.value)
 const orderTotal = computed(() => cartSubtotal.value + serviceFee.value + packagingFee.value + deliveryFee.value)
@@ -906,7 +962,8 @@ const submitAutomation = async () => {
       vendor: selectedVendor.value._id,
       schedules: [{
         day: activeModalContext.value.day,
-        timeWindow: activeModalContext.value.time
+        timeWindow: activeModalContext.value.time,
+        exactTime: exactTime.value
       }],
       menuItems: selectedItems.value.map(item => ({
         menuItem: item._id,
@@ -1013,12 +1070,16 @@ const fetchPlatformSettings = async () => {
   try {
     const res = await orders_api.getCustomErrandSettings()
     if (res?.data) {
-      platformBaseFee.value = res.data.baseFee ?? 0
-      platformConvenienceFee.value = res.data.convenienceFee ?? 0
-      platformProcessingFee.value = res.data.platformProcessingFee ?? 0
+      const data = res.data.data || res.data
+      platformBaseFee.value = data.baseFee ?? 350
+      platformConvenienceFee.value = data.convenienceFee ?? 50
+      platformProcessingFee.value = data.platformProcessingFee ?? 0
     }
   } catch (error) {
     console.error('Failed to fetch platform settings', error)
+    // Fallbacks if API fails
+    platformBaseFee.value = 350
+    platformConvenienceFee.value = 50
   }
 }
 
