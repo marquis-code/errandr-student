@@ -436,26 +436,29 @@
 
 
             <!-- MOBILE: Order Summary -->
-            <div class="lg:hidden bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-hidden">
-              <div class="px-4 sm:px-5 py-4 bg-gray-50/50 border-b border-gray-100">
-                <h3 class="text-sm font-medium text-gray-900 tracking-tight">Order Summary</h3>
+            <div class="lg:hidden bg-gray-900 rounded-none sm:rounded-2xl border-y sm:border-x border-gray-800 overflow-hidden text-white shadow-xl shadow-gray-900/10">
+              <div class="px-4 sm:px-5 py-4 bg-gray-800/50 border-b border-gray-800 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
+                  <Receipt class="w-4 h-4 text-white" />
+                </div>
+                <h3 class="text-sm font-bold text-white tracking-tight">Order Summary</h3>
               </div>
               <div class="p-4 sm:p-5 space-y-3">
-                <div class="flex justify-between items-center text-sm font-medium text-gray-500">
+                <div class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
                   <span>Subtotal</span>
-                  <span class="text-gray-900 font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
+                  <span class="text-white font-bold">₦{{ (groupOrder ? groupSubtotal : cartStore.subtotal.value)?.toLocaleString() }}</span>
                 </div>
-                <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500">
+                <div v-if="computedTotalDeliveryFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
                   <span>Delivery</span>
-                  <span :class="isBirthday ? 'line-through text-gray-400' : 'text-gray-900 font-bold'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
+                  <span :class="isBirthday ? 'line-through text-gray-500' : 'text-white font-bold'">₦{{ computedTotalDeliveryFee.toLocaleString() }}</span>
                 </div>
-                <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-500">
+                <div v-if="computedTotalPackagingFee > 0" class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
                   <span>Pack</span>
-                  <span class="text-gray-900 font-bold">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
+                  <span class="text-white font-bold">₦{{ computedTotalPackagingFee.toLocaleString() }}</span>
                 </div>
-                <div class="flex justify-between items-center text-sm font-medium text-gray-500">
+                <div class="flex justify-between items-center text-sm font-medium text-gray-400 hover:text-gray-300 transition-colors">
                   <span>Service Charge</span>
-                  <span class="text-gray-900 font-bold">₦{{ (computedTotalServiceFee + computedPaystackFee).toLocaleString() }}</span>
+                  <span class="text-white font-bold">₦{{ (computedTotalServiceFee + computedPaystackFee).toLocaleString() }}</span>
                 </div>
                 <div v-if="isBirthday" class="flex justify-between items-center text-xs font-bold text-[#008950]">
                   <span class="flex items-center gap-1">🎂 Birthday Treat</span>
@@ -478,7 +481,7 @@
                   <span class="font-bold">-₦{{ computedPromoDiscount.toLocaleString() }}</span>
                 </div>
               </div>
-              <div class="px-4 sm:px-5 pb-5 pt-3 border-t border-dashed border-gray-100 space-y-5">
+              <div class="px-4 sm:px-5 pb-5 pt-3 border-t border-dashed border-gray-800 space-y-5">
                 <div v-if="isNightOwl" class="p-3 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-3">
                   <span class="text-lg">🦉</span>
                   <div>
@@ -492,13 +495,13 @@
                     v-model="promoCodeInput"
                     @input="handlePromoInput"
                     type="text"
-                    placeholder="Promo Code"
-                    class="flex-1 px-4 py-3 bg-gray-50 border border-transparent focus:border-parentPrimary/20 rounded-xl text-xs font-medium text-gray-900 outline-none uppercase"
+                    placeholder="Enter Promo Code"
+                    class="flex-1 px-4 py-3 bg-gray-800/50 border border-gray-700/50 focus:border-white/20 rounded-xl text-xs font-medium text-white placeholder-gray-500 outline-none uppercase transition-all"
                   />
                   <button 
                     @click="validatePromo"
                     :disabled="isValidatingPromo || !promoCodeInput"
-                    class="px-4 py-3 bg-gray-900 text-white rounded-xl text-xs font-medium hover:bg-gray-800 disabled:opacity-50 transition-colors"
+                    class="px-5 py-3 bg-white text-gray-900 rounded-xl text-xs font-bold hover:bg-gray-100 disabled:opacity-50 transition-colors"
                   >
                     <Loader2 v-if="isValidatingPromo" class="w-3 h-3 animate-spin" />
                     <span v-else>Apply</span>
@@ -580,20 +583,6 @@
                     </button>
                   </div>
                   
-                  <!-- Packaging Selection -->
-                  <div v-if="vendorsMetadata[vendorId]?.packs?.length > 0 && !cartStore.getVendorStats(vendorId).packs.flatMap(p => p.items).every(i => i.isPackagingFeeIncluded)" class="mb-6 p-4 bg-gray-50/80 rounded-2xl border border-gray-100/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                      <h5 class="text-xs font-bold text-gray-900 flex items-center gap-1.5"><Box class="w-3.5 h-3.5 text-gray-500"/> Packaging Type</h5>
-                      <p class="text-xs text-gray-500 mt-0.5">Choose how you want your items packed</p>
-                    </div>
-                    <SelectInput
-                      v-model="selectedPacks[vendorId]"
-                      label="Select Option"
-                      :options="vendorsMetadata[vendorId].packs.map(p => ({ label: `${p.name} (+₦${p.price.toLocaleString()})`, value: p }))"
-                      class="sm:w-1/2 !mb-0"
-                    />
-                  </div>
-
                   <!-- Pack Items -->
                   <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="pack.id" class="space-y-4 relative">
                     <!-- Connective Line -->
