@@ -1229,7 +1229,7 @@ const handlePromoInput = () => {
       const locType = isWithinLuth.value ? 'inside_campus' : 'outside_campus';
       const isCustomErrandQuery = 'false';
       
-      const res = await api.get(`/promo-codes/preview?code=${newVal.trim()}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`);
+      const res = await api.get(`/promo-codes/preview?code=${encodeURIComponent(newVal.trim())}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`);
       
       const previewData = res?.data;
       if (previewData && previewData.found && previewData.promo) {
@@ -1442,7 +1442,7 @@ const validatePromo = async () => {
 
     // Step 1: Call preview endpoint first to get eligibility details
     isPreviewingPromo.value = true;
-    const previewRes = await api.get(`/promo-codes/preview?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`) as any;
+    const previewRes = await api.get(`/promo-codes/preview?code=${encodeURIComponent(promoCodeInput.value.trim())}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`) as any;
     isPreviewingPromo.value = false; console.log("PROMO DEBUG FINISHED", promoPreview.value);
 
     if (previewRes?.data) {
@@ -1450,7 +1450,7 @@ const validatePromo = async () => {
 
       // Step 2: If eligible, auto-apply via validate endpoint
       if (previewRes.data.eligibility?.isEligible) {
-        const res = await api.get(`/promo-codes/validate?code=${promoCodeInput.value}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`) as any;
+        const res = await api.get(`/promo-codes/validate?code=${encodeURIComponent(promoCodeInput.value.trim())}&subtotal=${currentSubtotal.value}&vendorId=${firstVendorId}&isGroupOrder=${isGroupOrderQuery}&locationType=${locType}&isCustomErrand=${isCustomErrandQuery}`) as any;
         
         if (res?.data && !res?.data?.error) {
           promoCodeObj.value = res.data;
