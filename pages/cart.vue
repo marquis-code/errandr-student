@@ -1237,11 +1237,11 @@ const handlePromoInput = () => {
         debugPromoMsg.value = ''; // Clear debug if success
       } else {
         promoPreview.value = null;
-        debugPromoMsg.value = `Code not found or invalid format: ${JSON.stringify(previewData)}`;
+        debugPromoMsg.value = 'Promo code not found.';
       }
     } catch (e: any) {
       promoPreview.value = null;
-      debugPromoMsg.value = `Error: ${e?.response?.data?.message || e?.message || 'Unknown API Error'}`;
+      debugPromoMsg.value = 'Promo code not found or invalid.';
     } finally {
       isPreviewingPromo.value = false;
     }
