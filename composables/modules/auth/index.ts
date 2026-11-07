@@ -130,15 +130,44 @@ export const useAuth = () => {
       try {
         result = await signInWithPopup(auth, provider);
       } catch (err: any) {
-        if (err.code === 'auth/popup-blocked') {
-          console.warn('Popup blocked by browser. Falling back to signInWithRedirect...');
-          // Import signInWithRedirect dynamically or assume it's imported above
-          const { signInWithRedirect } = await import('firebase/auth');
+        // A popup cannot work inside an in-app browser (Instagram, Facebook, WhatsApp) or a
+        // webview, and the redirect flow needs storage those browsers withhold. Detecting it
+        // up front is better than a generic failure the student cannot act on.
+        const code = String(err?.code || '');
+        const canFallBackToRedirect =
+          code === 'auth/popup-blocked' ||
+          code === 'auth/operation-not-supported-in-this-environment' ||
+          code === 'auth/cancelled-popup-request';
+
+        if (canFallBackToRedirect) {
+          console.warn(`[auth] popup unavailable (${code}) — using redirect`);
           await signInWithRedirect(auth, provider);
-          // The page will redirect, so we return an empty promise that never resolves
+          // The browser is navigating away; never resolve, so no error toast flashes.
           return new Promise(() => {});
         }
-        throw err;
+
+        // Everything else is a real error and gets a message the student can act on.
+        console.error('[auth] Google sign-in failed:', code, err?.message);
+        const friendly: Record<string, string> = {
+          'auth/unauthorized-domain':
+            'Google sign-in is not enabled for this address yet. Please sign in with your email and password.',
+          'auth/operation-not-allowed':
+            'Google sign-in is switched off. Please use your email and password.',
+          'auth/invalid-api-key':
+            'Sign-in is misconfigured. Please use your email and password and tell support.',
+          'auth/api-key-not-valid':
+            'Sign-in is misconfigured. Please use your email and password and tell support.',
+          'auth/network-request-failed':
+            'Your connection dropped during sign-in. Check your network and try again.',
+          'auth/popup-closed-by-user':
+            'You closed the Google window before finishing. Try again.',
+          'auth/account-exists-with-different-credential':
+            'This email already has a password account. Sign in with your password instead.',
+        };
+        throw {
+          code,
+          message: friendly[code] || `Google sign-in failed (${code || 'unknown'}). Please sign in with your email and password.`,
+        };
       }
       const idToken = await result.user.getIdToken();
 

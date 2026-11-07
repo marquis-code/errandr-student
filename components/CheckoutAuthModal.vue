@@ -370,8 +370,14 @@ const handleGoogleAuth = async () => {
     emit('authenticated');
     emit('update:modelValue', false);
   } catch (e: any) {
-    console.error('Google Auth action failed:', e);
-    error.value = e.response?.data?.message || e.message || 'Something went wrong with Google authentication. Please try again.';
+    console.error('Google Auth action failed:', e?.code || '', e);
+    // Prefer the specific reason from the auth layer: 'Google sign-in is not enabled for this
+    // address' tells the student to use their password. A generic message leaves them stuck in
+    // the same loop.
+    error.value =
+      e?.message ||
+      e?.response?.data?.message ||
+      'Something went wrong with Google authentication. Please try again with your email and password.';
   } finally {
     googleLoading.value = false;
   }
