@@ -59,7 +59,20 @@ export const useAuth = () => {
         }
       }
     } catch (e: any) {
-      console.error('Redirect login error:', e);
+      // Swallowing this was why a failed redirect looked like nothing happened at all: the
+      // student landed back on the page, still logged out, with no message.
+      const code = String(e?.code || '');
+      console.error('[auth] Redirect login failed:', code, e?.message, e);
+      if (code && code !== 'auth/no-auth-event') {
+        showToast({
+          title: 'Google sign-in failed',
+          message:
+            code === 'auth/web-storage-unsupported'
+              ? 'Your browser blocks the storage Google needs. Allow cookies for this site, or sign in with your email and password.'
+              : `Please sign in with your email and password instead. (${code})`,
+          toastType: 'error',
+        });
+      }
     } finally {
       firebaseLoading.value = false;
     }
