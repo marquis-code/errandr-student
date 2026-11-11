@@ -583,6 +583,14 @@
                        <span class="text-gray-400">Subtotal</span>
                        <span class="text-gray-900 font-bold">₦{{ order.subtotal?.toLocaleString() }}</span>
                      </div>
+                     <!-- Items refunded after the order was placed. Without this line the listed
+                          items add up to more than the subtotal and the bill looks wrong. -->
+                     <div v-if="order.refundedItemsTotal > 0" class="flex justify-between text-sm">
+                       <span class="flex items-center gap-1.5 text-emerald-700">
+                         <Undo2 class="h-3.5 w-3.5" /> Refunded for out of stock items
+                       </span>
+                       <span class="font-bold text-emerald-700">−₦{{ order.refundedItemsTotal?.toLocaleString() }}</span>
+                     </div>
                      <div v-if="order.deliveryFee" class="flex justify-between text-sm">
                        <span class="text-gray-400">Delivery Fee</span>
                        <span class="text-gray-900 font-bold">₦{{ order.deliveryFee?.toLocaleString() }}</span>
@@ -1167,7 +1175,8 @@ import {
   Camera,
   RefreshCw,
   AlertCircle,
-  Phone
+  Phone,
+  Undo2,
 } from 'lucide-vue-next';
 import { ref, onMounted, onUnmounted, reactive, computed, watch, onErrorCaptured } from 'vue';
 import { useRoute, useRouter, useHead, useRuntimeConfig } from '#imports';
