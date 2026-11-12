@@ -112,6 +112,32 @@
           <!-- LEFT: Delivery + Payment -->
           <div class="flex-1 space-y-5">
             <div v-show="checkoutStep === 'checkout'" class="space-y-5">
+
+              <!-- Prescription gate: this order cannot be dispatched without one. -->
+              <div v-if="requiresPrescription" class="rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+                <div class="flex items-start gap-3">
+                  <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+                    <FileText class="h-4 w-4" />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-bold text-amber-900">This order needs a prescription</p>
+                    <p class="mt-0.5 text-[11px] text-amber-800">
+                      A pharmacist checks it before the rider collects. Without it the order cannot be placed.
+                    </p>
+
+                    <label class="mt-3 flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-amber-300 bg-white px-3 py-3 text-xs font-bold text-amber-800">
+                      <ImagePlus class="h-4 w-4" />
+                      {{ prescriptionImage ? 'Replace prescription photo' : (prescriptionUploading ? 'Uploading…' : 'Upload prescription photo') }}
+                      <input type="file" accept="image/*,application/pdf" class="hidden" @change="onPrescriptionPicked" />
+                    </label>
+
+                    <p v-if="prescriptionImage" class="mt-2 flex items-center gap-1.5 text-[11px] font-bold text-emerald-700">
+                      <CheckCircle2 class="h-3.5 w-3.5" /> Attached — awaiting pharmacist review
+                    </p>
+                    <p v-if="prescriptionError" class="mt-2 text-[11px] font-bold text-rose-600">{{ prescriptionError }}</p>
+                  </div>
+                </div>
+              </div>
             
             <!-- Split Bill Payment Progress -->
             <div v-if="groupOrder && groupOrder.status === 'locked' && groupOrder.splitType === 'split_bill'" class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-hidden">
@@ -1027,7 +1053,7 @@
 </template>
 
 <script setup lang="ts">
-import { ShoppingCart, Repeat, ArrowLeft, Moon, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users, Package, Ticket, Store, Receipt, Box, Info, ShoppingBag } from 'lucide-vue-next';
+import { ShoppingCart, Repeat, ArrowLeft, Moon, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users, Package, Ticket, Store, Receipt, Box, Info, ShoppingBag, ImagePlus, CheckCircle2 } from 'lucide-vue-next';
 import AnimatedInput from '@/components/ui/AnimatedInput.vue';
 import SelectInput from '@/components/ui/SelectInput.vue';
 import CheckoutAuthModal from '@/components/CheckoutAuthModal.vue';
@@ -2033,6 +2059,16 @@ const startPayment = async () => {
 
 
 
+  if (requiresPrescription.value && !prescriptionImage.value) {
+    paymentError.value = 'This order contains a medicine that needs a prescription. Attach a photo of it first.';
+    showToast({
+      title: 'Prescription needed',
+      message: 'Add a photo of your prescription before paying — a pharmacist reviews it before dispatch.',
+      toastType: 'error',
+    } as any);
+    return;
+  }
+
   placing.value = true;
   try {
     let orderIds: string[] = [];
@@ -2136,6 +2172,44 @@ const startTopup = async () => {
   }
 };
 
+// A pharmacy cart can contain medicines that cannot be sold on an upload-free order.
+const prescriptionImage = ref('');
+const prescriptionUploading = ref(false);
+const prescriptionError = ref('');
+
+const requiresPrescription = computed(() =>
+  [...cartStore.allVendorIds.value].some((vId: string) => {
+    const stats: any = cartStore.getVendorStats(vId);
+    return (stats?.packs || []).some((pk: any) =>
+      (pk.items || []).some((it: any) => (it as any).requiresPrescription === true),
+    );
+  }),
+);
+
+const onPrescriptionPicked = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) {
+    prescriptionError.value = 'That photo is over 10MB. Take a smaller picture.';
+    return;
+  }
+  prescriptionUploading.value = true;
+  prescriptionError.value = '';
+  try {
+    const form = new FormData();
+    form.append('file', file);
+    const res = await api.post('/uploads/image', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    prescriptionImage.value = res?.data?.url || res?.data?.secure_url || '';
+    if (!prescriptionImage.value) throw new Error('upload failed');
+    showToast({ title: 'Prescription attached', message: 'A pharmacist will review it before dispatch.', toastType: 'success' } as any);
+  } catch {
+    prescriptionError.value = 'Could not upload that. Try again, or send it in chat.';
+  } finally {
+    prescriptionUploading.value = false;
+  }
+};
+
 const preCreateOrders = async (): Promise<string[]> => {
   const createdIds: string[] = [];
   let isFirstOrder = true;
@@ -2175,6 +2249,7 @@ const preCreateOrders = async (): Promise<string[]> => {
         subtotal: stats.subtotal, deliveryFee, serviceFee: sFee, platformProcessingFee: pFee, packagingFee: actualPackFee, selectedPack: selectedPacks.value[vId] || { name: 'Standard', price: actualPackFee },
         isMysteryBox: isMysteryBox.value, isDormDelivery: isDormDelivery.value, deliveryOption: deliveryOption.value, deliveryMode: deliveryMode.value, recipientName: recipientName.value, recipientPhone: recipientPhone.value, specificAddress: specificAddress.value, deliveryAddress: specificAddress.value, deliveryLocation: deliveryCoordinates.value ? { type: 'Point', coordinates: deliveryCoordinates.value } : undefined, weight: 1.0,
         isPreOrder: isPreOrderCart.value, scheduledDate: scheduledDate.value, wantsNotification: wantsNotification.value, notifyEmail: notifyEmail.value, useFreeDeliveryToken: useFreeDeliveryToken.value,
+        ...(prescriptionImage.value ? { prescriptionImage: prescriptionImage.value } : {}),
         vendorNote: cartStore.vendorNotes.value[vId] || '',
         promoCode: promoCodeObj.value?.code || undefined,
         locationType: isWithinLuth.value ? 'inside_campus' : outsideCampusLocation.value,
