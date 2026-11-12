@@ -113,6 +113,17 @@
           <div class="flex-1 space-y-5">
             <div v-show="checkoutStep === 'checkout'" class="space-y-5">
 
+              <div v-if="isPharmacyCart && !requiresPrescription" class="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
+                <ShieldCheck class="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
+                <div>
+                  <p class="text-sm font-bold text-emerald-900">Checked before it leaves the pharmacy</p>
+                  <p class="mt-0.5 text-[11px] text-emerald-800">
+                    A pharmacist confirms every medicine order before a rider collects it.
+                    If anything needs changing, you will be contacted instead of charged.
+                  </p>
+                </div>
+              </div>
+
               <!-- Prescription gate: this order cannot be dispatched without one. -->
               <div v-if="requiresPrescription" class="rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
                 <div class="flex items-start gap-3">
@@ -255,7 +266,7 @@
             </div>
 
             <!-- Step 1.5: Pre-order Schedule -->
-            <div v-if="isPreOrderCart" class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-visible animate-fade-in">
+            <div v-if="isPreOrderCart && !isPharmacyCart" class="bg-white rounded-none sm:rounded-2xl border-y sm:border-x border-gray-100 overflow-visible animate-fade-in">
               <div class="flex items-center gap-3 px-4 sm:px-5 py-4 bg-purple-50/50 border-b border-purple-100 sm:rounded-t-2xl">
                 <div class="w-8 h-8 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
                   <Calendar class="w-4 h-4" />
@@ -1053,7 +1064,7 @@
 </template>
 
 <script setup lang="ts">
-import { ShoppingCart, Repeat, ArrowLeft, Moon, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users, Package, Ticket, Store, Receipt, Box, Info, ShoppingBag, ImagePlus, CheckCircle2 } from 'lucide-vue-next';
+import { ShoppingCart, Repeat, ArrowLeft, Moon, ArrowRight, Home, Building2, MapPin, Search, Plus, Calendar, Clock, Lock, CreditCard, ChevronDown, Check, FileText, Gift, Wallet, Loader2, RefreshCw, Trash2, Tag, Percent, Users, Package, Ticket, Store, Receipt, Box, Info, ShoppingBag, ImagePlus, CheckCircle2, ShieldCheck } from 'lucide-vue-next';
 import AnimatedInput from '@/components/ui/AnimatedInput.vue';
 import SelectInput from '@/components/ui/SelectInput.vue';
 import CheckoutAuthModal from '@/components/CheckoutAuthModal.vue';
@@ -1355,6 +1366,16 @@ const fetchPlatformSettings = async () => {
     console.error('Failed to fetch platform settings:', error);
   }
 };
+
+// A pharmacy cart is a different purchase from a meal. The checkout should not ask a patient to
+// schedule a breakfast slot or choose a meal pack.
+const isPharmacyCart = computed(() =>
+  cartStore.allVendorIds.value.some((id: string) => {
+    const meta: any = vendorsMetadata.value[id];
+    return String(meta?.vendorType || '').toLowerCase() === 'pharmacy' ||
+      String(meta?.category || '').toLowerCase() === 'pharmacy';
+  }),
+);
 
 const isPreOrderCart = computed(() => {
   return cartStore.allVendorIds.value.some(id => {
