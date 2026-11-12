@@ -100,6 +100,22 @@
       </p>
     </div>
 
+    <!-- Cart bar: the page had add-to-cart with no route to checkout. -->
+    <div v-if="cartCount > 0" class="fixed bottom-4 left-0 right-0 z-[120] px-4">
+      <button
+        class="mx-auto flex w-full max-w-md items-center justify-between gap-3 rounded-2xl bg-[#12300F] px-4 py-3 text-white shadow-2xl"
+        @click="goToCart"
+      >
+        <span class="flex items-center gap-2 text-xs font-bold">
+          <ShoppingCart class="h-4 w-4" />
+          {{ cartCount }} item{{ cartCount === 1 ? '' : 's' }} · ₦{{ cartTotal.toLocaleString() }}
+        </span>
+        <span class="flex items-center gap-1.5 text-sm font-black">
+          Checkout <ArrowRight class="h-4 w-4" />
+        </span>
+      </button>
+    </div>
+
     <!-- Chat sheet -->
     <Teleport to="body">
       <div v-if="showChat" class="fixed inset-0 z-[200] flex items-end justify-center sm:items-center">
@@ -126,7 +142,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ArrowLeft, FileText, ImagePlus, MessageCircle, Package, Plus, X } from 'lucide-vue-next';
+import { ArrowLeft, ArrowRight, FileText, ImagePlus, MessageCircle, Package, Plus, ShoppingCart, X } from 'lucide-vue-next';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
 import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
@@ -147,6 +163,23 @@ const uploading = ref(false);
 const showChat = ref(false);
 const question = ref('');
 const sending = ref(false);
+
+const cartCount = computed(() =>
+  cart.allVendorIds.value.reduce((n: number, id: string) => {
+    const stats: any = cart.getVendorStats(id);
+    return n + (stats?.packs || []).reduce((m: number, pk: any) =>
+      m + (pk.items || []).reduce((k: number, it: any) => k + (it.quantity || 1), 0), 0);
+  }, 0),
+);
+
+const cartTotal = computed(() =>
+  cart.allVendorIds.value.reduce((n: number, id: string) => {
+    const stats: any = cart.getVendorStats(id);
+    return n + (Number(stats?.subtotal) || 0);
+  }, 0),
+);
+
+const goToCart = () => router.push('/cart');
 
 const needsRx = (p: any) => p.requiresPrescription === true || p.prescriptionType === 'pom' || p.prescriptionType === 'controlled';
 
