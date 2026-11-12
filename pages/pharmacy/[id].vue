@@ -179,7 +179,7 @@ const cartTotal = computed(() =>
   }, 0),
 );
 
-const goToCart = () => router.push('/cart');
+const goToCart = () => router.push('/pharmacy/checkout');
 
 const needsRx = (p: any) => p.requiresPrescription === true || p.prescriptionType === 'pom' || p.prescriptionType === 'controlled';
 

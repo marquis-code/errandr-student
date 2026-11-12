@@ -2194,7 +2194,7 @@ const startTopup = async () => {
 };
 
 // A pharmacy cart can contain medicines that cannot be sold on an upload-free order.
-const prescriptionImage = ref('');
+const prescriptionImage = ref(typeof window !== 'undefined' ? (localStorage.getItem('errandr_prescription_image') || '') : '');
 const prescriptionUploading = ref(false);
 const prescriptionError = ref('');
 
