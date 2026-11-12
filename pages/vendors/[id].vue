@@ -101,6 +101,16 @@ const fetchVendorData = async () => {
       vendor.value = null;
     } else {
       vendor.value = vendorRes.data;
+
+      // A pharmacy gets its own storefront. The shared vendor page is built around food — packs,
+      // meal deals, a menu — and none of that belongs in front of a medicine cabinet.
+      const vt = String(vendor.value?.vendorType || '').toLowerCase();
+      const cat = String(vendor.value?.category || '').toLowerCase();
+      if ((vt === 'pharmacy' || cat === 'pharmacy') && process.client) {
+        await navigateTo(`/pharmacy/${vendor.value._id || route.params.id}`, { replace: true });
+        return;
+      }
+
       // Auto-align campus if vendor carries an institution and caller has none or different
       if (vendor.value?.institution && process.client) {
         try {
