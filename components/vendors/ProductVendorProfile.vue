@@ -182,6 +182,16 @@
             <Users class="w-3.5 h-3.5" />
             {{ isGroupOrderActiveForThisVendor ? `Group: ${activeCode}` : 'Group Order' }}
           </button>
+
+          <!-- Ask before you buy: the question behind drug safety is a clinical one. -->
+          <button
+            v-if="isPharmacy"
+            @click="showPharmacistChat = true"
+            class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-medium transition-all whitespace-nowrap shrink-0 shadow-sm border border-emerald-100 bg-emerald-50 text-emerald-700 active:scale-95"
+          >
+            <MessageCircle class="w-3.5 h-3.5" />
+            Speak to a pharmacist
+          </button>
           
           <button 
             @click="showMobileCartDrawer = true" 
@@ -508,6 +518,18 @@
                   <!-- Content -->
                   <div class="p-4 flex-1 flex flex-col justify-between">
                     <div>
+                      <div v-if="isPharmacy" class="mb-1.5 flex flex-wrap gap-1">
+                        <span v-if="product.requiresPrescription || product.prescriptionType === 'pom' || product.prescriptionType === 'controlled'"
+                          class="rounded bg-rose-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-rose-700">
+                          Rx required
+                        </span>
+                        <span v-if="product.minimumAge" class="rounded bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-700">
+                          {{ product.minimumAge }}+
+                        </span>
+                        <span v-if="product.isColdChain" class="rounded bg-sky-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-sky-700">
+                          Cold chain
+                        </span>
+                      </div>
                       <h3 class="text-sm font-medium text-gray-900 tracking-tight leading-tight mb-1 group-hover:text-parentPrimary transition-colors">{{ product.name }}</h3>
                       <p class="text-[11px] font-medium text-gray-400 line-clamp-2 leading-relaxed">{{ product.description || defaultProductDescription }}</p>
                     </div>
@@ -1616,11 +1638,52 @@
       <p class="text-sm font-bold text-gray-400">Loading store...</p>
     </div>
   </div>
+  <!-- Pharmacist question sheet -->
+  <Teleport to="body">
+    <div v-if="showPharmacistChat" class="fixed inset-0 z-[200] flex items-end justify-center sm:items-center">
+      <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-[2px]" @click="showPharmacistChat = false" />
+
+      <div class="relative w-full max-w-md rounded-t-2xl bg-white p-5 shadow-2xl sm:rounded-2xl">
+        <div class="mb-3 flex items-start justify-between">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Pharmacist</p>
+            <h3 class="text-base font-black tracking-tight text-gray-900">Ask before you buy</h3>
+          </div>
+          <button class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100" @click="showPharmacistChat = false">
+            <X class="h-4 w-4" />
+          </button>
+        </div>
+
+        <p class="mb-3 rounded-xl bg-emerald-50 px-3 py-2 text-[11px] font-medium text-emerald-800">
+          A pharmacist at {{ vendor?.storeName }} answers this. Tell them what you already take if you are unsure about mixing.
+        </p>
+
+        <textarea
+          v-model="pharmacistQuestion"
+          rows="3"
+          placeholder="e.g. Is ibuprofen safe with my malaria medication?"
+          class="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-800 outline-none focus:border-emerald-500 focus:bg-white"
+        />
+
+        <button
+          class="mt-3 w-full rounded-xl bg-emerald-600 py-3 text-sm font-bold text-white disabled:opacity-50"
+          :disabled="pharmacistSending"
+          @click="askPharmacist()"
+        >
+          {{ pharmacistSending ? 'Sending…' : 'Send to pharmacist' }}
+        </button>
+
+        <p class="mt-2 text-center text-[10px] text-gray-400">
+          Not for emergencies. If someone is unwell now, go to a hospital.
+        </p>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import { 
-  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, ChevronDown, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText, RefreshCw, Lock, CheckCircle2, RotateCcw, Check, Store
+  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, ChevronDown, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText, RefreshCw, Lock, CheckCircle2, RotateCcw, Check, Store, MessageCircle
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 
@@ -1634,6 +1697,7 @@ import { useGroupOrder } from '@/composables/modules/group-order';
 import { useFavorites } from '@/composables/modules/favorites';
 import { vendors_api } from '@/api_factory/modules/vendors';
 import { products_api } from '@/api_factory/modules/products';
+import { GATEWAY_ENDPOINT_WITH_AUTH as api } from '@/api_factory/axios.config';
 import { menu_items_api } from '@/api_factory/modules/menu-items';
 import { services_api } from '@/api_factory/modules/services';
 import AnimatedInput from '@/components/ui/AnimatedInput.vue';
@@ -1669,6 +1733,43 @@ const showMobileCartDrawer = ref(false);
 const showGlobalCartModal = ref(false);
 const props = defineProps<{ vendor: any }>();
 const vendor = computed(() => props.vendor);
+
+// ─── Pharmacy ────────────────────────────────────────────────────
+// A pharmacy is not a shop with capsules in it: some items cannot be sold without a
+// prescription, some have an age limit, and the customer may need to ask a human a clinical
+// question before they buy.
+const isPharmacy = computed(() => {
+  const vt = String(vendor.value?.vendorType || '').toLowerCase();
+  const cat = String(vendor.value?.category || '').toLowerCase();
+  return vt === 'pharmacy' || cat === 'pharmacy';
+});
+
+const showPharmacistChat = ref(false);
+const pharmacistQuestion = ref('');
+const pharmacistSending = ref(false);
+
+const askPharmacist = async (product?: any) => {
+  const text = pharmacistQuestion.value.trim();
+  if (text.length < 5) {
+    showToast({ title: 'Add a little detail', message: 'Tell the pharmacist what you are taking or what you want to know.', toastType: 'info' } as any);
+    return;
+  }
+  pharmacistSending.value = true;
+  try {
+    await api.post('/pharmacy-chat', {
+      vendorId: vendor.value?._id,
+      productId: product?._id,
+      message: text,
+    });
+    showToast({ title: 'Sent', message: 'A pharmacist will reply. You will be notified.', toastType: 'success' } as any);
+    pharmacistQuestion.value = '';
+    showPharmacistChat.value = false;
+  } catch (e: any) {
+    showToast({ title: 'Could not send', message: e?.response?.data?.message || 'Try again', toastType: 'error' } as any);
+  } finally {
+    pharmacistSending.value = false;
+  }
+};
 
 const handleBack = () => {
   if (process.client && window.history.length > 1) {
