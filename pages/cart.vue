@@ -575,6 +575,32 @@
                     </button>
                   </div>
                   
+                  <!-- Packaging options: the vendor may offer more than one, and the label below
+                       used to be a static badge with no way to choose. -->
+                  <div
+                    v-if="availablePacks(vendorId).length > 1"
+                    class="mb-4 rounded-2xl border border-gray-100 bg-gray-50/60 p-3"
+                  >
+                    <p class="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">Packaging type</p>
+                    <div class="flex flex-wrap gap-2">
+                      <button
+                        v-for="opt in availablePacks(vendorId)"
+                        :key="opt.name"
+                        type="button"
+                        class="rounded-xl border px-3 py-2 text-xs font-bold transition"
+                        :class="selectedPackName(vendorId) === opt.name
+                          ? 'border-[#FF5C1A] bg-white text-[#FF5C1A]'
+                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'"
+                        @click="choosePack(vendorId, opt)"
+                      >
+                        {{ opt.name }}
+                        <span class="ml-1 text-[10px] font-semibold text-gray-400">
+                          ₦{{ Number(opt.price || 0).toLocaleString() }}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
                   <!-- Pack Items -->
                   <div v-for="(pack, pIndex) in cartStore.getVendorStats(vendorId).packs" :key="pack.id" class="space-y-3 mb-6 relative">
                     <div class="flex items-center gap-3 relative z-10">
@@ -1259,6 +1285,26 @@ watch(promoCodeInput, () => {
 const showSplitModeModal = ref(false);
 const splitGroupType = ref('split_bill');
 const selectedPacks = ref<Record<string, any>>({});
+
+// Packaging options offered by this vendor, shown as choices instead of a fixed label.
+const availablePacks = (vendorId: string) => {
+  const packs = (vendorsMetadata.value as any)?.[vendorId]?.packs || [];
+  return packs.filter((p: any) => p && p.isActive !== false);
+};
+
+const selectedPackName = (vendorId: string) => {
+  const chosen = selectedPacks.value[vendorId];
+  if (chosen?.name) return chosen.name;
+  const first = availablePacks(vendorId)[0];
+  return first?.name || '';
+};
+
+const choosePack = (vendorId: string, pack: any) => {
+  selectedPacks.value[vendorId] = pack;
+  // Keep the chosen packaging on the pack the order is built from, so the fee follows the choice.
+  const stats: any = cartStore.getVendorStats(vendorId);
+  for (const p of stats?.packs || []) p.packType = pack;
+};
 const isMysteryBox = ref(false);
 const isDormDelivery = ref(false);
 const scheduledDate = ref('');
