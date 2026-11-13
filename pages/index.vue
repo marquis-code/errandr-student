@@ -4,6 +4,10 @@
   <!-- <CoreExamPromoBanner /> -->
   <BatchDeliveryBanner />
   <MarketPoolBanner />
+
+  <!-- Storefront marquee: the shops are the product, so they sit above the fold and move. -->
+  <LazyHomeStorefrontMarquee :vendors="marqueeVendors" />
+
   <ActivePoolOrdersWidget />
  
  <!-- Birthday Banner -->
@@ -622,6 +626,7 @@ import {
   Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart, Filter, Zap, Repeat
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
+import LazyHomeStorefrontMarquee from '@/components/home/StorefrontMarquee.vue';
 import { products_api } from '@/api_factory/modules/products';
 import { search_api } from '@/api_factory/modules/search';
 import { orders_api } from '@/api_factory/modules/orders';
@@ -674,7 +679,13 @@ const searchLocation = ref('')
 const searchTime = ref('any')
 const loadingVendors = ref(true)
 const recommendedVendors = ref<any[]>([])
-const trendingVendors = ref<any[]>([])
+const trendingVendors = ref<any[]>([]);
+
+// The marquee reads the same trending list the page already loads, so no extra request.
+const marqueeVendors = computed(() => {
+  const list = (trendingVendors.value.length ? trendingVendors.value : vendors.value) || [];
+  return list.filter((v: any) => v?.storeName).slice(0, 16);
+});
 const newVendors = ref<any[]>([])
 const topRatedVendors = ref<any[]>([])
 const vendors = ref<any[]>([]) // Combined list for active promotions
