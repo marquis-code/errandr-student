@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white" v-if="vendor" :style="vendor.brandColor ? { '--color-parent-primary': vendor.brandColor } : {}">
+  <div class="min-h-screen w-full max-w-full overflow-x-hidden bg-white" v-if="vendor" :style="vendor.brandColor ? { '--color-parent-primary': vendor.brandColor } : {}">
     <!-- Collapsed Sticky Header (appears on scroll) -->
     <header 
       class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 transition-all duration-500"
@@ -173,7 +173,7 @@
       <!-- ACTION CHIPS BAR                             -->
       <!-- ============================================ -->
       <div class="max-w-[1400px] mx-auto px-4 md:px-4 -mt-4 relative z-20">
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div class="flex w-full min-w-0 items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
           <button 
             @click="handleStartGroupOrder"
             class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-medium transition-all whitespace-nowrap shrink-0 shadow-sm border border-gray-50 active:scale-95"
@@ -208,7 +208,7 @@
       <!-- PROMO BANNERS (Horizontal Scroll)            -->
       <!-- ============================================ -->
       <div v-if="activeBanners.length" class="max-w-[1400px] mx-auto px-4 md:px-4 mt-6">
-        <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x">
+        <div class="flex w-full min-w-0 gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x">
           <div 
             v-for="(banner, idx) in activeBanners" 
             :key="idx"
@@ -329,7 +329,7 @@
             <div class="h-px bg-gray-100 flex-1"></div>
             <span class="text-[10px] uppercase font-bold text-parentPrimary tracking-wider bg-parentPrimary/10 px-2 py-0.5 rounded-full">Popular</span>
           </div>
-          <div class="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x">
+          <div class="flex w-full min-w-0 overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x">
             <div 
               v-for="product in topPicks" 
               :key="'top-' + product._id"
