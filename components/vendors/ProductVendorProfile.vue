@@ -1,5 +1,15 @@
 <template>
-  <div class="min-h-screen w-full max-w-full overflow-x-hidden bg-white" v-if="vendor" :style="vendor.brandColor ? { '--color-parent-primary': vendor.brandColor } : {}">
+  <!--
+    Theme tokens: storefrontTheme is chosen in the vendor's designer and skins the shop without
+    touching the products inside it. The accent overrides brandColor when both are set, because a
+    vendor who picked 'Pharmacy clean' should get teal cards, not their old orange.
+  -->
+  <div
+    class="min-h-screen w-full max-w-full overflow-x-hidden bg-white"
+    v-if="vendor"
+    :style="themeStyle"
+    :data-theme="vendor.storefrontTheme?.preset || 'default'"
+  >
     <!-- Collapsed Sticky Header (appears on scroll) -->
     <header 
       class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 transition-all duration-500"
@@ -1777,6 +1787,28 @@ const showMobileCartDrawer = ref(false);
 const showGlobalCartModal = ref(false);
 const props = defineProps<{ vendor: any }>();
 const vendor = computed(() => props.vendor);
+
+/**
+ * Theme tokens, as CSS variables the rest of the page already consumes.
+ *
+ * tailwind.config maps `parentPrimary` to var(--color-parent-primary), so overriding that one
+ * variable re-skins every accent-coloured element without editing a single class.
+ */
+const themeStyle = computed(() => {
+  const theme: any = (props.vendor as any)?.storefrontTheme || {};
+  const accent = theme.accent || (props.vendor as any)?.brandColor || '';
+  const style: Record<string, string> = {};
+
+  if (accent) style['--color-parent-primary'] = accent;
+
+  // Radius and density are opt-in: only applied when a theme actually set them, so existing
+  // stores keep their current shape.
+  if (theme.radius) style['--storefront-radius'] = theme.radius;
+  if (theme.density === 'compact') style['--storefront-gap'] = '0.75rem';
+  if (theme.density === 'airy') style['--storefront-gap'] = '1.5rem';
+
+  return style;
+});
 
 // ─── Pharmacy ────────────────────────────────────────────────────
 // A pharmacy is not a shop with capsules in it: some items cannot be sold without a
