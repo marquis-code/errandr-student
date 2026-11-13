@@ -55,6 +55,150 @@
     </div>
   </section>
 
+  <!-- SPECIALS / HOT POT ─────────────────────────────────────────── -->
+  <section v-else-if="type === 'specials'" class="mx-auto max-w-6xl px-6 py-16 sm:py-20 border-t border-slate-100">
+    <div class="space-y-2 mb-10 text-center sm:text-left">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200/60 text-xs font-black text-[#FF5C1A]">
+        <Flame class="w-3.5 h-3.5 fill-[#FF5C1A]" />
+        <span>Hot & Fresh</span>
+      </div>
+      <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-slate-900">
+        {{ p.title || "Today's Specials" }}
+      </h2>
+      <p v-if="p.subtitle" class="text-sm text-slate-500 font-medium">{{ p.subtitle }}</p>
+    </div>
+
+    <div v-if="!specialsList.length" class="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-slate-50">
+      <p class="text-sm font-semibold text-slate-500">No specials listed for today.</p>
+    </div>
+
+    <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-for="(item, i) in specialsList"
+        :key="i"
+        class="group relative rounded-3xl border border-orange-100 bg-gradient-to-br from-white via-orange-50/20 to-amber-50/30 p-5 shadow-sm hover:shadow-md transition-all hover:border-[#FF5C1A] flex flex-col justify-between"
+      >
+        <div>
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <span v-if="item.badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-orange-100 text-[#FF5C1A] border border-orange-200">
+              {{ item.badge }}
+            </span>
+            <span class="ml-auto font-mono text-sm font-black text-slate-900 bg-white px-2.5 py-1 rounded-xl border border-slate-200 shadow-2xs">
+              {{ item.price }}
+            </span>
+          </div>
+
+          <h3 class="text-base font-extrabold text-slate-900 leading-snug group-hover:text-[#FF5C1A] transition-colors">
+            {{ item.name }}
+          </h3>
+
+          <p v-if="item.description" class="mt-2 text-xs leading-relaxed text-slate-600 font-medium">
+            {{ item.description }}
+          </p>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-orange-100/60 flex items-center justify-between text-[11px] font-bold text-slate-400">
+          <span class="inline-flex items-center gap-1">
+            <Clock class="w-3.5 h-3.5 text-[#FF5C1A]" /> Fresh batch ready
+          </span>
+          <a :href="p.ctaHref || '#shop'" class="text-[#FF5C1A] hover:underline font-extrabold">Order Dish →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOD STORAGE & HANDLING GUIDE ─────────────────────────────────── -->
+  <section v-else-if="type === 'storage_guide'" class="mx-auto max-w-6xl px-6 py-16 sm:py-20 bg-slate-50/80 rounded-3xl my-8 border border-slate-200/60">
+    <div class="space-y-2 mb-10 text-center sm:text-left">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200/60 text-xs font-black text-cyan-700">
+        <Snowflake class="w-3.5 h-3.5 text-cyan-600" />
+        <span>Food Storage & Freshness</span>
+      </div>
+      <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-slate-900">
+        {{ p.title || 'Storage & Reheating Guide' }}
+      </h2>
+      <p v-if="p.note" class="text-sm text-slate-600 font-medium">{{ p.note }}</p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-for="(item, i) in storageGuideItems"
+        :key="i"
+        class="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-2xs flex flex-col justify-between"
+      >
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-black text-slate-900 uppercase tracking-wide">
+              {{ item.method || 'Storage' }}
+            </span>
+            <span v-if="item.shelfLife" class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-cyan-50 text-cyan-700 border border-cyan-200">
+              {{ item.shelfLife }}
+            </span>
+          </div>
+          <p class="text-xs leading-relaxed text-slate-600">
+            {{ item.instructions }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERY SCHEDULE ──────────────────────────────────────────────── -->
+  <section v-else-if="type === 'delivery_schedule'" class="mx-auto max-w-6xl px-6 py-16 sm:py-20 border-t border-slate-100">
+    <div class="space-y-2 mb-10 text-center sm:text-left">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-xs font-black text-blue-700">
+        <CalendarClock class="w-3.5 h-3.5 text-blue-600" />
+        <span>Batch Dispatch Windows</span>
+      </div>
+      <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-slate-900">
+        {{ p.title || 'Cooking & Delivery Schedule' }}
+      </h2>
+      <p v-if="p.note" class="text-sm text-slate-500 font-medium">{{ p.note }}</p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-for="(batch, i) in deliveryScheduleItems"
+        :key="i"
+        class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3 shadow-2xs"
+      >
+        <div class="flex items-center justify-between">
+          <h4 class="font-extrabold text-sm text-slate-900">{{ batch.batch }}</h4>
+          <span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-100">
+            {{ batch.cutoff }}
+          </span>
+        </div>
+        <p class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+          <Clock class="w-3.5 h-3.5 text-slate-400" /> {{ batch.delivery }}
+        </p>
+        <p v-if="batch.details" class="text-[11px] text-slate-500">
+          {{ batch.details }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BADGES ──────────────────────────────────────────────────── -->
+  <section v-else-if="type === 'trust_badges'" class="mx-auto max-w-6xl px-6 py-14 sm:py-16">
+    <div v-if="p.title" class="space-y-2 mb-8 text-center">
+      <h3 class="text-xl sm:text-2xl font-black text-slate-900">{{ p.title }}</h3>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div
+        v-for="(badge, i) in trustBadges"
+        :key="i"
+        class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-center space-y-2"
+      >
+        <div class="w-10 h-10 rounded-xl bg-orange-100/60 text-[#FF5C1A] flex items-center justify-center mx-auto">
+          <ShieldCheck class="w-5 h-5" />
+        </div>
+        <h4 class="font-extrabold text-xs text-slate-900 leading-snug">{{ badge.title }}</h4>
+        <p class="text-[11px] text-slate-500 leading-relaxed">{{ badge.description }}</p>
+      </div>
+    </div>
+  </section>
+
   <!-- SERVICES ─────────────────────────────────────────────────────────── -->
   <section v-else-if="type === 'services'" id="offerings" class="bg-slate-50/80 border-y border-slate-100 py-16 sm:py-20">
     <div class="mx-auto max-w-6xl px-6">
@@ -291,7 +435,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import {
-  Sparkles, Clock, Package, MapPin, Phone
+  Sparkles, Clock, Package, MapPin, Phone, Flame, Snowflake, CalendarClock, ShieldCheck
 } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -314,6 +458,26 @@ const type = computed(() => props.block.type);
 const p = computed(() => props.block.props || {});
 const servicesList = computed(() => props.servicesList || []);
 const productsList = computed(() => props.productsList || []);
+
+const specialsList = computed(() => {
+  if (Array.isArray(p.value.items)) return p.value.items;
+  return [];
+});
+
+const storageGuideItems = computed(() => {
+  if (Array.isArray(p.value.items)) return p.value.items;
+  return [];
+});
+
+const deliveryScheduleItems = computed(() => {
+  if (Array.isArray(p.value.items)) return p.value.items;
+  return [];
+});
+
+const trustBadges = computed(() => {
+  if (Array.isArray(p.value.items)) return p.value.items;
+  return [];
+});
 
 const galleryImages = computed(() => {
   if (Array.isArray(p.value.images)) {
