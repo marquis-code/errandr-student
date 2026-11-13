@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full overflow-hidden group" :class="aspectRatio">
+  <div class="relative w-full overflow-hidden group" :class="aspectRatio || 'aspect-[4/3]'">
     <!-- Scroll Container -->
     <div 
       ref="scrollContainer"
@@ -73,6 +73,7 @@ interface MediaItem {
 
 const props = defineProps<{
   mediaItems: MediaItem[];
+  /** Optional, but a missing value used to mean "natural image size" and broke the grid. */
   aspectRatio?: string;
   defaultPlaceholder?: string;
   showArrows?: boolean;
