@@ -1096,7 +1096,10 @@
                   <span class="text-[15px] font-medium text-gray-900">Subtotal</span>
                   <span class="text-lg font-bold text-gray-900 tracking-tight">₦{{ (cart.getVendorStats(vendor._id).subtotal + cart.getVendorStats(vendor._id).packagingFee).toLocaleString() }}</span>
                 </div>
-                <NuxtLink 
+                <!-- The store being closed hid this button entirely, so a customer with a full
+                     cart saw a subtotal and nothing to press. It stays visible and offers the
+                     schedule route instead of vanishing. -->
+                <NuxtLink
                   v-if="vendor.isOpen !== false || route.query.schedule === 'true'"
                   :to="canProceedToCheckout ? (isGroupOrderActiveForThisVendor ? `/cart?group=${activeCode}` : '/cart') : ''"
                   @click="!canProceedToCheckout ? $event.preventDefault() : null"
@@ -1105,6 +1108,18 @@
                 >
                   {{ isGroupOrderActiveForThisVendor ? 'Finalize Order' : 'Continue to checkout' }}
                 </NuxtLink>
+
+                <template v-else>
+                  <button
+                    class="w-full h-14 bg-parentPrimary text-white rounded-[14px] font-bold text-base transition-colors hover:bg-[#FF5C1A] active:scale-[0.98] flex items-center justify-center gap-2"
+                    @click="scheduleThisOrder"
+                  >
+                    <Clock class="h-4 w-4" /> Schedule this order
+                  </button>
+                  <p class="text-center text-[11px] font-medium text-gray-400">
+                    {{ vendor.storeName }} is closed now. Schedule it and they will prepare it when they open.
+                  </p>
+                </template>
               </div>
             </div>
             
@@ -1738,6 +1753,12 @@ const vendor = computed(() => props.vendor);
 // A pharmacy is not a shop with capsules in it: some items cannot be sold without a
 // prescription, some have an age limit, and the customer may need to ask a human a clinical
 // question before they buy.
+// A closed store still needs a way forward from a full cart.
+const scheduleThisOrder = () => {
+  const query = { ...route.query, schedule: 'true' };
+  router.push({ path: route.path, query });
+};
+
 const isPharmacy = computed(() => {
   const vt = String(vendor.value?.vendorType || '').toLowerCase();
   const cat = String(vendor.value?.category || '').toLowerCase();
