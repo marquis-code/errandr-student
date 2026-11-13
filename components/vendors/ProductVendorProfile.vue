@@ -371,9 +371,36 @@
               <div class="flex items-center gap-3 mb-5">
                 <h2 class="text-lg font-medium text-gray-900 tracking-tight">Combos &amp; Promos</h2>
                 <div class="h-px bg-gray-100 flex-1"></div>
+                <!-- Desktop Scroll Navigation Arrows -->
+                <div class="hidden md:flex items-center gap-1.5">
+                  <button 
+                    @click="scrollCombos('left')"
+                    class="w-8 h-8 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 flex items-center justify-center shadow-xs transition-all active:scale-95 hover:border-gray-300"
+                    title="Scroll left"
+                    aria-label="Scroll left"
+                  >
+                    <ChevronLeft class="w-4 h-4" />
+                  </button>
+                  <button 
+                    @click="scrollCombos('right')"
+                    class="w-8 h-8 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 flex items-center justify-center shadow-xs transition-all active:scale-95 hover:border-gray-300"
+                    title="Scroll right"
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight class="w-4 h-4" />
+                  </button>
+                </div>
                 <span class="text-sm font-bold text-gray-400">{{ packs.length }} items</span>
               </div>
-              <div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x">
+              <div 
+                ref="combosScrollContainer"
+                class="flex gap-3 overflow-x-auto pb-3 snap-x scroll-smooth select-none custom-desktop-scrollbar cursor-grab active:cursor-grabbing"
+                @wheel.passive="handleCombosWheel"
+                @mousedown="startCombosDrag"
+                @mouseleave="stopCombosDrag"
+                @mouseup="stopCombosDrag"
+                @mousemove="doCombosDrag"
+              >
                 <div 
                   v-for="pack in packs" 
                   :key="pack._id"
@@ -485,7 +512,7 @@
               </div>
 
               <!-- DESKTOP: Grid Cards -->
-              <div class="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="hidden md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 <div 
                   v-for="product in (isMiniMart && !expandedCategories[cat] ? groupedProducts[cat].slice(0, 10) : groupedProducts[cat])" 
                   :key="product._id"
@@ -496,23 +523,25 @@
                   <!-- Promo Badge -->
                   <div v-if="product.isPrepaidByPlatform" class="absolute top-3 left-3 z-20 px-2 py-1 bg-indigo-500 text-white border-indigo-600 rounded shadow text-[10px] font-bold uppercase tracking-wider">Promo</div>
                   
-                  <!-- Media Carousel -->
-                  <MediaCarousel 
-                    :media-items="getMediaItems(product)" 
-                    :default-placeholder="isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg'"
-                    aspect-ratio="aspect-[4/3]"
-                    :show-arrows="true"
-                    :hover-scale="true"
-                    @click-media="(idx) => openLightbox(getMediaItems(product), idx)"
-                  >
-                    <template #overlay="{ item }">
-                      <!-- Item Count overlay -->
-                      <div v-if="getProductCount(product._id) > 0" class="absolute top-3 right-3 flex items-center gap-1.5 bg-parentPrimary text-white px-2.5 py-1 rounded-lg text-sm font-medium shadow-sm border border-gray-50 z-20">
-                        <ShoppingBag class="w-3 h-3" />
-                        {{ getProductCount(product._id) }}
-                      </div>
-                    </template>
-                  </MediaCarousel>
+                  <!-- Media Carousel (compact & proportional height) -->
+                  <div class="w-full h-44 sm:h-48 overflow-hidden relative bg-gray-50 shrink-0">
+                    <MediaCarousel 
+                      :media-items="getMediaItems(product)" 
+                      :default-placeholder="isFoodVendor ? '/placeholder-food.jpg' : '/placeholder-store.jpg'"
+                      aspect-ratio="h-44 sm:h-48 w-full"
+                      :show-arrows="true"
+                      :hover-scale="true"
+                      @click-media="(idx) => openLightbox(getMediaItems(product), idx)"
+                    >
+                      <template #overlay="{ item }">
+                        <!-- Item Count overlay -->
+                        <div v-if="getProductCount(product._id) > 0" class="absolute top-3 right-3 flex items-center gap-1.5 bg-parentPrimary text-white px-2.5 py-1 rounded-lg text-sm font-medium shadow-sm border border-gray-50 z-20">
+                          <ShoppingBag class="w-3 h-3" />
+                          {{ getProductCount(product._id) }}
+                        </div>
+                      </template>
+                    </MediaCarousel>
+                  </div>
                   
                   
                   <!-- Content -->
@@ -1698,7 +1727,7 @@
 
 <script setup lang="ts">
 import { 
-  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronRight, ChevronDown, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText, RefreshCw, Lock, CheckCircle2, RotateCcw, Check, Store, MessageCircle
+  Share2, Heart, ShoppingCart, ShoppingBag, ArrowLeft, ArrowRight, Clock, Star, MapPin, Search, Info, ChevronLeft, ChevronRight, ChevronDown, Users, Calendar, Copy, Trash2, X, Bike, Plus, Minus, Loader2, LogOut, Bell, FileText, RefreshCw, Lock, CheckCircle2, RotateCcw, Check, Store, MessageCircle
 } from 'lucide-vue-next';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 
@@ -2746,6 +2775,51 @@ const handleCheckoutGroupOrder = () => {
 
 // shareStore has been replaced by the ShareModal
 
+// Combos & Promos Horizontal Scroll Handling for Desktop
+const combosScrollContainer = ref<HTMLElement | null>(null);
+
+const scrollCombos = (direction: 'left' | 'right') => {
+  if (!combosScrollContainer.value) return;
+  const scrollAmount = 340;
+  combosScrollContainer.value.scrollBy({
+    left: direction === 'left' ? -scrollAmount : scrollAmount,
+    behavior: 'smooth'
+  });
+};
+
+const handleCombosWheel = (e: WheelEvent) => {
+  if (!combosScrollContainer.value) return;
+  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+    const maxScroll = combosScrollContainer.value.scrollWidth - combosScrollContainer.value.clientWidth;
+    if (maxScroll > 0) {
+      combosScrollContainer.value.scrollLeft += e.deltaY * 0.9;
+    }
+  }
+};
+
+let isCombosDragging = false;
+let combosStartX = 0;
+let combosScrollStart = 0;
+
+const startCombosDrag = (e: MouseEvent) => {
+  if (!combosScrollContainer.value) return;
+  isCombosDragging = true;
+  combosStartX = e.pageX - combosScrollContainer.value.offsetLeft;
+  combosScrollStart = combosScrollContainer.value.scrollLeft;
+};
+
+const stopCombosDrag = () => {
+  isCombosDragging = false;
+};
+
+const doCombosDrag = (e: MouseEvent) => {
+  if (!isCombosDragging || !combosScrollContainer.value) return;
+  e.preventDefault();
+  const x = e.pageX - combosScrollContainer.value.offsetLeft;
+  const walk = (x - combosStartX) * 1.5;
+  combosScrollContainer.value.scrollLeft = combosScrollStart - walk;
+};
+
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
   cleanupEventListeners();
@@ -2757,6 +2831,24 @@ onUnmounted(() => {
 <style scoped>
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+.custom-desktop-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
+}
+.custom-desktop-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+.custom-desktop-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-desktop-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+.custom-desktop-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
 
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out;

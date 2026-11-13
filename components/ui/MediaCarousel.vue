@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full overflow-hidden group" :class="aspectRatio || 'aspect-[4/3]'">
+  <div class="relative w-full overflow-hidden group" :class="aspectRatio || 'h-44 sm:h-48 w-full max-h-48'">
     <!-- Scroll Container -->
     <div 
       ref="scrollContainer"
