@@ -4,10 +4,6 @@
   <!-- <CoreExamPromoBanner /> -->
   <BatchDeliveryBanner />
   <MarketPoolBanner />
-
-  <!-- Storefront marquee: the shops are the product, so they sit above the fold and move. -->
-  <LazyHomeStorefrontMarquee :vendors="marqueeVendors" />
-
   <ActivePoolOrdersWidget />
  
  <!-- Birthday Banner -->
@@ -365,6 +361,9 @@
           <!-- Removed Global Filters Bar (Moved to LandingNavbar.vue) -->
     </HeroStage>
 
+    <!-- Storefront marquee: sits under the hero, never above the navigation. -->
+    <HomeStorefrontMarquee v-if="landingTab !== 'services'" :vendors="marqueeVendors" />
+
 
     <!-- Tab 2: Campus Services View -->
     <ServicesShowcase v-if="landingTab === 'services'" />
@@ -626,7 +625,7 @@ import {
   Sparkles, TrendingUp, Flame, CircleDollarSign, SearchX, MapPin, Calendar, Heart, Filter, Zap, Repeat
 } from 'lucide-vue-next'
 import { vendors_api } from '@/api_factory/modules/vendors';
-import LazyHomeStorefrontMarquee from '@/components/home/StorefrontMarquee.vue';
+import HomeStorefrontMarquee from '@/components/home/StorefrontMarquee.vue';
 import { products_api } from '@/api_factory/modules/products';
 import { search_api } from '@/api_factory/modules/search';
 import { orders_api } from '@/api_factory/modules/orders';
