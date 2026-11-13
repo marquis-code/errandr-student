@@ -582,22 +582,17 @@
                     class="mb-4 rounded-2xl border border-gray-100 bg-gray-50/60 p-3"
                   >
                     <p class="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">Packaging type</p>
-                    <div class="flex flex-wrap gap-2">
-                      <button
-                        v-for="opt in availablePacks(vendorId)"
-                        :key="opt.name"
-                        type="button"
-                        class="rounded-xl border px-3 py-2 text-xs font-bold transition"
-                        :class="selectedPackName(vendorId) === opt.name
-                          ? 'border-[#FF5C1A] bg-white text-[#FF5C1A]'
-                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'"
-                        @click="choosePack(vendorId, opt)"
+                    <div class="relative">
+                      <select
+                        :value="selectedPackName(vendorId)"
+                        class="w-full appearance-none rounded-xl border border-gray-200 bg-white px-3 py-2.5 pr-9 text-sm font-bold text-gray-800 outline-none focus:border-[#FF5C1A]"
+                        @change="choosePackByName(vendorId, ($event.target as HTMLSelectElement).value)"
                       >
-                        {{ opt.name }}
-                        <span class="ml-1 text-[10px] font-semibold text-gray-400">
-                          ₦{{ Number(opt.price || 0).toLocaleString() }}
-                        </span>
-                      </button>
+                        <option v-for="opt in availablePacks(vendorId)" :key="opt.name" :value="opt.name">
+                          {{ opt.name }} — ₦{{ Number(opt.price || 0).toLocaleString() }}
+                        </option>
+                      </select>
+                      <ChevronDown class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     </div>
                   </div>
 
@@ -1297,6 +1292,11 @@ const selectedPackName = (vendorId: string) => {
   if (chosen?.name) return chosen.name;
   const first = availablePacks(vendorId)[0];
   return first?.name || '';
+};
+
+const choosePackByName = (vendorId: string, name: string) => {
+  const pack = availablePacks(vendorId).find((p: any) => p.name === name);
+  if (pack) choosePack(vendorId, pack);
 };
 
 const choosePack = (vendorId: string, pack: any) => {
