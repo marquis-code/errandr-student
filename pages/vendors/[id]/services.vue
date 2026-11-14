@@ -52,6 +52,9 @@
                 <Clock class="w-3.5 h-3.5 text-gray-400" />
                 {{ service.variants?.length ? `${service.durationInMinutes} mins - ${Math.max(...service.variants.map((v:any)=>v.durationInMinutes))} mins` : `${service.durationInMinutes} mins` }}
               </p>
+              <p v-if="service.description" class="text-xs text-gray-500 mt-1 line-clamp-2 max-w-xl">
+                {{ service.description }}
+              </p>
               <p class="text-sm font-bold text-gray-900 mt-2">
                 {{ service.variants?.length ? 'from ' : '' }}₦{{ service.price.toLocaleString() }}
               </p>

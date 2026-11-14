@@ -141,6 +141,9 @@
                       <Clock class="w-3.5 h-3.5 text-[#B8AF9F]" />
                       {{ service.variants?.length ? `${service.durationInMinutes}\u2013${Math.max(...service.variants.map((v:any)=>v.durationInMinutes))} mins` : `${service.durationInMinutes} mins` }}
                     </p>
+                    <p v-if="service.description" class="text-xs text-[#6B6558] mt-1 leading-relaxed line-clamp-2 max-w-xl">
+                      {{ service.description }}
+                    </p>
                     <p class="text-sm font-bold text-[#14110F] mt-2 font-mono tabular-nums">
                       <span v-if="service.variants?.length" class="font-sans font-semibold text-[#9A9284] text-sm mr-1">from</span>₦{{ service.price.toLocaleString() }}
                     </p>
@@ -163,7 +166,7 @@
               </div>
 
               <!-- View All -->
-              <div v-if="vendorServices.length > 5 && activeCategory === 'Featured'" class="mt-6 flex justify-center">
+              <div v-if="vendorServices.length > 30 && activeCategory === 'Featured'" class="mt-6 flex justify-center">
                 <NuxtLink 
                   :to="`/vendors/${vendor._id}/services`"
                   class="inline-flex items-center gap-1.5 text-sm font-bold text-[#3A352E] hover:text-parentPrimary transition-colors"
@@ -485,7 +488,7 @@ const categories = computed(() => {
 });
 
 const filteredServices = computed(() => {
-  if (activeCategory.value === 'Featured') return vendorServices.value.slice(0, 5);
+  if (activeCategory.value === 'Featured') return vendorServices.value.slice(0, 30);
   return vendorServices.value.filter(s => s.category === activeCategory.value);
 });
 
