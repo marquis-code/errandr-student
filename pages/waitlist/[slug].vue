@@ -1,15 +1,13 @@
 <template>
   <div class="min-h-screen bg-[#F0EBF8] px-3 py-6 sm:py-10">
-    <div class="mx-auto w-full max-w-[640px]">
+    <div class="relative mx-auto grid w-full max-w-[1080px] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-start">
+      <div class="min-w-0">
       <!-- Header card -->
       <div class="overflow-hidden rounded-lg border border-[#DADCE0] bg-white shadow-sm">
         <div class="h-2.5 w-full" :style="{ background: accent }" />
-        <div v-if="form?.bannerImage" class="h-40 w-full overflow-hidden">
-          <img :src="form.bannerImage" class="h-full w-full object-cover" />
-        </div>
 
         <div class="px-6 py-6">
-          <div class="mb-4 flex items-center gap-2.5">
+          <div class="mb-4 flex items-center gap-2.5 lg:hidden">
             <div class="h-8 w-8 overflow-hidden rounded-full bg-[#F1F3F4]">
               <img v-if="store?.logo" :src="store.logo" class="h-full w-full object-cover" />
               <span v-else class="flex h-full w-full items-center justify-center text-[10px] font-black text-[#5F6368]">
@@ -121,6 +119,43 @@
       </form>
 
       <p class="mt-6 text-center text-xs text-[#5F6368]">Powered by Erranders</p>
+      </div>
+
+      <!-- Desktop: the banner gets the whole right column at full height. -->
+      <aside v-if="form?.bannerImage || store?.logo" class="hidden lg:block">
+        <div class="sticky top-10 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-[#E6DDF5]">
+          <div class="relative">
+            <img v-if="form?.bannerImage" :src="form.bannerImage" class="block h-[520px] w-full object-cover" />
+            <div v-else class="h-[520px] w-full" :style="{ background: accent }" />
+
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent p-5 pt-16">
+              <div class="flex items-center gap-3">
+                <div class="h-11 w-11 overflow-hidden rounded-full bg-white ring-2 ring-white/70">
+                  <img v-if="store?.logo" :src="store.logo" class="h-full w-full object-cover" />
+                  <span v-else class="flex h-full w-full items-center justify-center text-[11px] font-black text-[#5F6368]">
+                    {{ (store?.storeName || 'W').slice(0, 2).toUpperCase() }}
+                  </span>
+                </div>
+                <div class="min-w-0">
+                  <p class="truncate text-base font-bold text-white">{{ store?.storeName || 'Waitlist' }}</p>
+                  <p class="text-[11px] text-white/80">Now accepting names</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Mobile: same banner, natural height, above the form. -->
+    <div v-if="form?.bannerImage" class="mx-auto mt-4 w-full max-w-[640px] overflow-hidden rounded-xl shadow-lg lg:hidden">
+      <img :src="form.bannerImage" class="block h-auto w-full object-contain" />
+      <div class="flex items-center gap-2.5 bg-white px-4 py-3">
+        <div class="h-8 w-8 overflow-hidden rounded-full bg-[#F1F3F4]">
+          <img v-if="store?.logo" :src="store.logo" class="h-full w-full object-cover" />
+        </div>
+        <p class="text-sm font-bold text-[#202124]">{{ store?.storeName || 'Waitlist' }}</p>
+      </div>
     </div>
 
     <!-- Success modal -->
