@@ -270,6 +270,18 @@ const load = async () => {
     for (const f of form.value?.fields || []) {
       answers[f.key] = f.type === 'multiselect' ? [] : '';
     }
+
+    // Count the visit once per browser session. Reloads and back-navigation would otherwise
+    // inflate the number until it stopped telling the vendor anything.
+    try {
+      const seen = `wl-view-${String(route.params.slug)}`;
+      if (!sessionStorage.getItem(seen)) {
+        sessionStorage.setItem(seen, '1');
+        api.post(`/waitlist/public/${subdomain()}/${route.params.slug}/view`).catch(() => {});
+      }
+    } catch {
+      /* private mode, storage blocked — a view is not worth failing the page for */
+    }
   } catch {
     form.value = null;
   } finally {
