@@ -31,6 +31,18 @@
           <p class="mt-3 text-xs text-[#5F6368]">
             <span class="text-[#D93025]">*</span> Required
           </p>
+
+          <!-- Scarcity, stated honestly: a real count, not a manufactured one. -->
+          <div v-if="remaining !== null && remaining > 0" class="mt-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5"
+            :style="{ background: accent + '14' }">
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" :style="{ background: accent }" />
+              <span class="relative inline-flex h-2 w-2 rounded-full" :style="{ background: accent }" />
+            </span>
+            <span class="text-[11px] font-bold" :style="{ color: accent }">
+              {{ remaining }} {{ remaining === 1 ? 'slot' : 'slots' }} remaining
+            </span>
+          </div>
         </div>
       </div>
 
@@ -40,7 +52,9 @@
       </div>
       <div v-else-if="!form && !submitted" class="mt-4 rounded-lg border border-[#DADCE0] bg-white p-8 text-center">
         <p class="text-base font-medium text-[#202124]">This waitlist is not open</p>
-        <p class="mt-1 text-sm text-[#5F6368]">The store may have closed it, or the link is out of date.</p>
+        <p class="mt-1 text-sm text-[#5F6368]">
+          {{ remaining === 0 ? 'Every slot has been taken. Watch out for the next round.' : 'The store may have closed it, or the link is out of date.' }}
+        </p>
       </div>
 
       <!-- Questions -->
@@ -203,6 +217,7 @@ const error = ref('');
 const submitted = ref(false);
 const answers = reactive<Record<string, any>>({});
 const openSelect = ref('');
+const remaining = ref<number | null>(null);
 
 // The prompt attached to the option the customer picked, if the vendor set one.
 const followUpFor = (f: any) => {
@@ -251,6 +266,7 @@ const load = async () => {
     const res = await api.get(`/waitlist/public/${subdomain()}/${route.params.slug}`);
     form.value = res.data?.form || null;
     store.value = res.data?.vendor || null;
+    remaining.value = typeof res.data?.remaining === 'number' ? res.data.remaining : null;
     for (const f of form.value?.fields || []) {
       answers[f.key] = f.type === 'multiselect' ? [] : '';
     }
@@ -283,8 +299,10 @@ const submit = async () => {
       delete payload[`${f.key}_follow`];
     }
 
-    await api.post(`/waitlist/public/${subdomain()}/${route.params.slug}`, { answers: payload });
+    const submitRes = await api.post(`/waitlist/public/${subdomain()}/${route.params.slug}`, { answers: payload });
+    if (typeof (submitRes as any)?.data?.remaining === 'number') remaining.value = (submitRes as any).data.remaining;
     submitted.value = true;
+
   } catch (e: any) {
     const m = e?.response?.data?.message;
     error.value = Array.isArray(m) ? m.join(', ') : m || 'Could not submit. Please try again.';
