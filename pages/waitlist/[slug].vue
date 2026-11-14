@@ -280,5 +280,22 @@ const closeSuccess = () => {
   router.push('/');
 };
 
+// Client-side SEO. Social crawlers are served rewritten tags by server/middleware/waitlist-og.ts,
+// because this app renders no HTML of its own.
+useHead(() => ({
+  title: form.value?.title
+    ? `${form.value.title}${store.value?.storeName ? ' · ' + store.value.storeName : ''}`
+    : 'Waitlist · Erranders',
+  meta: [
+    { name: 'description', content: form.value?.description || `Join the waitlist for ${store.value?.storeName || 'this store'} on Erranders.` },
+    { name: 'robots', content: 'index, follow' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:title', content: form.value?.title ? `${form.value.title}${store.value?.storeName ? ' · ' + store.value.storeName : ''}` : 'Waitlist' },
+    { property: 'og:description', content: form.value?.description || 'Join the waitlist on Erranders.' },
+    ...(form.value?.bannerImage ? [{ property: 'og:image', content: form.value.bannerImage }] : []),
+    { name: 'twitter:card', content: form.value?.bannerImage ? 'summary_large_image' : 'summary' },
+  ],
+}));
+
 onMounted(load);
 </script>
