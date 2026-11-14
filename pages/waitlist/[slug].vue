@@ -26,6 +26,10 @@
       </div>
 
       <form v-else-if="!submitted" class="space-y-4 rounded-2xl border border-[#EDE9E3] bg-white p-5" @submit.prevent="submit">
+        <div v-if="form.bannerImage" class="-mx-5 -mt-5 mb-4 h-36 overflow-hidden">
+          <img :src="form.bannerImage" class="h-full w-full object-cover" />
+        </div>
+
         <div>
           <h1 class="text-lg font-black leading-tight tracking-tight text-[#171310]">{{ form.title }}</h1>
           <p v-if="form.description" class="mt-1 whitespace-pre-line text-xs text-[#6B655D]">{{ form.description }}</p>
@@ -39,11 +43,41 @@
           <textarea v-if="f.type === 'textarea'" v-model="answers[f.key]" rows="3"
             class="w-full resize-none rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A] focus:bg-white" />
 
-          <select v-else-if="f.type === 'select'" v-model="answers[f.key]"
-            class="w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A]">
-            <option value="">Choose…</option>
-            <option v-for="o in f.options" :key="o" :value="o">{{ o }}</option>
-          </select>
+          <template v-else-if="f.type === 'select'">
+            <select v-model="answers[f.key]"
+              class="w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A]">
+              <option value="">Choose…</option>
+              <option v-for="o in f.options" :key="o" :value="o">{{ o }}</option>
+              <option v-if="f.allowOther" :value="OTHER">Other</option>
+            </select>
+            <input v-if="f.allowOther && answers[f.key] === OTHER" v-model="answers[f.key + '_other']"
+              placeholder="Type your answer"
+              class="mt-2 w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A]" />
+          </template>
+
+          <template v-else-if="f.type === 'multiselect'">
+            <div class="space-y-1.5">
+              <label v-for="o in f.options" :key="o" class="flex items-center gap-2 text-sm text-[#171310]">
+                <input type="checkbox" :value="o" v-model="answers[f.key]" class="rounded" /> {{ o }}
+              </label>
+              <label v-if="f.allowOther" class="flex items-center gap-2 text-sm text-[#171310]">
+                <input type="checkbox" :value="OTHER" v-model="answers[f.key]" class="rounded" /> Other
+              </label>
+            </div>
+            <input v-if="f.allowOther && (answers[f.key] || []).includes(OTHER)" v-model="answers[f.key + '_other']"
+              placeholder="Type your answer"
+              class="mt-2 w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A]" />
+          </template>
+
+          <template v-else-if="f.type === 'image'">
+            <input type="file" accept="image/*"
+              class="w-full rounded-xl border border-dashed border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-xs"
+              @change="onImage(f.key, $event)" />
+            <img v-if="answers[f.key]" :src="answers[f.key]" class="mt-2 h-24 rounded-lg object-cover" />
+          </template>
+
+          <input v-else-if="f.type === 'number'" v-model="answers[f.key]" type="number"
+            class="w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A] focus:bg-white" />
 
           <input v-else v-model="answers[f.key]" :type="inputType(f.type)"
             class="w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A] focus:bg-white" />
@@ -81,9 +115,24 @@ const loading = ref(true);
 const sending = ref(false);
 const error = ref('');
 const submitted = ref(false);
+const OTHER = '__other__';
+
+const onImage = async (key: string, e: Event) => {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    answers[key] = res?.data?.url || res?.data?.secure_url || '';
+  } catch {
+    answers[key] = '';
+  }
+};
+
+const inputType = (t: string) => (t === 'email' ? 'email' : t === 'phone' ? 'tel' : t === 'date' ? 'date' : t === 'number' ? 'number' : 'text');
 const answers = reactive<Record<string, any>>({});
 
-const inputType = (t: string) => (t === 'email' ? 'email' : t === 'phone' ? 'tel' : t === 'date' ? 'date' : 'text');
 
 const subdomain = () => {
   if (typeof window === 'undefined') return '';
