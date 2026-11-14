@@ -138,12 +138,12 @@
           {{ error }}
         </p>
 
-        <div class="mt-5 flex items-center justify-between gap-3">
+        <div class="mt-5">
           <button type="submit" :disabled="sending"
-            class="rounded bg-[#FF5C1A] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#E54D12] disabled:opacity-60">
+            class="w-full rounded bg-[#FF5C1A] py-3 text-sm font-semibold text-white transition hover:bg-[#E54D12] disabled:opacity-60">
             {{ sending ? 'Submitting…' : 'Submit' }}
           </button>
-          <span class="text-xs text-[#5F6368]">Never submit passwords</span>
+          <p class="mt-2 text-center text-xs text-[#5F6368]">Never submit passwords</p>
         </div>
       </form>
 
