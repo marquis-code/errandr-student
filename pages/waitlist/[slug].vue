@@ -85,6 +85,12 @@
             <input v-if="f.allowOther && answers[f.key] === OTHER" v-model="answers[f.key + '_other']"
               placeholder="Your answer"
               class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2.5 text-sm outline-none transition focus:border-[#FF5C1A] focus:ring-1 focus:ring-[#FF5C1A]" />
+
+            <div v-if="followUpFor(f)" class="mt-2">
+              <label class="text-xs text-[#5F6368]">{{ followUpFor(f) }}</label>
+              <input v-model="answers[f.key + '_follow']" :placeholder="followUpFor(f)"
+                class="mt-1 w-full rounded border border-[#DADCE0] px-3 py-2.5 text-sm outline-none transition focus:border-[#FF5C1A] focus:ring-1 focus:ring-[#FF5C1A]" />
+            </div>
           </template>
 
           <template v-else-if="f.type === 'multiselect'">
@@ -198,6 +204,13 @@ const submitted = ref(false);
 const answers = reactive<Record<string, any>>({});
 const openSelect = ref('');
 
+// The prompt attached to the option the customer picked, if the vendor set one.
+const followUpFor = (f: any) => {
+  const key = answers[f.key];
+  if (typeof key !== 'string') return '';
+  return (f.followUps || {})[key] || '';
+};
+
 const selectOptions = (f: any) => {
   const opts = [...(f.options || [])];
   if (f.allowOther) opts.push(OTHER);
@@ -263,7 +276,11 @@ const submit = async () => {
           payload[f.key] = other;
         }
       }
+      if (f.followUps && f.followUps[payload[f.key]] && payload[`${f.key}_follow`]) {
+        payload[f.key] = `${payload[f.key]} — ${payload[`${f.key}_follow`]}`;
+      }
       delete payload[`${f.key}_other`];
+      delete payload[`${f.key}_follow`];
     }
 
     await api.post(`/waitlist/public/${subdomain()}/${route.params.slug}`, { answers: payload });
