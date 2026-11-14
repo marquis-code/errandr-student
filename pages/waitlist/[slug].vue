@@ -1,121 +1,157 @@
 <template>
-  <div class="min-h-screen bg-[#FBFAF8] px-4 py-10">
-    <div class="mx-auto w-full max-w-md">
-      <div class="mb-5 flex items-center gap-3">
-        <div class="h-11 w-11 overflow-hidden rounded-xl bg-white ring-1 ring-[#EDE9E3]">
-          <img v-if="store?.logo" :src="store.logo" class="h-full w-full object-cover" />
-          <span v-else class="flex h-full w-full items-center justify-center text-xs font-black text-[#9C968E]">
-            {{ (store?.storeName || 'W').slice(0, 2).toUpperCase() }}
-          </span>
-        </div>
-        <div>
-          <p class="text-sm font-black text-[#171310]">{{ store?.storeName || 'Waitlist' }}</p>
-          <p class="text-[11px] text-[#8A8178]">Waitlist</p>
-        </div>
-      </div>
-
-      <div v-if="loading" class="rounded-2xl border border-[#EDE9E3] bg-white p-8 text-center text-sm text-[#9C968E]">
-        Loading…
-      </div>
-
-      <div v-else-if="!form" class="rounded-2xl border border-dashed border-[#EDE9E3] bg-white p-8 text-center">
-        <p class="text-sm font-bold text-[#171310]">This waitlist is not open</p>
-        <p class="mx-auto mt-1 max-w-xs text-xs text-[#8A8178]">
-          The store may have closed it, or the link is out of date.
-        </p>
-      </div>
-
-      <form v-else-if="!submitted" class="space-y-4 rounded-2xl border border-[#EDE9E3] bg-white p-5" @submit.prevent="submit">
-        <div v-if="form.bannerImage" class="-mx-5 -mt-5 mb-4 h-36 overflow-hidden">
+  <div class="min-h-screen bg-[#F0EBF8] px-3 py-6 sm:py-10">
+    <div class="mx-auto w-full max-w-[640px]">
+      <!-- Header card -->
+      <div class="overflow-hidden rounded-lg border border-[#DADCE0] bg-white shadow-sm">
+        <div class="h-2.5 w-full" :style="{ background: accent }" />
+        <div v-if="form?.bannerImage" class="h-40 w-full overflow-hidden">
           <img :src="form.bannerImage" class="h-full w-full object-cover" />
         </div>
 
-        <div>
-          <h1 class="text-lg font-black leading-tight tracking-tight text-[#171310]">{{ form.title }}</h1>
-          <p v-if="form.description" class="mt-1 whitespace-pre-line text-xs text-[#6B655D]">{{ form.description }}</p>
+        <div class="px-6 py-6">
+          <div class="mb-4 flex items-center gap-2.5">
+            <div class="h-8 w-8 overflow-hidden rounded-full bg-[#F1F3F4]">
+              <img v-if="store?.logo" :src="store.logo" class="h-full w-full object-cover" />
+              <span v-else class="flex h-full w-full items-center justify-center text-[10px] font-black text-[#5F6368]">
+                {{ (store?.storeName || 'W').slice(0, 2).toUpperCase() }}
+              </span>
+            </div>
+            <p class="text-xs font-medium text-[#5F6368]">{{ store?.storeName || 'Waitlist' }}</p>
+          </div>
+
+          <h1 class="text-[26px] font-normal leading-snug text-[#202124]">{{ form?.title || 'Waitlist' }}</h1>
+          <p v-if="form?.description" class="mt-2 whitespace-pre-line text-sm text-[#5F6368]">{{ form.description }}</p>
+          <p class="mt-3 text-xs text-[#5F6368]">
+            <span class="text-[#D93025]">*</span> Required
+          </p>
         </div>
+      </div>
 
-        <div v-for="f in form.fields" :key="f.key" class="space-y-1">
-          <label class="text-[11px] font-bold uppercase tracking-wider text-[#9C968E]">
-            {{ f.label }}<span v-if="f.required" class="text-rose-500"> *</span>
-          </label>
+      <!-- Loading / closed -->
+      <div v-if="loading" class="mt-4 rounded-lg border border-[#DADCE0] bg-white p-8 text-center text-sm text-[#5F6368]">
+        Loading…
+      </div>
+      <div v-else-if="!form && !submitted" class="mt-4 rounded-lg border border-[#DADCE0] bg-white p-8 text-center">
+        <p class="text-base font-medium text-[#202124]">This waitlist is not open</p>
+        <p class="mt-1 text-sm text-[#5F6368]">The store may have closed it, or the link is out of date.</p>
+      </div>
 
-          <textarea v-if="f.type === 'textarea'" v-model="answers[f.key]" rows="3"
-            class="w-full resize-none rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A] focus:bg-white" />
+      <!-- Questions -->
+      <form v-else-if="form && !submitted" @submit.prevent="submit">
+        <div v-for="f in form.fields" :key="f.key" class="mt-3 rounded-lg border border-[#DADCE0] bg-white px-6 py-5">
+          <p class="text-sm text-[#202124]">
+            {{ f.label }}<span v-if="f.required" class="ml-0.5 text-[#D93025]">*</span>
+          </p>
+
+          <textarea v-if="f.type === 'textarea'" v-model="answers[f.key]" rows="3" :placeholder="f.label"
+            class="mt-4 w-full resize-none rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none transition focus:border-[#673AB7] focus:ring-1 focus:ring-[#673AB7]" />
 
           <template v-else-if="f.type === 'select'">
             <select v-model="answers[f.key]"
-              class="w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A]">
-              <option value="">Choose…</option>
+              class="mt-4 w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-sm outline-none focus:border-[#673AB7]">
+              <option value="">Choose</option>
               <option v-for="o in f.options" :key="o" :value="o">{{ o }}</option>
               <option v-if="f.allowOther" :value="OTHER">Other</option>
             </select>
             <input v-if="f.allowOther && answers[f.key] === OTHER" v-model="answers[f.key + '_other']"
-              placeholder="Type your answer"
-              class="mt-2 w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A]" />
+              placeholder="Your answer"
+              class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none focus:border-[#673AB7]" />
           </template>
 
           <template v-else-if="f.type === 'multiselect'">
-            <div class="space-y-1.5">
-              <label v-for="o in f.options" :key="o" class="flex items-center gap-2 text-sm text-[#171310]">
-                <input type="checkbox" :value="o" v-model="answers[f.key]" class="rounded" /> {{ o }}
+            <div class="mt-4 space-y-2">
+              <label v-for="o in f.options" :key="o" class="flex items-center gap-2.5 text-sm text-[#202124]">
+                <input type="checkbox" :value="o" v-model="answers[f.key]" class="h-4 w-4 rounded-sm accent-[#673AB7]" /> {{ o }}
               </label>
-              <label v-if="f.allowOther" class="flex items-center gap-2 text-sm text-[#171310]">
-                <input type="checkbox" :value="OTHER" v-model="answers[f.key]" class="rounded" /> Other
+              <label v-if="f.allowOther" class="flex items-center gap-2.5 text-sm text-[#202124]">
+                <input type="checkbox" :value="OTHER" v-model="answers[f.key]" class="h-4 w-4 rounded-sm accent-[#673AB7]" /> Other
               </label>
             </div>
             <input v-if="f.allowOther && (answers[f.key] || []).includes(OTHER)" v-model="answers[f.key + '_other']"
-              placeholder="Type your answer"
-              class="mt-2 w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A]" />
+              placeholder="Your answer"
+              class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none focus:border-[#673AB7]" />
           </template>
 
           <template v-else-if="f.type === 'image'">
-            <input type="file" accept="image/*"
-              class="w-full rounded-xl border border-dashed border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-xs"
-              @change="onImage(f.key, $event)" />
-            <img v-if="answers[f.key]" :src="answers[f.key]" class="mt-2 h-24 rounded-lg object-cover" />
+            <label class="mt-4 flex cursor-pointer items-center gap-2 rounded border border-dashed border-[#DADCE0] px-3 py-3 text-xs text-[#5F6368]">
+              <span class="rounded bg-[#F1F3F4] px-2 py-1 text-[11px] font-medium text-[#202124]">Add file</span>
+              {{ answers[f.key] ? 'Photo attached' : 'Upload a photo' }}
+              <input type="file" accept="image/*" class="hidden" @change="onImage(f.key, $event)" />
+            </label>
+            <img v-if="answers[f.key]" :src="answers[f.key]" class="mt-2 h-24 rounded object-cover" />
           </template>
 
-          <input v-else-if="f.type === 'number'" v-model="answers[f.key]" type="number"
-            class="w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A] focus:bg-white" />
-
-          <input v-else v-model="answers[f.key]" :type="inputType(f.type)"
-            class="w-full rounded-xl border border-[#EDE9E3] bg-[#FBFAF8] px-3 py-2.5 text-sm outline-none focus:border-[#FF5C1A] focus:bg-white" />
+          <input v-else v-model="answers[f.key]" :type="inputType(f.type)" :placeholder="f.label"
+            class="mt-4 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none transition focus:border-[#673AB7] focus:ring-1 focus:ring-[#673AB7]" />
         </div>
 
-        <button type="submit" :disabled="sending"
-          class="w-full rounded-xl bg-[#FF5C1A] py-3 text-sm font-bold text-white disabled:opacity-50">
-          {{ sending ? 'Sending…' : 'Join the waitlist' }}
-        </button>
+        <p v-if="error" class="mt-3 rounded border border-[#F6C7C0] bg-[#FCE8E6] px-4 py-2.5 text-sm text-[#C5221F]">
+          {{ error }}
+        </p>
 
-        <p v-if="error" class="text-center text-[11px] font-bold text-rose-600">{{ error }}</p>
+        <div class="mt-5 flex items-center justify-between gap-3">
+          <button type="submit" :disabled="sending"
+            class="rounded bg-[#673AB7] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#5B32A3] disabled:opacity-60">
+            {{ sending ? 'Submitting…' : 'Submit' }}
+          </button>
+          <span class="text-xs text-[#5F6368]">Never submit passwords</span>
+        </div>
       </form>
 
-      <div v-if="submitted" class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-        <p class="text-sm font-black text-emerald-900">You're on the list</p>
-        <p class="mx-auto mt-1 max-w-xs text-xs text-emerald-800">
-          {{ store?.storeName || 'The store' }} will contact you. Nothing else is needed.
-        </p>
-      </div>
-
-      <p class="mt-6 text-center text-[10px] text-[#9C968E]">Powered by Erranders</p>
+      <p class="mt-6 text-center text-xs text-[#5F6368]">Powered by Erranders</p>
     </div>
+
+    <!-- Success modal -->
+    <Teleport to="body">
+      <div v-if="submitted" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#202124]/50 p-4">
+        <div class="w-full max-w-sm rounded-lg bg-white p-6 text-center shadow-2xl">
+          <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full" :style="{ background: accent + '1A' }">
+            <svg viewBox="0 0 24 24" class="h-6 w-6" :style="{ stroke: accent }" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5" />
+            </svg>
+          </div>
+          <h2 class="text-lg font-medium text-[#202124]">Your response has been recorded</h2>
+          <p class="mt-1.5 text-sm text-[#5F6368]">
+            {{ store?.storeName || 'The store' }} will contact you. Nothing else is needed.
+          </p>
+          <button class="mt-5 w-full rounded bg-[#673AB7] py-2.5 text-sm font-medium text-white hover:bg-[#5B32A3]" @click="closeSuccess">
+            Done
+          </button>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { GATEWAY_ENDPOINT as api } from '@/api_factory/axios.config';
 
 const route = useRoute();
+const router = useRouter();
+
 const form = ref<any>(null);
 const store = ref<any>(null);
 const loading = ref(true);
 const sending = ref(false);
 const error = ref('');
 const submitted = ref(false);
+const answers = reactive<Record<string, any>>({});
+
 const OTHER = '__other__';
+
+// The store's own accent, so the form still belongs to them.
+const accent = computed(() => store.value?.brandColor || store.value?.storefrontTheme?.accent || '#673AB7');
+
+const inputType = (t: string) =>
+  t === 'email' ? 'email' : t === 'phone' ? 'tel' : t === 'date' ? 'date' : t === 'number' ? 'number' : 'text';
+
+const subdomain = () => {
+  if (typeof window === 'undefined') return '';
+  const parts = window.location.hostname.split('.');
+  return parts.length >= 3 ? parts[0] : (route.query.store as string) || '';
+};
 
 const onImage = async (key: string, e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
@@ -130,24 +166,15 @@ const onImage = async (key: string, e: Event) => {
   }
 };
 
-const inputType = (t: string) => (t === 'email' ? 'email' : t === 'phone' ? 'tel' : t === 'date' ? 'date' : t === 'number' ? 'number' : 'text');
-const answers = reactive<Record<string, any>>({});
-
-
-const subdomain = () => {
-  if (typeof window === 'undefined') return '';
-  const parts = window.location.hostname.split('.');
-  return parts.length >= 3 ? parts[0] : (route.query.store as string) || '';
-};
-
 const load = async () => {
   loading.value = true;
   try {
-    const sub = subdomain();
-    const res = await api.get(`/waitlist/public/${sub}/${route.params.slug}`);
+    const res = await api.get(`/waitlist/public/${subdomain()}/${route.params.slug}`);
     form.value = res.data?.form || null;
     store.value = res.data?.vendor || null;
-    for (const f of form.value?.fields || []) answers[f.key] = '';
+    for (const f of form.value?.fields || []) {
+      answers[f.key] = f.type === 'multiselect' ? [] : '';
+    }
   } catch {
     form.value = null;
   } finally {
@@ -159,15 +186,33 @@ const submit = async () => {
   error.value = '';
   sending.value = true;
   try {
-    const sub = subdomain();
-    await api.post(`/waitlist/public/${sub}/${route.params.slug}`, { answers: { ...answers } });
+    // Fold "Other" free text into the answer the provider reads.
+    const payload: Record<string, any> = { ...answers };
+    for (const f of form.value?.fields || []) {
+      if (f.allowOther) {
+        const other = payload[`${f.key}_other`];
+        if (Array.isArray(payload[f.key]) && payload[f.key].includes(OTHER)) {
+          payload[f.key] = payload[f.key].filter((v: string) => v !== OTHER).concat(other ? [other] : []);
+        } else if (payload[f.key] === OTHER && other) {
+          payload[f.key] = other;
+        }
+      }
+      delete payload[`${f.key}_other`];
+    }
+
+    await api.post(`/waitlist/public/${subdomain()}/${route.params.slug}`, { answers: payload });
     submitted.value = true;
-    form.value = null;
   } catch (e: any) {
-    error.value = e?.response?.data?.message || 'Could not submit. Please try again.';
+    const m = e?.response?.data?.message;
+    error.value = Array.isArray(m) ? m.join(', ') : m || 'Could not submit. Please try again.';
   } finally {
     sending.value = false;
   }
+};
+
+const closeSuccess = () => {
+  submitted.value = false;
+  router.push('/');
 };
 
 onMounted(load);
