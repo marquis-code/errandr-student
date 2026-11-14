@@ -47,15 +47,37 @@
             class="mt-4 w-full resize-none rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none transition focus:border-[#FF5C1A] focus:ring-1 focus:ring-[#FF5C1A]" />
 
           <template v-else-if="f.type === 'select'">
-            <select v-model="answers[f.key]"
-              class="mt-4 w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-sm outline-none focus:border-[#FF5C1A]">
-              <option value="">Choose</option>
-              <option v-for="o in f.options" :key="o" :value="o">{{ o }}</option>
-              <option v-if="f.allowOther" :value="OTHER">Other</option>
-            </select>
+            <div class="relative mt-4">
+              <button type="button"
+                class="flex w-full items-center justify-between gap-2 rounded border bg-white px-3 py-2.5 text-left text-sm transition"
+                :class="openSelect === f.key ? 'border-[#FF5C1A] ring-1 ring-[#FF5C1A]' : 'border-[#DADCE0]'"
+                @click="openSelect = openSelect === f.key ? '' : f.key">
+                <span :class="answers[f.key] ? 'text-[#202124]' : 'text-[#70757A]'">
+                  {{ answers[f.key] || 'Choose' }}
+                </span>
+                <svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0 transition-transform" :class="openSelect === f.key ? 'rotate-180' : ''"
+                  fill="none" stroke="#5F6368" stroke-width="2" stroke-linecap="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+
+              <div v-if="openSelect === f.key"
+                class="absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded border border-[#DADCE0] bg-white py-1 shadow-xl">
+                <button v-for="o in selectOptions(f)" :key="o" type="button"
+                  class="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm hover:bg-[#F1F3F4]"
+                  :class="answers[f.key] === o ? 'bg-[#FFF3EC] font-medium text-[#FF5C1A]' : 'text-[#202124]'"
+                  @click="answers[f.key] = o === OTHER ? OTHER : o; openSelect = ''">
+                  {{ o === OTHER ? 'Other' : o }}
+                  <svg v-if="answers[f.key] === o" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="#FF5C1A" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
             <input v-if="f.allowOther && answers[f.key] === OTHER" v-model="answers[f.key + '_other']"
               placeholder="Your answer"
-              class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none focus:border-[#FF5C1A]" />
+              class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2.5 text-sm outline-none transition focus:border-[#FF5C1A] focus:ring-1 focus:ring-[#FF5C1A]" />
           </template>
 
           <template v-else-if="f.type === 'multiselect'">
@@ -138,6 +160,13 @@ const sending = ref(false);
 const error = ref('');
 const submitted = ref(false);
 const answers = reactive<Record<string, any>>({});
+const openSelect = ref('');
+
+const selectOptions = (f: any) => {
+  const opts = [...(f.options || [])];
+  if (f.allowOther) opts.push(OTHER);
+  return opts;
+};
 
 const OTHER = '__other__';
 
