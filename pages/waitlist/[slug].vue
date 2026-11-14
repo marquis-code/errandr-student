@@ -1,5 +1,14 @@
 <template>
   <div class="min-h-screen bg-[#F0EBF8] px-3 py-6 sm:py-10">
+    <!-- Mobile: same banner, natural height, above the form. -->
+    <div v-if="form?.bannerImage" class="mx-auto mb-4 w-full max-w-[640px] overflow-hidden rounded-xl shadow-lg lg:hidden">
+      <img :src="form.bannerImage" class="block h-auto w-full object-contain" />
+      <div class="flex items-center gap-2.5 bg-white px-4 py-3">
+        <div class="h-8 w-8 overflow-hidden rounded-full bg-[#F1F3F4]">
+          <img v-if="store?.logo" :src="store.logo" class="h-full w-full object-cover" />
+        </div>
+        <p class="text-sm font-bold text-[#202124]">{{ store?.storeName || 'Waitlist' }}</p>
+      </div>
     <div class="relative mx-auto grid w-full max-w-[1080px] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-start">
       <div class="min-w-0">
       <!-- Header card -->
@@ -147,15 +156,7 @@
       </aside>
     </div>
 
-    <!-- Mobile: same banner, natural height, above the form. -->
-    <div v-if="form?.bannerImage" class="mx-auto mt-4 w-full max-w-[640px] overflow-hidden rounded-xl shadow-lg lg:hidden">
-      <img :src="form.bannerImage" class="block h-auto w-full object-contain" />
-      <div class="flex items-center gap-2.5 bg-white px-4 py-3">
-        <div class="h-8 w-8 overflow-hidden rounded-full bg-[#F1F3F4]">
-          <img v-if="store?.logo" :src="store.logo" class="h-full w-full object-cover" />
-        </div>
-        <p class="text-sm font-bold text-[#202124]">{{ store?.storeName || 'Waitlist' }}</p>
-      </div>
+
     </div>
 
     <!-- Success modal -->
