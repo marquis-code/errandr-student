@@ -44,32 +44,32 @@
           </p>
 
           <textarea v-if="f.type === 'textarea'" v-model="answers[f.key]" rows="3" :placeholder="f.label"
-            class="mt-4 w-full resize-none rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none transition focus:border-[#673AB7] focus:ring-1 focus:ring-[#673AB7]" />
+            class="mt-4 w-full resize-none rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none transition focus:border-[#FF5C1A] focus:ring-1 focus:ring-[#FF5C1A]" />
 
           <template v-else-if="f.type === 'select'">
             <select v-model="answers[f.key]"
-              class="mt-4 w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-sm outline-none focus:border-[#673AB7]">
+              class="mt-4 w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-sm outline-none focus:border-[#FF5C1A]">
               <option value="">Choose</option>
               <option v-for="o in f.options" :key="o" :value="o">{{ o }}</option>
               <option v-if="f.allowOther" :value="OTHER">Other</option>
             </select>
             <input v-if="f.allowOther && answers[f.key] === OTHER" v-model="answers[f.key + '_other']"
               placeholder="Your answer"
-              class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none focus:border-[#673AB7]" />
+              class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none focus:border-[#FF5C1A]" />
           </template>
 
           <template v-else-if="f.type === 'multiselect'">
             <div class="mt-4 space-y-2">
               <label v-for="o in f.options" :key="o" class="flex items-center gap-2.5 text-sm text-[#202124]">
-                <input type="checkbox" :value="o" v-model="answers[f.key]" class="h-4 w-4 rounded-sm accent-[#673AB7]" /> {{ o }}
+                <input type="checkbox" :value="o" v-model="answers[f.key]" class="h-4 w-4 rounded-sm accent-[#FF5C1A]" /> {{ o }}
               </label>
               <label v-if="f.allowOther" class="flex items-center gap-2.5 text-sm text-[#202124]">
-                <input type="checkbox" :value="OTHER" v-model="answers[f.key]" class="h-4 w-4 rounded-sm accent-[#673AB7]" /> Other
+                <input type="checkbox" :value="OTHER" v-model="answers[f.key]" class="h-4 w-4 rounded-sm accent-[#FF5C1A]" /> Other
               </label>
             </div>
             <input v-if="f.allowOther && (answers[f.key] || []).includes(OTHER)" v-model="answers[f.key + '_other']"
               placeholder="Your answer"
-              class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none focus:border-[#673AB7]" />
+              class="mt-2 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none focus:border-[#FF5C1A]" />
           </template>
 
           <template v-else-if="f.type === 'image'">
@@ -82,7 +82,7 @@
           </template>
 
           <input v-else v-model="answers[f.key]" :type="inputType(f.type)" :placeholder="f.label"
-            class="mt-4 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none transition focus:border-[#673AB7] focus:ring-1 focus:ring-[#673AB7]" />
+            class="mt-4 w-full rounded border border-[#DADCE0] px-3 py-2 text-sm outline-none transition focus:border-[#FF5C1A] focus:ring-1 focus:ring-[#FF5C1A]" />
         </div>
 
         <p v-if="error" class="mt-3 rounded border border-[#F6C7C0] bg-[#FCE8E6] px-4 py-2.5 text-sm text-[#C5221F]">
@@ -91,7 +91,7 @@
 
         <div class="mt-5 flex items-center justify-between gap-3">
           <button type="submit" :disabled="sending"
-            class="rounded bg-[#673AB7] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#5B32A3] disabled:opacity-60">
+            class="rounded bg-[#FF5C1A] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#E54D12] disabled:opacity-60">
             {{ sending ? 'Submitting…' : 'Submit' }}
           </button>
           <span class="text-xs text-[#5F6368]">Never submit passwords</span>
@@ -114,7 +114,7 @@
           <p class="mt-1.5 text-sm text-[#5F6368]">
             {{ store?.storeName || 'The store' }} will contact you. Nothing else is needed.
           </p>
-          <button class="mt-5 w-full rounded bg-[#673AB7] py-2.5 text-sm font-medium text-white hover:bg-[#5B32A3]" @click="closeSuccess">
+          <button class="mt-5 w-full rounded bg-[#FF5C1A] py-2.5 text-sm font-medium text-white hover:bg-[#E54D12]" @click="closeSuccess">
             Done
           </button>
         </div>
@@ -142,7 +142,8 @@ const answers = reactive<Record<string, any>>({});
 const OTHER = '__other__';
 
 // The store's own accent, so the form still belongs to them.
-const accent = computed(() => store.value?.brandColor || store.value?.storefrontTheme?.accent || '#673AB7');
+const BRAND = '#FF5C1A';
+const accent = computed(() => BRAND);
 
 const inputType = (t: string) =>
   t === 'email' ? 'email' : t === 'phone' ? 'tel' : t === 'date' ? 'date' : t === 'number' ? 'number' : 'text';
@@ -159,8 +160,8 @@ const onImage = async (key: string, e: Event) => {
   try {
     const fd = new FormData();
     fd.append('file', file);
-    const res = await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-    answers[key] = res?.data?.url || res?.data?.secure_url || '';
+    const res = await api.post('/upload/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    answers[key] = res?.data?.url || res?.data?.data?.url || res?.data?.secure_url || '';
   } catch {
     answers[key] = '';
   }
